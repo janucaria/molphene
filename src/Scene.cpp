@@ -20,17 +20,14 @@ namespace molphene {
     void Scene::resetMesh() {
         
         GLsizei verticesPerModel = 3;
-        GLsizei elementsPerVertices = 3;
-        GLsizei totalElements = verticesPerModel * elementsPerVertices;
         
-        renderer.setVericesSize(verticesPerModel);
-        
-        GLfloat * positions = new GLfloat[totalElements] {
-            +0.0f, +1.0f, +0.0f,
-            +1.0f, -1.0f, +0.0f,
-            -1.0f, -1.0f, +0.0f
+        struct vec3f * positions = new struct vec3f[verticesPerModel] {
+            vec3f(-0.0f, +1.0f, +0.0f),
+            vec3f(+1.0f, +1.0f, +0.0f),
+            vec3f(+0.0f, -1.0f, +0.0f)
         };
         
+        renderer.setVericesSize(verticesPerModel);
         renderer.setBufferPosition(positions);
         
         delete[] positions;

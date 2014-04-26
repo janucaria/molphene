@@ -3,6 +3,7 @@
 
 #include "logger.h"
 #include "opengl.h"
+#include "vec3f.h"
 
 namespace molphene {
     class Renderer {
@@ -15,7 +16,7 @@ namespace molphene {
         
         void setVericesSize(GLsizei size);
         
-        void setBufferPosition(const GLfloat * data);
+        void setBufferPosition(const struct vec3f * data);
         
         void render();
         

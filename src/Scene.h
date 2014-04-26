@@ -2,6 +2,7 @@
 #define __molphene__Scene__
 
 #include "opengl.h"
+#include "vec3f.h"
 #include "Renderer.h"
 
 namespace molphene {

@@ -28,9 +28,9 @@ namespace molphene {
         verticesSize = size;
     }
     
-    void Renderer::setBufferPosition(const GLfloat * data) {
+    void Renderer::setBufferPosition(const struct vec3f * data) {
         glBindBuffer(GL_ARRAY_BUFFER, gPositionBuffer);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * verticesSize * 3, data, GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(struct vec3f) * verticesSize, data, GL_STATIC_DRAW);
     }
     
     void Renderer::render() {
