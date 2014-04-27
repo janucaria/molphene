@@ -35,9 +35,9 @@ namespace molphene {
         glBufferData(GL_ARRAY_BUFFER, sizeof(struct vec3f) * verticesSize, data, GL_STATIC_DRAW);
     }
     
-    void Renderer::setBufferColor(const GLubyte * data) {
+    void Renderer::setBufferColor(const struct colour * data) {
         glBindBuffer(GL_ARRAY_BUFFER, gColorBuffer);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(GLubyte) * 4 * verticesSize , data, GL_DYNAMIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(struct colour) * verticesSize , data, GL_DYNAMIC_DRAW);
     }
     
     void Renderer::render() {
@@ -57,7 +57,6 @@ namespace molphene {
         
         glDisableVertexAttribArray(gVertexPositionLocation);
         glDisableVertexAttribArray(gVertexColorLocation);
-        
         
         glFlush();
     }

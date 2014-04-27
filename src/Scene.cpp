@@ -32,15 +32,16 @@ namespace molphene {
         
         delete[] positions;
         
-        GLubyte * colors = new GLubyte[verticesPerModel * 4] {
-            225, 0, 0, 225,
-            0, 225, 0, 225,
-            0, 0, 225, 225
+        struct colour * colours = new struct colour[verticesPerModel] {
+            colour(255, 0, 0),
+            colour(0, 255, 0),
+            colour(0, 0, 255)
+            
         };
         
-        renderer.setBufferColor(colors);
+        renderer.setBufferColor(colours);
         
-        delete[] colors;
+        delete[] colours;
     }
     
     void Scene::clearRect() {

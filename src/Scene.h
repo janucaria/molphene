@@ -3,6 +3,7 @@
 
 #include "opengl.h"
 #include "vec3f.h"
+#include "colour.h"
 #include "Renderer.h"
 
 namespace molphene {

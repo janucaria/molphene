@@ -4,6 +4,7 @@
 #include "logger.h"
 #include "opengl.h"
 #include "vec3f.h"
+#include "colour.h"
 
 namespace molphene {
     class Renderer {
@@ -18,7 +19,7 @@ namespace molphene {
         
         void setBufferPosition(const struct vec3f * data);
         
-        void setBufferColor(const GLubyte * data);
+        void setBufferColor(const struct colour * data);
         
         void render();
         
