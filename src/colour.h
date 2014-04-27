@@ -1,11 +1,3 @@
-//
-//  colour.h
-//  molphene
-//
-//  Created by Januar Andaria on 4/27/14.
-//  Copyright (c) 2014 Janucaria. All rights reserved.
-//
-
 #ifndef __molphene__colour__
 #define __molphene__colour__
 

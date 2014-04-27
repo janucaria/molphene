@@ -1,15 +1,7 @@
-//
-//  colour.cpp
-//  molphene
-//
-//  Created by Januar Andaria on 4/27/14.
-//  Copyright (c) 2014 Janucaria. All rights reserved.
-//
-
 #include "colour.h"
 
 namespace molphene {
-    colour::colour() : r(255), g(0), b(0), a(UCHAR_MAX) {}
+    colour::colour() : r(0), g(0), b(0), a(UCHAR_MAX) {}
     
     colour::colour(unsigned char r, unsigned char g, unsigned char b, unsigned char a) :
         r(r), g(g), b(b), a(a) {}
