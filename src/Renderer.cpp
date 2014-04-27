@@ -28,16 +28,22 @@ namespace molphene {
     
     void Renderer::setVericesSize(GLsizei size) {
         verticesSize = size;
+        
+        glBindBuffer(GL_ARRAY_BUFFER, gPositionBuffer);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(struct vec3f) * verticesSize, nullptr, GL_STATIC_DRAW);
+        
+        glBindBuffer(GL_ARRAY_BUFFER, gColorBuffer);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(struct colour) * verticesSize , nullptr, GL_DYNAMIC_DRAW);
     }
     
     void Renderer::setBufferPosition(const struct vec3f * data) {
         glBindBuffer(GL_ARRAY_BUFFER, gPositionBuffer);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(struct vec3f) * verticesSize, data, GL_STATIC_DRAW);
+        glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(struct vec3f) * verticesSize, data);
     }
     
     void Renderer::setBufferColor(const struct colour * data) {
         glBindBuffer(GL_ARRAY_BUFFER, gColorBuffer);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(struct colour) * verticesSize , data, GL_DYNAMIC_DRAW);
+        glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(struct colour) * verticesSize, data);
     }
     
     void Renderer::render() {
