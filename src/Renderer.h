@@ -18,6 +18,8 @@ namespace molphene {
         
         void setBufferPosition(const struct vec3f * data);
         
+        void setBufferColor(const GLubyte * data);
+        
         void render();
         
     private:
@@ -32,8 +34,10 @@ namespace molphene {
         GLuint gFragmentShader;
         
         GLuint gVertexPositionLocation;
+        GLuint gVertexColorLocation;
         
         GLuint gPositionBuffer;
+        GLuint gColorBuffer;
         
         GLuint createShader(GLenum shaderType, const char* pSource);
         GLuint createProgram(const GLuint vertexShader, const GLuint fragmentShader);

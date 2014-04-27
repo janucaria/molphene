@@ -17,8 +17,10 @@ namespace molphene {
         gProgram = createProgram(gVertexShader, gFragmentShader);
         
         gVertexPositionLocation = glGetAttribLocation(gProgram, "a_Position");
+        gVertexColorLocation = glGetAttribLocation(gProgram, "a_Color");
         
         glGenBuffers(1, &gPositionBuffer);
+        glGenBuffers(1, &gColorBuffer);
         
         return true;
     }
@@ -33,18 +35,28 @@ namespace molphene {
         glBufferData(GL_ARRAY_BUFFER, sizeof(struct vec3f) * verticesSize, data, GL_STATIC_DRAW);
     }
     
+    void Renderer::setBufferColor(const GLubyte * data) {
+        glBindBuffer(GL_ARRAY_BUFFER, gColorBuffer);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(GLubyte) * 4 * verticesSize , data, GL_DYNAMIC_DRAW);
+    }
+    
     void Renderer::render() {
         
         glUseProgram(gProgram);
         
         glEnableVertexAttribArray(gVertexPositionLocation);
+        glEnableVertexAttribArray(gVertexColorLocation);
         
         glBindBuffer(GL_ARRAY_BUFFER, gPositionBuffer);
         glVertexAttribPointer(gVertexPositionLocation, 3, GL_FLOAT, GL_FALSE, 0, 0);
         
+        glBindBuffer(GL_ARRAY_BUFFER, gColorBuffer);
+        glVertexAttribPointer(gVertexColorLocation, 4, GL_UNSIGNED_BYTE, GL_TRUE, 0, 0);
+        
         glDrawArrays(GL_TRIANGLES, 0, 3);
         
         glDisableVertexAttribArray(gVertexPositionLocation);
+        glDisableVertexAttribArray(gVertexColorLocation);
         
         
         glFlush();
@@ -109,16 +121,19 @@ namespace molphene {
     
     const char * Renderer::vertexShaderSource = R"(
     attribute vec3 a_Position;
+    attribute vec4 a_Color;
     
+    varying vec4 v_Color;
     void main() {
+        v_Color = a_Color;
         gl_Position = vec4(a_Position, 1.0);
     }
     )";
     
     const char * Renderer::fragmentShaderSource = R"(
-    
+    varying vec4 v_Color;
     void main() {
-        gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
+        gl_FragColor = v_Color;
     }
     
     )";

@@ -20,6 +20,7 @@ namespace molphene {
     void Scene::resetMesh() {
         
         GLsizei verticesPerModel = 3;
+        renderer.setVericesSize(verticesPerModel);
         
         struct vec3f * positions = new struct vec3f[verticesPerModel] {
             vec3f(-0.0f, +1.0f, +0.0f),
@@ -27,10 +28,19 @@ namespace molphene {
             vec3f(+0.0f, -1.0f, +0.0f)
         };
         
-        renderer.setVericesSize(verticesPerModel);
         renderer.setBufferPosition(positions);
         
         delete[] positions;
+        
+        GLubyte * colors = new GLubyte[verticesPerModel * 4] {
+            225, 0, 0, 225,
+            0, 225, 0, 225,
+            0, 0, 225, 225
+        };
+        
+        renderer.setBufferColor(colors);
+        
+        delete[] colors;
     }
     
     void Scene::clearRect() {
