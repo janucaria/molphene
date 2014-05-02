@@ -8,25 +8,25 @@ namespace molphene {
         vec3f();
         vec3f(float x, float y, float z);
         
-        struct vec3f & operator () (const float & x, const float & y, const float & z);
+        vec3f & operator () (const float & x, const float & y, const float & z);
         
-        struct vec3f operator + (const struct vec3f & v) const;
+        vec3f operator + (const vec3f & v) const;
         
-        struct vec3f & operator += (const struct vec3f & v);
+        vec3f & operator += (const vec3f & v);
         
-        struct vec3f operator - (const struct vec3f & v) const;
+        vec3f operator - (const vec3f & v) const;
         
-        struct vec3f & operator -= (const struct vec3f & v);
+        vec3f & operator -= (const vec3f & v);
         
-        struct vec3f operator * (const struct vec3f & v) const;
+        vec3f operator * (const vec3f & v) const;
         
-        struct vec3f & operator *= (const struct vec3f & v);
+        vec3f & operator *= (const vec3f & v);
         
-        struct vec3f operator / (const struct vec3f & v) const;
+        vec3f operator / (const vec3f & v) const;
         
-        struct vec3f & operator /= (const struct vec3f & v);
+        vec3f & operator /= (const vec3f & v);
         
-        struct vec3f operator - () const;
+        vec3f operator - () const;
         
     };
 }

@@ -14,7 +14,7 @@ namespace molphene {
     {
     }
     
-    struct colour & colour::operator () (unsigned char r, unsigned char g, unsigned char b, unsigned char a)
+    colour & colour::operator () (unsigned char r, unsigned char g, unsigned char b, unsigned char a)
     {
         this->r = r;
         this->g = g;
@@ -24,7 +24,7 @@ namespace molphene {
         return *this;
     }
     
-    struct colour & colour::operator () (unsigned int col) {
+    colour & colour::operator () (unsigned int col) {
         return (*this)((col & 0x00FF0000) >> 16, (col & 0x0000FF00) >> 8, col & 0x000000FF, (col >> 24) ^ 0xFF);
     }
 

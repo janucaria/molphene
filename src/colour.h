@@ -11,8 +11,8 @@ namespace molphene {
         colour(unsigned char r, unsigned char g, unsigned char b, unsigned char a = 255);
         colour(unsigned int col);
         
-        struct colour & operator () (unsigned char r, unsigned char g, unsigned char b, unsigned char a = 255);
-        struct colour & operator () (unsigned int col);
+        colour & operator () (unsigned char r, unsigned char g, unsigned char b, unsigned char a = 255);
+        colour & operator () (unsigned int col);
     };
 }
 

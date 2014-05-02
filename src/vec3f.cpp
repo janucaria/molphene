@@ -11,51 +11,51 @@ namespace molphene {
     {
     }
     
-    struct vec3f & vec3f::operator () (const float & x, const float & y, const float & z) {
+    vec3f & vec3f::operator () (const float & x, const float & y, const float & z) {
         this->x = x;
         this->y = y;
         this->z = z;
         return *this;
     }
     
-    struct vec3f vec3f::operator + (const struct vec3f & v) const {
+    vec3f vec3f::operator + (const vec3f & v) const {
         return vec3f(*this) += v;
     }
     
-    struct vec3f & vec3f::operator += (const struct vec3f & v) {
+    vec3f & vec3f::operator += (const vec3f & v) {
         this->x += v.x;
         this->y += v.y;
         this->z += v.z;
         return *this;
     }
     
-    struct vec3f vec3f::operator - (const struct vec3f & v) const {
+    vec3f vec3f::operator - (const vec3f & v) const {
         return vec3f(*this) -= v;
     }
     
-    struct vec3f & vec3f::operator -= (const struct vec3f & v) {
+    vec3f & vec3f::operator -= (const vec3f & v) {
         this->x -= v.x;
         this->y -= v.y;
         this->z -= v.z;
         return *this;
     }
     
-    struct vec3f vec3f::operator * (const struct vec3f & v) const {
+    vec3f vec3f::operator * (const vec3f & v) const {
         return vec3f(*this) *= v;
     }
     
-    struct vec3f & vec3f::operator *= (const struct vec3f & v) {
+    vec3f & vec3f::operator *= (const vec3f & v) {
         this->x *= v.x;
         this->y *= v.y;
         this->z *= v.z;
         return *this;
     }
     
-    struct vec3f vec3f::operator / (const struct vec3f & v) const {
+    vec3f vec3f::operator / (const vec3f & v) const {
         return vec3f(*this) /= v;
     }
     
-    struct vec3f & vec3f::operator /= (const struct vec3f & v) {
+    vec3f & vec3f::operator /= (const vec3f & v) {
         this->x /= v.x;
         this->y /= v.y;
         this->z /= v.z;
@@ -63,7 +63,7 @@ namespace molphene {
     }
     
     
-    struct vec3f vec3f::operator - () const {
+    vec3f vec3f::operator - () const {
         return vec3f(-this->x, -this->y, -this->z);
     }
     

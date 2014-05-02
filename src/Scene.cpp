@@ -22,7 +22,7 @@ namespace molphene {
         GLsizei verticesPerModel = 3;
         renderer.setVericesSize(verticesPerModel);
         
-        struct vec3f * positions = new struct vec3f[verticesPerModel] {
+        vec3f * positions = new vec3f[verticesPerModel] {
             vec3f(-1.0f, +1.0f, +0.0f),
             vec3f(+1.0f, +1.0f, +0.0f),
             vec3f(+0.0f, -1.0f, +0.0f)
@@ -32,7 +32,7 @@ namespace molphene {
         
         delete[] positions;
         
-        struct colour * colours = new struct colour[verticesPerModel] {
+        colour * colours = new colour[verticesPerModel] {
             colour(255, 0, 0),
             colour(0, 255, 0),
             colour(0, 0, 255)

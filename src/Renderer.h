@@ -18,9 +18,9 @@ namespace molphene {
         
         void setVericesSize(GLsizei size);
         
-        void setBufferPosition(const struct vec3f * data);
+        void setBufferPosition(const vec3f * data);
         
-        void setBufferColor(const struct colour * data);
+        void setBufferColor(const colour * data);
         
         void setModelViewMatrix(const mat4f & m4);
         
