@@ -23,7 +23,7 @@ namespace molphene {
         renderer.setVericesSize(verticesPerModel);
         
         struct vec3f * positions = new struct vec3f[verticesPerModel] {
-            vec3f(-0.0f, +1.0f, +0.0f),
+            vec3f(-1.0f, +1.0f, +0.0f),
             vec3f(+1.0f, +1.0f, +0.0f),
             vec3f(+0.0f, -1.0f, +0.0f)
         };
@@ -42,6 +42,15 @@ namespace molphene {
         renderer.setBufferColor(colours);
         
         delete[] colours;
+        
+        mat4f modelMatrix;
+        mat4f viewMatrix;
+        
+        modelMatrix.scale(0.5f);
+        modelMatrix.rotate(0.0f, 0.0f, 1.0f, 3.14f);
+        viewMatrix.translate(0.25f, 0.0f, 0.0f);
+        
+        renderer.setModelViewMatrix(modelMatrix * viewMatrix);
     }
     
     void Scene::clearRect() {

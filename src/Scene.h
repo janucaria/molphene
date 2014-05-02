@@ -5,6 +5,7 @@
 #include "vec3f.h"
 #include "colour.h"
 #include "Renderer.h"
+#include "mat4f.h"
 
 namespace molphene {
     

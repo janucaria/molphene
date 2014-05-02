@@ -5,6 +5,7 @@
 #include "opengl.h"
 #include "vec3f.h"
 #include "colour.h"
+#include "mat4f.h"
 
 namespace molphene {
     class Renderer {
@@ -21,6 +22,8 @@ namespace molphene {
         
         void setBufferColor(const struct colour * data);
         
+        void setModelViewMatrix(const mat4f & m4);
+        
         void render();
         
     private:
@@ -36,6 +39,8 @@ namespace molphene {
         
         GLuint gVertexPositionLocation;
         GLuint gVertexColorLocation;
+        
+        GLint gUniformModelViewMatrixLocation;
         
         GLuint gPositionBuffer;
         GLuint gColorBuffer;
