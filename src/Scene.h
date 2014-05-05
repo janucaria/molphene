@@ -1,6 +1,7 @@
 #ifndef __molphene__Scene__
 #define __molphene__Scene__
 
+#include <cmath>
 #include "opengl.h"
 #include "vec3f.h"
 #include "colour.h"

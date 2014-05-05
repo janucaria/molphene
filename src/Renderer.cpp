@@ -6,7 +6,8 @@ namespace molphene {
         gProgram(0),
         gVertexShader(0),
         gFragmentShader(0),
-        gUniformModelViewMatrixLocation(-1)
+        gUniformModelViewMatrixLocation(-1),
+        gUniformProjectionMatrixLocation(-1)
     {
         
     }
@@ -21,6 +22,7 @@ namespace molphene {
         gVertexColorLocation = glGetAttribLocation(gProgram, "a_Color");
         
         gUniformModelViewMatrixLocation = glGetUniformLocation(gProgram, "u_ModelViewMatrix");
+        gUniformProjectionMatrixLocation = glGetUniformLocation(gProgram, "u_ProjectionMatrix");
         
         glGenBuffers(1, &gPositionBuffer);
         glGenBuffers(1, &gColorBuffer);
@@ -52,6 +54,11 @@ namespace molphene {
     void Renderer::setModelViewMatrix(const mat4f & m4) {
         glUseProgram(gProgram);
         glUniformMatrix4fv(gUniformModelViewMatrixLocation, 1, GL_FALSE, m4.m);
+    }
+    
+    void Renderer::setProjectionMatrix(const mat4f & m4) {
+        glUseProgram(gProgram);
+        glUniformMatrix4fv(gUniformProjectionMatrixLocation, 1, GL_FALSE, m4.m);
     }
     
     void Renderer::render() {
@@ -137,11 +144,13 @@ namespace molphene {
     attribute vec4 a_Color;
     
     uniform mat4 u_ModelViewMatrix;
+    uniform mat4 u_ProjectionMatrix;
     
     varying vec4 v_Color;
     void main() {
+        vec4 position = u_ModelViewMatrix * vec4(a_Position, 1.0);
         v_Color = a_Color;
-        gl_Position = u_ModelViewMatrix * vec4(a_Position, 1.0);
+        gl_Position = u_ProjectionMatrix * position;
     }
     )";
     

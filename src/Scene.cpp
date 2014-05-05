@@ -15,6 +15,35 @@ namespace molphene {
     
     void Scene::changeDimension(GLsizei width, GLsizei height) {
         glViewport(0, 0, width, height);
+        
+        mat4f projectionMatrix;
+        
+        float fov         = M_PI / 4.0f;
+        float theta       = fov / 2.0f;
+        float tanTheta    = tan(theta);
+        float y           = 1.0f;
+        float focalLength = y / tanTheta;
+        float near        = focalLength - y;
+        float far         = focalLength + y;
+        float aspect      = 1.0f * width / height;
+        
+        float top         = tan(fov / 2.0f) * near;
+        float bottom      = -top;
+        
+        float left        = aspect * bottom;
+        float right       = aspect * top;
+        
+        projectionMatrix.frustum(left, right, bottom, top, near, far);
+        renderer.setProjectionMatrix(projectionMatrix);
+        
+        mat4f modelMatrix;
+        mat4f viewMatrix;
+        
+        modelMatrix.scale(0.5f);
+        modelMatrix.rotate(0.0f, 0.0f, 1.0f, 3.14f);
+        viewMatrix.translate(0.0f, 0.0f, -focalLength);
+        
+        renderer.setModelViewMatrix(modelMatrix * viewMatrix);
     }
     
     void Scene::resetMesh() {
@@ -42,15 +71,6 @@ namespace molphene {
         renderer.setBufferColor(colours);
         
         delete[] colours;
-        
-        mat4f modelMatrix;
-        mat4f viewMatrix;
-        
-        modelMatrix.scale(0.5f);
-        modelMatrix.rotate(0.0f, 0.0f, 1.0f, 3.14f);
-        viewMatrix.translate(0.25f, 0.0f, 0.0f);
-        
-        renderer.setModelViewMatrix(modelMatrix * viewMatrix);
     }
     
     void Scene::clearRect() {

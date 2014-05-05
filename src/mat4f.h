@@ -37,6 +37,8 @@ namespace molphene {
         mat4f & rotate(float x, float y, float z, float a);
         
         mat4f & translate(float x, float y, float z);
+        
+        mat4f & frustum(float l, float r, float b, float t, float n, float f);
     };
 }
 

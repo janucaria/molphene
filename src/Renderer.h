@@ -24,6 +24,8 @@ namespace molphene {
         
         void setModelViewMatrix(const mat4f & m4);
         
+        void setProjectionMatrix(const mat4f & m4);
+        
         void render();
         
     private:
@@ -41,6 +43,7 @@ namespace molphene {
         GLuint gVertexColorLocation;
         
         GLint gUniformModelViewMatrixLocation;
+        GLint gUniformProjectionMatrixLocation;
         
         GLuint gPositionBuffer;
         GLuint gColorBuffer;
