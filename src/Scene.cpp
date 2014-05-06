@@ -27,23 +27,20 @@ namespace molphene {
         float far         = focalLength + y;
         float aspect      = 1.0f * width / height;
         
-        float top         = tan(fov / 2.0f) * near;
-        float bottom      = -top;
-        
-        float left        = aspect * bottom;
-        float right       = aspect * top;
-        
-        projectionMatrix.frustum(left, right, bottom, top, near, far);
-        renderer.setProjectionMatrix(projectionMatrix);
+        camera.setFov(fov);
+        camera.setNear(near);
+        camera.setFar(far);
+        camera.setAspect(aspect);
+        camera.updateProjectionMatrix();
+        camera.translate(0, 0, focalLength);
         
         mat4f modelMatrix;
-        mat4f viewMatrix;
         
         modelMatrix.scale(0.5f);
         modelMatrix.rotate(0.0f, 0.0f, 1.0f, 3.14f);
-        viewMatrix.translate(0.0f, 0.0f, -focalLength);
         
-        renderer.setModelViewMatrix(modelMatrix * viewMatrix);
+        renderer.setProjectionMatrix(camera.getProjectionMatrix());
+        renderer.setModelViewMatrix(modelMatrix * camera.getViewMatrix());
     }
     
     void Scene::resetMesh() {

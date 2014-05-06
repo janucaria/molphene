@@ -7,6 +7,7 @@
 #include "colour.h"
 #include "Renderer.h"
 #include "mat4f.h"
+#include "Camera.h"
 
 namespace molphene {
     
@@ -27,6 +28,8 @@ namespace molphene {
         
     private:
         Renderer renderer;
+        
+        Camera camera;
         
     };
     
