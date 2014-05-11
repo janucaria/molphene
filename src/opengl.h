@@ -3,8 +3,37 @@
 
 #include <iostream>
 
+#ifdef _WIN64
+
+#elif _WIN32
+
+#elif __APPLE__
+
+#include "TargetConditionals.h"
+#if TARGET_OS_IPHONE
+
+#include <OpenGLES/ES2/gl.h>
+#include <OpenGLES/ES2/glext.h>
+
+#if TARGET_IPHONE_SIMULATOR
+
+#endif
+
+#else
+
 #include <OpenGL/gl.h>
 #include <OpenGL/glext.h>
+
+#endif
+
+#elif __linux
+
+#elif __unix
+
+#elif __posix
+
+#endif
+
 
 
 #endif /* defined(__libmolphene__opengl__) */

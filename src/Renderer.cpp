@@ -155,6 +155,10 @@ namespace molphene {
     )";
     
     const char * Renderer::fragmentShaderSource = R"(
+    #ifdef GL_ES
+    precision highp float;
+    #endif
+    
     varying vec4 v_Color;
     void main() {
         gl_FragColor = v_Color;
