@@ -1,11 +1,3 @@
-//
-//  Camera.h
-//  molphene
-//
-//  Created by Januar Andaria on 5/7/14.
-//  Copyright (c) 2014 Janucaria. All rights reserved.
-//
-
 #ifndef __molphene__Camera__
 #define __molphene__Camera__
 

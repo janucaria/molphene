@@ -1,11 +1,3 @@
-//
-//  Camera.cpp
-//  molphene
-//
-//  Created by Januar Andaria on 5/7/14.
-//  Copyright (c) 2014 Janucaria. All rights reserved.
-//
-
 #include "Camera.h"
 
 namespace molphene {
