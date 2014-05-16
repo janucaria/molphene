@@ -16,7 +16,7 @@ namespace molphene {
         
         bool setupGL();
         
-        void setVericesSize(GLsizei size);
+        void setVericesSize(GLuint size);
         
         void setBufferPosition(const vec3f * data);
         
@@ -32,7 +32,7 @@ namespace molphene {
         const static char * vertexShaderSource;
         const static char * fragmentShaderSource;
         
-        GLsizei verticesSize;
+        GLuint verticesSize;
         
         GLuint gProgram;
         

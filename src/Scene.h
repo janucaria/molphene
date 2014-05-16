@@ -8,6 +8,9 @@
 #include "Renderer.h"
 #include "mat4f.h"
 #include "Camera.h"
+#include "Atom.h"
+#include "Model.h"
+#include "Molecule.h"
 
 namespace molphene {
     
@@ -30,6 +33,8 @@ namespace molphene {
         Renderer renderer;
         
         Camera camera;
+        
+        Molecule molecule;
         
     };
     

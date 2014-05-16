@@ -3,6 +3,26 @@
 namespace molphene {
     
     Scene::Scene() {
+        
+        Atom atom1(1);
+        atom1.setElement("C");
+        atom1.setPosition(-1.0f, +1.0f, 0.0f);
+        
+        Atom atom2(2);
+        atom2.setElement("C");
+        atom2.setPosition(+1.0f, +1.0f, +0.0f);
+        
+        Atom atom3(3);
+        atom3.setElement("C");
+        atom3.setPosition(+0.0f, -1.0f, +0.0f);
+        
+        Model model;
+        
+        model.addAtom(atom1);
+        model.addAtom(atom2);
+        model.addAtom(atom3);
+        
+        molecule.addModel(model);
     }
     
     bool Scene::setupGraphics() {
@@ -45,14 +65,44 @@ namespace molphene {
     
     void Scene::resetMesh() {
         
-        GLsizei verticesPerModel = 3;
+        Molecule::ModelList & models = molecule.getModels();
+        Molecule::ModelList::iterator modIt = models.begin();
+        
+        std::vector<Atom> atoms;
+        
+        for( ; modIt != models.end(); ++modIt) {
+            Model model = *modIt;
+            Model::AtomMap atomMap = model.getAtoms();
+            Model::AtomMap::iterator atomIt= atomMap.begin();
+            
+            for( ; atomIt != atomMap.end(); ++atomIt) {
+                Atom & atm = atomIt->second;
+                atoms.push_back(atm);
+            }
+        }
+        
+        LOG_D("Size of atoms : %ld", atoms.size());
+        
+        GLuint totalAtoms = atoms.size();
+        
+        GLuint verticesPerModel = 3 * totalAtoms;
         renderer.setVericesSize(verticesPerModel);
         
-        vec3f * positions = new vec3f[verticesPerModel] {
-            vec3f(-1.0f, +1.0f, +0.0f),
-            vec3f(+1.0f, +1.0f, +0.0f),
-            vec3f(+0.0f, -1.0f, +0.0f)
-        };
+        LOG_D("vertices size : %u", verticesPerModel);
+        
+        vec3f * positions = new vec3f[verticesPerModel];
+        
+        for(unsigned int i = 0; i < totalAtoms; ++i) {
+            
+            vec3f apos = atoms.at(i).getPosition();
+            
+            LOG_D("positio : [%f, %f, %f]", apos.x, apos.y, apos.z);
+            
+            positions[i * 3 + 0] = vec3f(apos.x - 1.0f, apos.y + 1.0f, apos.z + 0.0f) * 0.25;
+            positions[i * 3 + 1] = vec3f(apos.x + 1.0f, apos.y + 1.0f, apos.z + 0.0f) * 0.25;
+            positions[i * 3 + 2] = vec3f(apos.x + 0.0f, apos.y - 1.0f, apos.z + 0.0f) * 0.25;
+
+        }
         
         renderer.setBufferPosition(positions);
         
@@ -60,7 +110,15 @@ namespace molphene {
         
         colour * colours = new colour[verticesPerModel] {
             colour(255, 0, 0),
+            colour(255, 0, 0),
+            colour(255, 0, 0),
+            
             colour(0, 255, 0),
+            colour(0, 255, 0),
+            colour(0, 255, 0),
+            
+            colour(0, 0, 255),
+            colour(0, 0, 255),
             colour(0, 0, 255)
             
         };
