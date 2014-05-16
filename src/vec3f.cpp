@@ -68,4 +68,50 @@ namespace molphene {
     }
     
     
+    vec3f vec3f::operator + (const float & s) const {
+        return vec3f(*this) += s;
+    }
+    
+    vec3f & vec3f::operator += (const float & s) {
+        this->x += s;
+        this->y += s;
+        this->z += s;
+        return *this;
+    }
+    
+    vec3f vec3f::operator - (const float & s) const {
+        return vec3f(*this) -= s;
+    }
+    
+    vec3f & vec3f::operator -= (const float & s) {
+        this->x -= s;
+        this->y -= s;
+        this->z -= s;
+        return *this;
+    }
+    
+    vec3f vec3f::operator * (const float & s) const {
+        return vec3f(*this) *= s;
+    }
+    
+    vec3f & vec3f::operator *= (const float & s) {
+        this->x *= s;
+        this->y *= s;
+        this->z *= s;
+        return *this;
+    }
+    
+    
+    vec3f vec3f::operator / (const float & s) const {
+        return vec3f(*this) /= s;
+    }
+    
+    vec3f & vec3f::operator /= (const float & s) {
+        this->x /= s;
+        this->y /= s;
+        this->z /= s;
+        return *this;
+    }
+    
+    
 }

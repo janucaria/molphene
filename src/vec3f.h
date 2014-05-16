@@ -28,6 +28,22 @@ namespace molphene {
         
         vec3f operator - () const;
         
+        vec3f operator + (const float & s) const;
+        
+        vec3f & operator += (const float & s);
+        
+        vec3f operator - (const float & s) const;
+        
+        vec3f & operator -= (const float & s);
+        
+        vec3f operator * (const float & s) const;
+        
+        vec3f & operator *= (const float & s);
+        
+        vec3f operator / (const float & s) const;
+        
+        vec3f & operator /= (const float & s);
+        
     };
 }
 
