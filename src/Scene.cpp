@@ -81,51 +81,29 @@ namespace molphene {
             }
         }
         
+        
         LOG_D("Size of atoms : %ld", atoms.size());
         
-        GLuint totalAtoms = atoms.size();
+        GLuint totalAtoms = static_cast<GLuint>(atoms.size());
+        SphereMeshBuilder meshBuilder(totalAtoms);
+        GLuint totalVertices = meshBuilder.getTotalVertices();
+        renderer.setVericesSize(totalVertices);
         
-        GLuint verticesPerModel = 3 * totalAtoms;
-        renderer.setVericesSize(verticesPerModel);
-        
-        LOG_D("vertices size : %u", verticesPerModel);
-        
-        vec3f * positions = new vec3f[verticesPerModel];
+        LOG_D("vertices size : %u", totalVertices);
         
         for(unsigned int i = 0; i < totalAtoms; ++i) {
             
-            vec3f apos = atoms.at(i).getPosition();
+            Atom & atom = atoms.at(i);
+            vec3f apos = atom.getPosition();
+            colour acol = colour(255, 0, 0);
+            float arad = 0.25f;
             
-            LOG_D("positio : [%f, %f, %f]", apos.x, apos.y, apos.z);
-            
-            positions[i * 3 + 0] = vec3f(apos.x - 1.0f, apos.y + 1.0f, apos.z + 0.0f) * 0.25;
-            positions[i * 3 + 1] = vec3f(apos.x + 1.0f, apos.y + 1.0f, apos.z + 0.0f) * 0.25;
-            positions[i * 3 + 2] = vec3f(apos.x + 0.0f, apos.y - 1.0f, apos.z + 0.0f) * 0.25;
+            meshBuilder.buildSphere(i, apos, arad, acol);
 
         }
         
-        renderer.setBufferPosition(positions);
-        
-        delete[] positions;
-        
-        colour * colours = new colour[verticesPerModel] {
-            colour(255, 0, 0),
-            colour(255, 0, 0),
-            colour(255, 0, 0),
-            
-            colour(0, 255, 0),
-            colour(0, 255, 0),
-            colour(0, 255, 0),
-            
-            colour(0, 0, 255),
-            colour(0, 0, 255),
-            colour(0, 0, 255)
-            
-        };
-        
-        renderer.setBufferColor(colours);
-        
-        delete[] colours;
+        renderer.setBufferPosition(meshBuilder.getPositions());
+        renderer.setBufferColor(meshBuilder.getColors());
     }
     
     void Scene::clearRect() {

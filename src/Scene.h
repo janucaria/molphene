@@ -11,6 +11,7 @@
 #include "Atom.h"
 #include "Model.h"
 #include "Molecule.h"
+#include "SphereMeshBuilder.h"
 
 namespace molphene {
     

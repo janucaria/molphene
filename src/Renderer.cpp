@@ -74,7 +74,7 @@ namespace molphene {
         glBindBuffer(GL_ARRAY_BUFFER, gColorBuffer);
         glVertexAttribPointer(gVertexColorLocation, 4, GL_UNSIGNED_BYTE, GL_TRUE, 0, 0);
         
-        glDrawArrays(GL_TRIANGLES, 0, verticesSize);
+        glDrawArrays(GL_TRIANGLE_STRIP, 0, verticesSize);
         
         glDisableVertexAttribArray(gVertexPositionLocation);
         glDisableVertexAttribArray(gVertexColorLocation);
