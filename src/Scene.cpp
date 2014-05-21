@@ -54,13 +54,10 @@ namespace molphene {
         camera.updateProjectionMatrix();
         camera.translate(0, 0, focalLength);
         
-        mat4f modelMatrix;
+        modelMatrix();
         
         modelMatrix.scale(0.5f);
         modelMatrix.rotate(0.0f, 0.0f, 1.0f, 3.14f);
-        
-        renderer.setProjectionMatrix(camera.getProjectionMatrix());
-        renderer.setModelViewMatrix(modelMatrix * camera.getViewMatrix());
     }
     
     void Scene::resetMesh() {
@@ -112,7 +109,19 @@ namespace molphene {
     
     void Scene::renderFrame() {
         clearRect();
+        
+        renderer.setProjectionMatrix(camera.getProjectionMatrix());
+        renderer.setModelViewMatrix(modelMatrix * camera.getViewMatrix());
+        
         renderer.render();
+    }
+    
+    
+    void Scene::rotate(float x, float y, float z) {
+        modelMatrix.rotate(1.0f, 0.0f, 0.0f, x);
+        modelMatrix.rotate(0.0f, 1.0f, 0.0f, y);
+        modelMatrix.rotate(0.0f, 0.0f, 1.0f, z);
+        renderFrame();
     }
     
     

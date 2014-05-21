@@ -30,8 +30,12 @@ namespace molphene {
         
         void renderFrame();
         
+        void rotate(float x, float y, float z);
+        
     private:
         Renderer renderer;
+        
+        mat4f modelMatrix;
         
         Camera camera;
         
