@@ -15,15 +15,13 @@ namespace molphene {
         unsigned int serial;
         
         vec3f position;
-        Element * element;
+        Element element;
         
     public:
         
-        Atom(unsigned int serial);
+        Atom(const std::string & elementSymbol, unsigned int serial);
         
         void setPosition(float x, float y, float z);
-        
-        void setElement(std::string elementSymbol);
         
         unsigned int getSerial() const;
         

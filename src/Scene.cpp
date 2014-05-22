@@ -4,16 +4,13 @@ namespace molphene {
     
     Scene::Scene() {
         
-        Atom atom1(1);
-        atom1.setElement("C");
+        Atom atom1("C", 1);
         atom1.setPosition(-1.0f, +1.0f, 0.0f);
         
-        Atom atom2(2);
-        atom2.setElement("C");
+        Atom atom2("C", 2);
         atom2.setPosition(+1.0f, +1.0f, +0.0f);
         
-        Atom atom3(3);
-        atom3.setElement("C");
+        Atom atom3("C", 3);
         atom3.setPosition(+0.0f, -1.0f, +0.0f);
         
         Model model;

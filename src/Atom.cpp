@@ -1,7 +1,8 @@
 #include "Atom.h"
 
 namespace molphene {
-    Atom::Atom(unsigned int serial) :
+    Atom::Atom(const std::string & elementSymbol, unsigned int serial) :
+        element(ELEMENTS.at(elementSymbol)),
         serial(serial)
     {
         
@@ -11,17 +12,12 @@ namespace molphene {
         position(x, y, z);
     }
     
-    void Atom::setElement(std::string elementSymbol) {
-        Element el = ELEMENTS.at(elementSymbol);
-        element = &el;
-    }
-    
     unsigned int Atom::getSerial() const {
         return serial;
     }
     
     const Element & Atom::getElement() const {
-        return *element;
+        return element;
     }
     
     const vec3f & Atom::getPosition() const {
