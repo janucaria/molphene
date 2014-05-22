@@ -19,12 +19,14 @@ namespace molphene {
         gProgram = createProgram(gVertexShader, gFragmentShader);
         
         gVertexPositionLocation = glGetAttribLocation(gProgram, "a_Position");
+        gVertexNormalLocation = glGetAttribLocation(gProgram, "a_Normal");
         gVertexColorLocation = glGetAttribLocation(gProgram, "a_Color");
         
         gUniformModelViewMatrixLocation = glGetUniformLocation(gProgram, "u_ModelViewMatrix");
         gUniformProjectionMatrixLocation = glGetUniformLocation(gProgram, "u_ProjectionMatrix");
         
         glGenBuffers(1, &gPositionBuffer);
+        glGenBuffers(1, &gNormalBuffer);
         glGenBuffers(1, &gColorBuffer);
         
         return true;
@@ -37,12 +39,20 @@ namespace molphene {
         glBindBuffer(GL_ARRAY_BUFFER, gPositionBuffer);
         glBufferData(GL_ARRAY_BUFFER, sizeof(vec3f) * verticesSize, nullptr, GL_STATIC_DRAW);
         
+        glBindBuffer(GL_ARRAY_BUFFER, gNormalBuffer);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(vec3f) * verticesSize, nullptr, GL_STATIC_DRAW);
+        
         glBindBuffer(GL_ARRAY_BUFFER, gColorBuffer);
         glBufferData(GL_ARRAY_BUFFER, sizeof(colour) * verticesSize , nullptr, GL_DYNAMIC_DRAW);
     }
     
     void Renderer::setBufferPosition(const vec3f * data) {
         glBindBuffer(GL_ARRAY_BUFFER, gPositionBuffer);
+        glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vec3f) * verticesSize, data);
+    }
+    
+    void Renderer::setBufferNormal(const vec3f * data) {
+        glBindBuffer(GL_ARRAY_BUFFER, gNormalBuffer);
         glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vec3f) * verticesSize, data);
     }
     
@@ -67,9 +77,13 @@ namespace molphene {
         
         glEnableVertexAttribArray(gVertexPositionLocation);
         glEnableVertexAttribArray(gVertexColorLocation);
+        glEnableVertexAttribArray(gVertexNormalLocation);
         
         glBindBuffer(GL_ARRAY_BUFFER, gPositionBuffer);
         glVertexAttribPointer(gVertexPositionLocation, 3, GL_FLOAT, GL_FALSE, 0, 0);
+        
+        glBindBuffer(GL_ARRAY_BUFFER, gNormalBuffer);
+        glVertexAttribPointer(gVertexNormalLocation, 3, GL_FLOAT, GL_FALSE, 0, 0);
         
         glBindBuffer(GL_ARRAY_BUFFER, gColorBuffer);
         glVertexAttribPointer(gVertexColorLocation, 4, GL_UNSIGNED_BYTE, GL_TRUE, 0, 0);
@@ -78,6 +92,7 @@ namespace molphene {
         
         glDisableVertexAttribArray(gVertexPositionLocation);
         glDisableVertexAttribArray(gVertexColorLocation);
+        glDisableVertexAttribArray(gVertexNormalLocation);
         
         glFlush();
     }
@@ -141,6 +156,7 @@ namespace molphene {
     
     const char * Renderer::vertexShaderSource = R"(
     attribute vec3 a_Position;
+    attribute vec3 a_Normal;
     attribute vec4 a_Color;
     
     uniform mat4 u_ModelViewMatrix;
@@ -149,6 +165,8 @@ namespace molphene {
     varying vec4 v_Color;
     void main() {
         vec4 position = u_ModelViewMatrix * vec4(a_Position, 1.0);
+        position /= position.w;
+        position.xyz += a_Normal;
         v_Color = a_Color;
         gl_Position = u_ProjectionMatrix * position;
     }

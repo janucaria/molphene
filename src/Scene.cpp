@@ -100,6 +100,7 @@ namespace molphene {
         }
         
         renderer.setBufferPosition(meshBuilder.getPositions());
+        renderer.setBufferNormal(meshBuilder.getNormals());
         renderer.setBufferColor(meshBuilder.getColors());
     }
     

@@ -20,6 +20,8 @@ namespace molphene {
         
         void setBufferPosition(const vec3f * data);
         
+        void setBufferNormal(const vec3f * data);
+        
         void setBufferColor(const colour * data);
         
         void setModelViewMatrix(const mat4f & m4);
@@ -40,12 +42,14 @@ namespace molphene {
         GLuint gFragmentShader;
         
         GLuint gVertexPositionLocation;
+        GLuint gVertexNormalLocation;
         GLuint gVertexColorLocation;
         
         GLint gUniformModelViewMatrixLocation;
         GLint gUniformProjectionMatrixLocation;
         
         GLuint gPositionBuffer;
+        GLuint gNormalBuffer;
         GLuint gColorBuffer;
         
         GLuint createShader(GLenum shaderType, const char* pSource);

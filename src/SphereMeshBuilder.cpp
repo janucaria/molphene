@@ -13,6 +13,7 @@ namespace molphene {
         
         positions = new vec3f[totalVertices];
         colors = new colour[totalVertices];
+        normals = new vec3f[totalVertices];
         
     }
     
@@ -25,6 +26,11 @@ namespace molphene {
         if(colors) {
             delete[] colors;
             colors = nullptr;
+        }
+        
+        if(normals) {
+            delete[] normals;
+            normals = nullptr;
         }
     }
     
@@ -42,6 +48,10 @@ namespace molphene {
     
     const colour * SphereMeshBuilder::getColors() {
         return colors;
+    }
+    
+    const vec3f * SphereMeshBuilder::getNormals() {
+        return normals;
     }
     
     void SphereMeshBuilder::buildSphere(unsigned int idx, vec3f pos, float rad, colour col) {
@@ -62,7 +72,8 @@ namespace molphene {
                 float y = sinPhi * sinTheta;
                 float z = cosTheta;
                 
-                positions[idx] = vec3f(pos.x + x, pos.y + y, pos.z + z);
+                positions[idx] = pos;
+                normals[idx] = vec3f(pos.x + x, pos.y + y, pos.z + z) * rad;
                 colors[idx] = col;
                 
                 idx++;

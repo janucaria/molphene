@@ -18,6 +18,7 @@ namespace molphene {
         
         const vec3f * getPositions();
         const colour * getColors();
+        const vec3f * getNormals();
         
     private:
         unsigned int getVerticesSize();
@@ -28,6 +29,7 @@ namespace molphene {
         unsigned int totalVertices;
         
         vec3f * positions;
+        vec3f * normals;
         colour * colors;
     };
 }
