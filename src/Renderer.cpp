@@ -164,9 +164,10 @@ namespace molphene {
     
     varying vec4 v_Color;
     void main() {
-        vec4 position = u_ModelViewMatrix * vec4(a_Position, 1.0);
-        position /= position.w;
+        vec4 position = vec4(a_Position, 1.0);
         position.xyz += a_Normal;
+        position = u_ModelViewMatrix * position;
+        position /= position.w;
         v_Color = a_Color;
         gl_Position = u_ProjectionMatrix * position;
     }
