@@ -7,10 +7,10 @@ namespace molphene {
         Atom atom1("C", 1);
         atom1.setPosition(-1.0f, +1.0f, 0.0f);
         
-        Atom atom2("C", 2);
+        Atom atom2("O", 2);
         atom2.setPosition(+1.0f, +1.0f, +0.0f);
         
-        Atom atom3("C", 3);
+        Atom atom3("N", 3);
         atom3.setPosition(+0.0f, -1.0f, +0.0f);
         
         Model model;
@@ -38,7 +38,7 @@ namespace molphene {
         float fov         = M_PI / 4.0f;
         float theta       = fov / 2.0f;
         float tanTheta    = tan(theta);
-        float y           = 1.0f;
+        float y           = 5.0f;
         float focalLength = y / tanTheta;
         float near        = focalLength - y;
         float far         = focalLength + y;
@@ -88,9 +88,10 @@ namespace molphene {
         for(unsigned int i = 0; i < totalAtoms; ++i) {
             
             Atom & atom = atoms.at(i);
+            const Element & element = atom.getElement();
             vec3f apos = atom.getPosition();
             colour acol = colour(255, 0, 0);
-            float arad = 0.25f;
+            float arad = element.radiiVdW;
             
             meshBuilder.buildSphere(i, apos, arad, acol);
 
