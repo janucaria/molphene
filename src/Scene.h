@@ -12,6 +12,7 @@
 #include "Model.h"
 #include "Molecule.h"
 #include "SphereMeshBuilder.h"
+#include "ColourManager.h"
 
 namespace molphene {
     
@@ -40,6 +41,8 @@ namespace molphene {
         Camera camera;
         
         Molecule molecule;
+        
+        ColourManager colorManager;
         
     };
     

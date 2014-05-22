@@ -89,8 +89,8 @@ namespace molphene {
             
             Atom & atom = atoms.at(i);
             const Element & element = atom.getElement();
-            vec3f apos = atom.getPosition();
-            colour acol = colour(255, 0, 0);
+            const vec3f & apos = atom.getPosition();
+            const colour & acol = colorManager.getElementColor(element.symbol);
             float arad = element.radiiVdW;
             
             meshBuilder.buildSphere(i, apos, arad, acol);
