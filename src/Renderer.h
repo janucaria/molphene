@@ -28,6 +28,22 @@ namespace molphene {
         
         void setProjectionMatrix(const mat4f & m4);
         
+        void setLightSourceAmbient(const float & r, const float & g, const float & b, const float & a);
+        
+        void setLightSourceDiffuse(const float & r, const float & g, const float & b, const float & a);
+        
+        void setLightSourceSpecular(const float & r, const float & g, const float & b, const float & a);
+        
+        void setLightSourcePosition(const float & x, const float & y, const float & z);
+        
+        void setMaterialAmbient(const float & r, const float & g, const float & b, const float & a);
+        
+        void setMaterialDiffuse(const float & r, const float & g, const float & b, const float & a);
+        
+        void setMaterialSpecular(const float & r, const float & g, const float & b, const float & a);
+        
+        void setMaterialShininess(const float & v);
+        
         void render();
         
     private:
@@ -47,6 +63,16 @@ namespace molphene {
         
         GLint gUniformModelViewMatrixLocation;
         GLint gUniformProjectionMatrixLocation;
+        
+        GLint gUniformLightSourceAmbientLocation;
+        GLint gUniformLightSourceDiffuseLocation;
+        GLint gUniformLightSourceSpecularLocation;
+        GLint gUniformLightSourcePositionLocation;
+        
+        GLint gUniformMaterialAmbientLocation;
+        GLint gUniformMaterialDiffuseLocation;
+        GLint gUniformMaterialSpecularLocation;
+        GLint gUniformMaterialShininessLocation;
         
         GLuint gPositionBuffer;
         GLuint gNormalBuffer;

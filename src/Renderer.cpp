@@ -25,6 +25,16 @@ namespace molphene {
         gUniformModelViewMatrixLocation = glGetUniformLocation(gProgram, "u_ModelViewMatrix");
         gUniformProjectionMatrixLocation = glGetUniformLocation(gProgram, "u_ProjectionMatrix");
         
+        gUniformLightSourceAmbientLocation = glGetUniformLocation(gProgram, "u_LightSource_ambient");
+        gUniformLightSourceDiffuseLocation = glGetUniformLocation(gProgram, "u_LightSource_diffuse");
+        gUniformLightSourceSpecularLocation = glGetUniformLocation(gProgram, "u_LightSource_specular");
+        gUniformLightSourcePositionLocation = glGetUniformLocation(gProgram, "u_LightSource_position");
+
+        gUniformMaterialAmbientLocation = glGetUniformLocation(gProgram, "u_Material_ambient");
+        gUniformMaterialDiffuseLocation = glGetUniformLocation(gProgram, "u_Material_diffuse");
+        gUniformMaterialSpecularLocation = glGetUniformLocation(gProgram, "u_Material_specular");
+        gUniformMaterialShininessLocation = glGetUniformLocation(gProgram, "u_Material_shininess");
+        
         glGenBuffers(1, &gPositionBuffer);
         glGenBuffers(1, &gNormalBuffer);
         glGenBuffers(1, &gColorBuffer);
@@ -69,6 +79,46 @@ namespace molphene {
     void Renderer::setProjectionMatrix(const mat4f & m4) {
         glUseProgram(gProgram);
         glUniformMatrix4fv(gUniformProjectionMatrixLocation, 1, GL_FALSE, m4.m);
+    }
+    
+    void Renderer::setLightSourceAmbient(const float & r, const float & g, const float & b, const float & a) {
+        glUseProgram(gProgram);
+        glUniform4f(gUniformLightSourceAmbientLocation, r, g, b, a);
+    }
+    
+    void Renderer::setLightSourceDiffuse(const float & r, const float & g, const float & b, const float & a) {
+        glUseProgram(gProgram);
+        glUniform4f(gUniformLightSourceDiffuseLocation, r, g, b, a);
+    }
+    
+    void Renderer::setLightSourceSpecular(const float & r, const float & g, const float & b, const float & a) {
+        glUseProgram(gProgram);
+        glUniform4f(gUniformLightSourceSpecularLocation, r, g, b, a);
+    }
+    
+    void Renderer::setLightSourcePosition(const float & x, const float & y, const float & z) {
+        glUseProgram(gProgram);
+        glUniform4f(gUniformLightSourcePositionLocation, x, y, z, 1.0f);
+    }
+    
+    void Renderer::setMaterialAmbient(const float & r, const float & g, const float & b, const float & a) {
+        glUseProgram(gProgram);
+        glUniform4f(gUniformMaterialAmbientLocation, r, g, b, a);
+    }
+    
+    void Renderer::setMaterialDiffuse(const float & r, const float & g, const float & b, const float & a) {
+        glUseProgram(gProgram);
+        glUniform4f(gUniformMaterialDiffuseLocation, r, g, b, a);
+    }
+    
+    void Renderer::setMaterialSpecular(const float & r, const float & g, const float & b, const float & a) {
+        glUseProgram(gProgram);
+        glUniform4f(gUniformMaterialSpecularLocation, r, g, b, a);
+    }
+    
+    void Renderer::setMaterialShininess(const float & v) {
+        glUseProgram(gProgram);
+        glUniform1f(gUniformMaterialShininessLocation, v);
     }
     
     void Renderer::render() {
@@ -162,14 +212,19 @@ namespace molphene {
     uniform mat4 u_ModelViewMatrix;
     uniform mat4 u_ProjectionMatrix;
     
+    varying vec3 v_Position;
+    varying vec3 v_Normal;
     varying vec4 v_Color;
     void main() {
         vec4 position = vec4(a_Position, 1.0);
-        position.xyz += a_Normal;
         position = u_ModelViewMatrix * position;
+        position.xyz += a_Normal;
         position /= position.w;
+        v_Position = position.xyz;
         v_Color = a_Color;
+        v_Normal = a_Normal;
         gl_Position = u_ProjectionMatrix * position;
+        gl_Position /= gl_Position.w;
     }
     )";
     
@@ -178,9 +233,43 @@ namespace molphene {
     precision highp float;
     #endif
     
+    uniform vec4 u_LightSource_ambient;
+    uniform vec4 u_LightSource_diffuse;
+    uniform vec4 u_LightSource_specular;
+    uniform vec4 u_LightSource_position;
+    
+    uniform vec4 u_Material_ambient;
+    uniform vec4 u_Material_diffuse;
+    uniform vec4 u_Material_specular;
+    uniform float u_Material_shininess;
+    
+    varying vec3 v_Position;
+    varying vec3 v_Normal;
     varying vec4 v_Color;
     void main() {
-        gl_FragColor = v_Color;
+        
+        vec3 eyePos   = normalize(-v_Position);
+        vec3 normal   = v_Normal;
+        vec4 finalColor = vec4(0.0);
+        
+        normal = normalize(normal);
+        
+        finalColor += u_LightSource_ambient * u_Material_ambient;
+        
+        vec3 lightDir = normalize(u_LightSource_position.xyz - v_Position);
+        float lambertTerm = max(0.0, dot(normal, lightDir));
+        
+        if(lambertTerm > 0.0) {
+            vec4 diffuse = u_LightSource_diffuse * u_Material_diffuse * lambertTerm;
+            
+            vec3 reflection = -reflect(lightDir, normal);
+            
+            vec4 specular = u_LightSource_specular * u_Material_specular * pow(max(0.0, dot(reflection, eyePos)), u_Material_shininess);
+            
+            finalColor += diffuse + specular;
+        }
+        
+        gl_FragColor = v_Color * finalColor;
     }
     
     )";

@@ -4,28 +4,23 @@ namespace molphene {
     
     Scene::Scene() {
         
-//        Atom atom1("C", 1);
-//        atom1.setPosition(-1.0f, +1.0f, 0.0f);
-//        
-//        Atom atom2("O", 2);
-//        atom2.setPosition(+10.0f, +1.0f, +0.0f);
-//        
-//        Atom atom3("N", 3);
-//        atom3.setPosition(+0.0f, -1.0f, +0.0f);
-//        
-//        Model model;
-//        
-//        model.addAtom(atom1);
-//        model.addAtom(atom2);
-//        model.addAtom(atom3);
-//        
-//        molecule.addModel(model);
     }
     
     bool Scene::setupGraphics() {
         glClearColor(0.5, 0.5, 0.5, 1.0);
+        glEnable(GL_DEPTH_TEST);
         
         renderer.setupGL();
+        
+        renderer.setLightSourceAmbient(0.5, 0.5, 0.5, 1.0);
+        renderer.setLightSourceDiffuse(1.0, 1.0, 1.0, 1.0);
+        renderer.setLightSourceSpecular(0.5, 0.5, 0.5, 1.0);
+        renderer.setLightSourcePosition(0.0, 0.0, 0.0);
+        
+        renderer.setMaterialAmbient(0.3, 0.3, 0.3, 1.0);
+        renderer.setMaterialDiffuse(1.0, 1.0, 1.0, 1.0);
+        renderer.setMaterialSpecular(0.5, 0.5, 0.5, 1.0);
+        renderer.setMaterialShininess(10);
         
         return true;
     }
