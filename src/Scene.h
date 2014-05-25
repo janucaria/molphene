@@ -13,6 +13,7 @@
 #include "Molecule.h"
 #include "SphereMeshBuilder.h"
 #include "ColourManager.h"
+#include "BoundingSphere.h"
 
 namespace molphene {
     

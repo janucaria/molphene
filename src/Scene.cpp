@@ -31,6 +31,25 @@ namespace molphene {
     }
     
     void Scene::changeDimension(GLsizei width, GLsizei height) {
+        // calculate bounding sphere
+        BoundingSphere bs;
+        
+        Molecule::ModelList & models = molecule.getModels();
+        Molecule::ModelList::iterator modIt = models.begin();
+        
+        std::vector<Atom> atoms;
+        
+        for( ; modIt != models.end(); ++modIt) {
+            Model model = *modIt;
+            Model::AtomMap atomMap = model.getAtoms();
+            Model::AtomMap::iterator atomIt = atomMap.begin();
+            
+            for( ; atomIt != atomMap.end(); ++atomIt) {
+                Atom & atm = atomIt->second;
+                bs.expand(atm.getPosition());
+            }
+        }
+        
         glViewport(0, 0, width, height);
         
         mat4f projectionMatrix;
@@ -38,7 +57,7 @@ namespace molphene {
         float fov         = M_PI / 4.0f;
         float theta       = fov / 2.0f;
         float tanTheta    = tan(theta);
-        float y           = 5.0f;
+        float y           = bs.getRadius() + 2.0f;
         float focalLength = y / tanTheta;
         float near        = focalLength - y;
         float far         = focalLength + y;
@@ -48,13 +67,11 @@ namespace molphene {
         camera.setNear(near);
         camera.setFar(far);
         camera.setAspect(aspect);
-        camera.updateProjectionMatrix();
         camera.translate(0, 0, focalLength);
+        camera.updateProjectionMatrix();
         
         modelMatrix();
-        
-        modelMatrix.scale(0.5f);
-        modelMatrix.rotate(0.0f, 0.0f, 1.0f, 3.14f);
+        modelMatrix.translate(-bs.getCenter());
     }
     
     void Scene::resetMesh() {

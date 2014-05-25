@@ -260,6 +260,10 @@ namespace molphene {
         return *this;
     }
     
+    mat4f & mat4f::translate(const vec3f & v) {
+        return translate(v.x, v.y, v.z);
+    }
+    
     mat4f & mat4f::frustum(float l, float r, float b, float t, float n, float f) {
         
         m[0] = 2 * n / (r - l);
