@@ -1,6 +1,8 @@
 #ifndef __molphene__Scene__
 #define __molphene__Scene__
 
+#include <istream>
+#include <fstream>
 #include <cmath>
 #include "opengl.h"
 #include "vec3f.h"
@@ -14,6 +16,7 @@
 #include "SphereMeshBuilder.h"
 #include "ColourManager.h"
 #include "BoundingSphere.h"
+#include "PDBParser.h"
 
 namespace molphene {
     
@@ -33,6 +36,10 @@ namespace molphene {
         void renderFrame();
         
         void rotate(float x, float y, float z);
+        
+        void openFile(const char * fileName);
+        
+        void openStream(std::istream & is);
         
     private:
         Renderer renderer;

@@ -4,26 +4,26 @@ namespace molphene {
     
     Scene::Scene() {
         
-        Atom atom1("C", 1);
-        atom1.setPosition(-1.0f, +1.0f, 0.0f);
-        
-        Atom atom2("O", 2);
-        atom2.setPosition(+1.0f, +1.0f, +0.0f);
-        
-        Atom atom3("N", 3);
-        atom3.setPosition(+0.0f, -1.0f, +0.0f);
-        
-        Model model;
-        
-        model.addAtom(atom1);
-        model.addAtom(atom2);
-        model.addAtom(atom3);
-        
-        molecule.addModel(model);
+//        Atom atom1("C", 1);
+//        atom1.setPosition(-1.0f, +1.0f, 0.0f);
+//        
+//        Atom atom2("O", 2);
+//        atom2.setPosition(+10.0f, +1.0f, +0.0f);
+//        
+//        Atom atom3("N", 3);
+//        atom3.setPosition(+0.0f, -1.0f, +0.0f);
+//        
+//        Model model;
+//        
+//        model.addAtom(atom1);
+//        model.addAtom(atom2);
+//        model.addAtom(atom3);
+//        
+//        molecule.addModel(model);
     }
     
     bool Scene::setupGraphics() {
-        glClearColor(0.0, 0.0, 0.0, 1.0);
+        glClearColor(0.5, 0.5, 0.5, 1.0);
         
         renderer.setupGL();
         
@@ -138,6 +138,16 @@ namespace molphene {
         modelMatrix.rotate(0.0f, 1.0f, 0.0f, y);
         modelMatrix.rotate(0.0f, 0.0f, 1.0f, z);
         renderFrame();
+    }
+    
+    void Scene::openFile(const char * fileName) {
+        PDBParser parser;
+        parser.parse(molecule, fileName);
+    }
+    
+    void Scene::openStream(std::istream & is) {
+        PDBParser parser;
+        parser.parse(molecule, is);
     }
     
     

@@ -73,7 +73,7 @@ namespace molphene {
                 float z = cosTheta;
                 
                 positions[idx] = pos;
-                normals[idx] = vec3f(pos.x + x, pos.y + y, pos.z + z) * rad;
+                normals[idx] = vec3f(x, y, z) * rad;
                 colors[idx] = col;
                 
                 idx++;

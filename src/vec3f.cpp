@@ -114,7 +114,7 @@ namespace molphene {
     }
     
     float vec3f::length() const {
-        return sqrt(x * x + y * y + z + z);
+        return sqrt(x * x + y * y + z * z);
     }
     
 }
