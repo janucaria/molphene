@@ -12,6 +12,8 @@ namespace molphene {
         
         renderer.setupGL();
         
+        renderer.useGLProgram();
+        
         renderer.setLightSourceAmbient(0.5, 0.5, 0.5, 1.0);
         renderer.setLightSourceDiffuse(1.0, 1.0, 1.0, 1.0);
         renderer.setLightSourceSpecular(0.5, 0.5, 0.5, 1.0);
@@ -120,6 +122,8 @@ namespace molphene {
     
     void Scene::renderFrame() {
         clearRect();
+        
+        renderer.useGLProgram();
         
         renderer.setProjectionMatrix(camera.getProjectionMatrix());
         renderer.setModelViewMatrix(modelMatrix * camera.getViewMatrix());

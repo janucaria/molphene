@@ -72,58 +72,46 @@ namespace molphene {
     }
     
     void Renderer::setModelViewMatrix(const mat4f & m4) {
-        glUseProgram(gProgram);
         glUniformMatrix4fv(gUniformModelViewMatrixLocation, 1, GL_FALSE, m4.m);
     }
     
     void Renderer::setProjectionMatrix(const mat4f & m4) {
-        glUseProgram(gProgram);
         glUniformMatrix4fv(gUniformProjectionMatrixLocation, 1, GL_FALSE, m4.m);
     }
     
     void Renderer::setLightSourceAmbient(const float & r, const float & g, const float & b, const float & a) {
-        glUseProgram(gProgram);
         glUniform4f(gUniformLightSourceAmbientLocation, r, g, b, a);
     }
     
     void Renderer::setLightSourceDiffuse(const float & r, const float & g, const float & b, const float & a) {
-        glUseProgram(gProgram);
         glUniform4f(gUniformLightSourceDiffuseLocation, r, g, b, a);
     }
     
     void Renderer::setLightSourceSpecular(const float & r, const float & g, const float & b, const float & a) {
-        glUseProgram(gProgram);
         glUniform4f(gUniformLightSourceSpecularLocation, r, g, b, a);
     }
     
     void Renderer::setLightSourcePosition(const float & x, const float & y, const float & z) {
-        glUseProgram(gProgram);
         glUniform4f(gUniformLightSourcePositionLocation, x, y, z, 1.0f);
     }
     
     void Renderer::setMaterialAmbient(const float & r, const float & g, const float & b, const float & a) {
-        glUseProgram(gProgram);
         glUniform4f(gUniformMaterialAmbientLocation, r, g, b, a);
     }
     
     void Renderer::setMaterialDiffuse(const float & r, const float & g, const float & b, const float & a) {
-        glUseProgram(gProgram);
         glUniform4f(gUniformMaterialDiffuseLocation, r, g, b, a);
     }
     
     void Renderer::setMaterialSpecular(const float & r, const float & g, const float & b, const float & a) {
-        glUseProgram(gProgram);
         glUniform4f(gUniformMaterialSpecularLocation, r, g, b, a);
     }
     
     void Renderer::setMaterialShininess(const float & v) {
-        glUseProgram(gProgram);
         glUniform1f(gUniformMaterialShininessLocation, v);
     }
     
     void Renderer::render() {
-        
-        glUseProgram(gProgram);
         
         glEnableVertexAttribArray(gVertexPositionLocation);
         glEnableVertexAttribArray(gVertexColorLocation);
@@ -202,6 +190,10 @@ namespace molphene {
             }
         }
         return program;
+    }
+    
+    void Renderer::useGLProgram() const {
+        glUseProgram(gProgram);
     }
     
     const char * Renderer::vertexShaderSource = R"(

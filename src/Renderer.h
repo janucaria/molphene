@@ -46,6 +46,8 @@ namespace molphene {
         
         void render();
         
+        void useGLProgram() const;
+        
     private:
         const static char * vertexShaderSource;
         const static char * fragmentShaderSource;
