@@ -45,7 +45,7 @@ namespace molphene {
             //    79 - 80        LString(2)    charge       Charge  on the atom.
             if(recordName.compare("ATOM") == 0 || recordName.compare("HETATM") == 0) {
                 
-                unsigned int aserial = static_cast<unsigned int>(std::stoul(line.substr(7, 11)));
+                unsigned int aserial = static_cast<unsigned int>(std::stoul(column(line, 7, 11)));
                 float ax = std::stof(column(line, 31, 38));
                 float ay = std::stof(column(line, 39, 46));
                 float az = std::stof(column(line, 47, 54));
