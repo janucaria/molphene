@@ -11,7 +11,7 @@ namespace molphene {
         
         Molecule();
         
-        void addModel(Model & model);
+        Model & addModel();
         
         ModelList & getModels();
         

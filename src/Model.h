@@ -2,21 +2,33 @@
 #define __Molphene__Model__
 
 #include <map>
+#include "Chain.h"
 #include "Atom.h"
 
 namespace molphene {
+    class Molecule;
+    
     class Model {
     public:
-        typedef std::map<unsigned int, Atom> AtomMap;
+        typedef std::map<unsigned int, Atom *> AtomMap;
+        typedef std::map<char, Chain> ChainMap;
         
-        Model();
+        Model(Molecule & molecule);
         
-        void addAtom(Atom atom);
+        Chain & addChain(char chainID);
+        
+        Chain & getChain(char chainID);
+        
+        void addAtom(Atom & atom);
         
         AtomMap & getAtoms();
         
+        Molecule & getMolecule() const;
+        
     private:
+        Molecule * moleculePtr_;
         AtomMap atoms;
+        ChainMap chains_;
     };
 }
 
