@@ -1,11 +1,15 @@
 #include "Atom.h"
+#include "Compound.h"
+#include "Chain.h"
+#include "Model.h"
 
 namespace molphene {
-    Atom::Atom(const std::string & elementSymbol, unsigned int serial) :
-        element(ELEMENTS.at(elementSymbol)),
-        serial(serial)
+    Atom::Atom(Compound & compound, const std::string & elementSymbol, std::string name, unsigned int serial) :
+    compoundPtr_(&compound),
+    element(ELEMENTS.at(elementSymbol)),
+    name_(name),
+    serial(serial)
     {
-        
     }
     
     void Atom::setPosition(float x, float y, float z) {

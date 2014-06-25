@@ -4,8 +4,9 @@ namespace molphene {
     Molecule::Molecule()
     {}
     
-    void Molecule::addModel(Model & model) {
-        models.push_back(std::move(model));
+    Model & Molecule::addModel() {
+        models.emplace_back(*this);
+        return *models.end();
     }
     
     Molecule::ModelList & Molecule::getModels() {
