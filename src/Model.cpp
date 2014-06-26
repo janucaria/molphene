@@ -16,12 +16,12 @@ namespace molphene {
         return atoms;
     }
     
-    Chain & Model::addChain(const unsigned char & chainID) {
-        std::pair<ChainMap::iterator, bool> emplaced = chains_.emplace(chainID, Chain(*this, chainID));
+    Chain & Model::addChain(char chainID) {
+        std::pair<ChainMap::iterator, bool> emplaced = chains_.emplace(std::piecewise_construct, std::make_tuple(chainID), std::forward_as_tuple(*this, chainID));
         return emplaced.first->second;
     }
     
-    Chain & Model::getChain(const unsigned char & chainID) {
+    Chain & Model::getChain(char chainID) {
         return chains_.at(chainID);
     }
     

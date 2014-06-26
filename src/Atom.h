@@ -16,6 +16,8 @@ namespace molphene {
         
         unsigned int serial;
         
+        char altLoc_;
+        
         std::string name_;
         
         vec3f position;
@@ -36,6 +38,9 @@ namespace molphene {
         
         const vec3f & getPosition() const;
         
+        void setAltLoc(char value);
+        
+        char getAltLoc() const;
     };
 }
 

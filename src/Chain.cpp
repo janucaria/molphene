@@ -2,7 +2,7 @@
 #include "Model.h"
 
 namespace molphene {
-    Chain::Chain(Model & model, unsigned char chainID) :
+    Chain::Chain(Model & model, char chainID) :
     modelPtr_(&model),
     chainID_(chainID)
     {
@@ -10,7 +10,7 @@ namespace molphene {
     }
     
     Compound & Chain::addCompound(const Compound::ResidueNumber & resNum) {
-        std::pair<CompoundMap::iterator, bool> emplaced = compounds_.emplace(resNum, Compound(*this, resNum));
+        std::pair<CompoundMap::iterator, bool> emplaced = compounds_.emplace(std::piecewise_construct, std::make_tuple(resNum), std::forward_as_tuple(*this, resNum));
         return emplaced.first->second;
     }
     
@@ -20,5 +20,9 @@ namespace molphene {
     
     Model & Chain::getModel() const {
         return *modelPtr_;
+    }
+    
+    char Chain::getId() const {
+        return chainID_;
     }
 }

@@ -5,9 +5,7 @@
 namespace molphene {
     Compound::Compound(Chain & chain, ResidueNumber resNum) :
     chainPtr_(&chain),
-    sequence_(std::get<0>(resNum)),
-    name_(std::get<1>(resNum)),
-    iCode_(std::get<2>(resNum))
+    resNum_(resNum)
     {
         
     }
@@ -26,15 +24,19 @@ namespace molphene {
         return *chainPtr_;
     }
     
-    const unsigned int & Compound::getSequence() const {
-        return sequence_;
+    unsigned int Compound::getSequence() const {
+        return std::get<0>(resNum_);
     }
     
-    const std::string & Compound::getName() const {
-        return name_;
+    std::string Compound::getName() const {
+        return std::get<1>(resNum_);
     }
     
-    const unsigned int & Compound::getICode() const {
-        return iCode_;
+    char Compound::getICode() const {
+        return std::get<2>(resNum_);
+    }
+    
+    Compound::ResidueNumber Compound::getResNum() {
+        return resNum_;
     }
 }

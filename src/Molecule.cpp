@@ -6,7 +6,7 @@ namespace molphene {
     
     Model & Molecule::addModel() {
         models.emplace_back(*this);
-        return *models.end();
+        return models.at(models.size() - 1);
     }
     
     Molecule::ModelList & Molecule::getModels() {

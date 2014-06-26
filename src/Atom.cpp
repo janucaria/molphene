@@ -28,6 +28,13 @@ namespace molphene {
         return position;
     }
     
+    void Atom::setAltLoc(char value) {
+        altLoc_ = value;
+    }
+    
+    char Atom::getAltLoc() const {
+        return altLoc_;
+    }
     
     const std::unordered_map<std::string, Element> Atom::ELEMENTS({
         {"H", Element("Hydrogen", "H", 1, 1.2, 0.31)},

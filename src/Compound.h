@@ -12,7 +12,7 @@ namespace molphene {
     
     class Compound {
     public:
-        typedef std::tuple<unsigned int, std::string, unsigned int> ResidueNumber;
+        typedef std::tuple<unsigned int, std::string, char> ResidueNumber;
         typedef std::multimap<std::string, Atom> AtomMap;
         
         Compound(Chain & chain, ResidueNumber resNum);
@@ -21,18 +21,18 @@ namespace molphene {
         
         Atom & getAtom(const std::string & name);
         
-        const unsigned int & getSequence() const;
+        unsigned int getSequence() const;
         
-        const std::string & getName() const;
+        std::string getName() const;
         
-        const unsigned int & getICode() const;
+        char getICode() const;
+        
+        ResidueNumber getResNum();
         
         Chain & getChain() const;
         
     private:
-        unsigned int sequence_;
-        std::string name_;
-        unsigned int iCode_;
+        ResidueNumber resNum_;
         AtomMap atoms_;
         Chain * chainPtr_;
     };

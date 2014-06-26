@@ -3,12 +3,15 @@
 
 #include <string>
 #include <fstream>
+#include <tuple>
 
 #include "utils.h"
 #include "logger.h"
 #include "Atom.h"
 #include "Model.h"
 #include "Molecule.h"
+#include "Chain.h"
+#include "Compound.h"
 
 namespace molphene {
     class PDBParser {

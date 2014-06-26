@@ -11,13 +11,13 @@ namespace molphene {
     class Model {
     public:
         typedef std::map<unsigned int, Atom *> AtomMap;
-        typedef std::map<unsigned char, Chain> ChainMap;
+        typedef std::map<char, Chain> ChainMap;
         
         Model(Molecule & molecule);
         
-        Chain & addChain(const unsigned char & chainID);
+        Chain & addChain(char chainID);
         
-        Chain & getChain(const unsigned char & chainID);
+        Chain & getChain(char chainID);
         
         void addAtom(Atom & atom);
         

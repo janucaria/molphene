@@ -17,7 +17,9 @@ namespace molphene {
     
     void PDBParser::parse(Molecule & mol, std::istream & stream) {
         
-        Model model;
+        Model * currentModelPtr = &mol.addModel();
+        Chain * currentChainPtr = nullptr;
+        Compound * currentCompoundPtr = nullptr;
         
         std::string recordName;
         
@@ -46,21 +48,43 @@ namespace molphene {
             if(recordName.compare("ATOM") == 0 || recordName.compare("HETATM") == 0) {
                 
                 unsigned int aserial = static_cast<unsigned int>(std::stoul(column(line, 7, 11)));
+                std::string aname = trim_copy(column(line, 13, 16));
+                char aaltLoc = column(line, 17, 17).at(0);
+                std::string aresName = trim_copy(column(line, 18, 20));
+                char achainID = column(line, 22, 22).at(0);
+                unsigned int aresSeq = static_cast<unsigned int>(std::stoul(column(line, 23, 26)));
+                char aiCode = column(line, 27, 27).at(0);
                 float ax = std::stof(column(line, 31, 38));
                 float ay = std::stof(column(line, 39, 46));
                 float az = std::stof(column(line, 47, 54));
-                
                 std::string aelement = trim_left_copy(column(line, 77, 78));
                 
-                Atom atom(aelement, aserial);
-                atom.setPosition(ax, ay, az);
+                if(!currentChainPtr || currentChainPtr->getId() != achainID) {
+                    try {
+                        currentChainPtr = &currentModelPtr->getChain(achainID);
+                    } catch (const std::out_of_range & oor) {
+                        currentChainPtr = &currentModelPtr->addChain(achainID);
+                    }
+                    
+                    currentCompoundPtr = nullptr;
+                }
                 
-                model.addAtom(atom);
+                Compound::ResidueNumber resNum = std::make_tuple(aresSeq, aresName, aiCode);
+                
+                if(!currentCompoundPtr || currentCompoundPtr->getResNum() != resNum) {
+                    try {
+                        currentCompoundPtr = &currentChainPtr->getCompound(resNum);
+                    } catch (const std::out_of_range & oor) {
+                        currentCompoundPtr = &currentChainPtr->addCompound(resNum);
+                    }
+                }
+                
+                Atom & atom = currentCompoundPtr->addAtom(aelement, aname, aserial);
+                atom.setPosition(ax, ay, az);
+                atom.setAltLoc(aaltLoc);
             }
             
         }
-        
-        mol.addModel(model);
     }
     
     inline std::string PDBParser::column(std::string & line, unsigned int start, unsigned int end) {

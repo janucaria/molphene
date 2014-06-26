@@ -12,7 +12,7 @@ namespace molphene {
     public:
         typedef std::map<Compound::ResidueNumber, Compound> CompoundMap;
         
-        Chain(Model & model, unsigned char chainId);
+        Chain(Model & model, char chainId);
         
         Compound & addCompound(const Compound::ResidueNumber & resNum);
         
@@ -20,8 +20,10 @@ namespace molphene {
         
         Model & getModel() const;
         
+        char getId() const;
+        
     private:
-        unsigned char chainID_;
+        char chainID_;
         
         CompoundMap compounds_;
         
