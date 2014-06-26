@@ -42,7 +42,7 @@ namespace molphene {
             Model::AtomMap::iterator atomIt = atomMap.begin();
             
             for( ; atomIt != atomMap.end(); ++atomIt) {
-                Atom & atm = atomIt->second;
+                Atom & atm = *atomIt->second;
                 bs.expand(atm.getPosition());
             }
         }
@@ -84,7 +84,7 @@ namespace molphene {
             Model::AtomMap::iterator atomIt= atomMap.begin();
             
             for( ; atomIt != atomMap.end(); ++atomIt) {
-                Atom & atm = atomIt->second;
+                Atom & atm = *atomIt->second;
                 atoms.push_back(atm);
             }
         }
