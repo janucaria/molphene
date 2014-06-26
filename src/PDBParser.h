@@ -4,8 +4,8 @@
 #include <string>
 #include <iostream>
 #include <tuple>
+#include <boost/algorithm/string/trim.hpp>
 
-#include "utils.h"
 #include "logger.h"
 #include "Atom.h"
 #include "Model.h"

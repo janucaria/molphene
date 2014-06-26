@@ -15,7 +15,7 @@ namespace molphene {
         
         while(std::getline(stream, line_)) {
             
-            recordName = trim_right_copy(column(1, 6));
+            recordName = boost::trim_right_copy(column(1, 6));
             
             //    COLUMNS        DATA  TYPE    FIELD        DEFINITION
             //    -------------------------------------------------------------------------------------
@@ -37,16 +37,16 @@ namespace molphene {
             if(recordName.compare("ATOM") == 0 || recordName.compare("HETATM") == 0) {
                 
                 unsigned int aserial = getInteger(7, 11);
-                std::string aname = trim_copy(column(13, 16));
+                std::string aname = boost::trim_copy(column(13, 16));
                 char aaltLoc = getChar(17);
-                std::string aresName = trim_copy(column(18, 20));
+                std::string aresName = boost::trim_copy(column(18, 20));
                 char achainID = getChar(22);
                 unsigned int aresSeq = getInteger(23, 26);
                 char aiCode = column(27, 27).at(0);
                 float ax = getReal(31, 38);
                 float ay = getReal(39, 46);
                 float az = getReal(47, 54);
-                std::string aelement = trim_left_copy(column(77, 78));
+                std::string aelement = boost::trim_left_copy(column(77, 78));
                 
                 if(!currentChainPtr || currentChainPtr->getId() != achainID) {
                     try {
