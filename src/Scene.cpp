@@ -139,11 +139,6 @@ namespace molphene {
         renderFrame();
     }
     
-    void Scene::openFile(const char * fileName) {
-        PDBParser parser;
-        parser.parse(molecule, fileName);
-    }
-    
     void Scene::openStream(std::istream & is) {
         PDBParser parser;
         parser.parse(molecule, is);

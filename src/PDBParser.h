@@ -2,7 +2,7 @@
 #define __Molphene__PDBParser__
 
 #include <string>
-#include <fstream>
+#include <iostream>
 #include <tuple>
 
 #include "utils.h"
@@ -17,8 +17,6 @@ namespace molphene {
     class PDBParser {
     public:
         PDBParser();
-        
-        void parse(Molecule & mol, const char * filePath);
         
         void parse(Molecule & mol, std::istream & stream);
         

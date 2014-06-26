@@ -37,8 +37,6 @@ namespace molphene {
         
         void rotate(float x, float y, float z);
         
-        void openFile(const char * fileName);
-        
         void openStream(std::istream & is);
         
     private:

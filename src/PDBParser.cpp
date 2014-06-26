@@ -5,16 +5,6 @@ namespace molphene {
         
     }
     
-    void PDBParser::parse(Molecule & mol, const char * filePath) {
-        std::ifstream fs;
-        fs.open(filePath);
-        if(fs.is_open()) {
-            parse(mol, fs);
-            fs.close();
-        }
-    }
-    
-    
     void PDBParser::parse(Molecule & mol, std::istream & stream) {
         
         Model * currentModelPtr = &mol.addModel();
