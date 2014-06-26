@@ -23,10 +23,9 @@ namespace molphene {
         
         std::string recordName;
         
-        std::string line;
-        while(std::getline(stream, line)) {
+        while(std::getline(stream, line_)) {
             
-            recordName = trim_right_copy(column(line, 1, 6));
+            recordName = trim_right_copy(column(1, 6));
             
             //    COLUMNS        DATA  TYPE    FIELD        DEFINITION
             //    -------------------------------------------------------------------------------------
@@ -47,17 +46,17 @@ namespace molphene {
             //    79 - 80        LString(2)    charge       Charge  on the atom.
             if(recordName.compare("ATOM") == 0 || recordName.compare("HETATM") == 0) {
                 
-                unsigned int aserial = static_cast<unsigned int>(std::stoul(column(line, 7, 11)));
-                std::string aname = trim_copy(column(line, 13, 16));
-                char aaltLoc = column(line, 17, 17).at(0);
-                std::string aresName = trim_copy(column(line, 18, 20));
-                char achainID = column(line, 22, 22).at(0);
-                unsigned int aresSeq = static_cast<unsigned int>(std::stoul(column(line, 23, 26)));
-                char aiCode = column(line, 27, 27).at(0);
-                float ax = std::stof(column(line, 31, 38));
-                float ay = std::stof(column(line, 39, 46));
-                float az = std::stof(column(line, 47, 54));
-                std::string aelement = trim_left_copy(column(line, 77, 78));
+                unsigned int aserial = getInteger(7, 11);
+                std::string aname = trim_copy(column(13, 16));
+                char aaltLoc = getChar(17);
+                std::string aresName = trim_copy(column(18, 20));
+                char achainID = getChar(22);
+                unsigned int aresSeq = getInteger(23, 26);
+                char aiCode = column(27, 27).at(0);
+                float ax = getReal(31, 38);
+                float ay = getReal(39, 46);
+                float az = getReal(47, 54);
+                std::string aelement = trim_left_copy(column(77, 78));
                 
                 if(!currentChainPtr || currentChainPtr->getId() != achainID) {
                     try {
@@ -87,8 +86,20 @@ namespace molphene {
         }
     }
     
-    inline std::string PDBParser::column(std::string & line, unsigned int start, unsigned int end) {
-        return line.substr(start - 1, end - start + 1);
+    std::string PDBParser::column(unsigned int start, unsigned int end) {
+        return line_.substr(start - 1, end - start + 1);
+    }
+    
+    float PDBParser::getReal(unsigned int start,  unsigned int end) {
+        return std::stof(column(start, end));
+    }
+    
+    unsigned int PDBParser::getInteger(unsigned int start,  unsigned int end) {
+        return static_cast<unsigned int>(std::stoul(column(start, end)));
+    }
+    
+    char PDBParser::getChar(unsigned int start) {
+        return column(start, start).at(0);
     }
     
 }

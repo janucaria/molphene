@@ -22,8 +22,16 @@ namespace molphene {
         
         void parse(Molecule & mol, std::istream & stream);
         
-        static inline std::string column(std::string & line, unsigned int start,  unsigned int end);
-                
+    private:
+        std::string line_;
+        
+        inline std::string column(unsigned int start,  unsigned int end);
+        
+        float getReal(unsigned int start,  unsigned int end);
+        
+        unsigned int getInteger(unsigned int start,  unsigned int end);
+        
+        inline char getChar(unsigned int start);
     };
 }
 
