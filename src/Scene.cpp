@@ -73,19 +73,28 @@ namespace molphene {
     
     void Scene::resetMesh() {
         
-        Molecule::ModelList & models = molecule.getModels();
-        Molecule::ModelList::iterator modIt = models.begin();
+        std::vector<Atom*> atoms;
         
-        std::vector<Atom> atoms;
+        Molecule::model_iterator modelIt = molecule.beginModel();
+        Molecule::model_iterator modelEndIt = molecule.endModel();
         
-        for( ; modIt != models.end(); ++modIt) {
-            Model model = *modIt;
-            Model::AtomMap atomMap = model.getAtoms();
-            Model::AtomMap::iterator atomIt= atomMap.begin();
+        for( ; modelIt != modelEndIt; ++modelIt) {
+            Model::chain_iterator chainIt = modelIt->beginChain();
+            Model::chain_iterator chainEndIt = modelIt->endChain();
             
-            for( ; atomIt != atomMap.end(); ++atomIt) {
-                Atom & atm = *atomIt->second;
-                atoms.push_back(atm);
+            for( ; chainIt != chainEndIt; ++chainIt) {
+                Chain::compound_iterator compoundIt = chainIt->beginCompound();
+                Chain::compound_iterator compoundEndIt = chainIt->endCompound();
+                
+                for( ; compoundIt != compoundEndIt; ++compoundIt) {
+                    Compound::atom_iterator atomIt = compoundIt->beginAtom();
+                    Compound::atom_iterator atomEndIt = compoundIt->endAtom();
+                    
+                    for( ; atomIt != atomEndIt; ++atomIt) {
+                        Atom * atom = &(*atomIt);
+                        atoms.push_back(atom);
+                    }
+                }
             }
         }
         
@@ -101,14 +110,13 @@ namespace molphene {
         
         for(unsigned int i = 0; i < totalAtoms; ++i) {
             
-            Atom & atom = atoms.at(i);
+            Atom & atom = *atoms.at(i);
             const Element & element = atom.getElement();
             const vec3f & apos = atom.getPosition();
             const colour & acol = colorManager.getElementColor(element.symbol);
             float arad = element.radiiVdW;
             
             meshBuilder.buildSphere(i, apos, arad, acol);
-
         }
         
         renderer.setBufferPosition(meshBuilder.getPositions());

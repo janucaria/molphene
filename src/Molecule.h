@@ -8,12 +8,17 @@ namespace molphene {
     class Molecule {
     public:
         typedef std::vector<Model> ModelList;
+        typedef std::vector<Model>::iterator model_iterator;
         
         Molecule();
         
         Model & addModel();
         
         ModelList & getModels();
+        
+        model_iterator beginModel();
+        
+        model_iterator endModel();
         
     private:
         ModelList models;

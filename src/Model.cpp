@@ -25,7 +25,54 @@ namespace molphene {
         return chains_.at(chainID);
     }
     
+    Model::ChainMap & Model::getChains() {
+        return chains_;
+    }
+    
     Molecule & Model::getMolecule() const {
         return *moleculePtr_;
     }
+    
+    Model::chain_iterator Model::beginChain() {
+        return chains_.begin();
+    }
+    
+    Model::chain_iterator Model::endChain() {
+        return chains_.end();
+    }
+    
+    Model::chain_iterator::chain_iterator(Model::chain_iterator::value_type it) : it_(it) {
+    }
+    
+    Model::chain_iterator::chain_iterator(const Model::chain_iterator & cit) : it_(cit.it_) {
+        
+    }
+    
+    Model::chain_iterator & Model::chain_iterator::operator++() {
+         ++it_;
+        return *this;
+    }
+    
+    Model::chain_iterator Model::chain_iterator::operator++(int) {
+        Model::chain_iterator tmp(*this);
+        operator++();
+        return tmp;
+    }
+    
+    bool Model::chain_iterator::operator==(const Model::chain_iterator& rhs) {
+        return it_ == rhs.it_;
+    }
+    
+    bool Model::chain_iterator::operator!=(const Model::chain_iterator& rhs) {
+        return it_ != rhs.it_;
+    }
+    
+    Model::chain_iterator::reference Model::chain_iterator::operator*() {
+        return it_->second;
+    }
+    
+    Model::chain_iterator::pointer Model::chain_iterator::operator->() {
+        return &it_->second;
+    }
+    
 }
