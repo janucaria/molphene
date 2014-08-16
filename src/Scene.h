@@ -25,7 +25,7 @@ namespace molphene {
         
         Scene();
         
-        bool setupGraphics();
+        bool setupGraphics(GLsizei width, GLsizei height);
         
         void resetMesh();
         
