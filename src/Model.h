@@ -5,6 +5,7 @@
 #include <iterator>
 #include "Chain.h"
 #include "Atom.h"
+#include "Bond.h"
 
 namespace molphene {
     class Molecule;
@@ -12,8 +13,9 @@ namespace molphene {
     class Model {
     public:
         
-        typedef std::map<unsigned int, Atom *> AtomMap;
+        typedef std::map<unsigned int, Atom*> AtomMap;
         typedef std::map<char, Chain> ChainMap;
+        typedef std::vector<Bond> BondList;
         
         class chain_iterator : public std::iterator<ChainMap::iterator::iterator_category, ChainMap::iterator, ChainMap::iterator::difference_type, Chain*, Chain&> {
             
@@ -53,14 +55,19 @@ namespace molphene {
         
         void addAtom(Atom & atom);
         
+        Atom * getAtomBySerial(unsigned int serial);
+        
         AtomMap & getAtoms();
         
         Molecule & getMolecule() const;
+        
+        void addBond(Atom & a1, Atom & a2);
         
     private:
         Molecule * moleculePtr_;
         AtomMap atoms;
         ChainMap chains_;
+        BondList bonds_;
     };
 }
 

@@ -81,7 +81,30 @@ namespace molphene {
                 atom.setPosition(ax, ay, az);
                 atom.setAltLoc(aaltLoc);
                 
+            } else if(recordName.compare("CONECT") == 0) {
+                
+                unsigned int atomSerial1 = getInteger(7, 11);
+                
+                Molecule::model_iterator modelIt = mol.beginModel();
+                Molecule::model_iterator modelEndIt = mol.endModel();
+                
+                for( ; modelIt != modelEndIt; ++modelIt) {
+                    Atom * atom1 = modelIt->getAtomBySerial(atomSerial1);
+                    
+                    for(unsigned int i = 12; i <= 27; i += 5) {
+                        unsigned int atomSerial2 = getInteger(i, i + 4);
+                        if(!atomSerial2) {
+                            break;
+                        }
+                        if(atomSerial1 < atomSerial2) {
+                            Atom * atom2 = modelIt->getAtomBySerial(atomSerial2);
+                            modelIt->addBond(*atom1, *atom2);
+                        }
+                    }
+                }
+                
             }
+            
         }
     }
     

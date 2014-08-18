@@ -29,8 +29,16 @@ namespace molphene {
         return chains_;
     }
     
+    Atom * Model::getAtomBySerial(unsigned int serial) {
+        return atoms.at(serial);
+    }
+    
     Molecule & Model::getMolecule() const {
         return *moleculePtr_;
+    }
+    
+    void Model::addBond(Atom & a1, Atom & a2) {
+        bonds_.emplace_back(a1, a2);
     }
     
     Model::chain_iterator Model::beginChain() {

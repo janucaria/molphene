@@ -12,6 +12,7 @@
 #include "Molecule.h"
 #include "Chain.h"
 #include "Compound.h"
+#include "Bond.h"
 
 namespace molphene {
     class PDBParser {
