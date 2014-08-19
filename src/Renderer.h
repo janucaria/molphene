@@ -48,7 +48,7 @@ namespace molphene {
         
         void useGLProgram() const;
         
-    private:
+    protected:
         const static char * vertexShaderSource;
         const static char * fragmentShaderSource;
         
@@ -83,6 +83,9 @@ namespace molphene {
         GLuint createShader(GLenum shaderType, const char* pSource);
         GLuint createProgram(const GLuint vertexShader, const GLuint fragmentShader);
         
+        virtual void setupGLProgram();
+        
+        virtual void setupGLUniformsLocation();
     };
 }
 

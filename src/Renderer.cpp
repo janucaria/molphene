@@ -13,27 +13,13 @@ namespace molphene {
     }
     
     bool Renderer::setupGL() {
-        
-        gVertexShader = createShader(GL_VERTEX_SHADER, Renderer::vertexShaderSource);
-        gFragmentShader = createShader(GL_FRAGMENT_SHADER, Renderer::fragmentShaderSource);
-        gProgram = createProgram(gVertexShader, gFragmentShader);
+        setupGLProgram();
         
         gVertexPositionLocation = glGetAttribLocation(gProgram, "a_Position");
         gVertexNormalLocation = glGetAttribLocation(gProgram, "a_Normal");
         gVertexColorLocation = glGetAttribLocation(gProgram, "a_Color");
         
-        gUniformModelViewMatrixLocation = glGetUniformLocation(gProgram, "u_ModelViewMatrix");
-        gUniformProjectionMatrixLocation = glGetUniformLocation(gProgram, "u_ProjectionMatrix");
-        
-        gUniformLightSourceAmbientLocation = glGetUniformLocation(gProgram, "u_LightSource_ambient");
-        gUniformLightSourceDiffuseLocation = glGetUniformLocation(gProgram, "u_LightSource_diffuse");
-        gUniformLightSourceSpecularLocation = glGetUniformLocation(gProgram, "u_LightSource_specular");
-        gUniformLightSourcePositionLocation = glGetUniformLocation(gProgram, "u_LightSource_position");
-
-        gUniformMaterialAmbientLocation = glGetUniformLocation(gProgram, "u_Material_ambient");
-        gUniformMaterialDiffuseLocation = glGetUniformLocation(gProgram, "u_Material_diffuse");
-        gUniformMaterialSpecularLocation = glGetUniformLocation(gProgram, "u_Material_specular");
-        gUniformMaterialShininessLocation = glGetUniformLocation(gProgram, "u_Material_shininess");
+        setupGLUniformsLocation();
         
         glGenBuffers(1, &gPositionBuffer);
         glGenBuffers(1, &gNormalBuffer);
@@ -42,6 +28,26 @@ namespace molphene {
         return true;
     }
     
+    void Renderer::setupGLProgram() {
+        gVertexShader = createShader(GL_VERTEX_SHADER, vertexShaderSource);
+        gFragmentShader = createShader(GL_FRAGMENT_SHADER, fragmentShaderSource);
+        gProgram = createProgram(gVertexShader, gFragmentShader);
+    }
+    
+    void Renderer::setupGLUniformsLocation() {
+        gUniformModelViewMatrixLocation = glGetUniformLocation(gProgram, "u_ModelViewMatrix");
+        gUniformProjectionMatrixLocation = glGetUniformLocation(gProgram, "u_ProjectionMatrix");
+        
+        gUniformLightSourceAmbientLocation = glGetUniformLocation(gProgram, "u_LightSource_ambient");
+        gUniformLightSourceDiffuseLocation = glGetUniformLocation(gProgram, "u_LightSource_diffuse");
+        gUniformLightSourceSpecularLocation = glGetUniformLocation(gProgram, "u_LightSource_specular");
+        gUniformLightSourcePositionLocation = glGetUniformLocation(gProgram, "u_LightSource_position");
+        
+        gUniformMaterialAmbientLocation = glGetUniformLocation(gProgram, "u_Material_ambient");
+        gUniformMaterialDiffuseLocation = glGetUniformLocation(gProgram, "u_Material_diffuse");
+        gUniformMaterialSpecularLocation = glGetUniformLocation(gProgram, "u_Material_specular");
+        gUniformMaterialShininessLocation = glGetUniformLocation(gProgram, "u_Material_shininess");
+    }
     
     void Renderer::setVericesSize(GLuint size) {
         verticesSize = size;
