@@ -4,7 +4,7 @@
 
 namespace molphene {
     
-    Scene::Scene() {
+    Scene::Scene() : displaySpacefill(true), displayStick(false) {
         
     }
     
