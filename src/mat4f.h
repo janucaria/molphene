@@ -40,7 +40,15 @@ namespace molphene {
         mat4f & translate(const vec3f & v);
         
         mat4f & frustum(float l, float r, float b, float t, float n, float f);
+        
+        mat4f & adjoint();
+        
+        mat4f & inverse();
+        
+        mat4f & transpose();
     };
+    
+    float determinant(const mat4f & m);
 }
 
 #endif /* defined(__molphene__File__) */

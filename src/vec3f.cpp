@@ -117,4 +117,12 @@ namespace molphene {
         return sqrt(x * x + y * y + z * z);
     }
     
+    vec3f & vec3f::normalize() {
+        return this->operator/=(length());
+    }
+    
+    vec3f cross(const vec3f & a, const vec3f & b) {
+        return vec3f(a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z, a.x * b.y - a.y * b.x);
+    }
+    
 }

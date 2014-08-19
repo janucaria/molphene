@@ -41,6 +41,17 @@ namespace molphene {
         bonds_.emplace_back(a1, a2);
     }
     
+    
+    Model::BondList::iterator Model::beginBond() {
+        return bonds_.begin();
+    }
+    
+    Model::BondList::iterator Model::endBond() {
+        return bonds_.end();
+    }
+    
+    
+    
     Model::chain_iterator Model::beginChain() {
         return chains_.begin();
     }

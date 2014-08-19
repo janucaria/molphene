@@ -8,9 +8,11 @@
 #include "vec3f.h"
 #include "colour.h"
 #include "Renderer.h"
+#include "ColorLightRenderer.h"
 #include "mat4f.h"
 #include "Camera.h"
 #include "Atom.h"
+#include "Bond.h"
 #include "Model.h"
 #include "Molecule.h"
 #include "SphereMeshBuilder.h"
@@ -22,6 +24,9 @@ namespace molphene {
     
     class Scene {
     public:
+        
+        bool displaySpacefill;
+        bool displayStick;
         
         Scene();
         
@@ -41,6 +46,8 @@ namespace molphene {
         
     private:
         Renderer renderer;
+        
+        ColorLightRenderer cylinderRenderer;
         
         mat4f modelMatrix;
         

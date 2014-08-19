@@ -1,4 +1,6 @@
 #include "Scene.h"
+#include "CylinderMeshBuilder.h"
+#include "mat3f.h"
 
 namespace molphene {
     
@@ -24,6 +26,20 @@ namespace molphene {
         renderer.setMaterialSpecular(0.5, 0.5, 0.5, 1.0);
         renderer.setMaterialShininess(10);
         
+        
+        cylinderRenderer.setupGL();
+        cylinderRenderer.useGLProgram();
+        
+        cylinderRenderer.setLightSourceAmbient(0.5, 0.5, 0.5, 1.0);
+        cylinderRenderer.setLightSourceDiffuse(1.0, 1.0, 1.0, 1.0);
+        cylinderRenderer.setLightSourceSpecular(0.5, 0.5, 0.5, 1.0);
+        cylinderRenderer.setLightSourcePosition(0.0, 0.0, 0.0);
+        
+        cylinderRenderer.setMaterialAmbient(0.3, 0.3, 0.3, 1.0);
+        cylinderRenderer.setMaterialDiffuse(1.0, 1.0, 1.0, 1.0);
+        cylinderRenderer.setMaterialSpecular(0.5, 0.5, 0.5, 1.0);
+        cylinderRenderer.setMaterialShininess(10);
+        
         changeDimension(width, height);
         
         return true;
@@ -38,6 +54,7 @@ namespace molphene {
     
     void Scene::resetMesh() {
         std::vector<Atom*> atoms;
+        std::vector<Bond*> bonds;
         
         Molecule::model_iterator modelIt = molecule.beginModel();
         Molecule::model_iterator modelEndIt = molecule.endModel();
@@ -59,6 +76,13 @@ namespace molphene {
                         atoms.push_back(atom);
                     }
                 }
+            }
+            
+            Model::BondList::iterator bondIt = modelIt->beginBond();
+            Model::BondList::iterator bondEndIt = modelIt->endBond();
+            for( ; bondIt != bondEndIt; ++bondIt) {
+                Bond * bond = &(*bondIt);
+                bonds.push_back(bond);
             }
         }
         
@@ -86,6 +110,41 @@ namespace molphene {
         renderer.setBufferPosition(meshBuilder.getPositions());
         renderer.setBufferNormal(meshBuilder.getNormals());
         renderer.setBufferColor(meshBuilder.getColors());
+        
+        
+        LOG_D("Size of bonds : %ld", bonds.size());
+        
+        GLuint totalBonds = static_cast<GLuint>(bonds.size());
+        CylinderMeshBuilder meshBuilder2(totalBonds * 2);
+        GLuint totalVertices2 = meshBuilder2.getTotalVertices();
+        cylinderRenderer.setVericesSize(totalVertices2);
+
+//        LOG_D("vertices size : %u", totalVertices);
+        
+        for(unsigned int i = 0; i < totalBonds; ++i) {
+            Bond * bond = bonds.at(i);
+            Atom & atom1 = bond->getAtom1();
+            Atom & atom2 = bond->getAtom2();
+            
+            const Element & element1 = atom1.getElement();
+            const vec3f & apos1 = atom1.getPosition();
+            const colour & acol1 = colorManager.getElementColor(element1.symbol);
+            
+            const Element & element2 = atom2.getElement();
+            const vec3f & apos2 = atom2.getPosition();
+            const colour & acol2 = colorManager.getElementColor(element2.symbol);
+            
+            unsigned int idx = i * 2;
+            vec3f midpos((apos1 + apos2) / 2);
+            float arad = 0.25f;
+            
+            meshBuilder2.buildMesh(idx + 0, apos1, midpos, arad, acol1);
+            meshBuilder2.buildMesh(idx + 1, midpos, apos2, arad, acol2);
+        }
+        
+        cylinderRenderer.setBufferPosition(meshBuilder2.getPositions());
+        cylinderRenderer.setBufferNormal(meshBuilder2.getNormals());
+        cylinderRenderer.setBufferColor(meshBuilder2.getColors());
     }
     
     void Scene::clearRect() {
@@ -95,12 +154,27 @@ namespace molphene {
     void Scene::renderFrame() {
         clearRect();
         
-        renderer.useGLProgram();
+        mat4f modelViewMatrix = modelMatrix * camera.getViewMatrix();
+        mat3f normalMalrix = mat3f(mat4f(modelViewMatrix).inverse().transpose());
         
-        renderer.setProjectionMatrix(camera.getProjectionMatrix());
-        renderer.setModelViewMatrix(modelMatrix * camera.getViewMatrix());
+        if(displaySpacefill) {
+            renderer.useGLProgram();
+            
+            renderer.setProjectionMatrix(camera.getProjectionMatrix());
+            renderer.setModelViewMatrix(modelViewMatrix);
+            
+            renderer.render();
+        }
         
-        renderer.render();
+        if(displayStick) {
+            cylinderRenderer.useGLProgram();
+            
+            cylinderRenderer.setProjectionMatrix(camera.getProjectionMatrix());
+            cylinderRenderer.setNormalMatrix(normalMalrix);
+            cylinderRenderer.setModelViewMatrix(modelViewMatrix);
+            
+            cylinderRenderer.render();
+        }
     }
     
     void Scene::rotate(float x, float y, float z) {
@@ -146,7 +220,7 @@ namespace molphene {
         float focalLength = y / tanTheta;
         float near        = focalLength - y;
         float far         = focalLength + y;
-
+        
         camera.setFov(fov);
         camera.setNear(near);
         camera.setFar(far);

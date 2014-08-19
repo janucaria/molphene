@@ -283,4 +283,30 @@ namespace molphene {
         
         return *this;
     }
+    
+    mat4f & mat4f::adjoint() {
+        float m11 = m[0], m12 = m[1], m13 = m[2], m14 = m[3], m21 = m[4], m22 = m[5], m23 = m[6], m24 = m[7], m31 = m[8], m32 = m[9], m33 = m[10], m34 = m[11], m41 = m[12], m42 = m[13], m43 = m[14], m44 = m[15];
+        
+        return (*this)(m23 * m34 * m42 - m24 * m33 * m42 + m24 * m32 * m43 - m22 * m34 * m43 - m23 * m32 * m44 + m22 * m33 * m44, m14 * m33 * m42 - m13 * m34 * m42 - m14 * m32 * m43 + m12 * m34 * m43 + m13 * m32 * m44 - m12 * m33 * m44, m13 * m24 * m42 - m14 * m23 * m42 + m14 * m22 * m43 - m12 * m24 * m43 - m13 * m22 * m44 + m12 * m23 * m44, m14 * m23 * m32 - m13 * m24 * m32 - m14 * m22 * m33 + m12 * m24 * m33 + m13 * m22 * m34 - m12 * m23 * m34, m24 * m33 * m41 - m23 * m34 * m41 - m24 * m31 * m43 + m21 * m34 * m43 + m23 * m31 * m44 - m21 * m33 * m44, m13 * m34 * m41 - m14 * m33 * m41 + m14 * m31 * m43 - m11 * m34 * m43 - m13 * m31 * m44 + m11 * m33 * m44, m14 * m23 * m41 - m13 * m24 * m41 - m14 * m21 * m43 + m11 * m24 * m43 + m13 * m21 * m44 - m11 * m23 * m44, m13 * m24 * m31 - m14 * m23 * m31 + m14 * m21 * m33 - m11 * m24 * m33 - m13 * m21 * m34 + m11 * m23 * m34, m22 * m34 * m41 - m24 * m32 * m41 + m24 * m31 * m42 - m21 * m34 * m42 - m22 * m31 * m44 + m21 * m32 * m44, m14 * m32 * m41 - m12 * m34 * m41 - m14 * m31 * m42 + m11 * m34 * m42 + m12 * m31 * m44 - m11 * m32 * m44, m12 * m24 * m41 - m14 * m22 * m41 + m14 * m21 * m42 - m11 * m24 * m42 - m12 * m21 * m44 + m11 * m22 * m44, m14 * m22 * m31 - m12 * m24 * m31 - m14 * m21 * m32 + m11 * m24 * m32 + m12 * m21 * m34 - m11 * m22 * m34, m23 * m32 * m41 - m22 * m33 * m41 - m23 * m31 * m42 + m21 * m33 * m42 + m22 * m31 * m43 - m21 * m32 * m43, m12 * m33 * m41 - m13 * m32 * m41 + m13 * m31 * m42 - m11 * m33 * m42 - m12 * m31 * m43 + m11 * m32 * m43, m13 * m22 * m41 - m12 * m23 * m41 - m13 * m21 * m42 + m11 * m23 * m42 + m12 * m21 * m43 - m11 * m22 * m43, m12 * m23 * m31 - m13 * m22 * m31 + m13 * m21 * m32 - m11 * m23 * m32 - m12 * m21 * m33 + m11 * m22 * m33);
+    }
+
+    
+    mat4f & mat4f::inverse() {
+        float det = determinant(*this);
+        if (det == 0) {
+            throw "NOT_SUPPORTED_ERR";
+        }
+        adjoint();
+        return this->operator /= (det);
+    }
+    
+    mat4f & mat4f::transpose() {
+        return (*this)(m[0], m[4], m[8], m[12], m[1], m[5], m[9], m[13], m[2], m[6], m[10], m[14], m[3], m[7], m[11], m[15]);
+    }
+    
+    float determinant(const mat4f & m) {
+        float m11 = m.m[0], m12 = m.m[1], m13 = m.m[2], m14 = m.m[3], m21 = m.m[4], m22 = m.m[5], m23 = m.m[6], m24 = m.m[7], m31 = m.m[8], m32 = m.m[9], m33 = m.m[10], m34 = m.m[11], m41 = m.m[12], m42 = m.m[13], m43 = m.m[14], m44 = m.m[15];
+        
+        return (m41 * m32 * m23 * m14 - m31 * m42 * m23 * m14 - m41 * m22 * m33 * m14 + m21 * m42 * m33 * m14 + m31 * m22 * m43 * m14 - m21 * m32 * m43 * m14 - m41 * m32 * m13 * m24 + m31 * m42 * m13 * m24 + m41 * m12 * m33 * m24 - m11 * m42 * m33 * m24 - m31 * m12 * m43 * m24 + m11 * m32 * m43 * m24 + m41 * m22 * m13 * m34 - m21 * m42 * m13 * m34 - m41 * m12 * m23 * m34 + m11 * m42 * m23 * m34 + m21 * m12 * m43 * m34 - m11 * m22 * m43 * m34 - m31 * m22 * m13 * m44 + m21 * m32 * m13 * m44 + m31 * m12 * m23 * m44 - m11 * m32 * m23 * m44 - m21 * m12 * m33 * m44 + m11 * m22 * m33 * m44);
+    }
 }

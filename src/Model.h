@@ -63,6 +63,11 @@ namespace molphene {
         
         void addBond(Atom & a1, Atom & a2);
         
+        BondList::iterator beginBond();
+        
+        BondList::iterator endBond();
+        
+        
     private:
         Molecule * moleculePtr_;
         AtomMap atoms;

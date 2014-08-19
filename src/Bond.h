@@ -7,6 +7,10 @@ namespace molphene {
     class Bond {
     public:
         Bond(Atom & a1, Atom & a2);
+        
+        Atom & getAtom1();
+        Atom & getAtom2();
+        
     private:
         Atom a1_;
         Atom a2_;
