@@ -22,6 +22,10 @@ namespace molphene {
         void parse(Molecule & mol, std::istream & stream);
         
     private:
+        Model * currentModelPtr;
+        Chain * currentChainPtr;
+        Compound * currentCompoundPtr;
+        
         std::string line_;
         
         inline std::string column(unsigned int start,  unsigned int end);
@@ -31,6 +35,12 @@ namespace molphene {
         unsigned int getInteger(unsigned int start,  unsigned int end);
         
         inline char getChar(unsigned int start);
+        
+        void handleATOMRecord(Molecule & mol);
+        
+        void handleMODELRecord(Molecule & mol);
+        
+        void handleCONECTRecord(Molecule & mol);
     };
 }
 

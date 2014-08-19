@@ -5,10 +5,110 @@ namespace molphene {
         
     }
     
+    //    COLUMNS        DATA  TYPE    FIELD        DEFINITION
+    //    -------------------------------------------------------------------------------------
+    //    1 -  6        Record name   "ATOM  "
+    //    7 - 11        Integer       serial       Atom  serial number.
+    //    13 - 16        Atom          name         Atom name.
+    //    17             Character     altLoc       Alternate location indicator.
+    //    18 - 20        Residue name  resName      Residue name.
+    //    22             Character     chainID      Chain identifier.
+    //    23 - 26        Integer       resSeq       Residue sequence number.
+    //    27             AChar         iCode        Code for insertion of residues.
+    //    31 - 38        Real(8.3)     x            Orthogonal coordinates for X in Angstroms.
+    //    39 - 46        Real(8.3)     y            Orthogonal coordinates for Y in Angstroms.
+    //    47 - 54        Real(8.3)     z            Orthogonal coordinates for Z in Angstroms.
+    //    55 - 60        Real(6.2)     occupancy    Occupancy.
+    //    61 - 66        Real(6.2)     tempFactor   Temperature  factor.
+    //    77 - 78        LString(2)    element      Element symbol, right-justified.
+    //    79 - 80        LString(2)    charge       Charge  on the atom.
+    void PDBParser::handleATOMRecord(Molecule & mol) {
+        
+        unsigned int aserial = getInteger(7, 11);
+        std::string aname = boost::trim_copy(column(13, 16));
+        char aaltLoc = getChar(17);
+        std::string aresName = boost::trim_copy(column(18, 20));
+        char achainID = getChar(22);
+        unsigned int aresSeq = getInteger(23, 26);
+        char aiCode = column(27, 27).at(0);
+        float ax = getReal(31, 38);
+        float ay = getReal(39, 46);
+        float az = getReal(47, 54);
+        std::string aelement = boost::trim_left_copy(column(77, 78));
+        
+        if(!currentModelPtr) {
+            currentModelPtr = &mol.addModel();
+            currentChainPtr = nullptr;
+        }
+        
+        if(!currentChainPtr || currentChainPtr->getId() != achainID) {
+            try {
+                currentChainPtr = &currentModelPtr->getChain(achainID);
+            } catch (const std::out_of_range & oor) {
+                currentChainPtr = &currentModelPtr->addChain(achainID);
+            }
+            
+            currentCompoundPtr = nullptr;
+        }
+        
+        Compound::ResidueNumber resNum = std::make_tuple(aresSeq, aresName, aiCode);
+        
+        if(!currentCompoundPtr || currentCompoundPtr->getResNum() != resNum) {
+            try {
+                currentCompoundPtr = &currentChainPtr->getCompound(resNum);
+            } catch (const std::out_of_range & oor) {
+                currentCompoundPtr = &currentChainPtr->addCompound(resNum);
+            }
+        }
+        
+        Atom & atom = currentCompoundPtr->addAtom(aelement, aname, aserial);
+        atom.setPosition(ax, ay, az);
+        atom.setAltLoc(aaltLoc);
+    }
+    
+    //    COLUMNS        DATA  TYPE    FIELD          DEFINITION
+    //    ---------------------------------------------------------------------------------------
+    //    1 -  6        Record name   "MODEL "
+    //    11 - 14        Integer       serial         Model serial number.
+    void PDBParser::handleMODELRecord(Molecule & mol) {
+        currentModelPtr = &mol.addModel();
+        currentChainPtr = nullptr;
+    }
+    
+    //    COLUMNS       DATA  TYPE      FIELD        DEFINITION
+    //    -------------------------------------------------------------------------
+    //    1 -  6        Record name    "CONECT"
+    //    7 - 11       Integer        serial       Atom  serial number
+    //    12 - 16        Integer        serial       Serial number of bonded atom
+    //    17 - 21        Integer        serial       Serial  number of bonded atom
+    //    22 - 26        Integer        serial       Serial number of bonded atom
+    //    27 - 31        Integer        serial       Serial number of bonded atom
+    void PDBParser::handleCONECTRecord(Molecule & mol) {
+        unsigned int atomSerial1 = getInteger(7, 11);
+        
+        Molecule::model_iterator modelIt = mol.beginModel();
+        Molecule::model_iterator modelEndIt = mol.endModel();
+        
+        for( ; modelIt != modelEndIt; ++modelIt) {
+            Atom * atom1 = modelIt->getAtomBySerial(atomSerial1);
+            
+            for(unsigned int i = 12; i <= 27; i += 5) {
+                unsigned int atomSerial2 = getInteger(i, i + 4);
+                if(!atomSerial2) {
+                    break;
+                }
+                if(atomSerial1 < atomSerial2) {
+                    Atom * atom2 = modelIt->getAtomBySerial(atomSerial2);
+                    modelIt->addBond(*atom1, *atom2);
+                }
+            }
+        }
+    }
+    
     void PDBParser::parse(Molecule & mol, std::istream & stream) {
-        Model * currentModelPtr = nullptr;
-        Chain * currentChainPtr = nullptr;
-        Compound * currentCompoundPtr = nullptr;
+        currentModelPtr = nullptr;
+        currentChainPtr = nullptr;
+        currentCompoundPtr = nullptr;
         
         std::string recordName;
         
@@ -17,95 +117,18 @@ namespace molphene {
             recordName = boost::trim_right_copy(column(1, 6));
             
             if(recordName.compare("MODEL") == 0) {
-                currentModelPtr = &mol.addModel();
-                currentChainPtr = nullptr;
-                
+                handleMODELRecord(mol);
             } else if(recordName.compare("ATOM") == 0 || recordName.compare("HETATM") == 0) {
-                
-                //    COLUMNS        DATA  TYPE    FIELD        DEFINITION
-                //    -------------------------------------------------------------------------------------
-                //    1 -  6        Record name   "ATOM  "
-                //    7 - 11        Integer       serial       Atom  serial number.
-                //    13 - 16        Atom          name         Atom name.
-                //    17             Character     altLoc       Alternate location indicator.
-                //    18 - 20        Residue name  resName      Residue name.
-                //    22             Character     chainID      Chain identifier.
-                //    23 - 26        Integer       resSeq       Residue sequence number.
-                //    27             AChar         iCode        Code for insertion of residues.
-                //    31 - 38        Real(8.3)     x            Orthogonal coordinates for X in Angstroms.
-                //    39 - 46        Real(8.3)     y            Orthogonal coordinates for Y in Angstroms.
-                //    47 - 54        Real(8.3)     z            Orthogonal coordinates for Z in Angstroms.
-                //    55 - 60        Real(6.2)     occupancy    Occupancy.
-                //    61 - 66        Real(6.2)     tempFactor   Temperature  factor.
-                //    77 - 78        LString(2)    element      Element symbol, right-justified.
-                //    79 - 80        LString(2)    charge       Charge  on the atom.
-                
-                unsigned int aserial = getInteger(7, 11);
-                std::string aname = boost::trim_copy(column(13, 16));
-                char aaltLoc = getChar(17);
-                std::string aresName = boost::trim_copy(column(18, 20));
-                char achainID = getChar(22);
-                unsigned int aresSeq = getInteger(23, 26);
-                char aiCode = column(27, 27).at(0);
-                float ax = getReal(31, 38);
-                float ay = getReal(39, 46);
-                float az = getReal(47, 54);
-                std::string aelement = boost::trim_left_copy(column(77, 78));
-                
-                if(!currentModelPtr) {
-                    currentModelPtr = &mol.addModel();
-                    currentChainPtr = nullptr;
-                }
-                
-                if(!currentChainPtr || currentChainPtr->getId() != achainID) {
-                    try {
-                        currentChainPtr = &currentModelPtr->getChain(achainID);
-                    } catch (const std::out_of_range & oor) {
-                        currentChainPtr = &currentModelPtr->addChain(achainID);
-                    }
-                    
-                    currentCompoundPtr = nullptr;
-                }
-                
-                Compound::ResidueNumber resNum = std::make_tuple(aresSeq, aresName, aiCode);
-                
-                if(!currentCompoundPtr || currentCompoundPtr->getResNum() != resNum) {
-                    try {
-                        currentCompoundPtr = &currentChainPtr->getCompound(resNum);
-                    } catch (const std::out_of_range & oor) {
-                        currentCompoundPtr = &currentChainPtr->addCompound(resNum);
-                    }
-                }
-                
-                Atom & atom = currentCompoundPtr->addAtom(aelement, aname, aserial);
-                atom.setPosition(ax, ay, az);
-                atom.setAltLoc(aaltLoc);
-                
+                handleATOMRecord(mol);
             } else if(recordName.compare("CONECT") == 0) {
-                
-                unsigned int atomSerial1 = getInteger(7, 11);
-                
-                Molecule::model_iterator modelIt = mol.beginModel();
-                Molecule::model_iterator modelEndIt = mol.endModel();
-                
-                for( ; modelIt != modelEndIt; ++modelIt) {
-                    Atom * atom1 = modelIt->getAtomBySerial(atomSerial1);
-                    
-                    for(unsigned int i = 12; i <= 27; i += 5) {
-                        unsigned int atomSerial2 = getInteger(i, i + 4);
-                        if(!atomSerial2) {
-                            break;
-                        }
-                        if(atomSerial1 < atomSerial2) {
-                            Atom * atom2 = modelIt->getAtomBySerial(atomSerial2);
-                            modelIt->addBond(*atom1, *atom2);
-                        }
-                    }
-                }
-                
+                handleCONECTRecord(mol);
             }
             
         }
+        
+        currentModelPtr = nullptr;
+        currentChainPtr = nullptr;
+        currentCompoundPtr = nullptr;
     }
     
     std::string PDBParser::column(unsigned int start, unsigned int end) {
