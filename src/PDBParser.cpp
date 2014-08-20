@@ -105,6 +105,58 @@ namespace molphene {
         }
     }
     
+    //    COLUMNS        DATA  TYPE    FIELD           DEFINITION
+    //    -------------------------------------------------------------------------
+    //    1 -  6        Record name   "TER   "
+    //    7 - 11        Integer       serial          Serial number.
+    //    18 - 20        Residue name  resName         Residue name.
+    //    22             Character     chainID         Chain identifier.
+    //    23 - 26        Integer       resSeq          Residue sequence number.
+    //    27             AChar         iCode           Insertion code.
+    void PDBParser::handleTERRecord(Molecule & mol) {
+        Chain::compound_iterator compoundIt = currentChainPtr->beginCompound();
+        Chain::compound_iterator compoundEndIt = currentChainPtr->endCompound();
+        
+        for( ; compoundIt != compoundEndIt; ++compoundIt) {
+            std::string resName = compoundIt->getName();
+            PDBParser::ResidueBondPairMap::const_iterator bpairsIt = resBondPairs.find(resName);
+            
+            if(bpairsIt != resBondPairs.cend()) {
+                PDBParser::BondPairList bpairs = bpairsIt->second;
+                
+                PDBParser::BondPairList::iterator bpairIt = bpairs.begin();
+                PDBParser::BondPairList::iterator bpairEndIt = bpairs.end();
+                
+                for( ; bpairIt != bpairEndIt; ++bpairIt) {
+                    std::string atomName1 = bpairIt->first;
+                    std::string atomName2 = bpairIt->second;
+                    
+                    Compound::atom_iterator atom1It = compoundIt->beginAtom(atomName1);
+                    Compound::atom_iterator atom1EndIt = compoundIt->endAtom(atomName1);
+                    
+                    for ( ; atom1It != atom1EndIt; ++atom1It) {
+                        char altloc1 = atom1It->getAltLoc();
+                        
+                        Compound::atom_iterator atom2It = compoundIt->beginAtom(atomName2);
+                        Compound::atom_iterator atom2EndIt = compoundIt->endAtom(atomName2);
+                        
+                        for ( ; atom2It != atom2EndIt; ++atom2It) {
+                            if(altloc1) {
+                                char altloc2 = atom2It->getAltLoc();
+                                if(altloc1 == altloc2) {
+                                    currentModelPtr->addBond(*atom1It, *atom2It);
+                                    break;
+                                }
+                            } else {
+                                currentModelPtr->addBond(*atom1It, *atom2It);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
     void PDBParser::parse(Molecule & mol, std::istream & stream) {
         currentModelPtr = nullptr;
         currentChainPtr = nullptr;
@@ -122,8 +174,9 @@ namespace molphene {
                 handleATOMRecord(mol);
             } else if(recordName.compare("CONECT") == 0) {
                 handleCONECTRecord(mol);
+            } else if(recordName.compare("TER") == 0) {
+                handleTERRecord(mol);
             }
-            
         }
         
         currentModelPtr = nullptr;
@@ -150,5 +203,33 @@ namespace molphene {
     char PDBParser::getChar(unsigned int start) {
         return column(start, start).at(0);
     }
+    
+    const PDBParser::ResidueBondPairMap PDBParser::resBondPairs({
+        {"ALA", PDBParser::BondPairList({{"N", "CA"}, {"N", "H"}, {"N", "H2"}, {"CA", "C"}, {"CA", "CB"}, {"CA", "HA"}, {"C", "O"}, {"C", "OXT"}, {"CB", "HB1"}, {"CB", "HB2"}, {"CB", "HB3"}, {"OXT", "HXT"}})},
+        {"ARG", PDBParser::BondPairList({{"N", "CA"}, {"N", "H"}, {"N", "H2"}, {"CA", "C"}, {"CA", "CB"}, {"CA", "HA"}, {"C", "O"}, {"C", "OXT"}, {"CB", "CG"}, {"CB", "HB2"}, {"CB", "HB3"}, {"CG", "CD"}, {"CG", "HG2"}, {"CG", "HG3"}, {"CD", "NE"}, {"CD", "HD2"}, {"CD", "HD3"}, {"NE", "CZ"}, {"NE", "HE"}, {"CZ", "NH1"}, {"CZ", "NH2"}, {"NH1", "HH11"}, {"NH1", "HH12"}, {"NH2", "HH21"}, {"NH2", "HH22"}, {"OXT", "HXT"}})},
+        {"ASN", PDBParser::BondPairList({{"N", "CA"}, {"N", "H"}, {"N", "H2"}, {"CA", "C"}, {"CA", "CB"}, {"CA", "HA"}, {"C", "O"}, {"C", "OXT"}, {"CB", "CG"}, {"CB", "HB2"}, {"CB", "HB3"}, {"CG", "OD1"}, {"CG", "ND2"}, {"ND2", "HD21"}, {"ND2", "HD22"}, {"OXT", "HXT"}})},
+        {"ASP", PDBParser::BondPairList({{"N", "CA"}, {"N", "H"}, {"N", "H2"}, {"CA", "C"}, {"CA", "CB"}, {"CA", "HA"}, {"C", "O"}, {"C", "OXT"}, {"CB", "CG"}, {"CB", "HB2"}, {"CB", "HB3"}, {"CG", "OD1"}, {"CG", "OD2"}, {"OD2", "HD2"}, {"OXT", "HXT"}})},
+        {"CYS", PDBParser::BondPairList({{"N", "CA"}, {"N", "H"}, {"N", "H2"}, {"CA", "C"}, {"CA", "CB"}, {"CA", "HA"}, {"C", "O"}, {"C", "OXT"}, {"CB", "SG"}, {"CB", "HB2"}, {"CB", "HB3"}, {"SG", "HG"}, {"OXT", "HXT"}})},
+        {"GLN", PDBParser::BondPairList({{"N", "CA"}, {"N", "H"}, {"N", "H2"}, {"CA", "C"}, {"CA", "CB"}, {"CA", "HA"}, {"C", "O"}, {"C", "OXT"}, {"CB", "CG"}, {"CB", "HB2"}, {"CB", "HB3"}, {"CG", "CD"}, {"CG", "HG2"}, {"CG", "HG3"}, {"CD", "OE1"}, {"CD", "NE2"}, {"NE2", "HE21"}, {"NE2", "HE22"}, {"OXT", "HXT"}})},
+        {"GLU", PDBParser::BondPairList({{"N", "CA"}, {"N", "H"}, {"N", "H2"}, {"CA", "C"}, {"CA", "CB"}, {"CA", "HA"}, {"C", "O"}, {"C", "OXT"}, {"CB", "CG"}, {"CB", "HB2"}, {"CB", "HB3"}, {"CG", "CD"}, {"CG", "HG2"}, {"CG", "HG3"}, {"CD", "OE1"}, {"CD", "OE2"}, {"OE2", "HE2"}, {"OXT", "HXT"}})},
+        {"GLY", PDBParser::BondPairList({{"N", "CA"}, {"N", "H"}, {"N", "H2"}, {"CA", "C"}, {"CA", "HA2"}, {"CA", "HA3"}, {"C", "O"}, {"C", "OXT"}, {"OXT", "HXT"}})},
+        {"HIS", PDBParser::BondPairList({{"N", "CA"}, {"N", "H"}, {"N", "H2"}, {"CA", "C"}, {"CA", "CB"}, {"CA", "HA"}, {"C", "O"}, {"C", "OXT"}, {"CB", "CG"}, {"CB", "HB2"}, {"CB", "HB3"}, {"CG", "ND1"}, {"CG", "CD2"}, {"ND1", "CE1"}, {"ND1", "HD1"}, {"CD2", "NE2"}, {"CD2", "HD2"}, {"CE1", "NE2"}, {"CE1", "HE1"}, {"NE2", "HE2"}, {"OXT", "HXT"}})},
+        {"ILE", PDBParser::BondPairList({{"N", "CA"}, {"N", "H"}, {"N", "H2"}, {"CA", "C"}, {"CA", "CB"}, {"CA", "HA"}, {"C", "O"}, {"C", "OXT"}, {"CB", "CG1"}, {"CB", "CG2"}, {"CB", "HB"}, {"CG1", "CD1"}, {"CG1", "HG12"}, {"CG1", "HG13"}, {"CG2", "HG21"}, {"CG2", "HG22"}, {"CG2", "HG23"}, {"CD1", "HD11"}, {"CD1", "HD12"}, {"CD1", "HD13"}, {"OXT", "HXT"}})},
+        {"LEU", PDBParser::BondPairList({{"N", "CA"}, {"N", "H"}, {"N", "H2"}, {"CA", "C"}, {"CA", "CB"}, {"CA", "HA"}, {"C", "O"}, {"C", "OXT"}, {"CB", "CG"}, {"CB", "HB2"}, {"CB", "HB3"}, {"CG", "CD1"}, {"CG", "CD2"}, {"CG", "HG"}, {"CD1", "HD11"}, {"CD1", "HD12"}, {"CD1", "HD13"}, {"CD2", "HD21"}, {"CD2", "HD22"}, {"CD2", "HD23"}, {"OXT", "HXT"}})},
+        {"LYS", PDBParser::BondPairList({{"N", "CA"}, {"N", "H"}, {"N", "H2"}, {"CA", "C"}, {"CA", "CB"}, {"CA", "HA"}, {"C", "O"}, {"C", "OXT"}, {"CB", "CG"}, {"CB", "HB2"}, {"CB", "HB3"}, {"CG", "CD"}, {"CG", "HG2"}, {"CG", "HG3"}, {"CD", "CE"}, {"CD", "HD2"}, {"CD", "HD3"}, {"CE", "NZ"}, {"CE", "HE2"}, {"CE", "HE3"}, {"NZ", "HZ1"}, {"NZ", "HZ2"}, {"NZ", "HZ3"}, {"OXT", "HXT"}})},
+        {"MET", PDBParser::BondPairList({{"N", "CA"}, {"N", "H"}, {"N", "H2"}, {"CA", "C"}, {"CA", "CB"}, {"CA", "HA"}, {"C", "O"}, {"C", "OXT"}, {"CB", "CG"}, {"CB", "HB2"}, {"CB", "HB3"}, {"CG", "SD"}, {"CG", "HG2"}, {"CG", "HG3"}, {"SD", "CE"}, {"CE", "HE1"}, {"CE", "HE2"}, {"CE", "HE3"}, {"OXT", "HXT"}})},
+        {"PHE", PDBParser::BondPairList({{"N", "CA"}, {"N", "H"}, {"N", "H2"}, {"CA", "C"}, {"CA", "CB"}, {"CA", "HA"}, {"C", "O"}, {"C", "OXT"}, {"CB", "CG"}, {"CB", "HB2"}, {"CB", "HB3"}, {"CG", "CD1"}, {"CG", "CD2"}, {"CD1", "CE1"}, {"CD1", "HD1"}, {"CD2", "CE2"}, {"CD2", "HD2"}, {"CE1", "CZ"}, {"CE1", "HE1"}, {"CE2", "CZ"}, {"CE2", "HE2"}, {"CZ", "HZ"}, {"OXT", "HXT"}})},
+        {"PRO", PDBParser::BondPairList({{"N", "CA"}, {"N", "CD"}, {"N", "H"}, {"CA", "C"}, {"CA", "CB"}, {"CA", "HA"}, {"C", "O"}, {"C", "OXT"}, {"CB", "CG"}, {"CB", "HB2"}, {"CB", "HB3"}, {"CG", "CD"}, {"CG", "HG2"}, {"CG", "HG3"}, {"CD", "HD2"}, {"CD", "HD3"}, {"OXT", "HXT"}})},
+        {"SER", PDBParser::BondPairList({{"N", "CA"}, {"N", "H"}, {"N", "H2"}, {"CA", "C"}, {"CA", "CB"}, {"CA", "HA"}, {"C", "O"}, {"C", "OXT"}, {"CB", "OG"}, {"CB", "HB2"}, {"CB", "HB3"}, {"OG", "HG"}, {"OXT", "HXT"}})},
+        {"THR", PDBParser::BondPairList({{"N", "CA"}, {"N", "H"}, {"N", "H2"}, {"CA", "C"}, {"CA", "CB"}, {"CA", "HA"}, {"C", "O"}, {"C", "OXT"}, {"CB", "OG1"}, {"CB", "CG2"}, {"CB", "HB"}, {"OG1", "HG1"}, {"CG2", "HG21"}, {"CG2", "HG22"}, {"CG2", "HG23"}, {"OXT", "HXT"}})},
+        {"TRP", PDBParser::BondPairList({{"N", "CA"}, {"N", "H"}, {"N", "H2"}, {"CA", "C"}, {"CA", "CB"}, {"CA", "HA"}, {"C", "O"}, {"C", "OXT"}, {"CB", "CG"}, {"CB", "HB2"}, {"CB", "HB3"}, {"CG", "CD1"}, {"CG", "CD2"}, {"CD1", "NE1"}, {"CD1", "HD1"}, {"CD2", "CE2"}, {"CD2", "CE3"}, {"NE1", "CE2"}, {"NE1", "HE1"}, {"CE2", "CZ2"}, {"CE3", "CZ3"}, {"CE3", "HE3"}, {"CZ2", "CH2"}, {"CZ2", "HZ2"}, {"CZ3", "CH2"}, {"CZ3", "HZ3"}, {"CH2", "HH2"}, {"OXT", "HXT"}})},
+        {"TYR", PDBParser::BondPairList({{"N", "CA"}, {"N", "H"}, {"N", "H2"}, {"CA", "C"}, {"CA", "CB"}, {"CA", "HA"}, {"C", "O"}, {"C", "OXT"}, {"CB", "CG"}, {"CB", "HB2"}, {"CB", "HB3"}, {"CG", "CD1"}, {"CG", "CD2"}, {"CD1", "CE1"}, {"CD1", "HD1"}, {"CD2", "CE2"}, {"CD2", "HD2"}, {"CE1", "CZ"}, {"CE1", "HE1"}, {"CE2", "CZ"}, {"CE2", "HE2"}, {"CZ", "OH"}, {"OH", "HH"}, {"OXT", "HXT"}})},
+        {"VAL", PDBParser::BondPairList({{"N", "CA"}, {"N", "H"}, {"N", "H2"}, {"CA", "C"}, {"CA", "CB"}, {"CA", "HA"}, {"C", "O"}, {"C", "OXT"}, {"CB", "CG1"}, {"CB", "CG2"}, {"CB", "HB"}, {"CG1", "HG11"}, {"CG1", "HG12"}, {"CG1", "HG13"}, {"CG2", "HG21"}, {"CG2", "HG22"}, {"CG2", "HG23"}, {"OXT", "HXT"}})},
+        {"DA", PDBParser::BondPairList({{"OP3", "P"}, {"OP3", "HOP3"}, {"P", "OP1"}, {"P", "OP2"}, {"P", "O5'"}, {"OP2", "HOP2"}, {"O5'", "C5'"}, {"C5'", "C4'"}, {"C5'", "H5'"}, {"C5'", "H5''"}, {"C4'", "O4'"}, {"C4'", "C3'"}, {"C4'", "H4'"}, {"O4'", "C1'"}, {"C3'", "O3'"}, {"C3'", "C2'"}, {"C3'", "H3'"}, {"O3'", "HO3'"}, {"C2'", "C1'"}, {"C2'", "H2'"}, {"C2'", "H2''"}, {"C1'", "N9"}, {"C1'", "H1'"}, {"N9", "C8"}, {"N9", "C4"}, {"C8", "N7"}, {"C8", "H8"}, {"N7", "C5"}, {"C5", "C6"}, {"C5", "C4"}, {"C6", "N6"}, {"C6", "N1"}, {"N6", "H61"}, {"N6", "H62"}, {"N1", "C2"}, {"C2", "N3"}, {"C2", "H2"}, {"N3", "C4"}})},
+        {"DC", PDBParser::BondPairList({{"OP3", "P"}, {"OP3", "HOP3"}, {"P", "OP1"}, {"P", "OP2"}, {"P", "O5'"}, {"OP2", "HOP2"}, {"O5'", "C5'"}, {"C5'", "C4'"}, {"C5'", "H5'"}, {"C5'", "H5''"}, {"C4'", "O4'"}, {"C4'", "C3'"}, {"C4'", "H4'"}, {"O4'", "C1'"}, {"C3'", "O3'"}, {"C3'", "C2'"}, {"C3'", "H3'"}, {"O3'", "HO3'"}, {"C2'", "C1'"}, {"C2'", "H2'"}, {"C2'", "H2''"}, {"C1'", "N1"}, {"C1'", "H1'"}, {"N1", "C2"}, {"N1", "C6"}, {"C2", "O2"}, {"C2", "N3"}, {"N3", "C4"}, {"C4", "N4"}, {"C4", "C5"}, {"N4", "H41"}, {"N4", "H42"}, {"C5", "C6"}, {"C5", "H5"}, {"C6", "H6"}})},
+        {"DG", PDBParser::BondPairList({{"OP3", "P"}, {"OP3", "HOP3"}, {"P", "OP1"}, {"P", "OP2"}, {"P", "O5'"}, {"OP2", "HOP2"}, {"O5'", "C5'"}, {"C5'", "C4'"}, {"C5'", "H5'"}, {"C5'", "H5''"}, {"C4'", "O4'"}, {"C4'", "C3'"}, {"C4'", "H4'"}, {"O4'", "C1'"}, {"C3'", "O3'"}, {"C3'", "C2'"}, {"C3'", "H3'"}, {"O3'", "HO3'"}, {"C2'", "C1'"}, {"C2'", "H2'"}, {"C2'", "H2''"}, {"C1'", "N9"}, {"C1'", "H1'"}, {"N9", "C8"}, {"N9", "C4"}, {"C8", "N7"}, {"C8", "H8"}, {"N7", "C5"}, {"C5", "C6"}, {"C5", "C4"}, {"C6", "O6"}, {"C6", "N1"}, {"N1", "C2"}, {"N1", "H1"}, {"C2", "N2"}, {"C2", "N3"}, {"N2", "H21"}, {"N2", "H22"}, {"N3", "C4"}})},
+        {"DT", PDBParser::BondPairList({{"OP3", "P"}, {"OP3", "HOP3"}, {"P", "OP1"}, {"P", "OP2"}, {"P", "O5'"}, {"OP2", "HOP2"}, {"O5'", "C5'"}, {"C5'", "C4'"}, {"C5'", "H5'"}, {"C5'", "H5''"}, {"C4'", "O4'"}, {"C4'", "C3'"}, {"C4'", "H4'"}, {"O4'", "C1'"}, {"C3'", "O3'"}, {"C3'", "C2'"}, {"C3'", "H3'"}, {"O3'", "HO3'"}, {"C2'", "C1'"}, {"C2'", "H2'"}, {"C2'", "H2''"}, {"C1'", "N1"}, {"C1'", "H1'"}, {"N1", "C2"}, {"N1", "C6"}, {"C2", "O2"}, {"C2", "N3"}, {"N3", "C4"}, {"N3", "H3"}, {"C4", "O4"}, {"C4", "C5"}, {"C5", "C7"}, {"C5", "C6"}, {"C7", "H71"}, {"C7", "H72"}, {"C7", "H73"}, {"C6", "H6"}})},
+        {"U", PDBParser::BondPairList({{"OP3", "P"}, {"OP3", "HOP3"}, {"P", "OP1"}, {"P", "OP2"}, {"P", "O5'"}, {"OP2", "HOP2"}, {"O5'", "C5'"}, {"C5'", "C4'"}, {"C5'", "H5'"}, {"C5'", "H5''"}, {"C4'", "O4'"}, {"C4'", "C3'"}, {"C4'", "H4'"}, {"O4'", "C1'"}, {"C3'", "O3'"}, {"C3'", "C2'"}, {"C3'", "H3'"}, {"O3'", "HO3'"}, {"C2'", "O2'"}, {"C2'", "C1'"}, {"C2'", "H2'"}, {"O2'", "HO2'"}, {"C1'", "N1"}, {"C1'", "H1'"}, {"N1", "C2"}, {"N1", "C6"}, {"C2", "O2"}, {"C2", "N3"}, {"N3", "C4"}, {"N3", "H3"}, {"C4", "O4"}, {"C4", "C5"}, {"C5", "C6"}, {"C5", "H5"}, {"C6", "H6"}})}      
+    });
     
 }

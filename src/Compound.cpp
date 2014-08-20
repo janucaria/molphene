@@ -52,6 +52,14 @@ namespace molphene {
         return atoms_.end();
     }
     
+    Compound::atom_iterator Compound::beginAtom(const std::string & name) {
+        return atoms_.lower_bound(name);
+    }
+    
+    Compound::atom_iterator Compound::endAtom(const std::string & name) {
+        return atoms_.upper_bound(name);
+    }
+    
     Compound::atom_iterator::atom_iterator(Compound::atom_iterator::value_type it) : it_(it) {
     }
     

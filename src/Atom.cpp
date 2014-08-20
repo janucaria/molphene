@@ -29,11 +29,15 @@ namespace molphene {
     }
     
     void Atom::setAltLoc(char value) {
-        altLoc_ = value;
+        altLoc_ = value == ' ' ? 0 : value;
     }
     
     char Atom::getAltLoc() const {
         return altLoc_;
+    }
+    
+    std::string Atom::getName() {
+        return name_;
     }
     
     const std::unordered_map<std::string, Element> Atom::ELEMENTS({

@@ -3,6 +3,8 @@
 
 #include <string>
 #include <iostream>
+#include <unordered_map>
+#include <set>
 #include <tuple>
 #include <boost/algorithm/string/trim.hpp>
 
@@ -17,11 +19,17 @@
 namespace molphene {
     class PDBParser {
     public:
+        typedef std::pair<std::string, std::string> BondPair;
+        typedef std::set<BondPair> BondPairList;
+        typedef std::unordered_map<std::string, BondPairList> ResidueBondPairMap;
+        
         PDBParser();
         
         void parse(Molecule & mol, std::istream & stream);
         
     private:
+        const static ResidueBondPairMap resBondPairs;
+        
         Model * currentModelPtr;
         Chain * currentChainPtr;
         Compound * currentCompoundPtr;
@@ -41,6 +49,8 @@ namespace molphene {
         void handleMODELRecord(Molecule & mol);
         
         void handleCONECTRecord(Molecule & mol);
+        
+        void handleTERRecord(Molecule & mol);
     };
 }
 

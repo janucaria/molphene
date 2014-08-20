@@ -41,6 +41,8 @@ namespace molphene {
         void setAltLoc(char value);
         
         char getAltLoc() const;
+        
+        std::string getName();
     };
 }
 

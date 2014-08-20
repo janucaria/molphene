@@ -52,6 +52,10 @@ namespace molphene {
         
         atom_iterator endAtom();
         
+        atom_iterator beginAtom(const std::string & name);
+        
+        atom_iterator endAtom(const std::string & name);
+        
         unsigned int getSequence() const;
         
         std::string getName() const;
