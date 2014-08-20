@@ -11,9 +11,11 @@ namespace molphene {
         ColourManager();
         
         const colour & getElementColor(std::string elementSymbol);
+        const colour & getAltlocColor(char altloc);
         
     private:
         std::unordered_map<std::string, colour> elementColors;
+        std::unordered_map<char, colour> altlocColors;
     };
 }
 
