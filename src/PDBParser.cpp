@@ -117,44 +117,60 @@ namespace molphene {
         Chain::compound_iterator compoundIt = currentChainPtr->beginCompound();
         Chain::compound_iterator compoundEndIt = currentChainPtr->endCompound();
         
+        Compound * prevResiduePtr = nullptr;
+        
         for( ; compoundIt != compoundEndIt; ++compoundIt) {
-            std::string resName = compoundIt->getName();
+            Compound & compound = *compoundIt;
+            std::string resName = compound.getName();
             PDBParser::ResidueBondPairMap::const_iterator bpairsIt = resBondPairs.find(resName);
             
             if(bpairsIt != resBondPairs.cend()) {
                 PDBParser::BondPairList bpairs = bpairsIt->second;
-                
                 PDBParser::BondPairList::iterator bpairIt = bpairs.begin();
                 PDBParser::BondPairList::iterator bpairEndIt = bpairs.end();
                 
                 for( ; bpairIt != bpairEndIt; ++bpairIt) {
-                    std::string atomName1 = bpairIt->first;
-                    std::string atomName2 = bpairIt->second;
-                    
-                    Compound::atom_iterator atom1It = compoundIt->beginAtom(atomName1);
-                    Compound::atom_iterator atom1EndIt = compoundIt->endAtom(atomName1);
-                    
-                    for ( ; atom1It != atom1EndIt; ++atom1It) {
-                        char altloc1 = atom1It->getAltLoc();
-                        
-                        Compound::atom_iterator atom2It = compoundIt->beginAtom(atomName2);
-                        Compound::atom_iterator atom2EndIt = compoundIt->endAtom(atomName2);
-                        
-                        for ( ; atom2It != atom2EndIt; ++atom2It) {
-                            if(altloc1) {
-                                char altloc2 = atom2It->getAltLoc();
-                                if(altloc1 == altloc2) {
-                                    currentModelPtr->addBond(*atom1It, *atom2It);
-                                    break;
-                                }
-                            } else {
-                                currentModelPtr->addBond(*atom1It, *atom2It);
-                            }
-                        }
-                    }
+                    buildBond(compound, bpairIt->first, compound, bpairIt->second);
                 }
             }
+            
+            if(prevResiduePtr) {
+                if(!buildBond(*prevResiduePtr, "C", compound, "N")) {
+                    buildBond(*prevResiduePtr, "O3'", compound, "P");
+                }
+            }
+            
+            prevResiduePtr = &compound;
         }
+    }
+    
+    bool PDBParser::buildBond(Compound & comp1, std::string atomName1, Compound & comp2, std::string atomName2) {
+        Compound::atom_iterator atom1It = comp1.beginAtom(atomName1);
+        Compound::atom_iterator atom1EndIt = comp1.endAtom(atomName1);
+        
+        if(atom1It == atom1EndIt) {
+            return false;
+        }
+        
+        do {
+            char altloc1 = atom1It->getAltLoc();
+            Compound::atom_iterator atom2It = comp2.beginAtom(atomName2);
+            Compound::atom_iterator atom2EndIt = comp2.endAtom(atomName2);
+            
+            for ( ; atom2It != atom2EndIt; ++atom2It) {
+                if(altloc1) {
+                    char altloc2 = atom2It->getAltLoc();
+                    if(altloc1 == altloc2) {
+                        currentModelPtr->addBond(*atom1It, *atom2It);
+                        break;
+                    }
+                } else {
+                    currentModelPtr->addBond(*atom1It, *atom2It);
+                }
+            }
+        } while(++atom1It != atom1EndIt);
+        
+        return true;
     }
     
     void PDBParser::parse(Molecule & mol, std::istream & stream) {

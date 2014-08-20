@@ -51,6 +51,8 @@ namespace molphene {
         void handleCONECTRecord(Molecule & mol);
         
         void handleTERRecord(Molecule & mol);
+        
+        bool buildBond(Compound & comp1, std::string atomName1, Compound & comp2, std::string atomName2);
     };
 }
 
