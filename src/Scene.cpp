@@ -4,7 +4,7 @@
 
 namespace molphene {
     
-    Scene::Scene() : displaySpacefill(true), displayStick(false) {
+    Scene::Scene() : displaySpacefill(true), displayStick(false), colorMode_(0) {
         
     }
     
@@ -101,7 +101,7 @@ namespace molphene {
             Atom & atom = *atoms.at(i);
             const Element & element = atom.getElement();
             const vec3f & apos = atom.getPosition();
-            const colour & acol = colorManager.getElementColor(element.symbol);
+            const colour & acol = getAtomColor_(atom);
             float arad = element.radiiVdW;
             
             meshBuilder.buildSphere(i, apos, arad, acol);
@@ -126,13 +126,11 @@ namespace molphene {
             Atom & atom1 = bond->getAtom1();
             Atom & atom2 = bond->getAtom2();
             
-            const Element & element1 = atom1.getElement();
             const vec3f & apos1 = atom1.getPosition();
-            const colour & acol1 = colorManager.getElementColor(element1.symbol);
+            const colour & acol1 = getAtomColor_(atom1);
             
-            const Element & element2 = atom2.getElement();
             const vec3f & apos2 = atom2.getPosition();
-            const colour & acol2 = colorManager.getElementColor(element2.symbol);
+            const colour & acol2 = getAtomColor_(atom2);
             
             unsigned int idx = i * 2;
             vec3f midpos((apos1 + apos2) / 2);
@@ -231,5 +229,27 @@ namespace molphene {
         modelMatrix.translate(-bs.getCenter());
     }
     
+    colormode_t Scene::getColorMode() {
+        return colorMode_;
+    }
+    
+    colormode_t Scene::setColorMode(colormode_t val) {
+        if(colorMode_ != val) {
+            colorMode_ = val;
+            // NOTE: resetMesh to expensive for just reset the veritces colors
+            resetMesh();
+        }
+        return colorMode_ = val;
+    }
+    
+    const colour & Scene::getAtomColor_(const Atom & atm) {
+        switch (colorMode_) {
+            case 1:
+                return colorManager.getAltlocColor(atm.getAltLoc());
+                break;
+        }
+        
+        return colorManager.getElementColor(atm.getElement().symbol);
+    }
     
 }

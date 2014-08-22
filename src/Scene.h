@@ -21,6 +21,7 @@
 #include "PDBParser.h"
 
 namespace molphene {
+    typedef unsigned char colormode_t;
     
     class Scene {
     public:
@@ -44,7 +45,13 @@ namespace molphene {
         
         void openStream(std::istream & is);
         
+        colormode_t setColorMode(colormode_t val);
+        
+        colormode_t getColorMode();
+        
     private:
+        colormode_t colorMode_;
+        
         Renderer renderer;
         
         ColorLightRenderer cylinderRenderer;
@@ -56,6 +63,8 @@ namespace molphene {
         Molecule molecule;
         
         ColourManager colorManager;
+        
+        const colour & getAtomColor_(const Atom & atm);
         
     };
     
