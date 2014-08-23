@@ -52,7 +52,16 @@ namespace molphene {
         
     };
     
+    vec3f operator + (const float & s, const vec3f & v);
+    
+    vec3f operator - (const float & s, const vec3f & v);
+    
+    vec3f operator * (const float & s, const vec3f & v);
+    
+    vec3f operator / (const float & s, const vec3f & v);
+    
     vec3f cross(const vec3f & a, const vec3f & b);
+    
 }
 
 #endif /* defined(__molphene__vec3f__) */

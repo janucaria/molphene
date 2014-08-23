@@ -62,7 +62,6 @@ namespace molphene {
         return *this;
     }
     
-    
     vec3f vec3f::operator - () const {
         return vec3f(-this->x, -this->y, -this->z);
     }
@@ -101,7 +100,6 @@ namespace molphene {
         return *this;
     }
     
-    
     vec3f vec3f::operator / (const float & s) const {
         return vec3f(*this) /= s;
     }
@@ -117,6 +115,22 @@ namespace molphene {
         return sqrt(x * x + y * y + z * z);
     }
     
+    vec3f operator + (const float & s, const vec3f & v) {
+        return vec3f(s + v.x, s + v.y, s + v.z);
+    }
+    
+    vec3f operator - (const float & s, const vec3f & v) {
+        return vec3f(s - v.x, s - v.y, s - v.z);
+    }
+    
+    vec3f operator * (const float & s, const vec3f & v) {
+        return vec3f(s * v.x, s * v.y, s * v.z);
+    }
+    
+    vec3f operator / (const float & s, const vec3f & v) {
+        return vec3f(s / v.x, s / v.y, s / v.z);
+    }
+    
     vec3f & vec3f::normalize() {
         return this->operator/=(length());
     }
@@ -124,5 +138,4 @@ namespace molphene {
     vec3f cross(const vec3f & a, const vec3f & b) {
         return vec3f(a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z, a.x * b.y - a.y * b.x);
     }
-    
 }
