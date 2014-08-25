@@ -1,6 +1,8 @@
 #include "Scene.h"
-#include "CylinderMeshBuilder.h"
+#include "sphere_data.h"
+#include "cylinder_data.h"
 #include "mat3f.h"
+#include <tuple>
 
 namespace molphene {
     
@@ -97,37 +99,41 @@ namespace molphene {
             }
         }
         
+        sphere_data spheredat;
+        cylinder_data cylinderdat;
         
         LOG_D("Size of atoms : %ld", atoms.size());
         
         GLuint totalAtoms = static_cast<GLuint>(atoms.size());
-        SphereMeshBuilder meshBuilder(totalAtoms);
-        GLuint totalVertices = meshBuilder.getTotalVertices();
+        spheredat.reserve(totalAtoms);
+        GLuint totalVertices = totalAtoms * spheredat.unitlen();
         renderer.setVericesSize(totalVertices);
         
         LOG_D("vertices size : %u", totalVertices);
         
         for(unsigned int i = 0; i < totalAtoms; ++i) {
-            
             Atom & atom = *atoms.at(i);
             const Element & element = atom.getElement();
             const vec3f & apos = atom.getPosition();
             const colour & acol = getAtomColor_(atom);
             float arad = element.radiiVdW;
             
-            meshBuilder.buildSphere(i, apos, arad, acol);
+            spheredat.push(std::make_tuple(apos, arad, acol));
+            
+            if(spheredat.is_full()) {
+                renderer.push(spheredat.length(), spheredat.positions(), spheredat.normals(), spheredat.colors());
+                spheredat.resize();
+            }
         }
         
-        renderer.setBufferPosition(meshBuilder.getPositions());
-        renderer.setBufferNormal(meshBuilder.getNormals());
-        renderer.setBufferColor(meshBuilder.getColors());
+        renderer.push(spheredat.length(), spheredat.positions(), spheredat.normals(), spheredat.colors());
         
         
         LOG_D("Size of bonds : %ld", bonds.size());
         
         GLuint totalBonds = static_cast<GLuint>(bonds.size());
-        CylinderMeshBuilder meshBuilder2(totalBonds * 2);
-        GLuint totalVertices2 = meshBuilder2.getTotalVertices();
+        cylinderdat.reserve(totalBonds);
+        GLuint totalVertices2 = totalBonds * cylinderdat.unitlen() * 2;
         cylinderRenderer.setVericesSize(totalVertices2);
 
 //        LOG_D("vertices size : %u", totalVertices);
@@ -143,17 +149,22 @@ namespace molphene {
             const vec3f & apos2 = atom2.getPosition();
             const colour & acol2 = getAtomColor_(atom2);
             
-            unsigned int idx = i * 2;
             vec3f midpos((apos1 + apos2) / 2);
             float arad = 0.25f;
             
-            meshBuilder2.buildMesh(idx + 0, apos1, midpos, arad, acol1);
-            meshBuilder2.buildMesh(idx + 1, midpos, apos2, arad, acol2);
+            cylinderdat.push(std::make_tuple(apos1, midpos, arad, acol1));
+            if(cylinderdat.is_full()) {
+                cylinderRenderer.push(cylinderdat.length(), cylinderdat.positions(), cylinderdat.normals(), cylinderdat.colors());
+                cylinderdat.resize();
+            }
+            cylinderdat.push(std::make_tuple(midpos, apos2, arad, acol2));
+            if(cylinderdat.is_full()) {
+                cylinderRenderer.push(cylinderdat.length(), cylinderdat.positions(), cylinderdat.normals(), cylinderdat.colors());
+                cylinderdat.resize();
+            }
         }
         
-        cylinderRenderer.setBufferPosition(meshBuilder2.getPositions());
-        cylinderRenderer.setBufferNormal(meshBuilder2.getNormals());
-        cylinderRenderer.setBufferColor(meshBuilder2.getColors());
+        cylinderRenderer.push(cylinderdat.length(), cylinderdat.positions(), cylinderdat.normals(), cylinderdat.colors());
     }
     
     void Scene::clearRect() {

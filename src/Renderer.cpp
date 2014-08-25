@@ -2,14 +2,13 @@
 
 namespace molphene {
     
-    Renderer::Renderer() :
-        gProgram(0),
-        gVertexShader(0),
-        gFragmentShader(0),
-        gUniformModelViewMatrixLocation(-1),
-        gUniformProjectionMatrixLocation(-1)
+    Renderer::Renderer()
+    : gProgram(0)
+    , gVertexShader(0)
+    , gFragmentShader(0)
+    , gUniformModelViewMatrixLocation(-1)
+    , gUniformProjectionMatrixLocation(-1)
     {
-        
     }
     
     bool Renderer::setupGL() {
@@ -51,6 +50,7 @@ namespace molphene {
     
     void Renderer::setVericesSize(GLuint size) {
         verticesSize = size;
+        size_ = 0;
         
         glBindBuffer(GL_ARRAY_BUFFER, gPositionBuffer);
         glBufferData(GL_ARRAY_BUFFER, sizeof(vec3f) * verticesSize, nullptr, GL_STATIC_DRAW);
@@ -62,19 +62,29 @@ namespace molphene {
         glBufferData(GL_ARRAY_BUFFER, sizeof(colour) * verticesSize , nullptr, GL_DYNAMIC_DRAW);
     }
     
-    void Renderer::setBufferPosition(const vec3f * data) {
+    void Renderer::push(GLsizeiptr size, const vec3f * posdat, const vec3f * normdat, const colour * coldat) {
+        if(!size) return;
+        
+        setBufferPosition(size_, size, posdat);
+        setBufferNormal(size_, size, normdat);
+        setBufferColor(size_, size, coldat);
+        
+        size_ += size;
+    }
+    
+    void Renderer::setBufferPosition(GLintptr offset, GLsizeiptr size, const vec3f * data) {
         glBindBuffer(GL_ARRAY_BUFFER, gPositionBuffer);
-        glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vec3f) * verticesSize, data);
+        glBufferSubData(GL_ARRAY_BUFFER, offset * sizeof(vec3f), size * sizeof(vec3f), data);
     }
     
-    void Renderer::setBufferNormal(const vec3f * data) {
+    void Renderer::setBufferNormal(GLintptr offset, GLsizeiptr size, const vec3f * data) {
         glBindBuffer(GL_ARRAY_BUFFER, gNormalBuffer);
-        glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vec3f) * verticesSize, data);
+        glBufferSubData(GL_ARRAY_BUFFER, offset * sizeof(vec3f), size * sizeof(vec3f), data);
     }
     
-    void Renderer::setBufferColor(const colour * data) {
+    void Renderer::setBufferColor(GLintptr offset, GLsizeiptr size, const colour * data) {
         glBindBuffer(GL_ARRAY_BUFFER, gColorBuffer);
-        glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(colour) * verticesSize, data);
+        glBufferSubData(GL_ARRAY_BUFFER, offset * sizeof(colour), size * sizeof(colour), data);
     }
     
     void Renderer::setModelViewMatrix(const mat4f & m4) {

@@ -18,11 +18,13 @@ namespace molphene {
         
         void setVericesSize(GLuint size);
         
-        void setBufferPosition(const vec3f * data);
+        void setBufferPosition(GLintptr offset, GLsizeiptr size, const vec3f * data);
         
-        void setBufferNormal(const vec3f * data);
+        void setBufferNormal(GLintptr offset, GLsizeiptr size, const vec3f * data);
         
-        void setBufferColor(const colour * data);
+        void setBufferColor(GLintptr offset, GLsizeiptr size, const colour * data);
+        
+        void push(GLsizeiptr size, const vec3f * posdat, const vec3f * normdat, const colour * caldat);
         
         void setModelViewMatrix(const mat4f & m4);
         
@@ -49,6 +51,8 @@ namespace molphene {
         void useGLProgram() const;
         
     protected:
+        GLintptr size_;
+        
         const static char * vertexShaderSource;
         const static char * fragmentShaderSource;
         

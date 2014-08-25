@@ -15,7 +15,6 @@
 #include "Bond.h"
 #include "Model.h"
 #include "Molecule.h"
-#include "SphereMeshBuilder.h"
 #include "ColourManager.h"
 #include "BoundingSphere.h"
 #include "PDBParser.h"
