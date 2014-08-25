@@ -11,7 +11,6 @@ namespace molphene {
     class Chain {
     public:
         typedef std::vector<Compound> CompoundList;
-        typedef std::map<Compound::ResidueNumber, CompoundList::size_type> CompoundMap;
         typedef CompoundList::iterator compound_iterator;
                 
         Chain(Model & model, char chainId);
@@ -24,12 +23,20 @@ namespace molphene {
         
         compound_iterator endCompound();
         
+        compound_iterator endResidue();
+        
         Model & getModel() const;
         
         char getId() const;
         
+        void terminate();
+        
     private:
+        typedef std::map<Compound::ResidueNumber, CompoundList::size_type> CompoundMap;
+        
         char chainID_;
+        
+        CompoundList::size_type ter_;
         
         CompoundList compounds_;
         

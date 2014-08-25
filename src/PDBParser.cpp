@@ -142,6 +142,8 @@ namespace molphene {
             
             prevResiduePtr = &compound;
         }
+        
+        currentChainPtr->terminate();
     }
     
     bool PDBParser::buildBond(Compound & comp1, std::string atomName1, Compound & comp2, std::string atomName2) {

@@ -2,9 +2,10 @@
 #include "Model.h"
 
 namespace molphene {
-    Chain::Chain(Model & model, char chainID) :
-    modelPtr_(&model),
-    chainID_(chainID)
+    Chain::Chain(Model & model, char chainID)
+    : modelPtr_(&model)
+    , chainID_(chainID)
+    , ter_(0)
     {
     }
     
@@ -26,11 +27,21 @@ namespace molphene {
         return compounds_.end();
     }
     
+    Chain::compound_iterator Chain::endResidue() {
+        Chain::compound_iterator it = compounds_.begin();
+        std::advance(it, ter_);
+        return it;
+    }
+    
     Model & Chain::getModel() const {
         return *modelPtr_;
     }
     
     char Chain::getId() const {
         return chainID_;
+    }
+    
+    void Chain::terminate() {
+        ter_ = compounds_.size();
     }
 }

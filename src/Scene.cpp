@@ -65,8 +65,19 @@ namespace molphene {
             
             for( ; chainIt != chainEndIt; ++chainIt) {
                 Chain::compound_iterator compoundIt = chainIt->beginCompound();
-                Chain::compound_iterator compoundEndIt = chainIt->endCompound();
+                Chain::compound_iterator compoundEndIt = chainIt->endResidue();
                 
+                for( ; compoundIt != compoundEndIt; ++compoundIt) {
+                    Compound::atom_iterator atomIt = compoundIt->beginAtom();
+                    Compound::atom_iterator atomEndIt = compoundIt->endAtom();
+                    
+                    for( ; atomIt != atomEndIt; ++atomIt) {
+                        Atom * atom = &(*atomIt);
+                        atoms.push_back(atom);
+                    }
+                }
+                
+                compoundEndIt = chainIt->endCompound();
                 for( ; compoundIt != compoundEndIt; ++compoundIt) {
                     Compound::atom_iterator atomIt = compoundIt->beginAtom();
                     Compound::atom_iterator atomEndIt = compoundIt->endAtom();
