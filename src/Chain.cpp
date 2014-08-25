@@ -6,20 +6,16 @@ namespace molphene {
     modelPtr_(&model),
     chainID_(chainID)
     {
-        
     }
     
     Compound & Chain::addCompound(const Compound::ResidueNumber & resNum) {
-        std::pair<CompoundMap::iterator, bool> emplaced = compounds_.emplace(std::piecewise_construct, std::make_tuple(resNum), std::forward_as_tuple(*this, resNum));
-        return emplaced.first->second;
+        compounds_.emplace_back(*this, resNum);
+        std::pair<CompoundMap::iterator, bool> emplaced = res_lookup_.emplace(std::piecewise_construct, std::make_tuple(resNum), std::forward_as_tuple(compounds_.size() - 1));
+        return compounds_.at(emplaced.first->second);
     }
     
     Compound & Chain::getCompound(const Compound::ResidueNumber & resNum) {
-        return compounds_.at(resNum);
-    }
-    
-    Chain::CompoundMap & Chain::getCompounds() {
-        return compounds_;
+        return compounds_.at(res_lookup_.at(resNum));
     }
     
     Chain::compound_iterator Chain::beginCompound() {
@@ -36,40 +32,5 @@ namespace molphene {
     
     char Chain::getId() const {
         return chainID_;
-    }
-    
-    
-    Chain::compound_iterator::compound_iterator(Chain::compound_iterator::value_type it) : it_(it) {
-    }
-    
-    Chain::compound_iterator::compound_iterator(const Chain::compound_iterator & cit) : it_(cit.it_) {
-        
-    }
-    
-    Chain::compound_iterator & Chain::compound_iterator::operator++() {
-        ++it_;
-        return *this;
-    }
-    
-    Chain::compound_iterator Chain::compound_iterator::operator++(int) {
-        Chain::compound_iterator tmp(*this);
-        operator++();
-        return tmp;
-    }
-    
-    bool Chain::compound_iterator::operator==(const Chain::compound_iterator& rhs) {
-        return it_ == rhs.it_;
-    }
-    
-    bool Chain::compound_iterator::operator!=(const Chain::compound_iterator& rhs) {
-        return it_ != rhs.it_;
-    }
-    
-    Chain::compound_iterator::reference Chain::compound_iterator::operator*() {
-        return it_->second;
-    }
-    
-    Chain::compound_iterator::pointer Chain::compound_iterator::operator->() {
-        return &it_->second;
     }
 }

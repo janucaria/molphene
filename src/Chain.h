@@ -10,38 +10,15 @@ namespace molphene {
     
     class Chain {
     public:
-        typedef std::map<Compound::ResidueNumber, Compound> CompoundMap;
-        
-        class compound_iterator : public std::iterator<CompoundMap::iterator::iterator_category, CompoundMap::iterator, CompoundMap::iterator::difference_type, Compound*, Compound&> {
-            
-        public:
-            compound_iterator(value_type it);
-            
-            compound_iterator(const compound_iterator & cit);
-            
-            compound_iterator& operator++();
-            
-            compound_iterator operator++(int);
-            
-            bool operator==(const compound_iterator& rhs);
-            
-            bool operator!=(const compound_iterator& rhs);
-            
-            reference operator*();
-            
-            pointer operator->();
-            
-        private:
-            value_type it_;
-        };
-        
+        typedef std::vector<Compound> CompoundList;
+        typedef std::map<Compound::ResidueNumber, CompoundList::size_type> CompoundMap;
+        typedef CompoundList::iterator compound_iterator;
+                
         Chain(Model & model, char chainId);
         
         Compound & addCompound(const Compound::ResidueNumber & resNum);
         
         Compound & getCompound(const Compound::ResidueNumber & resNum);
-        
-        CompoundMap & getCompounds();
         
         compound_iterator beginCompound();
         
@@ -54,9 +31,9 @@ namespace molphene {
     private:
         char chainID_;
         
-        CompoundMap compounds_;
+        CompoundList compounds_;
         
-        CompoundMap ligands_;
+        CompoundMap res_lookup_;
         
         Model * modelPtr_;
     };
