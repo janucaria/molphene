@@ -6,8 +6,17 @@
 
 namespace molphene {
     
-    Scene::Scene() : displaySpacefill(true), displayStick(false), colorMode_(0) {
-        
+    Scene::Scene()
+    : displaySpacefill(true)
+    , displayStick(false)
+    , colorMode_(0)
+    , molecule(new Molecule())
+    {
+    }
+    
+    Scene::~Scene() {
+        delete molecule;
+        molecule = nullptr;
     }
     
     bool Scene::setupGraphics(GLsizei width, GLsizei height) {
@@ -58,8 +67,8 @@ namespace molphene {
         std::vector<Atom*> atoms;
         std::vector<Bond*> bonds;
         
-        Molecule::model_iterator modelIt = molecule.beginModel();
-        Molecule::model_iterator modelEndIt = molecule.endModel();
+        Molecule::model_iterator modelIt = molecule->beginModel();
+        Molecule::model_iterator modelEndIt = molecule->endModel();
         
         for( ; modelIt != modelEndIt; ++modelIt) {
             Model::chain_iterator chainIt = modelIt->beginChain();
@@ -206,13 +215,16 @@ namespace molphene {
     
     void Scene::openStream(std::istream & is) {
         PDBParser parser;
-        parser.parse(molecule, is);
+        delete molecule;
+        molecule = nullptr;
+        molecule = new Molecule();
+        parser.parse(*molecule, is);
         
         // calculate bounding sphere
         BoundingSphere bs;
         
-        Molecule::model_iterator modelIt = molecule.beginModel();
-        Molecule::model_iterator modelEndIt = molecule.endModel();
+        Molecule::model_iterator modelIt = molecule->beginModel();
+        Molecule::model_iterator modelEndIt = molecule->endModel();
         
         for( ; modelIt != modelEndIt; ++modelIt) {
             Model::chain_iterator chainIt = modelIt->beginChain();

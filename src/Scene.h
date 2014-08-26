@@ -30,6 +30,8 @@ namespace molphene {
         
         Scene();
         
+        virtual ~Scene();
+        
         bool setupGraphics(GLsizei width, GLsizei height);
         
         void resetMesh();
@@ -59,7 +61,7 @@ namespace molphene {
         
         Camera camera;
         
-        Molecule molecule;
+        Molecule * molecule;
         
         ColourManager colorManager;
         
