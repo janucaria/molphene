@@ -122,7 +122,7 @@ namespace molphene {
         
         for(unsigned int i = 0; i < totalAtoms; ++i) {
             Atom & atom = *atoms.at(i);
-            const Element & element = atom.getElement();
+            const Atom::element & element = atom.getElement();
             const vec3f & apos = atom.getPosition();
             const colour & acol = getAtomColor_(atom);
             float arad = element.radiiVdW;

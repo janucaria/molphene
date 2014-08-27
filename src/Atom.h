@@ -3,30 +3,22 @@
 
 #include <string>
 #include <unordered_map>
-
 #include "vec3f.h"
-#include "Element.h"
 
 namespace molphene {
     class Compound;
     
     class Atom {
-        
-        static const std::unordered_map<std::string, Element> ELEMENTS;
-        
-        unsigned int serial;
-        
-        char altLoc_;
-        
-        std::string name_;
-        
-        vec3f position;
-        
-        Element element;
-        
-        Compound * compoundPtr_;
-        
     public:
+        struct element {
+            const std::string name;
+            const std::string symbol;
+            const unsigned char number;
+            const float radiiVdW;
+            const float radiiCovalent;
+            
+            element(std::string name, std::string symbol, unsigned char number, float VdWRadii, float covalentRadii);
+        };
         
         Atom(Compound & compound, const std::string & elementSymbol, std::string name, unsigned int serial);
         
@@ -34,7 +26,7 @@ namespace molphene {
         
         unsigned int getSerial() const;
         
-        const Element & getElement() const;
+        const element & getElement() const;
         
         const vec3f & getPosition() const;
         
@@ -43,7 +35,24 @@ namespace molphene {
         char getAltLoc() const;
         
         std::string getName();
+        
+    private:
+        static const std::unordered_map<std::string, element> elements;
+        
+        unsigned int serial;
+        
+        char altLoc_;
+        
+        std::string name_;
+        
+        vec3f position_;
+        
+        element element_;
+        
+        Compound * compoundPtr_;
     };
+    
+        
 }
 
 
