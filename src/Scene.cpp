@@ -127,7 +127,7 @@ namespace molphene {
             const colour & acol = getAtomColor_(atom);
             float arad = element.radiiVdW;
             
-            spheredat.push(std::make_tuple(apos, arad, acol));
+            spheredat.push(apos, arad, acol);
             
             if(spheredat.is_full()) {
                 renderer.push(spheredat.length(), spheredat.positions(), spheredat.normals(), spheredat.colors());
@@ -161,12 +161,12 @@ namespace molphene {
             vec3f midpos((apos1 + apos2) / 2);
             float arad = 0.25f;
             
-            cylinderdat.push(std::make_tuple(apos1, midpos, arad, acol1));
+            cylinderdat.push(apos1, midpos, arad, acol1);
             if(cylinderdat.is_full()) {
                 cylinderRenderer.push(cylinderdat.length(), cylinderdat.positions(), cylinderdat.normals(), cylinderdat.colors());
                 cylinderdat.resize();
             }
-            cylinderdat.push(std::make_tuple(midpos, apos2, arad, acol2));
+            cylinderdat.push(midpos, apos2, arad, acol2);
             if(cylinderdat.is_full()) {
                 cylinderRenderer.push(cylinderdat.length(), cylinderdat.positions(), cylinderdat.normals(), cylinderdat.colors());
                 cylinderdat.resize();

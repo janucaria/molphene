@@ -12,17 +12,7 @@ namespace molphene {
         return ((bands_ + 1) * 2 + 2) * 3;
     }
     
-    void cylinder_data::insert(size_t idx, cylinder_data::input_type param) {
-        vec3f pos1, pos2;
-        float rad;
-        colour col;
-        vec3f * posdat;
-        vec3f * normdat;
-        colour * coldat;
-        
-        std::tie(pos1, pos2, rad, col) = param;
-        std::tie(posdat, normdat, coldat) = data_;
-        
+    void cylinder_data::insert(size_t idx, vec3f pos1, vec3f pos2, float rad, colour col) {
         vec3f dir = pos2 - pos1;
         dir.normalize();
         
@@ -46,28 +36,28 @@ namespace molphene {
             vec3f vy = top * sinTheta;
             vec3f n = vx + vy;
             
-            posdat[idx] = pos1;
-            normdat[idx] = -dir;
-            coldat[idx] = col;
+            positions_[idx] = pos1;
+            normals_[idx] = -dir;
+            colors_[idx] = col;
             
             idx++;
             
             if(i == 0) {
-                posdat[idx] = pos1;
-                normdat[idx] = dir;
-                coldat[idx] = col;
+                positions_[idx] = pos1;
+                normals_[idx] = dir;
+                colors_[idx] = col;
                 idx++;
             }
             
-            posdat[idx] = pos1 + n * rad;
-            normdat[idx] = -dir;
-            coldat[idx] = col;
+            positions_[idx] = pos1 + n * rad;
+            normals_[idx] = -dir;
+            colors_[idx] = col;
             idx++;
             
             if(i == bands_) {
-                posdat[idx] = pos1 + n * rad;
-                normdat[idx] = -dir;
-                coldat[idx] = col;
+                positions_[idx] = pos1 + n * rad;
+                normals_[idx] = -dir;
+                colors_[idx] = col;
                 idx++;
             }
         }
@@ -81,28 +71,28 @@ namespace molphene {
             vec3f vy = top * sinTheta;
             vec3f n = vx + vy;
             
-            posdat[idx] = pos1 + n * rad;
-            normdat[idx] = n;
-            coldat[idx] = col;
+            positions_[idx] = pos1 + n * rad;
+            normals_[idx] = n;
+            colors_[idx] = col;
             
             idx++;
             
             if(i == 0) {
-                posdat[idx] = pos1 + n * rad;
-                normdat[idx] = n;
-                coldat[idx] = col;
+                positions_[idx] = pos1 + n * rad;
+                normals_[idx] = n;
+                colors_[idx] = col;
                 idx++;
             }
             
-            posdat[idx] = pos2 + n * rad;
-            normdat[idx] = n;
-            coldat[idx] = col;
+            positions_[idx] = pos2 + n * rad;
+            normals_[idx] = n;
+            colors_[idx] = col;
             idx++;
             
             if(i == bands_) {
-                posdat[idx] = pos2 + n * rad;
-                normdat[idx] = n;
-                coldat[idx] = col;
+                positions_[idx] = pos2 + n * rad;
+                normals_[idx] = n;
+                colors_[idx] = col;
                 idx++;
             }
         }
@@ -116,28 +106,28 @@ namespace molphene {
             vec3f vy = top * sinTheta;
             vec3f n = vx + vy;
             
-            posdat[idx] = pos2 + n * rad;
-            normdat[idx] = dir;
-            coldat[idx] = col;
+            positions_[idx] = pos2 + n * rad;
+            normals_[idx] = dir;
+            colors_[idx] = col;
             
             idx++;
             
             if(i == 0) {
-                posdat[idx] = pos2 + n * rad;
-                normdat[idx] = dir;
-                coldat[idx] = col;
+                positions_[idx] = pos2 + n * rad;
+                normals_[idx] = dir;
+                colors_[idx] = col;
                 idx++;
             }
             
-            posdat[idx] = pos2;
-            normdat[idx] = dir;
-            coldat[idx] = col;
+            positions_[idx] = pos2;
+            normals_[idx] = dir;
+            colors_[idx] = col;
             idx++;
             
             if(i == bands_) {
-                posdat[idx] = pos2;
-                normdat[idx] = dir;
-                coldat[idx] = col;
+                positions_[idx] = pos2;
+                normals_[idx] = dir;
+                colors_[idx] = col;
                 idx++;
             }
         }

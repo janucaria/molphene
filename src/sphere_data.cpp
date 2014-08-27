@@ -13,17 +13,7 @@ namespace molphene {
         return londiv_ * (latdiv_ + 1) * 2 + londiv_ * 2;
     }
     
-    void sphere_data::insert(size_t idx, sphere_data::input_type param) {
-        vec3f pos;
-        float rad;
-        colour col;
-        vec3f * posdat;
-        vec3f * normdat;
-        colour * coldat;
-        
-        std::tie(pos, rad, col) = param;
-        std::tie(posdat, normdat, coldat) = data_;
-        
+    void sphere_data::insert(size_t idx, vec3f pos, float rad, colour col) {
         for(unsigned int i = 0; i < londiv_; ++i) {
             float theta = 1.0f * i * M_PI / londiv_;
             float sinTheta = sin(theta);
@@ -40,29 +30,29 @@ namespace molphene {
                 
                 vec3f norm(cosPhi * sinTheta, sinPhi * sinTheta, cosTheta);
                 
-                posdat[idx] = pos;
-                normdat[idx] = norm * rad;
-                coldat[idx] = col;
+                positions_[idx] = pos;
+                normals_[idx] = norm * rad;
+                colors_[idx] = col;
                 idx++;
                 
                 if(j == 0) {
-                    posdat[idx] = posdat[idx - 1];
-                    normdat[idx] = normdat[idx - 1];
-                    coldat[idx] = coldat[idx - 1];
+                    positions_[idx] = positions_[idx - 1];
+                    normals_[idx] = normals_[idx - 1];
+                    colors_[idx] = colors_[idx - 1];
                     idx++;
                 }
                 
                 norm(cosPhi * nextSinTheta, sinPhi * nextSinTheta, nextCosTheta);
                 
-                posdat[idx] = pos;
-                normdat[idx] = norm * rad;
-                coldat[idx] = col;
+                positions_[idx] = pos;
+                normals_[idx] = norm * rad;
+                colors_[idx] = col;
                 idx++;
                 
                 if(j == latdiv_) {
-                    posdat[idx] = posdat[idx - 1];
-                    normdat[idx] = normdat[idx - 1];
-                    coldat[idx] = coldat[idx - 1];
+                    positions_[idx] = positions_[idx - 1];
+                    normals_[idx] = normals_[idx - 1];
+                    colors_[idx] = colors_[idx - 1];
                     idx++;
                 }
             }

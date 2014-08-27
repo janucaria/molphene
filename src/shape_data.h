@@ -2,19 +2,15 @@
 #define __Molphene__shape_data__
 
 namespace molphene {
-    template<typename T, typename U>
+    template<typename... T>
     class shape_data {
     public:
-        typedef T input_type;
-        typedef U output_type;
         
         shape_data();
         
         virtual ~shape_data();
         
-        void push(input_type param);
-        
-        virtual const output_type data() = 0;
+        void push(T... param);
         
         virtual void reserve(size_t n);
         
@@ -34,7 +30,7 @@ namespace molphene {
         
     protected:
         
-        virtual void insert(size_t idx, input_type param) = 0;
+        virtual void insert(size_t idx, T... param) = 0;
         
     private:
         size_t size_;
@@ -43,55 +39,55 @@ namespace molphene {
     };
     
     
-    template<typename T, typename U>
-    shape_data<T, U>::shape_data()
+    template<typename ...T>
+    shape_data<T...>::shape_data()
     : size_(0)
     , capacity_(0)
     {
     }
     
-    template<typename T, typename U>
-    shape_data<T, U>::~shape_data() {
+    template<typename ...T>
+    shape_data<T...>::~shape_data() {
     }
     
-    template<typename T, typename U>
-    void shape_data<T, U>::clear() {
+    template<typename ...T>
+    void shape_data<T...>::clear() {
         size_ = 0;
     }
     
-    template<typename T, typename U>
-    void shape_data<T, U>::reserve(size_t n) {
+    template<typename ...T>
+    void shape_data<T...>::reserve(size_t n) {
         capacity_ = n;
     }
     
-    template<typename T, typename U>
-    bool shape_data<T, U>::is_full() {
+    template<typename ...T>
+    bool shape_data<T...>::is_full() {
         return size_ == capacity_;
     }
     
-    template<typename T, typename U>
-    size_t shape_data<T, U>::size() const {
+    template<typename ...T>
+    size_t shape_data<T...>::size() const {
         return size_;
     }
     
-    template<typename T, typename U>
-    void shape_data<T, U>::resize() {
+    template<typename ...T>
+    void shape_data<T...>::resize() {
         size_ = 0;
     }
     
-    template<typename T, typename U>
-    size_t shape_data<T, U>::capacity() const {
+    template<typename ...T>
+    size_t shape_data<T...>::capacity() const {
         return capacity_;
     }
     
-    template<typename T, typename U>
-    void shape_data<T, U>::push(shape_data<T, U>::input_type param) {
-        insert(size_ * unitlen(), param);
+    template<typename ...T>
+    void shape_data<T...>::push(T... param) {
+        insert(size_ * unitlen(), param...);
         ++size_;
     }
     
-    template<typename T, typename U>
-    size_t shape_data<T, U>::length() const {
+    template<typename ...T>
+    size_t shape_data<T...>::length() const {
         return size_ * unitlen();
     }
 }
