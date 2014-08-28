@@ -6,6 +6,7 @@
 #include "vec3f.h"
 #include "colour.h"
 #include "mat4f.h"
+#include "color_light_buffer.h"
 
 namespace molphene {
     class Renderer {
@@ -15,16 +16,6 @@ namespace molphene {
         Renderer();
         
         bool setupGL();
-        
-        void setVericesSize(GLuint size);
-        
-        void setBufferPosition(GLintptr offset, GLsizeiptr size, const vec3f * data);
-        
-        void setBufferNormal(GLintptr offset, GLsizeiptr size, const vec3f * data);
-        
-        void setBufferColor(GLintptr offset, GLsizeiptr size, const colour * data);
-        
-        void push(GLsizeiptr size, const vec3f * posdat, const vec3f * normdat, const colour * caldat);
         
         void setModelViewMatrix(const mat4f & m4);
         
@@ -46,18 +37,15 @@ namespace molphene {
         
         void setMaterialShininess(const float & v);
         
-        void render();
+        void render(color_light_buffer & buff);
         
         void useGLProgram() const;
         
     protected:
-        GLintptr size_;
         
         const static char * vertexShaderSource;
         const static char * fragmentShaderSource;
-        
-        GLuint verticesSize;
-        
+                
         GLuint gProgram;
         
         GLuint gVertexShader;
@@ -79,10 +67,6 @@ namespace molphene {
         GLint gUniformMaterialDiffuseLocation;
         GLint gUniformMaterialSpecularLocation;
         GLint gUniformMaterialShininessLocation;
-        
-        GLuint gPositionBuffer;
-        GLuint gNormalBuffer;
-        GLuint gColorBuffer;
         
         GLuint createShader(GLenum shaderType, const char* pSource);
         GLuint createProgram(const GLuint vertexShader, const GLuint fragmentShader);

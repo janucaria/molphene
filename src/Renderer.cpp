@@ -19,11 +19,6 @@ namespace molphene {
         gVertexColorLocation = glGetAttribLocation(gProgram, "a_Color");
         
         setupGLUniformsLocation();
-        
-        glGenBuffers(1, &gPositionBuffer);
-        glGenBuffers(1, &gNormalBuffer);
-        glGenBuffers(1, &gColorBuffer);
-        
         return true;
     }
     
@@ -47,46 +42,7 @@ namespace molphene {
         gUniformMaterialSpecularLocation = glGetUniformLocation(gProgram, "u_Material_specular");
         gUniformMaterialShininessLocation = glGetUniformLocation(gProgram, "u_Material_shininess");
     }
-    
-    void Renderer::setVericesSize(GLuint size) {
-        verticesSize = size;
-        size_ = 0;
         
-        glBindBuffer(GL_ARRAY_BUFFER, gPositionBuffer);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(vec3f) * verticesSize, nullptr, GL_STATIC_DRAW);
-        
-        glBindBuffer(GL_ARRAY_BUFFER, gNormalBuffer);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(vec3f) * verticesSize, nullptr, GL_STATIC_DRAW);
-        
-        glBindBuffer(GL_ARRAY_BUFFER, gColorBuffer);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(colour) * verticesSize , nullptr, GL_DYNAMIC_DRAW);
-    }
-    
-    void Renderer::push(GLsizeiptr size, const vec3f * posdat, const vec3f * normdat, const colour * coldat) {
-        if(!size) return;
-        
-        setBufferPosition(size_, size, posdat);
-        setBufferNormal(size_, size, normdat);
-        setBufferColor(size_, size, coldat);
-        
-        size_ += size;
-    }
-    
-    void Renderer::setBufferPosition(GLintptr offset, GLsizeiptr size, const vec3f * data) {
-        glBindBuffer(GL_ARRAY_BUFFER, gPositionBuffer);
-        glBufferSubData(GL_ARRAY_BUFFER, offset * sizeof(vec3f), size * sizeof(vec3f), data);
-    }
-    
-    void Renderer::setBufferNormal(GLintptr offset, GLsizeiptr size, const vec3f * data) {
-        glBindBuffer(GL_ARRAY_BUFFER, gNormalBuffer);
-        glBufferSubData(GL_ARRAY_BUFFER, offset * sizeof(vec3f), size * sizeof(vec3f), data);
-    }
-    
-    void Renderer::setBufferColor(GLintptr offset, GLsizeiptr size, const colour * data) {
-        glBindBuffer(GL_ARRAY_BUFFER, gColorBuffer);
-        glBufferSubData(GL_ARRAY_BUFFER, offset * sizeof(colour), size * sizeof(colour), data);
-    }
-    
     void Renderer::setModelViewMatrix(const mat4f & m4) {
         glUniformMatrix4fv(gUniformModelViewMatrixLocation, 1, GL_FALSE, m4.m);
     }
@@ -127,28 +83,8 @@ namespace molphene {
         glUniform1f(gUniformMaterialShininessLocation, v);
     }
     
-    void Renderer::render() {
-        
-        glEnableVertexAttribArray(gVertexPositionLocation);
-        glEnableVertexAttribArray(gVertexColorLocation);
-        glEnableVertexAttribArray(gVertexNormalLocation);
-        
-        glBindBuffer(GL_ARRAY_BUFFER, gPositionBuffer);
-        glVertexAttribPointer(gVertexPositionLocation, 3, GL_FLOAT, GL_FALSE, 0, 0);
-        
-        glBindBuffer(GL_ARRAY_BUFFER, gNormalBuffer);
-        glVertexAttribPointer(gVertexNormalLocation, 3, GL_FLOAT, GL_FALSE, 0, 0);
-        
-        glBindBuffer(GL_ARRAY_BUFFER, gColorBuffer);
-        glVertexAttribPointer(gVertexColorLocation, 4, GL_UNSIGNED_BYTE, GL_TRUE, 0, 0);
-        
-        glDrawArrays(GL_TRIANGLE_STRIP, 0, verticesSize);
-        
-        glDisableVertexAttribArray(gVertexPositionLocation);
-        glDisableVertexAttribArray(gVertexColorLocation);
-        glDisableVertexAttribArray(gVertexNormalLocation);
-        
-        glFlush();
+    void Renderer::render(color_light_buffer & buff) {
+        buff.render(GL_TRIANGLE_STRIP, gVertexPositionLocation, gVertexColorLocation, gVertexNormalLocation);
     }
     
     GLuint Renderer::createShader(GLenum shaderType, const char* pSource) {

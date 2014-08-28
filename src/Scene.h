@@ -18,6 +18,7 @@
 #include "ColourManager.h"
 #include "BoundingSphere.h"
 #include "PDBParser.h"
+#include "color_light_buffer.h"
 
 namespace molphene {
     typedef unsigned char colormode_t;
@@ -52,6 +53,9 @@ namespace molphene {
         
     private:
         colormode_t colorMode_;
+        
+        color_light_buffer sphere_buff_atoms;
+        color_light_buffer cylinder_buff_atoms;
         
         Renderer renderer;
         

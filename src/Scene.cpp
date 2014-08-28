@@ -51,6 +51,9 @@ namespace molphene {
         cylinderRenderer.setMaterialSpecular(0.5, 0.5, 0.5, 1.0);
         cylinderRenderer.setMaterialShininess(10);
         
+        sphere_buff_atoms.setup();
+        cylinder_buff_atoms.setup();
+        
         changeDimension(width, height);
         
         return true;
@@ -116,7 +119,7 @@ namespace molphene {
         GLuint totalAtoms = static_cast<GLuint>(atoms.size());
         spheredat.reserve(totalAtoms);
         GLuint totalVertices = totalAtoms * spheredat.unitlen();
-        renderer.setVericesSize(totalVertices);
+        sphere_buff_atoms.reserve(totalVertices);
         
         LOG_D("vertices size : %u", totalVertices);
         
@@ -130,12 +133,12 @@ namespace molphene {
             spheredat.push(apos, arad, acol);
             
             if(spheredat.is_full()) {
-                renderer.push(spheredat.length(), spheredat.positions(), spheredat.normals(), spheredat.colors());
+                sphere_buff_atoms.push(spheredat.length(), spheredat.positions(), spheredat.normals(), spheredat.colors());
                 spheredat.resize();
             }
         }
         
-        renderer.push(spheredat.length(), spheredat.positions(), spheredat.normals(), spheredat.colors());
+        sphere_buff_atoms.push(spheredat.length(), spheredat.positions(), spheredat.normals(), spheredat.colors());
         
         
         LOG_D("Size of bonds : %ld", bonds.size());
@@ -143,7 +146,7 @@ namespace molphene {
         GLuint totalBonds = static_cast<GLuint>(bonds.size());
         cylinderdat.reserve(totalBonds);
         GLuint totalVertices2 = totalBonds * cylinderdat.unitlen() * 2;
-        cylinderRenderer.setVericesSize(totalVertices2);
+        cylinder_buff_atoms.reserve(totalVertices2);
 
 //        LOG_D("vertices size : %u", totalVertices);
         
@@ -163,17 +166,17 @@ namespace molphene {
             
             cylinderdat.push(apos1, midpos, arad, acol1);
             if(cylinderdat.is_full()) {
-                cylinderRenderer.push(cylinderdat.length(), cylinderdat.positions(), cylinderdat.normals(), cylinderdat.colors());
+                cylinder_buff_atoms.push(cylinderdat.length(), cylinderdat.positions(), cylinderdat.normals(), cylinderdat.colors());
                 cylinderdat.resize();
             }
             cylinderdat.push(midpos, apos2, arad, acol2);
             if(cylinderdat.is_full()) {
-                cylinderRenderer.push(cylinderdat.length(), cylinderdat.positions(), cylinderdat.normals(), cylinderdat.colors());
+                cylinder_buff_atoms.push(cylinderdat.length(), cylinderdat.positions(), cylinderdat.normals(), cylinderdat.colors());
                 cylinderdat.resize();
             }
         }
         
-        cylinderRenderer.push(cylinderdat.length(), cylinderdat.positions(), cylinderdat.normals(), cylinderdat.colors());
+        cylinder_buff_atoms.push(cylinderdat.length(), cylinderdat.positions(), cylinderdat.normals(), cylinderdat.colors());
     }
     
     void Scene::clearRect() {
@@ -192,7 +195,7 @@ namespace molphene {
             renderer.setProjectionMatrix(camera.getProjectionMatrix());
             renderer.setModelViewMatrix(modelViewMatrix);
             
-            renderer.render();
+            renderer.render(sphere_buff_atoms);
         }
         
         if(displayStick) {
@@ -202,8 +205,10 @@ namespace molphene {
             cylinderRenderer.setNormalMatrix(normalMalrix);
             cylinderRenderer.setModelViewMatrix(modelViewMatrix);
             
-            cylinderRenderer.render();
+            cylinderRenderer.render(cylinder_buff_atoms);
         }
+        
+        glFlush();
     }
     
     void Scene::rotate(float x, float y, float z) {
@@ -214,10 +219,17 @@ namespace molphene {
     }
     
     void Scene::openStream(std::istream & is) {
-        PDBParser parser;
         delete molecule;
         molecule = nullptr;
+        
+        sphere_buff_atoms.reserve(0);
+        cylinder_buff_atoms.reserve(0);
+        
+        
         molecule = new Molecule();
+        
+        
+        PDBParser parser;
         parser.parse(*molecule, is);
         
         // calculate bounding sphere
