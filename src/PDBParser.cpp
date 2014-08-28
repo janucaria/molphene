@@ -1,5 +1,8 @@
 #include "PDBParser.h"
 
+#include <tuple>
+#include <boost/algorithm/string/trim.hpp>
+
 namespace molphene {
     PDBParser::PDBParser() {
         
@@ -86,8 +89,8 @@ namespace molphene {
     void PDBParser::handleCONECTRecord(Molecule & mol) {
         unsigned int atomSerial1 = getInteger(7, 11);
         
-        Molecule::model_iterator modelIt = mol.beginModel();
-        Molecule::model_iterator modelEndIt = mol.endModel();
+        Molecule::model_iterator modelIt = mol.mdlbegin();
+        Molecule::model_iterator modelEndIt = mol.mdlend();
         
         for( ; modelIt != modelEndIt; ++modelIt) {
             Atom * atom1 = modelIt->getAtomBySerial(atomSerial1);
@@ -114,8 +117,8 @@ namespace molphene {
     //    23 - 26        Integer       resSeq          Residue sequence number.
     //    27             AChar         iCode           Insertion code.
     void PDBParser::handleTERRecord(Molecule & mol) {
-        Chain::compound_iterator compoundIt = currentChainPtr->beginCompound();
-        Chain::compound_iterator compoundEndIt = currentChainPtr->endCompound();
+        Chain::compound_iterator compoundIt = currentChainPtr->compbegin();
+        Chain::compound_iterator compoundEndIt = currentChainPtr->compend();
         
         Compound * prevResiduePtr = nullptr;
         
@@ -147,8 +150,8 @@ namespace molphene {
     }
     
     bool PDBParser::buildBond(Compound & comp1, std::string atomName1, Compound & comp2, std::string atomName2) {
-        Compound::atom_iterator atom1It = comp1.beginAtom(atomName1);
-        Compound::atom_iterator atom1EndIt = comp1.endAtom(atomName1);
+        Compound::atom_iterator atom1It = comp1.atmbegin(atomName1);
+        Compound::atom_iterator atom1EndIt = comp1.atmend(atomName1);
         
         if(atom1It == atom1EndIt) {
             return false;
@@ -156,8 +159,8 @@ namespace molphene {
         
         do {
             char altloc1 = atom1It->getAltLoc();
-            Compound::atom_iterator atom2It = comp2.beginAtom(atomName2);
-            Compound::atom_iterator atom2EndIt = comp2.endAtom(atomName2);
+            Compound::atom_iterator atom2It = comp2.atmbegin(atomName2);
+            Compound::atom_iterator atom2EndIt = comp2.atmend(atomName2);
             
             for ( ; atom2It != atom2EndIt; ++atom2It) {
                 if(altloc1) {

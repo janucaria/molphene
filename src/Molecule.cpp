@@ -13,12 +13,11 @@ namespace molphene {
         return models;
     }
     
-    Molecule::model_iterator Molecule::beginModel() {
+    Molecule::model_iterator Molecule::mdlbegin() {
         return models.begin();
     }
     
-    Molecule::model_iterator Molecule::endModel() {
+    Molecule::model_iterator Molecule::mdlend() {
         return models.end();
-        
     }
 }

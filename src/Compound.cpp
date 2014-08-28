@@ -7,7 +7,6 @@ namespace molphene {
     chainPtr_(&chain),
     resNum_(resNum)
     {
-        
     }
     
     Atom & Compound::addAtom(std::string element, std::string name, unsigned int serial) {
@@ -44,19 +43,19 @@ namespace molphene {
         return resNum_;
     }
     
-    Compound::atom_iterator Compound::beginAtom() {
+    Compound::atom_iterator Compound::atmbegin() {
         return atoms_.begin();
     }
     
-    Compound::atom_iterator Compound::endAtom() {
+    Compound::atom_iterator Compound::atmend() {
         return atoms_.end();
     }
     
-    Compound::atom_iterator Compound::beginAtom(const std::string & name) {
+    Compound::atom_iterator Compound::atmbegin(const std::string & name) {
         return atoms_.lower_bound(name);
     }
     
-    Compound::atom_iterator Compound::endAtom(const std::string & name) {
+    Compound::atom_iterator Compound::atmend(const std::string & name) {
         return atoms_.upper_bound(name);
     }
     

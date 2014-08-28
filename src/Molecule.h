@@ -16,9 +16,9 @@ namespace molphene {
         
         ModelList & getModels();
         
-        model_iterator beginModel();
+        model_iterator mdlbegin();
         
-        model_iterator endModel();
+        model_iterator mdlend();
         
     private:
         ModelList models;

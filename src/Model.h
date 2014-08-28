@@ -11,18 +11,17 @@ namespace molphene {
     class Molecule;
     
     class Model {
+        typedef std::vector<Bond> BondList;
     public:
         
         typedef std::map<unsigned int, Atom*> AtomMap;
         typedef std::map<char, Chain> ChainMap;
-        typedef std::vector<Bond> BondList;
+        typedef BondList::iterator bond_iterator;
         
         class chain_iterator : public std::iterator<ChainMap::iterator::iterator_category, ChainMap::iterator, ChainMap::iterator::difference_type, Chain*, Chain&> {
             
         public:
             chain_iterator(value_type it);
-            
-            chain_iterator(const chain_iterator & cit);
             
             chain_iterator& operator++();
             
@@ -47,9 +46,9 @@ namespace molphene {
         
         Chain & getChain(char chainID);
         
-        chain_iterator beginChain();
+        chain_iterator chainbegin();
         
-        chain_iterator endChain();
+        chain_iterator chainend();
         
         ChainMap & getChains();
         
@@ -63,9 +62,9 @@ namespace molphene {
         
         void addBond(Atom & a1, Atom & a2);
         
-        BondList::iterator beginBond();
+        bond_iterator beginBond();
         
-        BondList::iterator endBond();
+        bond_iterator endBond();
         
         
     private:

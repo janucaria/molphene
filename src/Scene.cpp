@@ -70,20 +70,20 @@ namespace molphene {
         std::vector<Atom*> atoms;
         std::vector<Bond*> bonds;
         
-        Molecule::model_iterator modelIt = molecule->beginModel();
-        Molecule::model_iterator modelEndIt = molecule->endModel();
+        Molecule::model_iterator modelIt = molecule->mdlbegin();
+        Molecule::model_iterator modelEndIt = molecule->mdlend();
         
         for( ; modelIt != modelEndIt; ++modelIt) {
-            Model::chain_iterator chainIt = modelIt->beginChain();
-            Model::chain_iterator chainEndIt = modelIt->endChain();
+            Model::chain_iterator chainIt = modelIt->chainbegin();
+            Model::chain_iterator chainEndIt = modelIt->chainend();
             
             for( ; chainIt != chainEndIt; ++chainIt) {
-                Chain::compound_iterator compoundIt = chainIt->beginCompound();
-                Chain::compound_iterator compoundEndIt = chainIt->endResidue();
+                Chain::compound_iterator compoundIt = chainIt->compbegin();
+                Chain::compound_iterator compoundEndIt = chainIt->resend();
                 
                 for( ; compoundIt != compoundEndIt; ++compoundIt) {
-                    Compound::atom_iterator atomIt = compoundIt->beginAtom();
-                    Compound::atom_iterator atomEndIt = compoundIt->endAtom();
+                    Compound::atom_iterator atomIt = compoundIt->atmbegin();
+                    Compound::atom_iterator atomEndIt = compoundIt->atmend();
                     
                     for( ; atomIt != atomEndIt; ++atomIt) {
                         Atom * atom = &(*atomIt);
@@ -91,10 +91,10 @@ namespace molphene {
                     }
                 }
                 
-                compoundEndIt = chainIt->endCompound();
+                compoundEndIt = chainIt->compend();
                 for( ; compoundIt != compoundEndIt; ++compoundIt) {
-                    Compound::atom_iterator atomIt = compoundIt->beginAtom();
-                    Compound::atom_iterator atomEndIt = compoundIt->endAtom();
+                    Compound::atom_iterator atomIt = compoundIt->atmbegin();
+                    Compound::atom_iterator atomEndIt = compoundIt->atmend();
                     
                     for( ; atomIt != atomEndIt; ++atomIt) {
                         Atom * atom = &(*atomIt);
@@ -103,8 +103,8 @@ namespace molphene {
                 }
             }
             
-            Model::BondList::iterator bondIt = modelIt->beginBond();
-            Model::BondList::iterator bondEndIt = modelIt->endBond();
+            Model::bond_iterator bondIt = modelIt->beginBond();
+            Model::bond_iterator bondEndIt = modelIt->endBond();
             for( ; bondIt != bondEndIt; ++bondIt) {
                 Bond * bond = &(*bondIt);
                 bonds.push_back(bond);
@@ -235,20 +235,20 @@ namespace molphene {
         // calculate bounding sphere
         BoundingSphere bs;
         
-        Molecule::model_iterator modelIt = molecule->beginModel();
-        Molecule::model_iterator modelEndIt = molecule->endModel();
+        Molecule::model_iterator modelIt = molecule->mdlbegin();
+        Molecule::model_iterator modelEndIt = molecule->mdlend();
         
         for( ; modelIt != modelEndIt; ++modelIt) {
-            Model::chain_iterator chainIt = modelIt->beginChain();
-            Model::chain_iterator chainEndIt = modelIt->endChain();
+            Model::chain_iterator chainIt = modelIt->chainbegin();
+            Model::chain_iterator chainEndIt = modelIt->chainend();
             
             for( ; chainIt != chainEndIt; ++chainIt) {
-                Chain::compound_iterator compoundIt = chainIt->beginCompound();
-                Chain::compound_iterator compoundEndIt = chainIt->endCompound();
+                Chain::compound_iterator compoundIt = chainIt->compbegin();
+                Chain::compound_iterator compoundEndIt = chainIt->compend();
                 
                 for( ; compoundIt != compoundEndIt; ++compoundIt) {
-                    Compound::atom_iterator atomIt = compoundIt->beginAtom();
-                    Compound::atom_iterator atomEndIt = compoundIt->endAtom();
+                    Compound::atom_iterator atomIt = compoundIt->atmbegin();
+                    Compound::atom_iterator atomEndIt = compoundIt->atmend();
                     
                     for( ; atomIt != atomEndIt; ++atomIt) {
                         bs.expand(atomIt->getPosition());

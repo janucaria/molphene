@@ -52,19 +52,15 @@ namespace molphene {
     
     
     
-    Model::chain_iterator Model::beginChain() {
+    Model::chain_iterator Model::chainbegin() {
         return chains_.begin();
     }
     
-    Model::chain_iterator Model::endChain() {
+    Model::chain_iterator Model::chainend() {
         return chains_.end();
     }
     
     Model::chain_iterator::chain_iterator(Model::chain_iterator::value_type it) : it_(it) {
-    }
-    
-    Model::chain_iterator::chain_iterator(const Model::chain_iterator & cit) : it_(cit.it_) {
-        
     }
     
     Model::chain_iterator & Model::chain_iterator::operator++() {

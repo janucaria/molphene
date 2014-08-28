@@ -19,11 +19,11 @@ namespace molphene {
         
         Compound & getCompound(const Compound::ResidueNumber & resNum);
         
-        compound_iterator beginCompound();
+        compound_iterator compbegin();
         
-        compound_iterator endCompound();
+        compound_iterator compend();
         
-        compound_iterator endResidue();
+        compound_iterator resend();
         
         Model & getModel() const;
         

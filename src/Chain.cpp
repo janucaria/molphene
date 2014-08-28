@@ -19,15 +19,15 @@ namespace molphene {
         return compounds_.at(res_lookup_.at(resNum));
     }
     
-    Chain::compound_iterator Chain::beginCompound() {
+    Chain::compound_iterator Chain::compbegin() {
         return compounds_.begin();
     }
     
-    Chain::compound_iterator Chain::endCompound() {
+    Chain::compound_iterator Chain::compend() {
         return compounds_.end();
     }
     
-    Chain::compound_iterator Chain::endResidue() {
+    Chain::compound_iterator Chain::resend() {
         Chain::compound_iterator it = compounds_.begin();
         std::advance(it, ter_);
         return it;

@@ -48,13 +48,13 @@ namespace molphene {
         
         AtomMap & getAtoms();
         
-        atom_iterator beginAtom();
+        atom_iterator atmbegin();
         
-        atom_iterator endAtom();
+        atom_iterator atmend();
         
-        atom_iterator beginAtom(const std::string & name);
+        atom_iterator atmbegin(const std::string & name);
         
-        atom_iterator endAtom(const std::string & name);
+        atom_iterator atmend(const std::string & name);
         
         unsigned int getSequence() const;
         
