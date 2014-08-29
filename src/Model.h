@@ -1,24 +1,24 @@
-#ifndef __Molphene__Model__
-#define __Molphene__Model__
+#ifndef __Molphene__model__
+#define __Molphene__model__
 
 #include <map>
 #include <iterator>
-#include "Chain.h"
-#include "Atom.h"
-#include "Bond.h"
+#include "chain.h"
+#include "atom.h"
+#include "bond.h"
 
 namespace molphene {
-    class Molecule;
+    class molecule;
     
-    class Model {
-        typedef std::vector<Bond> BondList;
+    class model {
+        typedef std::vector<bond> BondList;
     public:
         
-        typedef std::map<unsigned int, Atom*> AtomMap;
-        typedef std::map<char, Chain> ChainMap;
+        typedef std::map<unsigned int, atom*> AtomMap;
+        typedef std::map<char, chain> ChainMap;
         typedef BondList::iterator bond_iterator;
         
-        class chain_iterator : public std::iterator<ChainMap::iterator::iterator_category, ChainMap::iterator, ChainMap::iterator::difference_type, Chain*, Chain&> {
+        class chain_iterator : public std::iterator<ChainMap::iterator::iterator_category, ChainMap::iterator, ChainMap::iterator::difference_type, chain*, chain&> {
             
         public:
             chain_iterator(value_type it);
@@ -40,27 +40,23 @@ namespace molphene {
         };
 
         
-        Model(Molecule & molecule);
+        model(molecule & molecule);
         
-        Chain & addChain(char chainID);
+        chain & addChain(char chainID);
         
-        Chain & getChain(char chainID);
+        chain & getChain(char chainID);
         
         chain_iterator chainbegin();
         
         chain_iterator chainend();
         
-        ChainMap & getChains();
+        void addAtom(atom & atom);
         
-        void addAtom(Atom & atom);
+        atom * getAtomBySerial(unsigned int serial);
         
-        Atom * getAtomBySerial(unsigned int serial);
+        molecule & getMolecule() const;
         
-        AtomMap & getAtoms();
-        
-        Molecule & getMolecule() const;
-        
-        void addBond(Atom & a1, Atom & a2);
+        void addBond(atom & a1, atom & a2);
         
         bond_iterator beginBond();
         
@@ -68,11 +64,11 @@ namespace molphene {
         
         
     private:
-        Molecule * moleculePtr_;
+        molecule * moleculePtr_;
         AtomMap atoms;
         ChainMap chains_;
         BondList bonds_;
     };
 }
 
-#endif /* defined(__Molphene__Model__) */
+#endif /* defined(__Molphene__model__) */

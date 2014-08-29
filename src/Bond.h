@@ -1,19 +1,19 @@
 #ifndef __Molphene__Bond__
 #define __Molphene__Bond__
 
-#include "Atom.h"
+#include "atom.h"
 
 namespace molphene {
-    class Bond {
+    class bond {
     public:
-        Bond(Atom & a1, Atom & a2);
+        bond(atom & a1, atom & a2);
         
-        Atom & getAtom1();
-        Atom & getAtom2();
+        atom & getAtom1();
+        atom & getAtom2();
         
     private:
-        Atom a1_;
-        Atom a2_;
+        atom a1_;
+        atom a2_;
     };
 }
 

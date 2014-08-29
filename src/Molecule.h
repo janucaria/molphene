@@ -1,20 +1,18 @@
-#ifndef __Molphene__Molecule__
-#define __Molphene__Molecule__
+#ifndef __molphene__Molecule__
+#define __molphene__Molecule__
 
 #include <vector>
-#include "Model.h"
+#include "model.h"
 
 namespace molphene {
-    class Molecule {
+    class molecule {
     public:
-        typedef std::vector<Model> ModelList;
-        typedef std::vector<Model>::iterator model_iterator;
+        typedef std::vector<model> ModelList;
+        typedef std::vector<model>::iterator model_iterator;
         
-        Molecule();
+        molecule();
         
-        Model & addModel();
-        
-        ModelList & getModels();
+        model & addModel();
         
         model_iterator mdlbegin();
         

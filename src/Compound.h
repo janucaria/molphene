@@ -5,18 +5,18 @@
 #include <string>
 #include <map>
 #include <vector>
-#include "Atom.h"
+#include "atom.h"
 
 namespace molphene {
-    class Chain;
+    class chain;
     
-    class Compound {
+    class compound {
     public:
         typedef std::tuple<unsigned int, std::string, char> ResidueNumber;
-        typedef std::multimap<std::string, Atom> AtomMap;
+        typedef std::multimap<std::string, atom> AtomMap;
         
         
-        class atom_iterator : public std::iterator<AtomMap::iterator::iterator_category, AtomMap::iterator, AtomMap::iterator::difference_type, Atom*, Atom&> {
+        class atom_iterator : public std::iterator<AtomMap::iterator::iterator_category, AtomMap::iterator, AtomMap::iterator::difference_type, atom*, atom&> {
             
         public:
             atom_iterator(value_type it);
@@ -40,11 +40,11 @@ namespace molphene {
         };
 
         
-        Compound(Chain & chain, ResidueNumber resNum);
+        compound(chain & chain, ResidueNumber resNum);
         
-        Atom & addAtom(std::string element, std::string name, unsigned int serial);
+        atom & addAtom(std::string element, std::string name, unsigned int serial);
         
-        Atom & getAtom(const std::string & name);
+        atom & getAtom(const std::string & name);
         
         AtomMap & getAtoms();
         
@@ -64,12 +64,12 @@ namespace molphene {
         
         ResidueNumber getResNum();
         
-        Chain & getChain() const;
+        chain & getChain() const;
         
     private:
         ResidueNumber resNum_;
         AtomMap atoms_;
-        Chain * chainPtr_;
+        chain * chainPtr_;
     };
 }
 

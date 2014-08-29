@@ -2,7 +2,6 @@
 #include "sphere_data.h"
 #include "cylinder_data.h"
 #include "mat3f.h"
-#include <tuple>
 
 namespace molphene {
     
@@ -10,13 +9,13 @@ namespace molphene {
     : displaySpacefill(true)
     , displayStick(false)
     , colorMode_(0)
-    , molecule(new Molecule())
+    , molecule_(new molecule())
     {
     }
     
     Scene::~Scene() {
-        delete molecule;
-        molecule = nullptr;
+        delete molecule_;
+        molecule_ = nullptr;
     }
     
     bool Scene::setupGraphics(GLsizei width, GLsizei height) {
@@ -67,47 +66,47 @@ namespace molphene {
     }
     
     void Scene::resetMesh() {
-        std::vector<Atom*> atoms;
-        std::vector<Bond*> bonds;
+        std::vector<atom*> atoms;
+        std::vector<bond*> bonds;
         
-        Molecule::model_iterator modelIt = molecule->mdlbegin();
-        Molecule::model_iterator modelEndIt = molecule->mdlend();
+        molecule::model_iterator modelIt = molecule_->mdlbegin();
+        molecule::model_iterator modelEndIt = molecule_->mdlend();
         
         for( ; modelIt != modelEndIt; ++modelIt) {
-            Model::chain_iterator chainIt = modelIt->chainbegin();
-            Model::chain_iterator chainEndIt = modelIt->chainend();
+            model::chain_iterator chainIt = modelIt->chainbegin();
+            model::chain_iterator chainEndIt = modelIt->chainend();
             
             for( ; chainIt != chainEndIt; ++chainIt) {
-                Chain::compound_iterator compoundIt = chainIt->compbegin();
-                Chain::compound_iterator compoundEndIt = chainIt->resend();
+                chain::compound_iterator compoundIt = chainIt->compbegin();
+                chain::compound_iterator compoundEndIt = chainIt->resend();
                 
                 for( ; compoundIt != compoundEndIt; ++compoundIt) {
-                    Compound::atom_iterator atomIt = compoundIt->atmbegin();
-                    Compound::atom_iterator atomEndIt = compoundIt->atmend();
+                    compound::atom_iterator atomIt = compoundIt->atmbegin();
+                    compound::atom_iterator atomEndIt = compoundIt->atmend();
                     
                     for( ; atomIt != atomEndIt; ++atomIt) {
-                        Atom * atom = &(*atomIt);
-                        atoms.push_back(atom);
+                        atom * atm = &(*atomIt);
+                        atoms.push_back(atm);
                     }
                 }
                 
                 compoundEndIt = chainIt->compend();
                 for( ; compoundIt != compoundEndIt; ++compoundIt) {
-                    Compound::atom_iterator atomIt = compoundIt->atmbegin();
-                    Compound::atom_iterator atomEndIt = compoundIt->atmend();
+                    compound::atom_iterator atomIt = compoundIt->atmbegin();
+                    compound::atom_iterator atomEndIt = compoundIt->atmend();
                     
                     for( ; atomIt != atomEndIt; ++atomIt) {
-                        Atom * atom = &(*atomIt);
-                        atoms.push_back(atom);
+                        atom * atm = &(*atomIt);
+                        atoms.push_back(atm);
                     }
                 }
             }
             
-            Model::bond_iterator bondIt = modelIt->beginBond();
-            Model::bond_iterator bondEndIt = modelIt->endBond();
+            model::bond_iterator bondIt = modelIt->beginBond();
+            model::bond_iterator bondEndIt = modelIt->endBond();
             for( ; bondIt != bondEndIt; ++bondIt) {
-                Bond * bond = &(*bondIt);
-                bonds.push_back(bond);
+                bond * bnd = &(*bondIt);
+                bonds.push_back(bnd);
             }
         }
         
@@ -124,10 +123,10 @@ namespace molphene {
         LOG_D("vertices size : %u", totalVertices);
         
         for(unsigned int i = 0; i < totalAtoms; ++i) {
-            Atom & atom = *atoms.at(i);
-            const Atom::element & element = atom.getElement();
-            const vec3f & apos = atom.getPosition();
-            const colour & acol = getAtomColor_(atom);
+            atom & atm = *atoms.at(i);
+            const atom::element & element = atm.getElement();
+            const vec3f & apos = atm.getPosition();
+            const colour & acol = getAtomColor_(atm);
             float arad = element.radiiVdW;
             
             spheredat.push(apos, arad, acol);
@@ -151,15 +150,15 @@ namespace molphene {
 //        LOG_D("vertices size : %u", totalVertices);
         
         for(unsigned int i = 0; i < totalBonds; ++i) {
-            Bond * bond = bonds.at(i);
-            Atom & atom1 = bond->getAtom1();
-            Atom & atom2 = bond->getAtom2();
+            bond * b = bonds.at(i);
+            atom & a1 = b->getAtom1();
+            atom & a2 = b->getAtom2();
             
-            const vec3f & apos1 = atom1.getPosition();
-            const colour & acol1 = getAtomColor_(atom1);
+            const vec3f & apos1 = a1.getPosition();
+            const colour & acol1 = getAtomColor_(a1);
             
-            const vec3f & apos2 = atom2.getPosition();
-            const colour & acol2 = getAtomColor_(atom2);
+            const vec3f & apos2 = a2.getPosition();
+            const colour & acol2 = getAtomColor_(a2);
             
             vec3f midpos((apos1 + apos2) / 2);
             float arad = 0.25f;
@@ -219,36 +218,37 @@ namespace molphene {
     }
     
     void Scene::openStream(std::istream & is) {
-        delete molecule;
-        molecule = nullptr;
+        delete molecule_;
+        molecule_ = nullptr;
         
         sphere_buff_atoms.reserve(0);
         cylinder_buff_atoms.reserve(0);
         
         
-        molecule = new Molecule();
+        molecule_ = new molecule();
         
         
         PDBParser parser;
-        parser.parse(*molecule, is);
+        parser.parse(*molecule_
+                     , is);
         
         // calculate bounding sphere
         BoundingSphere bs;
         
-        Molecule::model_iterator modelIt = molecule->mdlbegin();
-        Molecule::model_iterator modelEndIt = molecule->mdlend();
+        molecule::model_iterator modelIt = molecule_->mdlbegin();
+        molecule::model_iterator modelEndIt = molecule_->mdlend();
         
         for( ; modelIt != modelEndIt; ++modelIt) {
-            Model::chain_iterator chainIt = modelIt->chainbegin();
-            Model::chain_iterator chainEndIt = modelIt->chainend();
+            model::chain_iterator chainIt = modelIt->chainbegin();
+            model::chain_iterator chainEndIt = modelIt->chainend();
             
             for( ; chainIt != chainEndIt; ++chainIt) {
-                Chain::compound_iterator compoundIt = chainIt->compbegin();
-                Chain::compound_iterator compoundEndIt = chainIt->compend();
+                chain::compound_iterator compoundIt = chainIt->compbegin();
+                chain::compound_iterator compoundEndIt = chainIt->compend();
                 
                 for( ; compoundIt != compoundEndIt; ++compoundIt) {
-                    Compound::atom_iterator atomIt = compoundIt->atmbegin();
-                    Compound::atom_iterator atomEndIt = compoundIt->atmend();
+                    compound::atom_iterator atomIt = compoundIt->atmbegin();
+                    compound::atom_iterator atomEndIt = compoundIt->atmend();
                     
                     for( ; atomIt != atomEndIt; ++atomIt) {
                         bs.expand(atomIt->getPosition());
@@ -288,7 +288,7 @@ namespace molphene {
         return colorMode_ = val;
     }
     
-    const colour & Scene::getAtomColor_(const Atom & atm) {
+    const colour & Scene::getAtomColor_(const atom & atm) {
         switch (colorMode_) {
             case 1:
                 return colorManager.getAltlocColor(atm.getAltLoc());

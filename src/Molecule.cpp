@@ -1,23 +1,19 @@
-#include "Molecule.h"
+#include "molecule.h"
 
 namespace molphene {
-    Molecule::Molecule()
+    molecule::molecule()
     {}
     
-    Model & Molecule::addModel() {
+    model & molecule::addModel() {
         models.emplace_back(*this);
         return models.at(models.size() - 1);
     }
     
-    Molecule::ModelList & Molecule::getModels() {
-        return models;
-    }
-    
-    Molecule::model_iterator Molecule::mdlbegin() {
+    molecule::model_iterator molecule::mdlbegin() {
         return models.begin();
     }
     
-    Molecule::model_iterator Molecule::mdlend() {
+    molecule::model_iterator molecule::mdlend() {
         return models.end();
     }
 }

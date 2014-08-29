@@ -6,9 +6,9 @@
 #include "vec3f.h"
 
 namespace molphene {
-    class Compound;
+    class compound;
     
-    class Atom {
+    class atom {
     public:
         struct element {
             const std::string name;
@@ -20,7 +20,7 @@ namespace molphene {
             element(std::string name, std::string symbol, unsigned char number, float VdWRadii, float covalentRadii);
         };
         
-        Atom(Compound & compound, const std::string & elementSymbol, std::string name, unsigned int serial);
+        atom(compound & compound, const std::string & elementSymbol, std::string name, unsigned int serial);
         
         void setPosition(float x, float y, float z);
         
@@ -49,7 +49,7 @@ namespace molphene {
         
         element element_;
         
-        Compound * compoundPtr_;
+        compound * compoundPtr_;
     };
     
         

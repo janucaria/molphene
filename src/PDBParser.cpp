@@ -25,7 +25,7 @@ namespace molphene {
     //    61 - 66        Real(6.2)     tempFactor   Temperature  factor.
     //    77 - 78        LString(2)    element      Element symbol, right-justified.
     //    79 - 80        LString(2)    charge       Charge  on the atom.
-    void PDBParser::handleATOMRecord(Molecule & mol) {
+    void PDBParser::handleATOMRecord(molecule & mol) {
         
         unsigned int aserial = getInteger(7, 11);
         std::string aname = boost::trim_copy(column(13, 16));
@@ -54,7 +54,7 @@ namespace molphene {
             currentCompoundPtr = nullptr;
         }
         
-        Compound::ResidueNumber resNum = std::make_tuple(aresSeq, aresName, aiCode);
+        compound::ResidueNumber resNum = std::make_tuple(aresSeq, aresName, aiCode);
         
         if(!currentCompoundPtr || currentCompoundPtr->getResNum() != resNum) {
             try {
@@ -64,7 +64,7 @@ namespace molphene {
             }
         }
         
-        Atom & atom = currentCompoundPtr->addAtom(aelement, aname, aserial);
+        atom & atom = currentCompoundPtr->addAtom(aelement, aname, aserial);
         atom.setPosition(ax, ay, az);
         atom.setAltLoc(aaltLoc);
     }
@@ -73,7 +73,7 @@ namespace molphene {
     //    ---------------------------------------------------------------------------------------
     //    1 -  6        Record name   "MODEL "
     //    11 - 14        Integer       serial         Model serial number.
-    void PDBParser::handleMODELRecord(Molecule & mol) {
+    void PDBParser::handleMODELRecord(molecule & mol) {
         currentModelPtr = &mol.addModel();
         currentChainPtr = nullptr;
     }
@@ -86,14 +86,14 @@ namespace molphene {
     //    17 - 21        Integer        serial       Serial  number of bonded atom
     //    22 - 26        Integer        serial       Serial number of bonded atom
     //    27 - 31        Integer        serial       Serial number of bonded atom
-    void PDBParser::handleCONECTRecord(Molecule & mol) {
+    void PDBParser::handleCONECTRecord(molecule & mol) {
         unsigned int atomSerial1 = getInteger(7, 11);
         
-        Molecule::model_iterator modelIt = mol.mdlbegin();
-        Molecule::model_iterator modelEndIt = mol.mdlend();
+        molecule::model_iterator modelIt = mol.mdlbegin();
+        molecule::model_iterator modelEndIt = mol.mdlend();
         
         for( ; modelIt != modelEndIt; ++modelIt) {
-            Atom * atom1 = modelIt->getAtomBySerial(atomSerial1);
+            atom * atm1 = modelIt->getAtomBySerial(atomSerial1);
             
             for(unsigned int i = 12; i <= 27; i += 5) {
                 unsigned int atomSerial2 = getInteger(i, i + 4);
@@ -101,8 +101,8 @@ namespace molphene {
                     break;
                 }
                 if(atomSerial1 < atomSerial2) {
-                    Atom * atom2 = modelIt->getAtomBySerial(atomSerial2);
-                    modelIt->addBond(*atom1, *atom2);
+                    atom * atm2 = modelIt->getAtomBySerial(atomSerial2);
+                    modelIt->addBond(*atm1, *atm2);
                 }
             }
         }
@@ -116,15 +116,15 @@ namespace molphene {
     //    22             Character     chainID         Chain identifier.
     //    23 - 26        Integer       resSeq          Residue sequence number.
     //    27             AChar         iCode           Insertion code.
-    void PDBParser::handleTERRecord(Molecule & mol) {
-        Chain::compound_iterator compoundIt = currentChainPtr->compbegin();
-        Chain::compound_iterator compoundEndIt = currentChainPtr->compend();
+    void PDBParser::handleTERRecord(molecule & mol) {
+        chain::compound_iterator compoundIt = currentChainPtr->compbegin();
+        chain::compound_iterator compoundEndIt = currentChainPtr->compend();
         
-        Compound * prevResiduePtr = nullptr;
+        compound * prevResiduePtr = nullptr;
         
         for( ; compoundIt != compoundEndIt; ++compoundIt) {
-            Compound & compound = *compoundIt;
-            std::string resName = compound.getName();
+            compound & compnd = *compoundIt;
+            std::string resName = compnd.getName();
             PDBParser::ResidueBondPairMap::const_iterator bpairsIt = resBondPairs.find(resName);
             
             if(bpairsIt != resBondPairs.cend()) {
@@ -133,25 +133,25 @@ namespace molphene {
                 PDBParser::BondPairList::iterator bpairEndIt = bpairs.end();
                 
                 for( ; bpairIt != bpairEndIt; ++bpairIt) {
-                    buildBond(compound, bpairIt->first, compound, bpairIt->second);
+                    buildBond(compnd, bpairIt->first, compnd, bpairIt->second);
                 }
             }
             
             if(prevResiduePtr) {
-                if(!buildBond(*prevResiduePtr, "C", compound, "N")) {
-                    buildBond(*prevResiduePtr, "O3'", compound, "P");
+                if(!buildBond(*prevResiduePtr, "C", compnd, "N")) {
+                    buildBond(*prevResiduePtr, "O3'", compnd, "P");
                 }
             }
             
-            prevResiduePtr = &compound;
+            prevResiduePtr = &compnd;
         }
         
         currentChainPtr->terminate();
     }
     
-    bool PDBParser::buildBond(Compound & comp1, std::string atomName1, Compound & comp2, std::string atomName2) {
-        Compound::atom_iterator atom1It = comp1.atmbegin(atomName1);
-        Compound::atom_iterator atom1EndIt = comp1.atmend(atomName1);
+    bool PDBParser::buildBond(compound & comp1, std::string atomName1, compound & comp2, std::string atomName2) {
+        compound::atom_iterator atom1It = comp1.atmbegin(atomName1);
+        compound::atom_iterator atom1EndIt = comp1.atmend(atomName1);
         
         if(atom1It == atom1EndIt) {
             return false;
@@ -159,8 +159,8 @@ namespace molphene {
         
         do {
             char altloc1 = atom1It->getAltLoc();
-            Compound::atom_iterator atom2It = comp2.atmbegin(atomName2);
-            Compound::atom_iterator atom2EndIt = comp2.atmend(atomName2);
+            compound::atom_iterator atom2It = comp2.atmbegin(atomName2);
+            compound::atom_iterator atom2EndIt = comp2.atmend(atomName2);
             
             for ( ; atom2It != atom2EndIt; ++atom2It) {
                 if(altloc1) {
@@ -178,7 +178,7 @@ namespace molphene {
         return true;
     }
     
-    void PDBParser::parse(Molecule & mol, std::istream & stream) {
+    void PDBParser::parse(molecule & mol, std::istream & stream) {
         currentModelPtr = nullptr;
         currentChainPtr = nullptr;
         currentCompoundPtr = nullptr;

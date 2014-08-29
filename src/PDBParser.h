@@ -7,12 +7,12 @@
 #include <set>
 
 #include "logger.h"
-#include "Atom.h"
-#include "Model.h"
-#include "Molecule.h"
-#include "Chain.h"
-#include "Compound.h"
-#include "Bond.h"
+#include "atom.h"
+#include "model.h"
+#include "molecule.h"
+#include "chain.h"
+#include "compound.h"
+#include "bond.h"
 
 namespace molphene {
     class PDBParser {
@@ -23,14 +23,14 @@ namespace molphene {
         
         PDBParser();
         
-        void parse(Molecule & mol, std::istream & stream);
+        void parse(molecule & mol, std::istream & stream);
         
     private:
         const static ResidueBondPairMap resBondPairs;
         
-        Model * currentModelPtr;
-        Chain * currentChainPtr;
-        Compound * currentCompoundPtr;
+        model * currentModelPtr;
+        chain * currentChainPtr;
+        compound * currentCompoundPtr;
         
         std::string line_;
         
@@ -42,15 +42,15 @@ namespace molphene {
         
         inline char getChar(unsigned int start);
         
-        void handleATOMRecord(Molecule & mol);
+        void handleATOMRecord(molecule & mol);
         
-        void handleMODELRecord(Molecule & mol);
+        void handleMODELRecord(molecule & mol);
         
-        void handleCONECTRecord(Molecule & mol);
+        void handleCONECTRecord(molecule & mol);
         
-        void handleTERRecord(Molecule & mol);
+        void handleTERRecord(molecule & mol);
         
-        bool buildBond(Compound & comp1, std::string atomName1, Compound & comp2, std::string atomName2);
+        bool buildBond(compound & comp1, std::string atomName1, compound & comp2, std::string atomName2);
     };
 }
 

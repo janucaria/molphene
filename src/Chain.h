@@ -3,21 +3,21 @@
 
 #include <map>
 #include <vector>
-#include "Compound.h"
+#include "compound.h"
 
 namespace molphene {
-    class Model;
+    class model;
     
-    class Chain {
+    class chain {
     public:
-        typedef std::vector<Compound> CompoundList;
+        typedef std::vector<compound> CompoundList;
         typedef CompoundList::iterator compound_iterator;
                 
-        Chain(Model & model, char chainId);
+        chain(model & model, char chainId);
         
-        Compound & addCompound(const Compound::ResidueNumber & resNum);
+        compound & addCompound(const compound::ResidueNumber & resNum);
         
-        Compound & getCompound(const Compound::ResidueNumber & resNum);
+        compound & getCompound(const compound::ResidueNumber & resNum);
         
         compound_iterator compbegin();
         
@@ -25,14 +25,14 @@ namespace molphene {
         
         compound_iterator resend();
         
-        Model & getModel() const;
+        model & getModel() const;
         
         char getId() const;
         
         void terminate();
         
     private:
-        typedef std::map<Compound::ResidueNumber, CompoundList::size_type> CompoundMap;
+        typedef std::map<compound::ResidueNumber, CompoundList::size_type> CompoundMap;
         
         char chainID_;
         
@@ -42,7 +42,7 @@ namespace molphene {
         
         CompoundMap res_lookup_;
         
-        Model * modelPtr_;
+        model * modelPtr_;
     };
 }
 

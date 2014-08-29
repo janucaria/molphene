@@ -3,7 +3,6 @@
 
 #include <istream>
 #include <fstream>
-#include <cmath>
 #include "opengl.h"
 #include "vec3f.h"
 #include "colour.h"
@@ -11,10 +10,10 @@
 #include "ColorLightRenderer.h"
 #include "mat4f.h"
 #include "Camera.h"
-#include "Atom.h"
-#include "Bond.h"
-#include "Model.h"
-#include "Molecule.h"
+#include "atom.h"
+#include "bond.h"
+#include "model.h"
+#include "molecule.h"
 #include "ColourManager.h"
 #include "BoundingSphere.h"
 #include "PDBParser.h"
@@ -65,11 +64,11 @@ namespace molphene {
         
         Camera camera;
         
-        Molecule * molecule;
+        molecule * molecule_;
         
         ColourManager colorManager;
         
-        const colour & getAtomColor_(const Atom & atm);
+        const colour & getAtomColor_(const atom & atm);
         
     };
     

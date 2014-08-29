@@ -1,92 +1,82 @@
-#include "Model.h"
-#include "Molecule.h"
+#include "model.h"
+#include "molecule.h"
 
 namespace molphene {
-    Model::Model(Molecule & mol) :
+    model::model(molecule & mol) :
     moleculePtr_(&mol)
     {
         
     }
     
-    void Model::addAtom(Atom & atom) {
+    void model::addAtom(atom & atom) {
         atoms.emplace(atom.getSerial(), &atom);
     }
     
-    Model::AtomMap & Model::getAtoms() {
-        return atoms;
-    }
-    
-    Chain & Model::addChain(char chainID) {
+    chain & model::addChain(char chainID) {
         std::pair<ChainMap::iterator, bool> emplaced = chains_.emplace(std::piecewise_construct, std::make_tuple(chainID), std::forward_as_tuple(*this, chainID));
         return emplaced.first->second;
     }
     
-    Chain & Model::getChain(char chainID) {
+    chain & model::getChain(char chainID) {
         return chains_.at(chainID);
     }
     
-    Model::ChainMap & Model::getChains() {
-        return chains_;
-    }
-    
-    Atom * Model::getAtomBySerial(unsigned int serial) {
+    atom * model::getAtomBySerial(unsigned int serial) {
         return atoms.at(serial);
     }
     
-    Molecule & Model::getMolecule() const {
+    molecule & model::getMolecule() const {
         return *moleculePtr_;
     }
     
-    void Model::addBond(Atom & a1, Atom & a2) {
+    void model::addBond(atom & a1, atom & a2) {
         bonds_.emplace_back(a1, a2);
     }
     
     
-    Model::BondList::iterator Model::beginBond() {
+    model::BondList::iterator model::beginBond() {
         return bonds_.begin();
     }
     
-    Model::BondList::iterator Model::endBond() {
+    model::BondList::iterator model::endBond() {
         return bonds_.end();
     }
     
-    
-    
-    Model::chain_iterator Model::chainbegin() {
+    model::chain_iterator model::chainbegin() {
         return chains_.begin();
     }
     
-    Model::chain_iterator Model::chainend() {
+    model::chain_iterator model::chainend() {
         return chains_.end();
     }
     
-    Model::chain_iterator::chain_iterator(Model::chain_iterator::value_type it) : it_(it) {
+    model::chain_iterator::chain_iterator(model::chain_iterator::value_type it) : it_(it) {
     }
     
-    Model::chain_iterator & Model::chain_iterator::operator++() {
+    model::chain_iterator & model::chain_iterator::operator++() {
          ++it_;
         return *this;
     }
     
-    Model::chain_iterator Model::chain_iterator::operator++(int) {
-        Model::chain_iterator tmp(*this);
+    model::chain_iterator model::chain_iterator::operator++(int) {
+        model::chain_iterator tmp(*this);
         operator++();
         return tmp;
     }
     
-    bool Model::chain_iterator::operator==(const Model::chain_iterator& rhs) {
+    bool model::chain_iterator::operator==(const model::chain_iterator& rhs) {
         return it_ == rhs.it_;
     }
     
-    bool Model::chain_iterator::operator!=(const Model::chain_iterator& rhs) {
+    bool model::chain_iterator::operator!=(const model::chain_iterator& rhs) {
         return it_ != rhs.it_;
     }
     
-    Model::chain_iterator::reference Model::chain_iterator::operator*() {
+    model::chain_iterator::reference model::chain_iterator::operator*() {
         return it_->second;
     }
     
-    Model::chain_iterator::pointer Model::chain_iterator::operator->() {
+    model::chain_iterator::pointer model::chain_iterator::operator->() {
         return &it_->second;
     }
     
