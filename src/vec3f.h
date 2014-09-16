@@ -1,67 +1,10 @@
-#ifndef __molphene__vec3f__
-#define __molphene__vec3f__
+#ifndef __molphene__vec3__
+#define __molphene__vec3__
 
-#include <cmath>
+#include <simv/vec3.h>
 
 namespace molphene {
-    struct vec3f {
-        float x, y, z;
-        
-        vec3f();
-        vec3f(float x, float y, float z);
-        
-        vec3f & operator () (const float & x, const float & y, const float & z);
-        
-        vec3f operator + (const vec3f & v) const;
-        
-        vec3f & operator += (const vec3f & v);
-        
-        vec3f operator - (const vec3f & v) const;
-        
-        vec3f & operator -= (const vec3f & v);
-        
-        vec3f operator * (const vec3f & v) const;
-        
-        vec3f & operator *= (const vec3f & v);
-        
-        vec3f operator / (const vec3f & v) const;
-        
-        vec3f & operator /= (const vec3f & v);
-        
-        vec3f operator - () const;
-        
-        vec3f operator + (const float & s) const;
-        
-        vec3f & operator += (const float & s);
-        
-        vec3f operator - (const float & s) const;
-        
-        vec3f & operator -= (const float & s);
-        
-        vec3f operator * (const float & s) const;
-        
-        vec3f & operator *= (const float & s);
-        
-        vec3f operator / (const float & s) const;
-        
-        vec3f & operator /= (const float & s);
-        
-        float length() const;
-        
-        vec3f & normalize();
-        
-    };
-    
-    vec3f operator + (const float & s, const vec3f & v);
-    
-    vec3f operator - (const float & s, const vec3f & v);
-    
-    vec3f operator * (const float & s, const vec3f & v);
-    
-    vec3f operator / (const float & s, const vec3f & v);
-    
-    vec3f cross(const vec3f & a, const vec3f & b);
-    
+    typedef typename simv::vec3<float> vec3f;
 }
 
-#endif /* defined(__molphene__vec3f__) */
+#endif /* defined(__molphene__vec3__) */
