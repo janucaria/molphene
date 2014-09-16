@@ -188,22 +188,18 @@ namespace molphene {
         mat4f modelViewMatrix = modelMatrix * camera.getViewMatrix();
         mat3f normalMalrix = mat3f(mat4f(modelViewMatrix).inverse().transpose());
         
+        renderer.useGLProgram();
+        renderer.setProjectionMatrix(camera.getProjectionMatrix());
+        renderer.setModelViewMatrix(modelViewMatrix);
         if(displaySpacefill) {
-            renderer.useGLProgram();
-            
-            renderer.setProjectionMatrix(camera.getProjectionMatrix());
-            renderer.setModelViewMatrix(modelViewMatrix);
-            
             renderer.render(sphere_buff_atoms);
         }
         
+        cylinderRenderer.useGLProgram();
+        cylinderRenderer.setProjectionMatrix(camera.getProjectionMatrix());
+        cylinderRenderer.setNormalMatrix(normalMalrix);
+        cylinderRenderer.setModelViewMatrix(modelViewMatrix);
         if(displayStick) {
-            cylinderRenderer.useGLProgram();
-            
-            cylinderRenderer.setProjectionMatrix(camera.getProjectionMatrix());
-            cylinderRenderer.setNormalMatrix(normalMalrix);
-            cylinderRenderer.setModelViewMatrix(modelViewMatrix);
-            
             cylinderRenderer.render(cylinder_buff_atoms);
         }
         
