@@ -1,3 +1,6 @@
+#include <cfloat>
+#include <cmath>
+#include <boost/algorithm/clamp.hpp>
 #include "Camera.h"
 
 namespace molphene {
@@ -39,6 +42,10 @@ namespace molphene {
     void Camera::translate(const float &x, const float &y, const float &z) {
         viewMatrix();
         viewMatrix.translate(-x, -y, -z);
+    }
+    
+    void Camera::zoom(float z) {
+        fov = boost::algorithm::clamp(fov * z, FLT_EPSILON, M_PI - FLT_EPSILON);
     }
     
     const mat4f & Camera::getProjectionMatrix() const {

@@ -298,4 +298,9 @@ namespace molphene {
         return colorManager.getElementColor(atm.getElement().symbol);
     }
     
+    void Scene::zoom(float z) {
+        camera.zoom(z);
+        camera.updateProjectionMatrix();
+    }
+    
 }

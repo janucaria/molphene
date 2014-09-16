@@ -28,6 +28,8 @@ namespace molphene {
         
         void translate(const float & x, const float & y, const float & z);
         
+        void zoom(float z);
+        
         const mat4f & getProjectionMatrix() const;
         
         const mat4f & getViewMatrix() const;

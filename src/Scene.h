@@ -50,6 +50,8 @@ namespace molphene {
         
         colormode_t getColorMode();
         
+        void zoom(float z);
+        
     private:
         colormode_t colorMode_;
         
