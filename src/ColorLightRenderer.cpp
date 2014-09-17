@@ -42,7 +42,7 @@ namespace molphene {
         position /= position.w;
         v_Position = position.xyz;
         v_Color = a_Color;
-        v_Normal = u_NormalMatrix * a_Normal;
+        v_Normal = length(a_Normal) != 0.0 ? u_NormalMatrix * a_Normal : a_Normal;
         gl_Position = u_ProjectionMatrix * position;
         gl_Position /= gl_Position.w;
     }
@@ -67,29 +67,33 @@ namespace molphene {
     varying vec3 v_Normal;
     varying vec4 v_Color;
     void main() {
+        vec4 finalColor = vec4(0.);
+        vec4 ambient = u_LightSource_ambient * u_Material_ambient;
+        vec4 diffuse = u_LightSource_diffuse * u_Material_diffuse;
+        vec4 specular = u_LightSource_specular * u_Material_specular;
         
-        vec3 eyePos   = normalize(-v_Position);
-        vec3 normal   = v_Normal;
-        vec4 finalColor = vec4(0.0);
+        finalColor += ambient;
         
-        normal = normalize(normal);
-        
-        finalColor += u_LightSource_ambient * u_Material_ambient;
-        
-        vec3 lightDir = normalize(u_LightSource_position.xyz - v_Position);
-        float lambertTerm = max(0.0, dot(normal, lightDir));
-        
-        if(lambertTerm > 0.0) {
-            vec4 diffuse = u_LightSource_diffuse * u_Material_diffuse * lambertTerm;
+        if(length(v_Normal) == 0.) {
+            finalColor += diffuse + specular * pow(1., u_Material_shininess);
+            gl_FragColor = v_Color * finalColor;
+        } else {
+            vec3 eyePos   = normalize(-v_Position);
+            vec3 normal   = normalize(v_Normal);
             
-            vec3 reflection = -reflect(lightDir, normal);
+            vec3 lightDir = normalize(u_LightSource_position.xyz - v_Position);
+            float lambertTerm = max(0.0, dot(normal, lightDir));
             
-            vec4 specular = u_LightSource_specular * u_Material_specular * pow(max(0.0, dot(reflection, eyePos)), u_Material_shininess);
+            if(lambertTerm > 0.0) {
+                vec3 reflection = -reflect(lightDir, normal);
+                
+                diffuse *= lambertTerm;
+                specular *= pow(max(0.0, dot(reflection, eyePos)), u_Material_shininess);
+                finalColor += diffuse + specular;
+            }
             
-            finalColor += diffuse + specular;
+            gl_FragColor = v_Color * finalColor;
         }
-        
-        gl_FragColor = v_Color * finalColor;
     }
     
     )";

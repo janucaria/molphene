@@ -39,6 +39,8 @@ namespace molphene {
         
         void render(color_light_buffer & buff);
         
+        void render_line(color_light_buffer & buff);
+        
         void useGLProgram() const;
         
     protected:

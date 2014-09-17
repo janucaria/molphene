@@ -27,6 +27,7 @@ namespace molphene {
         
         bool displaySpacefill;
         bool displayStick;
+        bool displayWireframe;
         
         Scene();
         
@@ -57,6 +58,7 @@ namespace molphene {
         
         color_light_buffer sphere_buff_atoms;
         color_light_buffer cylinder_buff_atoms;
+        color_light_buffer line_buff_bonds;
         
         Renderer renderer;
         

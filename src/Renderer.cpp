@@ -87,6 +87,10 @@ namespace molphene {
         buff.render(GL_TRIANGLE_STRIP, gVertexPositionLocation, gVertexColorLocation, gVertexNormalLocation);
     }
     
+    void Renderer::render_line(color_light_buffer & buff) {
+        buff.render(GL_LINES, gVertexPositionLocation, gVertexColorLocation, gVertexNormalLocation);
+    }
+    
     GLuint Renderer::createShader(GLenum shaderType, const char* pSource) {
         GLuint shader = glCreateShader(shaderType);
         if (shader) {

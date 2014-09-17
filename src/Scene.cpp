@@ -1,6 +1,7 @@
 #include "Scene.h"
 #include "sphere_data.h"
 #include "cylinder_data.h"
+#include "line_data.h"
 #include "mat3f.h"
 
 namespace molphene {
@@ -8,6 +9,7 @@ namespace molphene {
     Scene::Scene()
     : displaySpacefill(true)
     , displayStick(false)
+    , displayWireframe(false)
     , colorMode_(0)
     , molecule_(new molecule())
     {
@@ -52,6 +54,7 @@ namespace molphene {
         
         sphere_buff_atoms.setup();
         cylinder_buff_atoms.setup();
+        line_buff_bonds.setup();
         
         changeDimension(width, height);
         
@@ -112,6 +115,7 @@ namespace molphene {
         
         sphere_data spheredat;
         cylinder_data cylinderdat;
+        line_data linedat;
         
         LOG_D("Size of atoms : %ld", atoms.size());
         
@@ -144,8 +148,11 @@ namespace molphene {
         
         GLuint totalBonds = static_cast<GLuint>(bonds.size());
         cylinderdat.reserve(totalBonds);
+        linedat.reserve(totalBonds);
         GLuint totalVertices2 = totalBonds * cylinderdat.unitlen() * 2;
+        GLuint total_bond_line_verts = totalBonds * linedat.unitlen() * 2;
         cylinder_buff_atoms.reserve(totalVertices2);
+        line_buff_bonds.reserve(total_bond_line_verts);
 
 //        LOG_D("vertices size : %u", totalVertices);
         
@@ -173,9 +180,21 @@ namespace molphene {
                 cylinder_buff_atoms.push(cylinderdat.length(), cylinderdat.positions(), cylinderdat.normals(), cylinderdat.colors());
                 cylinderdat.resize();
             }
+            
+            linedat.push(apos1, midpos, acol1);
+            if(linedat.is_full()) {
+                line_buff_bonds.push(linedat.length(), linedat.positions(), linedat.normals(), linedat.colors());
+                linedat.resize();
+            }
+            linedat.push(midpos, apos2, acol2);
+            if(linedat.is_full()) {
+                line_buff_bonds.push(linedat.length(), linedat.positions(), linedat.normals(), linedat.colors());
+                linedat.resize();
+            }
         }
         
         cylinder_buff_atoms.push(cylinderdat.length(), cylinderdat.positions(), cylinderdat.normals(), cylinderdat.colors());
+        line_buff_bonds.push(linedat.length(), linedat.positions(), linedat.normals(), linedat.colors());
     }
     
     void Scene::clearRect() {
@@ -201,6 +220,9 @@ namespace molphene {
         cylinderRenderer.setModelViewMatrix(modelViewMatrix);
         if(displayStick) {
             cylinderRenderer.render(cylinder_buff_atoms);
+        }
+        if(displayWireframe) {
+            cylinderRenderer.render_line(line_buff_bonds);
         }
         
         glFlush();
