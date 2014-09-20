@@ -20,7 +20,7 @@ namespace molphene {
         molecule_ = nullptr;
     }
     
-    bool Scene::setupGraphics(GLsizei width, GLsizei height) {
+    bool Scene::setupGraphics() {
         glClearColor(0.5, 0.5, 0.5, 1.0);
         glEnable(GL_DEPTH_TEST);
         
@@ -55,8 +55,6 @@ namespace molphene {
         sphere_buff_atoms.setup();
         cylinder_buff_atoms.setup();
         line_buff_bonds.setup();
-        
-        changeDimension(width, height);
         
         return true;
     }
@@ -117,7 +115,7 @@ namespace molphene {
         cylinder_data cylinderdat;
         line_data linedat;
         
-        LOG_D("Size of atoms : %ld", atoms.size());
+        LOG_D("Size of atoms : %u", static_cast<GLuint>(atoms.size()));
         
         GLuint totalAtoms = static_cast<GLuint>(atoms.size());
         spheredat.reserve(totalAtoms);
@@ -144,7 +142,7 @@ namespace molphene {
         sphere_buff_atoms.push(spheredat.length(), spheredat.positions(), spheredat.normals(), spheredat.colors());
         
         
-        LOG_D("Size of bonds : %ld", bonds.size());
+        LOG_D("Size of bonds : %u", static_cast<GLuint>(bonds.size()));
         
         GLuint totalBonds = static_cast<GLuint>(bonds.size());
         cylinderdat.reserve(totalBonds);

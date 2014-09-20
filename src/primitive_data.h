@@ -1,6 +1,7 @@
 #ifndef Molphene_primitive_data_h
 #define Molphene_primitive_data_h
 
+#include <cstddef>
 #include "logger.h"
 #include "vec3f.h"
 #include "colour.h"

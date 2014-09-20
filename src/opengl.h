@@ -26,6 +26,11 @@
 
 #endif
 
+#elif __ANDROID__
+
+#include <GLES2/gl2.h>
+#include <GLES2/gl2ext.h>
+
 #elif __linux
 
 #elif __unix

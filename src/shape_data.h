@@ -1,6 +1,8 @@
 #ifndef __Molphene__shape_data__
 #define __Molphene__shape_data__
 
+#include <cstddef>
+
 namespace molphene {
     template<typename... T>
     class shape_data {

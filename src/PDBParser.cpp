@@ -1,6 +1,6 @@
+#include <cstdlib>
 #include "PDBParser.h"
 
-#include <tuple>
 #include <boost/algorithm/string/trim.hpp>
 
 namespace molphene {
@@ -54,7 +54,7 @@ namespace molphene {
             currentCompoundPtr = nullptr;
         }
         
-        compound::ResidueNumber resNum = std::make_tuple(aresSeq, aresName, aiCode);
+        compound::ResidueNumber resNum(aresSeq, aresName, aiCode);
         
         if(!currentCompoundPtr || currentCompoundPtr->getResNum() != resNum) {
             try {
@@ -210,15 +210,11 @@ namespace molphene {
     }
     
     float PDBParser::getReal(unsigned int start,  unsigned int end) {
-        return std::stof(column(start, end));
+        return static_cast<float>(strtod(column(start, end).c_str(), nullptr));
     }
     
     unsigned int PDBParser::getInteger(unsigned int start,  unsigned int end) {
-        try {
-            return static_cast<unsigned int>(std::stoul(column(start, end)));
-        } catch (const std::invalid_argument & ia) {
-            return 0;
-        }
+        return static_cast<unsigned int>(strtol(column(start, end).c_str(), nullptr, 0));
     }
     
     char PDBParser::getChar(unsigned int start) {

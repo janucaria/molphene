@@ -1,6 +1,7 @@
 #ifndef __Molphene__sphere_data__
 #define __Molphene__sphere_data__
 
+#include <cstddef>
 #include "logger.h"
 #include "vec3f.h"
 #include "colour.h"

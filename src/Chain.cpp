@@ -10,7 +10,7 @@ namespace molphene {
     }
     
     compound & chain::addCompound(const compound::ResidueNumber & resNum) {
-        compounds_.emplace_back(*this, resNum);
+        compounds_.emplace_back(*this, std::get<0>(resNum), std::get<1>(resNum), std::get<2>(resNum));
         std::pair<CompoundMap::iterator, bool> emplaced = res_lookup_.emplace(std::piecewise_construct, std::make_tuple(resNum), std::forward_as_tuple(compounds_.size() - 1));
         return compounds_.at(emplaced.first->second);
     }

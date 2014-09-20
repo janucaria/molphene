@@ -33,7 +33,7 @@ namespace molphene {
         
         virtual ~Scene();
         
-        bool setupGraphics(GLsizei width, GLsizei height);
+        bool setupGraphics();
         
         void resetMesh();
         

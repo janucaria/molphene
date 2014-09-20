@@ -1,7 +1,7 @@
 #ifndef __molphene__line_data__
 #define __molphene__line_data__
 
-
+#include <cstddef>
 #include "logger.h"
 #include "vec3f.h"
 #include "colour.h"
