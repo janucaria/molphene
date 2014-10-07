@@ -134,12 +134,12 @@ namespace molphene {
             spheredat.push(apos, arad, acol);
             
             if(spheredat.is_full()) {
-                sphere_buff_atoms.push(spheredat.length(), spheredat.positions(), spheredat.normals(), spheredat.colors());
+                sphere_buff_atoms.push(spheredat.length(), spheredat.positions(), spheredat.normals(), spheredat.colors(), spheredat.radiuses());
                 spheredat.resize();
             }
         }
         
-        sphere_buff_atoms.push(spheredat.length(), spheredat.positions(), spheredat.normals(), spheredat.colors());
+        sphere_buff_atoms.push(spheredat.length(), spheredat.positions(), spheredat.normals(), spheredat.colors(), spheredat.radiuses());
         
         
         LOG_D("Size of bonds : %u", static_cast<GLuint>(bonds.size()));

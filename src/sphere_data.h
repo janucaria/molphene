@@ -13,15 +13,23 @@ namespace molphene {
     public:
         sphere_data();
         
+        void clear() override;
+        
+        void reserve(size_t n) override;
+        
         void insert(size_t idx, vec3f pos, float rad, colour col) override;
         
         unsigned int unitlen() const override;
+        
+        float* radiuses();
         
     private:
         
         unsigned int londiv_;
         
         unsigned int latdiv_;
+        
+        float* radiuses_;
     };
 }
 

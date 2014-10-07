@@ -12,11 +12,7 @@ namespace molphene {
     }
     
     color_light_buffer::~color_light_buffer() {
-        reserve(0);
-        glDeleteBuffers(1, &position_buffer_);
-        glDeleteBuffers(1, &normal_buffer_);
-        glDeleteBuffers(1, &color_buffer_);
-        position_buffer_ = normal_buffer_ = color_buffer_ = 0;
+        teardown();
     }
     
     void color_light_buffer::setup() {
@@ -24,6 +20,14 @@ namespace molphene {
         glGenBuffers(1, &normal_buffer_);
         glGenBuffers(1, &color_buffer_);
         reserve(0);
+    }
+    
+    void color_light_buffer::teardown() {
+        reserve(0);
+        glDeleteBuffers(1, &position_buffer_);
+        glDeleteBuffers(1, &normal_buffer_);
+        glDeleteBuffers(1, &color_buffer_);
+        position_buffer_ = normal_buffer_ = color_buffer_ = 0;
     }
     
     void color_light_buffer::reserve(GLuint n) {
@@ -65,10 +69,20 @@ namespace molphene {
         glBufferSubData(GL_ARRAY_BUFFER, offset * sizeof(colour), size * sizeof(colour), data);
     }
     
-    void color_light_buffer::render(GLenum mode, GLuint posloc, GLuint normloc, GLuint colloc) {
+    void color_light_buffer::enable_vertex_attribs(GLuint posloc, GLuint normloc, GLuint colloc) {
         glEnableVertexAttribArray(posloc);
         glEnableVertexAttribArray(normloc);
         glEnableVertexAttribArray(colloc);
+    }
+    
+    void color_light_buffer::disable_vertex_attribs(GLuint posloc, GLuint normloc, GLuint colloc) {
+        glDisableVertexAttribArray(posloc);
+        glDisableVertexAttribArray(normloc);
+        glDisableVertexAttribArray(colloc);
+    }
+    
+    void color_light_buffer::render(GLenum mode, GLuint posloc, GLuint normloc, GLuint colloc) {
+        enable_vertex_attribs(posloc, normloc, colloc);
         
         glBindBuffer(GL_ARRAY_BUFFER, position_buffer_);
         glVertexAttribPointer(posloc, 3, GL_FLOAT, GL_FALSE, 0, 0);
@@ -81,9 +95,7 @@ namespace molphene {
         
         glDrawArrays(mode, 0, capacity_);
         
-        glDisableVertexAttribArray(posloc);
-        glDisableVertexAttribArray(normloc);
-        glDisableVertexAttribArray(colloc);
+        disable_vertex_attribs(posloc, normloc, colloc);
     }
     
 }

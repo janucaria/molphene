@@ -15,9 +15,11 @@ namespace molphene {
         
         ~color_light_buffer();
         
-        void setup();
+        virtual void setup();
         
-        void reserve(GLuint size);
+        virtual void teardown();
+        
+        virtual void reserve(GLuint size);
         
         void set_position_data(GLintptr offset, GLsizeiptr size, const vec3f * data);
         
@@ -36,6 +38,10 @@ namespace molphene {
         GLuint position_buffer_;
         GLuint normal_buffer_;
         GLuint color_buffer_;
+        
+        virtual void enable_vertex_attribs(GLuint posloc, GLuint normloc, GLuint colloc);
+        
+        virtual void disable_vertex_attribs(GLuint posloc, GLuint normloc, GLuint colloc);
     };
 }
 

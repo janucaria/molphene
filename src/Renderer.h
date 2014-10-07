@@ -7,6 +7,7 @@
 #include "colour.h"
 #include "mat4f.h"
 #include "color_light_buffer.h"
+#include "sphere_buffer.h"
 
 namespace molphene {
     class Renderer {
@@ -39,6 +40,8 @@ namespace molphene {
         
         void render(color_light_buffer & buff);
         
+        void render(sphere_buffer & buff);
+        
         void render_line(color_light_buffer & buff);
         
         void useGLProgram() const;
@@ -56,6 +59,7 @@ namespace molphene {
         GLuint gVertexPositionLocation;
         GLuint gVertexNormalLocation;
         GLuint gVertexColorLocation;
+        GLuint gVertexRadiusLocation;
         
         GLint gUniformModelViewMatrixLocation;
         GLint gUniformProjectionMatrixLocation;

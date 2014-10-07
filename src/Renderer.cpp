@@ -17,6 +17,7 @@ namespace molphene {
         gVertexPositionLocation = glGetAttribLocation(gProgram, "a_Position");
         gVertexNormalLocation = glGetAttribLocation(gProgram, "a_Normal");
         gVertexColorLocation = glGetAttribLocation(gProgram, "a_Color");
+        gVertexRadiusLocation = glGetAttribLocation(gProgram, "a_Radius");
         
         setupGLUniformsLocation();
         return true;
@@ -85,6 +86,10 @@ namespace molphene {
     
     void Renderer::render(color_light_buffer & buff) {
         buff.render(GL_TRIANGLE_STRIP, gVertexPositionLocation, gVertexColorLocation, gVertexNormalLocation);
+    }
+    
+    void Renderer::render(sphere_buffer & buff) {
+        buff.render(GL_TRIANGLE_STRIP, gVertexPositionLocation, gVertexColorLocation, gVertexNormalLocation, gVertexRadiusLocation);
     }
     
     void Renderer::render_line(color_light_buffer & buff) {
@@ -156,6 +161,7 @@ namespace molphene {
     attribute vec3 a_Position;
     attribute vec3 a_Normal;
     attribute vec4 a_Color;
+    attribute float a_Radius;
     
     uniform mat4 u_ModelViewMatrix;
     uniform mat4 u_ProjectionMatrix;
@@ -166,7 +172,7 @@ namespace molphene {
     void main() {
         vec4 position = vec4(a_Position, 1.0);
         position = u_ModelViewMatrix * position;
-        position.xyz += a_Normal;
+        position.xyz += a_Normal * a_Radius;
         position /= position.w;
         v_Position = position.xyz;
         v_Color = a_Color;
