@@ -4,6 +4,8 @@
 #include "line_data.h"
 #include "mat3f.h"
 
+#include "mol_parser.h"
+
 namespace molphene {
     
     Scene::Scene()
@@ -233,20 +235,22 @@ namespace molphene {
         renderFrame();
     }
     
-    void Scene::openStream(std::istream & is) {
+    void Scene::open_sdf(std::istream & is) {
         delete molecule_;
         molecule_ = nullptr;
         
         sphere_buff_atoms.reserve(0);
         cylinder_buff_atoms.reserve(0);
         
-        
         molecule_ = new molecule();
         
+        mol_parser parser;
+        parser.parse(*molecule_, is);
         
-        PDBParser parser;
-        parser.parse(*molecule_
-                     , is);
+        reset_molecules();
+    }
+    
+    void Scene::reset_molecules() {
         
         // calculate bounding sphere
         BoundingSphere bs;
@@ -272,7 +276,7 @@ namespace molphene {
                 }
             }
         }
-
+        
         float fov         = M_PI / 4.0f;
         float theta       = fov / 2.0f;
         float tanTheta    = tan(theta);
@@ -286,9 +290,24 @@ namespace molphene {
         camera.setFar(far);
         camera.translate(0, 0, focalLength);
         camera.updateProjectionMatrix();
-
+        
         modelMatrix();
         modelMatrix.translate(-bs.getCenter());
+    }
+    
+    void Scene::openStream(std::istream & is) {
+        delete molecule_;
+        molecule_ = nullptr;
+        
+        sphere_buff_atoms.reserve(0);
+        cylinder_buff_atoms.reserve(0);
+        
+        molecule_ = new molecule();
+        
+        PDBParser parser;
+        parser.parse(*molecule_, is);
+        
+        reset_molecules();
     }
     
     colormode_t Scene::getColorMode() {

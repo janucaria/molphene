@@ -19,6 +19,7 @@ namespace molphene {
     , element_(elements.at(elementSymbol))
     , name_(name)
     , serial(serial)
+    , altLoc_(0)
     {
     }
     
