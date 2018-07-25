@@ -23,11 +23,7 @@ namespace molphene {
     
     class Scene {
     public:
-        
-        bool displaySpacefill;
-        bool displayStick;
-        bool displayWireframe;
-        
+    
         Scene();
         
         virtual ~Scene();
@@ -58,12 +54,8 @@ namespace molphene {
         colormode_t colorMode_;
         
         sphere_buffer sphere_buff_atoms;
-        color_light_buffer cylinder_buff_atoms;
-        color_light_buffer line_buff_bonds;
         
         Renderer renderer;
-        
-        ColorLightRenderer cylinderRenderer;
         
         mat4f modelMatrix;
         
