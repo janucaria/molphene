@@ -182,7 +182,7 @@ Renderer::createShader(GLenum shaderType, const char* pSource)
         char* buf = (char*)malloc(infoLen);
         if(buf) {
           glGetShaderInfoLog(shader, infoLen, NULL, buf);
-          LOG_E("Could not compile shader %d:\n%s\n", shaderType, buf);
+          // LOG_E("Could not compile shader %d:\n%s\n", shaderType, buf);
           free(buf);
         }
         glDeleteShader(shader);
@@ -214,7 +214,7 @@ Renderer::createProgram(const GLuint vertexShader, const GLuint fragmentShader)
         char* buf = (char*)malloc(bufLength);
         if(buf) {
           glGetProgramInfoLog(program, bufLength, NULL, buf);
-          LOG_E("Could not link program:\n%s\n", buf);
+          // LOG_E("Could not link program:\n%s\n", buf);
           free(buf);
         }
       }

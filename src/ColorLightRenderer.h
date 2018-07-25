@@ -2,7 +2,6 @@
 #define __Molphene__ColorLightRenderer__
 
 #include "Renderer.h"
-#include "logger.h"
 #include "m3d.hpp"
 #include "opengl.h"
 

@@ -70,14 +70,10 @@ Scene::resetMesh()
 
   sphere_data spheredat;
 
-  LOG_D("Size of atoms : %u", static_cast<GLuint>(atoms.size()));
-
   GLuint totalAtoms = static_cast<GLuint>(atoms.size());
   spheredat.reserve(totalAtoms);
   GLuint totalVertices = totalAtoms * spheredat.unitlen();
   sphere_buff_atoms.reserve(totalVertices);
-
-  LOG_D("vertices size : %u", totalVertices);
 
   for(unsigned int i = 0; i < totalAtoms; ++i) {
     auto& atm = *atoms.at(i);

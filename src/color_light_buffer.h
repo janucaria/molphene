@@ -1,7 +1,6 @@
 #ifndef __Molphene__color_light_buffer__
 #define __Molphene__color_light_buffer__
 
-#include "logger.h"
 #include "m3d.hpp"
 #include "opengl.h"
 

@@ -1,7 +1,6 @@
 #ifndef Molphene_primitive_data_h
 #define Molphene_primitive_data_h
 
-#include "logger.h"
 #include "m3d.hpp"
 #include "shape_data.h"
 #include <cstddef>

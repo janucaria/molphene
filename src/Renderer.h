@@ -2,7 +2,6 @@
 #define __molphene__Renderer__
 
 #include "color_light_buffer.h"
-#include "logger.h"
 #include "m3d.hpp"
 #include "opengl.h"
 #include "sphere_buffer.h"

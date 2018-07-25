@@ -1,7 +1,6 @@
 #ifndef __Molphene__sphere_data__
 #define __Molphene__sphere_data__
 
-#include "logger.h"
 #include "m3d.hpp"
 #include "primitive_data.h"
 #include <cstddef>
