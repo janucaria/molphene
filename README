@@ -1,7 +1,11 @@
 About
 —————
-Molphene is C++ library which use for create 3D Molecule Visualisation.
+Molphene is 3D Molecule Visualisation written in C++.
 
+Require
+———————
+ - Boost (https://www.boost.org/)
+ - GLFW3 (http://www.glfw.org/)
 
 Authors
 ———————
@@ -13,4 +17,3 @@ Licence
 LGPLv3 (GNU Lesser General Public License v3.0)
 
 Copyright Januar C. Andaria
-
