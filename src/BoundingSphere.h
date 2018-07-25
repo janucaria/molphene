@@ -2,11 +2,17 @@
 #define __Molphene__BoundingSphere__
 
 #include "m3d.hpp"
+#include "shape/Sphere.hpp"
 
 namespace molphene {
 class BoundingSphere {
-  float radius;
-  vec3f center;
+public:
+  using Sphere_type = Sphere<float>;
+  using Sphere_Radius_type = typename Sphere_type::Radius_type;
+  using Sphere_Center_type = typename Sphere_type::Center_type;
+
+private:
+  Sphere_type sphere_{-1};
 
 public:
   BoundingSphere();
