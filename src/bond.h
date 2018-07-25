@@ -4,17 +4,19 @@
 #include "atom.h"
 
 namespace molphene {
-    class bond {
-    public:
-        bond(atom & a1, atom & a2);
-        
-        atom & getAtom1();
-        atom & getAtom2();
-        
-    private:
-        atom a1_;
-        atom a2_;
-    };
-}
+class bond {
+public:
+  bond(atom& a1, atom& a2);
 
-#endif /* defined(__Molphene__Bond__) */
+  atom&
+  getAtom1();
+  atom&
+  getAtom2();
+
+private:
+  atom a1_;
+  atom a2_;
+};
+} // namespace molphene
+
+#endif

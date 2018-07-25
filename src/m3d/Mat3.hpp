@@ -29,7 +29,8 @@ struct Mat3 {
   }
 
   Mat3&
-  operator()(T m11, T m12, T m13, T m21, T m22, T m23, T m31, T m32, T m33) noexcept
+  operator()(
+   T m11, T m12, T m13, T m21, T m22, T m23, T m31, T m32, T m33) noexcept
   {
     m[0] = m11;
     m[1] = m12;

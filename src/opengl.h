@@ -39,6 +39,4 @@
 
 #endif
 
-
-
-#endif /* defined(__libmolphene__opengl__) */
+#endif

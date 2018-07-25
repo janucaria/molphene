@@ -4,18 +4,22 @@
 #include "m3d.hpp"
 
 namespace molphene {
-    class BoundingSphere {
-        float radius;
-        vec3f center;
-    public:
-        BoundingSphere();
-        void reset();
-        void expand(const vec3f & position);
-        float getRadius();
-        vec3f getCenter();
-    };
-    
-}
+class BoundingSphere {
+  float radius;
+  vec3f center;
 
+public:
+  BoundingSphere();
+  void
+  reset();
+  void
+  expand(const vec3f& position);
+  float
+  getRadius();
+  vec3f
+  getCenter();
+};
 
-#endif /* defined(__Molphene__BoundingSphere__) */
+} // namespace molphene
+
+#endif

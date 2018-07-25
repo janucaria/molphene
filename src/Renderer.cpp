@@ -1,163 +1,237 @@
 #include "Renderer.h"
 
 namespace molphene {
-    
-    Renderer::Renderer()
-    : gProgram(0)
-    , gVertexShader(0)
-    , gFragmentShader(0)
-    , gUniformModelViewMatrixLocation(-1)
-    , gUniformProjectionMatrixLocation(-1)
-    {
-    }
-    
-    bool Renderer::setupGL() {
-        setupGLProgram();
-        
-        gVertexPositionLocation = glGetAttribLocation(gProgram, "a_Position");
-        gVertexNormalLocation = glGetAttribLocation(gProgram, "a_Normal");
-        gVertexColorLocation = glGetAttribLocation(gProgram, "a_Color");
-        gVertexRadiusLocation = glGetAttribLocation(gProgram, "a_Radius");
-        
-        setupGLUniformsLocation();
-        return true;
-    }
-    
-    void Renderer::setupGLProgram() {
-        gVertexShader = createShader(GL_VERTEX_SHADER, vertexShaderSource);
-        gFragmentShader = createShader(GL_FRAGMENT_SHADER, fragmentShaderSource);
-        gProgram = createProgram(gVertexShader, gFragmentShader);
-    }
-    
-    void Renderer::setupGLUniformsLocation() {
-        gUniformModelViewMatrixLocation = glGetUniformLocation(gProgram, "u_ModelViewMatrix");
-        gUniformProjectionMatrixLocation = glGetUniformLocation(gProgram, "u_ProjectionMatrix");
-        
-        gUniformLightSourceAmbientLocation = glGetUniformLocation(gProgram, "u_LightSource_ambient");
-        gUniformLightSourceDiffuseLocation = glGetUniformLocation(gProgram, "u_LightSource_diffuse");
-        gUniformLightSourceSpecularLocation = glGetUniformLocation(gProgram, "u_LightSource_specular");
-        gUniformLightSourcePositionLocation = glGetUniformLocation(gProgram, "u_LightSource_position");
-        
-        gUniformMaterialAmbientLocation = glGetUniformLocation(gProgram, "u_Material_ambient");
-        gUniformMaterialDiffuseLocation = glGetUniformLocation(gProgram, "u_Material_diffuse");
-        gUniformMaterialSpecularLocation = glGetUniformLocation(gProgram, "u_Material_specular");
-        gUniformMaterialShininessLocation = glGetUniformLocation(gProgram, "u_Material_shininess");
-    }
-        
-    void Renderer::setModelViewMatrix(const mat4f & m4) {
-        glUniformMatrix4fv(gUniformModelViewMatrixLocation, 1, GL_FALSE, m4.m);
-    }
-    
-    void Renderer::setProjectionMatrix(const mat4f & m4) {
-        glUniformMatrix4fv(gUniformProjectionMatrixLocation, 1, GL_FALSE, m4.m);
-    }
-    
-    void Renderer::setLightSourceAmbient(const float & r, const float & g, const float & b, const float & a) {
-        glUniform4f(gUniformLightSourceAmbientLocation, r, g, b, a);
-    }
-    
-    void Renderer::setLightSourceDiffuse(const float & r, const float & g, const float & b, const float & a) {
-        glUniform4f(gUniformLightSourceDiffuseLocation, r, g, b, a);
-    }
-    
-    void Renderer::setLightSourceSpecular(const float & r, const float & g, const float & b, const float & a) {
-        glUniform4f(gUniformLightSourceSpecularLocation, r, g, b, a);
-    }
-    
-    void Renderer::setLightSourcePosition(const float & x, const float & y, const float & z) {
-        glUniform4f(gUniformLightSourcePositionLocation, x, y, z, 1.0f);
-    }
-    
-    void Renderer::setMaterialAmbient(const float & r, const float & g, const float & b, const float & a) {
-        glUniform4f(gUniformMaterialAmbientLocation, r, g, b, a);
-    }
-    
-    void Renderer::setMaterialDiffuse(const float & r, const float & g, const float & b, const float & a) {
-        glUniform4f(gUniformMaterialDiffuseLocation, r, g, b, a);
-    }
-    
-    void Renderer::setMaterialSpecular(const float & r, const float & g, const float & b, const float & a) {
-        glUniform4f(gUniformMaterialSpecularLocation, r, g, b, a);
-    }
-    
-    void Renderer::setMaterialShininess(const float & v) {
-        glUniform1f(gUniformMaterialShininessLocation, v);
-    }
-    
-    void Renderer::render(color_light_buffer & buff) {
-        buff.render(GL_TRIANGLE_STRIP, gVertexPositionLocation, gVertexColorLocation, gVertexNormalLocation);
-    }
-    
-    void Renderer::render(sphere_buffer & buff) {
-        buff.render(GL_TRIANGLE_STRIP, gVertexPositionLocation, gVertexColorLocation, gVertexNormalLocation, gVertexRadiusLocation);
-    }
-    
-    void Renderer::render_line(color_light_buffer & buff) {
-        buff.render(GL_LINES, gVertexPositionLocation, gVertexColorLocation, gVertexNormalLocation);
-    }
-    
-    GLuint Renderer::createShader(GLenum shaderType, const char* pSource) {
-        GLuint shader = glCreateShader(shaderType);
-        if (shader) {
-            glShaderSource(shader, 1, &pSource, NULL);
-            glCompileShader(shader);
-            GLint compiled = 0;
-            glGetShaderiv(shader, GL_COMPILE_STATUS, &compiled);
-            if (!compiled) {
-                GLint infoLen = 0;
-                glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &infoLen);
-                if (infoLen) {
-                    char* buf = (char*) malloc(infoLen);
-                    if (buf) {
-                        glGetShaderInfoLog(shader, infoLen, NULL, buf);
-                        LOG_E("Could not compile shader %d:\n%s\n", shaderType, buf);
-                        free(buf);
-                    }
-                    glDeleteShader(shader);
-                    shader = 0;
-                }
-            }
+
+Renderer::Renderer()
+: gProgram(0)
+, gVertexShader(0)
+, gFragmentShader(0)
+, gUniformModelViewMatrixLocation(-1)
+, gUniformProjectionMatrixLocation(-1)
+{
+}
+
+bool
+Renderer::setupGL()
+{
+  setupGLProgram();
+
+  gVertexPositionLocation = glGetAttribLocation(gProgram, "a_Position");
+  gVertexNormalLocation = glGetAttribLocation(gProgram, "a_Normal");
+  gVertexColorLocation = glGetAttribLocation(gProgram, "a_Color");
+  gVertexRadiusLocation = glGetAttribLocation(gProgram, "a_Radius");
+
+  setupGLUniformsLocation();
+  return true;
+}
+
+void
+Renderer::setupGLProgram()
+{
+  gVertexShader = createShader(GL_VERTEX_SHADER, vertexShaderSource);
+  gFragmentShader = createShader(GL_FRAGMENT_SHADER, fragmentShaderSource);
+  gProgram = createProgram(gVertexShader, gFragmentShader);
+}
+
+void
+Renderer::setupGLUniformsLocation()
+{
+  gUniformModelViewMatrixLocation =
+   glGetUniformLocation(gProgram, "u_ModelViewMatrix");
+  gUniformProjectionMatrixLocation =
+   glGetUniformLocation(gProgram, "u_ProjectionMatrix");
+
+  gUniformLightSourceAmbientLocation =
+   glGetUniformLocation(gProgram, "u_LightSource_ambient");
+  gUniformLightSourceDiffuseLocation =
+   glGetUniformLocation(gProgram, "u_LightSource_diffuse");
+  gUniformLightSourceSpecularLocation =
+   glGetUniformLocation(gProgram, "u_LightSource_specular");
+  gUniformLightSourcePositionLocation =
+   glGetUniformLocation(gProgram, "u_LightSource_position");
+
+  gUniformMaterialAmbientLocation =
+   glGetUniformLocation(gProgram, "u_Material_ambient");
+  gUniformMaterialDiffuseLocation =
+   glGetUniformLocation(gProgram, "u_Material_diffuse");
+  gUniformMaterialSpecularLocation =
+   glGetUniformLocation(gProgram, "u_Material_specular");
+  gUniformMaterialShininessLocation =
+   glGetUniformLocation(gProgram, "u_Material_shininess");
+}
+
+void
+Renderer::setModelViewMatrix(const mat4f& m4)
+{
+  glUniformMatrix4fv(gUniformModelViewMatrixLocation, 1, GL_FALSE, m4.m);
+}
+
+void
+Renderer::setProjectionMatrix(const mat4f& m4)
+{
+  glUniformMatrix4fv(gUniformProjectionMatrixLocation, 1, GL_FALSE, m4.m);
+}
+
+void
+Renderer::setLightSourceAmbient(const float& r,
+                                const float& g,
+                                const float& b,
+                                const float& a)
+{
+  glUniform4f(gUniformLightSourceAmbientLocation, r, g, b, a);
+}
+
+void
+Renderer::setLightSourceDiffuse(const float& r,
+                                const float& g,
+                                const float& b,
+                                const float& a)
+{
+  glUniform4f(gUniformLightSourceDiffuseLocation, r, g, b, a);
+}
+
+void
+Renderer::setLightSourceSpecular(const float& r,
+                                 const float& g,
+                                 const float& b,
+                                 const float& a)
+{
+  glUniform4f(gUniformLightSourceSpecularLocation, r, g, b, a);
+}
+
+void
+Renderer::setLightSourcePosition(const float& x, const float& y, const float& z)
+{
+  glUniform4f(gUniformLightSourcePositionLocation, x, y, z, 1.0f);
+}
+
+void
+Renderer::setMaterialAmbient(const float& r,
+                             const float& g,
+                             const float& b,
+                             const float& a)
+{
+  glUniform4f(gUniformMaterialAmbientLocation, r, g, b, a);
+}
+
+void
+Renderer::setMaterialDiffuse(const float& r,
+                             const float& g,
+                             const float& b,
+                             const float& a)
+{
+  glUniform4f(gUniformMaterialDiffuseLocation, r, g, b, a);
+}
+
+void
+Renderer::setMaterialSpecular(const float& r,
+                              const float& g,
+                              const float& b,
+                              const float& a)
+{
+  glUniform4f(gUniformMaterialSpecularLocation, r, g, b, a);
+}
+
+void
+Renderer::setMaterialShininess(const float& v)
+{
+  glUniform1f(gUniformMaterialShininessLocation, v);
+}
+
+void
+Renderer::render(color_light_buffer& buff)
+{
+  buff.render(GL_TRIANGLE_STRIP,
+              gVertexPositionLocation,
+              gVertexColorLocation,
+              gVertexNormalLocation);
+}
+
+void
+Renderer::render(sphere_buffer& buff)
+{
+  buff.render(GL_TRIANGLE_STRIP,
+              gVertexPositionLocation,
+              gVertexColorLocation,
+              gVertexNormalLocation,
+              gVertexRadiusLocation);
+}
+
+void
+Renderer::render_line(color_light_buffer& buff)
+{
+  buff.render(GL_LINES,
+              gVertexPositionLocation,
+              gVertexColorLocation,
+              gVertexNormalLocation);
+}
+
+GLuint
+Renderer::createShader(GLenum shaderType, const char* pSource)
+{
+  GLuint shader = glCreateShader(shaderType);
+  if(shader) {
+    glShaderSource(shader, 1, &pSource, NULL);
+    glCompileShader(shader);
+    GLint compiled = 0;
+    glGetShaderiv(shader, GL_COMPILE_STATUS, &compiled);
+    if(!compiled) {
+      GLint infoLen = 0;
+      glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &infoLen);
+      if(infoLen) {
+        char* buf = (char*)malloc(infoLen);
+        if(buf) {
+          glGetShaderInfoLog(shader, infoLen, NULL, buf);
+          LOG_E("Could not compile shader %d:\n%s\n", shaderType, buf);
+          free(buf);
         }
-        return shader;
+        glDeleteShader(shader);
+        shader = 0;
+      }
     }
-    
-    
-    GLuint Renderer::createProgram(const GLuint vertexShader, const GLuint fragmentShader) {
-        
-        if (!vertexShader || !fragmentShader) {
-            return 0;
+  }
+  return shader;
+}
+
+GLuint
+Renderer::createProgram(const GLuint vertexShader, const GLuint fragmentShader)
+{
+  if(!vertexShader || !fragmentShader) {
+    return 0;
+  }
+
+  GLuint program = glCreateProgram();
+  if(program) {
+    glAttachShader(program, vertexShader);
+    glAttachShader(program, fragmentShader);
+    glLinkProgram(program);
+    GLint linkStatus = GL_FALSE;
+    glGetProgramiv(program, GL_LINK_STATUS, &linkStatus);
+    if(linkStatus != GL_TRUE) {
+      GLint bufLength = 0;
+      glGetProgramiv(program, GL_INFO_LOG_LENGTH, &bufLength);
+      if(bufLength) {
+        char* buf = (char*)malloc(bufLength);
+        if(buf) {
+          glGetProgramInfoLog(program, bufLength, NULL, buf);
+          LOG_E("Could not link program:\n%s\n", buf);
+          free(buf);
         }
-        
-        GLuint program = glCreateProgram();
-        if (program) {
-            glAttachShader(program, vertexShader);
-            glAttachShader(program, fragmentShader);
-            glLinkProgram(program);
-            GLint linkStatus = GL_FALSE;
-            glGetProgramiv(program, GL_LINK_STATUS, &linkStatus);
-            if (linkStatus != GL_TRUE) {
-                GLint bufLength = 0;
-                glGetProgramiv(program, GL_INFO_LOG_LENGTH, &bufLength);
-                if (bufLength) {
-                    char* buf = (char*) malloc(bufLength);
-                    if (buf) {
-                        glGetProgramInfoLog(program, bufLength, NULL, buf);
-                        LOG_E("Could not link program:\n%s\n", buf);
-                        free(buf);
-                    }
-                }
-                glDeleteProgram(program);
-                program = 0;
-            }
-        }
-        return program;
+      }
+      glDeleteProgram(program);
+      program = 0;
     }
-    
-    void Renderer::useGLProgram() const {
-        glUseProgram(gProgram);
-    }
-    
-    const char * Renderer::vertexShaderSource = R"(
+  }
+  return program;
+}
+
+void
+Renderer::useGLProgram() const
+{
+  glUseProgram(gProgram);
+}
+
+const char* Renderer::vertexShaderSource = R"(
     attribute vec3 a_Position;
     attribute vec3 a_Normal;
     attribute vec4 a_Color;
@@ -181,8 +255,8 @@ namespace molphene {
         gl_Position /= gl_Position.w;
     }
     )";
-    
-    const char * Renderer::fragmentShaderSource = R"(
+
+const char* Renderer::fragmentShaderSource = R"(
     #ifdef GL_ES
     precision highp float;
     #endif
@@ -227,4 +301,4 @@ namespace molphene {
     }
     
     )";
-}
+} // namespace molphene

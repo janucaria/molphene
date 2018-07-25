@@ -1,30 +1,31 @@
 #ifndef __Molphene__ColorLightRenderer__
 #define __Molphene__ColorLightRenderer__
 
-#include "logger.h"
-#include "opengl.h"
-#include "m3d.hpp"
 #include "Renderer.h"
+#include "logger.h"
+#include "m3d.hpp"
+#include "opengl.h"
 
 namespace molphene {
-    class ColorLightRenderer : public Renderer {
-        
-    public:
-        
-        ColorLightRenderer();
-        
-        void setNormalMatrix(const mat3f & m);
-        
-    protected:
-        const static char * vertexShaderSource;
-        const static char * fragmentShaderSource;
-        
-        GLint gUniformNormalMatrixLocation;
-        
-        void setupGLProgram() override;
-        
-        void setupGLUniformsLocation() override;
-    };
-}
+class ColorLightRenderer : public Renderer {
+public:
+  ColorLightRenderer();
 
-#endif /* defined(__Molphene__LightRenderer__) */
+  void
+  setNormalMatrix(const mat3f& m);
+
+protected:
+  const static char* vertexShaderSource;
+  const static char* fragmentShaderSource;
+
+  GLint gUniformNormalMatrixLocation;
+
+  void
+  setupGLProgram() override;
+
+  void
+  setupGLUniformsLocation() override;
+};
+} // namespace molphene
+
+#endif

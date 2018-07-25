@@ -1,30 +1,35 @@
 #include "ColorLightRenderer.h"
 
-
 namespace molphene {
-    
-    ColorLightRenderer::ColorLightRenderer() :
-    gUniformNormalMatrixLocation(-1)
-    {
-        
-    }
-    
-    void ColorLightRenderer::setupGLUniformsLocation() {
-        Renderer::setupGLUniformsLocation();
-        gUniformNormalMatrixLocation = glGetUniformLocation(gProgram, "u_NormalMatrix");
-    }
-    
-    void ColorLightRenderer::setupGLProgram() {
-        gVertexShader = createShader(GL_VERTEX_SHADER, vertexShaderSource);
-        gFragmentShader = createShader(GL_FRAGMENT_SHADER, fragmentShaderSource);
-        gProgram = createProgram(gVertexShader, gFragmentShader);
-    }
-    
-    void ColorLightRenderer::setNormalMatrix(const mat3f & m) {
-        glUniformMatrix3fv(gUniformNormalMatrixLocation, 1, GL_FALSE, m.m);
-    }
-    
-    const char * ColorLightRenderer::vertexShaderSource = R"(
+
+ColorLightRenderer::ColorLightRenderer()
+: gUniformNormalMatrixLocation(-1)
+{
+}
+
+void
+ColorLightRenderer::setupGLUniformsLocation()
+{
+  Renderer::setupGLUniformsLocation();
+  gUniformNormalMatrixLocation =
+   glGetUniformLocation(gProgram, "u_NormalMatrix");
+}
+
+void
+ColorLightRenderer::setupGLProgram()
+{
+  gVertexShader = createShader(GL_VERTEX_SHADER, vertexShaderSource);
+  gFragmentShader = createShader(GL_FRAGMENT_SHADER, fragmentShaderSource);
+  gProgram = createProgram(gVertexShader, gFragmentShader);
+}
+
+void
+ColorLightRenderer::setNormalMatrix(const mat3f& m)
+{
+  glUniformMatrix3fv(gUniformNormalMatrixLocation, 1, GL_FALSE, m.m);
+}
+
+const char* ColorLightRenderer::vertexShaderSource = R"(
     attribute vec3 a_Position;
     attribute vec3 a_Normal;
     attribute vec4 a_Color;
@@ -47,8 +52,8 @@ namespace molphene {
         gl_Position /= gl_Position.w;
     }
     )";
-    
-    const char * ColorLightRenderer::fragmentShaderSource = R"(
+
+const char* ColorLightRenderer::fragmentShaderSource = R"(
 #ifdef GL_ES
     precision highp float;
 #endif
@@ -97,4 +102,4 @@ namespace molphene {
     }
     
     )";
-}
+} // namespace molphene
