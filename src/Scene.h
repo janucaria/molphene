@@ -44,14 +44,9 @@ namespace molphene {
         
         void reset_molecules();
         
-        colormode_t setColorMode(colormode_t val);
-        
-        colormode_t getColorMode();
-        
         void zoom(float z);
         
     private:
-        colormode_t colorMode_;
         
         sphere_buffer sphere_buff_atoms;
         
@@ -64,9 +59,6 @@ namespace molphene {
         molecule * molecule_;
         
         ColourManager colorManager;
-        
-        const colour & getAtomColor_(const atom & atm);
-        
     };
     
     

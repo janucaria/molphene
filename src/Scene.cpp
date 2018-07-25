@@ -5,8 +5,7 @@
 namespace molphene {
     
     Scene::Scene()
-    : colorMode_(0)
-    , molecule_(new molecule())
+    : molecule_(new molecule())
     {
     }
     
@@ -106,7 +105,7 @@ namespace molphene {
             atom & atm = *atoms.at(i);
             const atom::element & element = atm.getElement();
             const vec3f & apos = atm.getPosition();
-            const colour & acol = getAtomColor_(atm);
+            const colour & acol = colorManager.getElementColor(element.symbol);
             float arad = element.radiiVdW;
             
             spheredat.push(apos, arad, acol);
@@ -203,29 +202,6 @@ namespace molphene {
         parser.parse(*molecule_, is);
         
         reset_molecules();
-    }
-    
-    colormode_t Scene::getColorMode() {
-        return colorMode_;
-    }
-    
-    colormode_t Scene::setColorMode(colormode_t val) {
-        if(colorMode_ != val) {
-            colorMode_ = val;
-            // NOTE: resetMesh to expensive for just reset the veritces colors
-            resetMesh();
-        }
-        return colorMode_ = val;
-    }
-    
-    const colour & Scene::getAtomColor_(const atom & atm) {
-        switch (colorMode_) {
-            case 1:
-                return colorManager.getAltlocColor(atm.getAltLoc());
-                break;
-        }
-        
-        return colorManager.getElementColor(atm.getElement().symbol);
     }
     
     void Scene::zoom(float z) {
