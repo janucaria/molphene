@@ -1,7 +1,7 @@
 #ifndef __molphene__Scene__
 #define __molphene__Scene__
 
-#include "BoundingSphere.h"
+#include "Bounding_sphere.hpp"
 #include "Camera.h"
 #include "ColorLightRenderer.h"
 #include "ColourManager.h"

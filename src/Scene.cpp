@@ -45,7 +45,6 @@ Scene::resetMesh()
   std::vector<Atom*> atoms;
   std::vector<Bond*> bonds;
 
-  BoundingSphere bs;
   for(auto& model : Molecule::Models_iterable{*molecule_}) {
     for(auto& chain : Model::Chains_iterable{model}) {
       for(auto& residue : Chain::Residue_iterator{chain}) {
@@ -142,7 +141,7 @@ void
 Scene::reset_molecules()
 {
   // calculate bounding sphere
-  BoundingSphere bs;
+  Bounding_sphere<float> bs;
 
   for(auto& model : Molecule::Models_iterable{*molecule_}) {
     for(auto& chain : Model::Chains_iterable{model}) {
@@ -158,7 +157,7 @@ Scene::reset_molecules()
   float fov = M_PI / 4.0f;
   float theta = fov / 2.0f;
   float tanTheta = tan(theta);
-  float y = bs.getRadius() + 2.0f;
+  float y = bs.radius() + 2.0f;
   float focalLength = y / tanTheta;
   float near = focalLength - y;
   float far = focalLength + y;
@@ -170,7 +169,7 @@ Scene::reset_molecules()
   camera.updateProjectionMatrix();
 
   modelMatrix.identity();
-  modelMatrix.translate(-bs.getCenter());
+  modelMatrix.translate(-bs.center());
 }
 
 void

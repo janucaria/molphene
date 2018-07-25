@@ -27,7 +27,6 @@ set(MOLPHENE_SRC_FILES
 "${PROJECT_SOURCE_DIR}/src/mol/Model.cpp"
 "${PROJECT_SOURCE_DIR}/src/mol/Molecule.cpp"
 "${PROJECT_SOURCE_DIR}/src/mol/Pdb_parser.cpp"
-"${PROJECT_SOURCE_DIR}/src/BoundingSphere.cpp"
 "${PROJECT_SOURCE_DIR}/src/Camera.cpp"
 "${PROJECT_SOURCE_DIR}/src/color_light_buffer.cpp"
 "${PROJECT_SOURCE_DIR}/src/ColorLightRenderer.cpp"
