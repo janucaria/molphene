@@ -10,6 +10,14 @@
 
 namespace molphene {
 
+using Vec2f = Vec2<float>;
+
+using Vec3f = Vec3<float>;
+
+using Mat4f = Mat4<float>;
+
+using Mat3f = Mat3<float>;
+
 using vec2f = Vec2<float>;
 
 using vec3f = Vec3<float>;

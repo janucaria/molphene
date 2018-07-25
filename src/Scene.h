@@ -5,27 +5,25 @@
 #include "Camera.h"
 #include "ColorLightRenderer.h"
 #include "ColourManager.h"
-#include "PDBParser.h"
+#include "mol/Pdb_parser.hpp"
 #include "Renderer.h"
-#include "atom.h"
-#include "bond.h"
+#include "mol/Atom.hpp"
+#include "mol/Bond.hpp"
 #include "color_light_buffer.h"
 #include "m3d.hpp"
-#include "model.h"
-#include "molecule.h"
+#include "mol/Model.hpp"
+#include "mol/Molecule.hpp"
 #include "opengl.h"
 #include "sphere_buffer.h"
 #include <fstream>
 #include <istream>
+#include <memory>
 
 namespace molphene {
 typedef unsigned char colormode_t;
 
 class Scene {
 public:
-  Scene();
-
-  virtual ~Scene();
 
   bool
   setupGraphics();
@@ -63,7 +61,7 @@ private:
 
   Camera camera;
 
-  molecule* molecule_;
+  std::unique_ptr<Molecule> molecule_;
 
   ColourManager colorManager;
 };

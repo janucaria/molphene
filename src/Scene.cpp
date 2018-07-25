@@ -4,17 +4,6 @@
 
 namespace molphene {
 
-Scene::Scene()
-: molecule_(new molecule())
-{
-}
-
-Scene::~Scene()
-{
-  delete molecule_;
-  molecule_ = nullptr;
-}
-
 bool
 Scene::setupGraphics()
 {
@@ -53,47 +42,30 @@ Scene::changeDimension(GLsizei width, GLsizei height)
 void
 Scene::resetMesh()
 {
-  std::vector<atom*> atoms;
-  std::vector<bond*> bonds;
+  std::vector<Atom*> atoms;
+  std::vector<Bond*> bonds;
 
-  molecule::model_iterator modelIt = molecule_->mdlbegin();
-  molecule::model_iterator modelEndIt = molecule_->mdlend();
-
-  for(; modelIt != modelEndIt; ++modelIt) {
-    model::chain_iterator chainIt = modelIt->chainbegin();
-    model::chain_iterator chainEndIt = modelIt->chainend();
-
-    for(; chainIt != chainEndIt; ++chainIt) {
-      chain::compound_iterator compoundIt = chainIt->compbegin();
-      chain::compound_iterator compoundEndIt = chainIt->resend();
-
-      for(; compoundIt != compoundEndIt; ++compoundIt) {
-        compound::atom_iterator atomIt = compoundIt->atmbegin();
-        compound::atom_iterator atomEndIt = compoundIt->atmend();
-
-        for(; atomIt != atomEndIt; ++atomIt) {
-          atom* atm = &(*atomIt);
+  BoundingSphere bs;
+  for(auto& model : Molecule::Models_iterable{*molecule_}) {
+    for(auto& chain : Model::Chains_iterable{model}) {
+      for(auto& residue : Chain::Residue_iterator{chain}) {
+        for(auto& atom : Compound::Atoms_iterable{residue}) {
+          const auto atm = std::addressof(atom);
           atoms.push_back(atm);
         }
       }
 
-      compoundEndIt = chainIt->compend();
-      for(; compoundIt != compoundEndIt; ++compoundIt) {
-        compound::atom_iterator atomIt = compoundIt->atmbegin();
-        compound::atom_iterator atomEndIt = compoundIt->atmend();
-
-        for(; atomIt != atomEndIt; ++atomIt) {
-          atom* atm = &(*atomIt);
+      for(auto& ligan : Chain::Ligan_iterator{chain}) {
+        const auto compname = ligan.name();
+        for(auto& atom : Compound::Atoms_iterable{ligan}) {
+          const auto atm = std::addressof(atom);
           atoms.push_back(atm);
         }
       }
     }
 
-    model::bond_iterator bondIt = modelIt->beginBond();
-    model::bond_iterator bondEndIt = modelIt->endBond();
-    for(; bondIt != bondEndIt; ++bondIt) {
-      bond* bnd = &(*bondIt);
-      bonds.push_back(bnd);
+    for(auto& bond : Model::Bonds_iterable{model}) {
+      bonds.push_back(&bond);
     }
   }
 
@@ -109,11 +81,11 @@ Scene::resetMesh()
   LOG_D("vertices size : %u", totalVertices);
 
   for(unsigned int i = 0; i < totalAtoms; ++i) {
-    atom& atm = *atoms.at(i);
-    const atom::element& element = atm.getElement();
-    const vec3f& apos = atm.getPosition();
+    auto& atm = *atoms.at(i);
+    const auto& element = atm.element();
+    const vec3f& apos = atm.position();
     const colour& acol = colorManager.getElementColor(element.symbol);
-    float arad = element.radiiVdW;
+    float arad = element.rvdw;
 
     spheredat.push(apos, arad, acol);
 
@@ -172,27 +144,16 @@ Scene::reset_molecules()
   // calculate bounding sphere
   BoundingSphere bs;
 
-  molecule::model_iterator modelIt = molecule_->mdlbegin();
-  molecule::model_iterator modelEndIt = molecule_->mdlend();
-
-  for(; modelIt != modelEndIt; ++modelIt) {
-    model::chain_iterator chainIt = modelIt->chainbegin();
-    model::chain_iterator chainEndIt = modelIt->chainend();
-
-    for(; chainIt != chainEndIt; ++chainIt) {
-      chain::compound_iterator compoundIt = chainIt->compbegin();
-      chain::compound_iterator compoundEndIt = chainIt->compend();
-
-      for(; compoundIt != compoundEndIt; ++compoundIt) {
-        compound::atom_iterator atomIt = compoundIt->atmbegin();
-        compound::atom_iterator atomEndIt = compoundIt->atmend();
-
-        for(; atomIt != atomEndIt; ++atomIt) {
-          bs.expand(atomIt->getPosition());
+  for(auto& model : Molecule::Models_iterable{*molecule_}) {
+    for(auto& chain : Model::Chains_iterable{model}) {
+      for(auto& residue : Chain::Compound_iterator{chain}) {
+        for(auto& atom : Compound::Atoms_iterable{residue}) {
+          bs.expand(atom.position());
         }
       }
     }
   }
+
 
   float fov = M_PI / 4.0f;
   float theta = fov / 2.0f;
@@ -215,15 +176,11 @@ Scene::reset_molecules()
 void
 Scene::openStream(std::istream& is)
 {
-  delete molecule_;
-  molecule_ = nullptr;
-
   sphere_buff_atoms.reserve(0);
+  molecule_ = std::make_unique<Molecule>();
 
-  molecule_ = new molecule();
-
-  PDBParser parser;
-  parser.parse(*molecule_, is);
+  Pdb_parser parser;
+  parser.parse(molecule_.get(), is);
 
   reset_molecules();
 }
