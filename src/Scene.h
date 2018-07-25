@@ -46,8 +46,6 @@ namespace molphene {
         
         void openStream(std::istream & is);
         
-        void open_sdf(std::istream & is);
-        
         void reset_molecules();
         
         colormode_t setColorMode(colormode_t val);

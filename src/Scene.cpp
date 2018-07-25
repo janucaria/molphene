@@ -4,8 +4,6 @@
 #include "line_data.h"
 #include "m3d.hpp"
 
-#include "mol_parser.h"
-
 namespace molphene {
     
     Scene::Scene()
@@ -234,22 +232,6 @@ namespace molphene {
         modelMatrix.rotate(0.0f, 1.0f, 0.0f, y);
         modelMatrix.rotate(0.0f, 0.0f, 1.0f, z);
         renderFrame();
-    }
-    
-    void Scene::open_sdf(std::istream & is) {
-        delete molecule_;
-        molecule_ = nullptr;
-        
-        sphere_buff_atoms.reserve(0);
-        cylinder_buff_atoms.reserve(0);
-        line_buff_bonds.reserve(0);
-        
-        molecule_ = new molecule();
-        
-        mol_parser parser;
-        parser.parse(*molecule_, is);
-        
-        reset_molecules();
     }
     
     void Scene::reset_molecules() {

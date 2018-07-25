@@ -32,7 +32,6 @@ set(MOLPHENE_SRC_FILES
 "${PROJECT_SOURCE_DIR}/src/cylinder_data.cpp"
 "${PROJECT_SOURCE_DIR}/src/line_data.cpp"
 "${PROJECT_SOURCE_DIR}/src/model.cpp"
-"${PROJECT_SOURCE_DIR}/src/mol_parser.cpp"
 "${PROJECT_SOURCE_DIR}/src/molecule.cpp"
 "${PROJECT_SOURCE_DIR}/src/PDBParser.cpp"
 "${PROJECT_SOURCE_DIR}/src/Renderer.cpp"
