@@ -14,18 +14,18 @@ namespace molphene {
     
     void cylinder_data::insert(size_t idx, vec3f pos1, vec3f pos2, float rad, colour col) {
         vec3f dir = pos2 - pos1;
-        dir.normalize();
+        dir.to_unit();
         
-        vec3f top = cross(vec3f(0, 0, 1), dir);
-        if(!top.length()) {
+        vec3f top = vec3f(0, 0, 1).cross(dir);
+        if(!top.magnitude()) {
             top = vec3f(0, 1, 0);
         }
         
-        top.normalize();
+        top.to_unit();
         
-        vec3f right = cross(dir, top);
+        vec3f right = dir.cross(top);
         
-        right.normalize();
+        right.to_unit();
         
         for(unsigned int i = 0; i <= bands_; ++i) {
             float theta = 2.0f * M_PI * (i % bands_) / bands_;

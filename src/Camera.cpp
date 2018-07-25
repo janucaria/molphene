@@ -40,7 +40,7 @@ namespace molphene {
     }
     
     void Camera::translate(const float &x, const float &y, const float &z) {
-        viewMatrix();
+        viewMatrix.identity();
         viewMatrix.translate(-x, -y, -z);
     }
     

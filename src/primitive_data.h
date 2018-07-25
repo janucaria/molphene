@@ -3,8 +3,7 @@
 
 #include <cstddef>
 #include "logger.h"
-#include "vec3f.h"
-#include "colour.h"
+#include "m3d.hpp"
 #include "shape_data.h"
 
 namespace molphene {

@@ -3,7 +3,7 @@
 
 #include <string>
 #include <unordered_map>
-#include "vec3f.h"
+#include "m3d.hpp"
 
 namespace molphene {
     class compound;

@@ -3,10 +3,7 @@
 
 #include "logger.h"
 #include "opengl.h"
-#include "vec3f.h"
-#include "colour.h"
-#include "mat4f.h"
-#include "mat3f.h"
+#include "m3d.hpp"
 #include "Renderer.h"
 
 namespace molphene {

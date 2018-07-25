@@ -63,7 +63,7 @@ namespace molphene {
                     idx++;
                 }
                 
-                norm(cosPhi * nextSinTheta, sinPhi * nextSinTheta, nextCosTheta);
+                norm = {cosPhi * nextSinTheta, sinPhi * nextSinTheta, nextCosTheta};
                 
                 positions_[idx] = pos;
                 normals_[idx] = norm;

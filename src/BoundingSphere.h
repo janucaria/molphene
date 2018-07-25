@@ -1,7 +1,7 @@
 #ifndef __Molphene__BoundingSphere__
 #define __Molphene__BoundingSphere__
 
-#include "vec3f.h"
+#include "m3d.hpp"
 
 namespace molphene {
     class BoundingSphere {

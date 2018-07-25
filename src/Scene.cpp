@@ -2,7 +2,7 @@
 #include "sphere_data.h"
 #include "cylinder_data.h"
 #include "line_data.h"
-#include "mat3f.h"
+#include "m3d.hpp"
 
 #include "mol_parser.h"
 
@@ -25,45 +25,46 @@ namespace molphene {
     bool Scene::setupGraphics() {
         glClearColor(0.5, 0.5, 0.5, 1.0);
         glEnable(GL_DEPTH_TEST);
-        
+        std::cout << "Hello World" << std::endl;
+
         renderer.setupGL();
-        
+      
         renderer.useGLProgram();
-        
+      
         renderer.setLightSourceAmbient(0.5, 0.5, 0.5, 1.0);
         renderer.setLightSourceDiffuse(1.0, 1.0, 1.0, 1.0);
         renderer.setLightSourceSpecular(0.5, 0.5, 0.5, 1.0);
         renderer.setLightSourcePosition(0.0, 0.0, 0.0);
-        
+      
         renderer.setMaterialAmbient(0.3, 0.3, 0.3, 1.0);
         renderer.setMaterialDiffuse(1.0, 1.0, 1.0, 1.0);
         renderer.setMaterialSpecular(0.5, 0.5, 0.5, 1.0);
         renderer.setMaterialShininess(10);
-        
-        
+      
+      
         cylinderRenderer.setupGL();
         cylinderRenderer.useGLProgram();
-        
+      
         cylinderRenderer.setLightSourceAmbient(0.5, 0.5, 0.5, 1.0);
         cylinderRenderer.setLightSourceDiffuse(1.0, 1.0, 1.0, 1.0);
         cylinderRenderer.setLightSourceSpecular(0.5, 0.5, 0.5, 1.0);
         cylinderRenderer.setLightSourcePosition(0.0, 0.0, 0.0);
-        
+      
         cylinderRenderer.setMaterialAmbient(0.3, 0.3, 0.3, 1.0);
         cylinderRenderer.setMaterialDiffuse(1.0, 1.0, 1.0, 1.0);
         cylinderRenderer.setMaterialSpecular(0.5, 0.5, 0.5, 1.0);
         cylinderRenderer.setMaterialShininess(10);
-        
+      
         sphere_buff_atoms.setup();
         cylinder_buff_atoms.setup();
         line_buff_bonds.setup();
-        
+      
         return true;
     }
     
     void Scene::changeDimension(GLsizei width, GLsizei height) {
-        camera.setAspect(1.0f * width / height);
-        camera.updateProjectionMatrix();
+       camera.setAspect(1.0f * width / height);
+       camera.updateProjectionMatrix();
         
         glViewport(0, 0, width, height);
     }
@@ -241,6 +242,7 @@ namespace molphene {
         
         sphere_buff_atoms.reserve(0);
         cylinder_buff_atoms.reserve(0);
+        line_buff_bonds.reserve(0);
         
         molecule_ = new molecule();
         
@@ -291,7 +293,7 @@ namespace molphene {
         camera.translate(0, 0, focalLength);
         camera.updateProjectionMatrix();
         
-        modelMatrix();
+        modelMatrix.identity();
         modelMatrix.translate(-bs.getCenter());
     }
     
@@ -301,6 +303,7 @@ namespace molphene {
         
         sphere_buff_atoms.reserve(0);
         cylinder_buff_atoms.reserve(0);
+        line_buff_bonds.reserve(0);
         
         molecule_ = new molecule();
         

@@ -13,13 +13,13 @@ namespace molphene {
             radius = 0.0f;
         } else {
             vec3f pSubQ = position - center;
-            float magPSubQ = pSubQ.length();
+            float magPSubQ = pSubQ.magnitude();
             
             if(magPSubQ * magPSubQ > radius * radius) {
                 vec3f G = center - pSubQ * radius / magPSubQ;
                 
                 center = (G + position) / 2;
-                radius = (G - center).length();
+                radius = (G - center).magnitude();
             }
         }
     }

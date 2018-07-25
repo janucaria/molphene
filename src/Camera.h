@@ -1,7 +1,7 @@
 #ifndef __molphene__Camera__
 #define __molphene__Camera__
 
-#include "mat4f.h"
+#include "m3d.hpp"
 
 namespace molphene {
     class Camera {

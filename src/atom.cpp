@@ -24,7 +24,7 @@ namespace molphene {
     }
     
     void atom::setPosition(float x, float y, float z) {
-        position_(x, y, z);
+        position_ = {x, y, z};
     }
     
     unsigned int atom::getSerial() const {
