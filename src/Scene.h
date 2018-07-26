@@ -13,7 +13,7 @@
 #include "m3d.hpp"
 #include "mol/Model.hpp"
 #include "mol/Molecule.hpp"
-#include "opengl.h"
+#include "opengl.hpp"
 #include "sphere_buffer.h"
 #include <fstream>
 #include <istream>

@@ -3,7 +3,7 @@
 
 #include "color_light_buffer.h"
 #include "m3d.hpp"
-#include "opengl.h"
+#include "opengl.hpp"
 #include "sphere_buffer.h"
 
 namespace molphene {

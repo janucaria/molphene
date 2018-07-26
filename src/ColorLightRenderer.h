@@ -3,7 +3,7 @@
 
 #include "Renderer.h"
 #include "m3d.hpp"
-#include "opengl.h"
+#include "opengl.hpp"
 
 namespace molphene {
 class ColorLightRenderer : public Renderer {

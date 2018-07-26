@@ -1,4 +1,5 @@
 #include "Renderer.h"
+#include <memory>
 
 namespace molphene {
 
@@ -179,15 +180,12 @@ Renderer::createShader(GLenum shaderType, const char* pSource)
       GLint infoLen = 0;
       glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &infoLen);
       if(infoLen) {
-        char* buf = (char*)malloc(infoLen);
-        if(buf) {
-          glGetShaderInfoLog(shader, infoLen, NULL, buf);
-          // LOG_E("Could not compile shader %d:\n%s\n", shaderType, buf);
-          free(buf);
-        }
-        glDeleteShader(shader);
-        shader = 0;
+        auto buf = std::make_unique<char>(infoLen);
+        glGetShaderInfoLog(shader, infoLen, NULL, buf.get());
+        // LOG_E("Could not compile shader %d:\n%s\n", shaderType, buf);
       }
+      glDeleteShader(shader);
+      shader = 0;
     }
   }
   return shader;
@@ -211,12 +209,8 @@ Renderer::createProgram(const GLuint vertexShader, const GLuint fragmentShader)
       GLint bufLength = 0;
       glGetProgramiv(program, GL_INFO_LOG_LENGTH, &bufLength);
       if(bufLength) {
-        char* buf = (char*)malloc(bufLength);
-        if(buf) {
-          glGetProgramInfoLog(program, bufLength, NULL, buf);
-          // LOG_E("Could not link program:\n%s\n", buf);
-          free(buf);
-        }
+        auto buf = std::make_unique<char>(bufLength);
+        glGetProgramInfoLog(program, bufLength, NULL, buf.get());
       }
       glDeleteProgram(program);
       program = 0;

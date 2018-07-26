@@ -2,7 +2,7 @@
 #define __Molphene__color_light_buffer__
 
 #include "m3d.hpp"
-#include "opengl.h"
+#include "opengl.hpp"
 
 namespace molphene {
 class color_light_buffer {
