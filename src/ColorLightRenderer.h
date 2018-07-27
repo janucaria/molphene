@@ -10,7 +10,9 @@
 #include "opengl.hpp"
 
 namespace molphene {
-class ColorLightRenderer : public Renderer {
+class ColorLightRenderer : public Renderer<ColorLightRenderer> {
+  friend Renderer<ColorLightRenderer>;
+
 public:
   ColorLightRenderer();
 
@@ -135,15 +137,16 @@ protected:
   GLint g_uloc_material_shininess{-1};
 
   const char*
-  vert_shader_source() override;
+  vert_shader_source() const noexcept;
+
   const char*
-  frag_shader_source() override;
+  frag_shader_source() const noexcept;
 
   void
-  setupGLProgram() override;
+  setupGLProgram();
 
   void
-  setupGLUniformsLocation() override;
+  setupGLUniformsLocation();
 };
 } // namespace molphene
 #endif

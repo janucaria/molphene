@@ -9,8 +9,6 @@ ColorLightRenderer::ColorLightRenderer()
 void
 ColorLightRenderer::setupGLProgram()
 {
-  Renderer::setupGLProgram();
-
   gVertexPositionLocation = glGetAttribLocation(gProgram, "a_Position");
   gVertexNormalLocation = glGetAttribLocation(gProgram, "a_Normal");
   gVertexColorLocation = glGetAttribLocation(gProgram, "a_Color");
@@ -75,7 +73,7 @@ ColorLightRenderer::render(color_light_buffer& buff)
 }
 
 const char*
-ColorLightRenderer::vert_shader_source()
+ColorLightRenderer::vert_shader_source() const noexcept
 {
   return R"(
     attribute vec3 a_Position;
@@ -103,7 +101,7 @@ ColorLightRenderer::vert_shader_source()
 }
 
 const char*
-ColorLightRenderer::frag_shader_source()
+ColorLightRenderer::frag_shader_source() const noexcept
 {
   return R"(
 #ifdef GL_ES

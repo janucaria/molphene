@@ -31,7 +31,6 @@ set(MOLPHENE_SRC_FILES
 "${PROJECT_SOURCE_DIR}/src/color_light_buffer.cpp"
 "${PROJECT_SOURCE_DIR}/src/ColorLightRenderer.cpp"
 "${PROJECT_SOURCE_DIR}/src/ColourManager.cpp"
-"${PROJECT_SOURCE_DIR}/src/Renderer.cpp"
 "${PROJECT_SOURCE_DIR}/src/Scene.cpp"
 "${PROJECT_SOURCE_DIR}/src/sphere_data.cpp")
 
