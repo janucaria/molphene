@@ -28,8 +28,8 @@ public:
   const colour*
   colors();
 
-  virtual unsigned int
-  unitlen() const = 0;
+  unsigned int
+  unitlen() const override = 0;
 
 protected:
   vec3f* positions_;

@@ -21,10 +21,12 @@ Scene::setupGraphics()
   renderer.setLightSourceSpecular(0.5, 0.5, 0.5, 1.0);
   renderer.setLightSourcePosition(0.0, 0.0, 0.0);
 
-  renderer.setMaterialAmbient(0.3, 0.3, 0.3, 1.0);
-  renderer.setMaterialDiffuse(1.0, 1.0, 1.0, 1.0);
-  renderer.setMaterialSpecular(0.5, 0.5, 0.5, 1.0);
-  renderer.setMaterialShininess(10);
+  material_.ambient = 0x4C4C4Cu;
+  material_.diffuse = 0xFFFFFFu;
+  material_.specular = 0x7F7F7Fu;
+  material_.shininess = 10;
+
+  renderer.material(material_);
 
   sphere_buff_atoms.setup();
 

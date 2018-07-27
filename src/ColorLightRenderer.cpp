@@ -36,13 +36,13 @@ ColorLightRenderer::setupGLUniformsLocation()
   gUniformLightSourcePositionLocation =
    glGetUniformLocation(gProgram, "u_LightSource_position");
 
-  gUniformMaterialAmbientLocation =
+  g_uloc_material_ambient =
    glGetUniformLocation(gProgram, "u_Material_ambient");
-  gUniformMaterialDiffuseLocation =
+  g_uloc_material_diffuse =
    glGetUniformLocation(gProgram, "u_Material_diffuse");
-  gUniformMaterialSpecularLocation =
+  g_uloc_material_specular =
    glGetUniformLocation(gProgram, "u_Material_specular");
-  gUniformMaterialShininessLocation =
+  g_uloc_material_shininess =
    glGetUniformLocation(gProgram, "u_Material_shininess");
 }
 
@@ -97,39 +97,6 @@ ColorLightRenderer::setLightSourcePosition(const float& x,
                                            const float& z)
 {
   glUniform4f(gUniformLightSourcePositionLocation, x, y, z, 1.0f);
-}
-
-void
-ColorLightRenderer::setMaterialAmbient(const float& r,
-                                       const float& g,
-                                       const float& b,
-                                       const float& a)
-{
-  glUniform4f(gUniformMaterialAmbientLocation, r, g, b, a);
-}
-
-void
-ColorLightRenderer::setMaterialDiffuse(const float& r,
-                                       const float& g,
-                                       const float& b,
-                                       const float& a)
-{
-  glUniform4f(gUniformMaterialDiffuseLocation, r, g, b, a);
-}
-
-void
-ColorLightRenderer::setMaterialSpecular(const float& r,
-                                        const float& g,
-                                        const float& b,
-                                        const float& a)
-{
-  glUniform4f(gUniformMaterialSpecularLocation, r, g, b, a);
-}
-
-void
-ColorLightRenderer::setMaterialShininess(const float& v)
-{
-  glUniform1f(gUniformMaterialShininessLocation, v);
 }
 
 void

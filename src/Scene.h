@@ -14,6 +14,7 @@
 #include "mol/Model.hpp"
 #include "mol/Molecule.hpp"
 #include "opengl.hpp"
+#include "Material.hpp"
 #include <fstream>
 #include <istream>
 #include <memory>
@@ -55,6 +56,8 @@ private:
   color_light_buffer sphere_buff_atoms;
 
   ColorLightRenderer renderer;
+
+  Material<Rgba8, unsigned int> material_;
 
   mat4f modelMatrix;
 

@@ -4,8 +4,8 @@ namespace molphene {
 
 sphere_data::sphere_data()
 : primitive_data()
-, latdiv_(20)
 , londiv_(10)
+, latdiv_(20)
 {
 }
 
