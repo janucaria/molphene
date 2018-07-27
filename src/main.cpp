@@ -272,6 +272,12 @@ key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
     case GLFW_KEY_ESCAPE:
       glfwSetWindowShouldClose(window, GL_TRUE);
       break;
+    case GLFW_KEY_P:
+      scene.get_camera().projection_mode(true);
+      break;
+    case GLFW_KEY_O:
+      scene.get_camera().projection_mode(false);
+      break;
     case GLFW_KEY_E:
       std::stringstream pdbstm;
       if(is_mol_moi) {
@@ -332,6 +338,12 @@ cursor_pos_callback(GLFWwindow* window, double xpos, double ypos)
 }
 
 void
+scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
+{
+  yoffset > 0 ? scene.get_camera().zoom_in() : scene.get_camera().zoom_out();
+}
+
+void
 framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
   scene.setupGraphics();
@@ -359,6 +371,7 @@ init_window(int width, int height)
   glfwSetWindowSizeCallback(window, window_size_callback);
   glfwSetMouseButtonCallback(window, mouse_button_callback);
   glfwSetCursorPosCallback(window, cursor_pos_callback);
+  glfwSetScrollCallback(window, scroll_callback);
   glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
   return true;

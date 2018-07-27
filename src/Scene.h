@@ -6,7 +6,7 @@
 #include <memory>
 
 #include "Bounding_sphere.hpp"
-#include "Camera.h"
+#include "Camera.hpp"
 #include "Color_light_shader.hpp"
 #include "Colour_manager.hpp"
 #include "mol/Pdb_parser.hpp"
@@ -25,6 +25,8 @@ typedef unsigned char colormode_t;
 
 class Scene {
 public:
+
+  using Camera_type = Camera<float, unsigned int>;
 
   bool
   setupGraphics();
@@ -50,8 +52,8 @@ public:
   void
   reset_molecules();
 
-  void
-  zoom(float z);
+  Camera_type&
+  get_camera();
 
 private:
   Color_light_buffer sphere_buff_atoms;
@@ -64,7 +66,7 @@ private:
 
   mat4f modelMatrix;
 
-  Camera camera;
+  Camera_type camera_;
 
   std::unique_ptr<Molecule> molecule_;
 

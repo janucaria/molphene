@@ -37,8 +37,7 @@ Scene::setupGraphics()
 void
 Scene::changeDimension(GLsizei width, GLsizei height)
 {
-  camera.setAspect(1.0f * width / height);
-  camera.updateProjectionMatrix();
+  camera_.set_resolution(width, height);
 
   glViewport(0, 0, width, height);
 }
@@ -114,9 +113,9 @@ Scene::renderFrame()
 {
   clearRect();
 
-  const auto mv_matrix = modelMatrix * camera.getViewMatrix();
+  const auto mv_matrix = modelMatrix * camera_.view_matrix;
   const auto norm_matrix = Mat3f(Mat4f{mv_matrix}.inverse().transpose());
-  const auto proj_matrix = camera.getProjectionMatrix();
+  const auto proj_matrix = camera_.projection_matrix();
 
   color_light_shader_.use_program();
 
@@ -154,23 +153,21 @@ Scene::reset_molecules()
     }
   }
 
+  const auto fov = camera_.fov;
+  const auto theta = fov / 2.0f;
+  const auto tan_theta = tan(theta);
+  const auto y = bs.radius() + 2.0f;
+  const auto focal_len = y / tan_theta;
+  const auto near = focal_len - y;
+  const auto far = focal_len + y;
 
-  float fov = M_PI / 4.0f;
-  float theta = fov / 2.0f;
-  float tanTheta = tan(theta);
-  float y = bs.radius() + 2.0f;
-  float focalLength = y / tanTheta;
-  float near = focalLength - y;
-  float far = focalLength + y;
+  camera_.fov = fov;
+  camera_.near = near;
+  camera_.far = far;
 
-  camera.setFov(fov);
-  camera.setNear(near);
-  camera.setFar(far);
-  camera.translate(0, 0, focalLength);
-  camera.updateProjectionMatrix();
+  camera_.view_matrix.set_translate(0, 0, -focal_len);
 
-  modelMatrix.identity();
-  modelMatrix.translate(-bs.center());
+  modelMatrix.identity().translate(-bs.center());
 }
 
 void
@@ -185,11 +182,10 @@ Scene::openStream(std::istream& is)
   reset_molecules();
 }
 
-void
-Scene::zoom(float z)
+typename Scene::Camera_type&
+Scene::get_camera()
 {
-  camera.zoom(z);
-  camera.updateProjectionMatrix();
+  return camera_;
 }
 
 } // namespace molphene
