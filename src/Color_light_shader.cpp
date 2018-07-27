@@ -74,15 +74,6 @@ Color_light_shader::projection_matrix(const Mat4f& m4) const noexcept
    g_uloc_projection_matrix, 1, GL_FALSE, static_cast<const float*>(m4.m));
 }
 
-void
-Color_light_shader::render(color_light_buffer& buff)
-{
-  buff.render(GL_TRIANGLE_STRIP,
-              Attrib_location::vertex,
-              Attrib_location::normal,
-              Attrib_location::color);
-}
-
 const char*
 Color_light_shader::vert_shader_source() const noexcept
 {

@@ -36,7 +36,7 @@ public:
        const colour* caldat);
 
   void
-  render(GLenum mode, GLuint posloc, GLuint normloc, GLuint colloc);
+  render(GLenum mode);
 
 protected:
   GLintptr size_;

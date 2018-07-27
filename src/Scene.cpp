@@ -114,15 +114,17 @@ Scene::renderFrame()
 {
   clearRect();
 
-  mat4f modelViewMatrix = modelMatrix * camera.getViewMatrix();
-  mat3f normalMalrix = mat3f(mat4f(modelViewMatrix).inverse().transpose());
+  const auto mv_matrix = modelMatrix * camera.getViewMatrix();
+  const auto norm_matrix = Mat3f(Mat4f{mv_matrix}.inverse().transpose());
+  const auto proj_matrix = camera.getProjectionMatrix();
 
   renderer.useGLProgram();
-  renderer.projection_matrix(camera.getProjectionMatrix());
-  renderer.modelview_matrix(modelViewMatrix);
-  renderer.normal_matrix(normalMalrix);
 
-  renderer.render(sphere_buff_atoms);
+  renderer.projection_matrix(proj_matrix);
+  renderer.modelview_matrix(mv_matrix);
+  renderer.normal_matrix(norm_matrix);
+
+  sphere_buff_atoms.render(GL_TRIANGLE_STRIP);
 
   glFlush();
 }

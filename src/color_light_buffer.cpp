@@ -118,21 +118,18 @@ color_light_buffer::disable_vertex_attribs()
 }
 
 void
-color_light_buffer::render(GLenum mode,
-                           GLuint posloc,
-                           GLuint normloc,
-                           GLuint colloc)
+color_light_buffer::render(GLenum mode)
 {
   enable_vertex_attribs();
 
   glBindBuffer(GL_ARRAY_BUFFER, position_buffer_);
-  glVertexAttribPointer(posloc, 3, GL_FLOAT, GL_FALSE, 0, 0);
+  glVertexAttribPointer(Color_light_shader::Attrib_location::vertex, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
   glBindBuffer(GL_ARRAY_BUFFER, normal_buffer_);
-  glVertexAttribPointer(normloc, 3, GL_FLOAT, GL_FALSE, 0, 0);
+  glVertexAttribPointer(Color_light_shader::Attrib_location::normal, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
   glBindBuffer(GL_ARRAY_BUFFER, color_buffer_);
-  glVertexAttribPointer(colloc, 4, GL_UNSIGNED_BYTE, GL_TRUE, 0, 0);
+  glVertexAttribPointer(Color_light_shader::Attrib_location::color, 4, GL_UNSIGNED_BYTE, GL_TRUE, 0, 0);
 
   glDrawArrays(mode, 0, capacity_);
 

@@ -120,9 +120,6 @@ public:
     glUniform1f(g_uloc_material_shininess, v);
   }
 
-  void
-  render(color_light_buffer& buff);
-
 protected:
   GLuint gVertexPositionLocation;
   GLuint gVertexNormalLocation;
