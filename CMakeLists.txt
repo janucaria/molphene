@@ -33,7 +33,6 @@ set(MOLPHENE_SRC_FILES
 "${PROJECT_SOURCE_DIR}/src/ColourManager.cpp"
 "${PROJECT_SOURCE_DIR}/src/Renderer.cpp"
 "${PROJECT_SOURCE_DIR}/src/Scene.cpp"
-"${PROJECT_SOURCE_DIR}/src/sphere_buffer.cpp"
 "${PROJECT_SOURCE_DIR}/src/sphere_data.cpp")
 
 find_package(glfw3 REQUIRED)

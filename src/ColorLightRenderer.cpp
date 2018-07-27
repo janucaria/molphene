@@ -8,19 +8,42 @@ ColorLightRenderer::ColorLightRenderer()
 }
 
 void
-ColorLightRenderer::setupGLUniformsLocation()
+ColorLightRenderer::setupGLProgram()
 {
-  Renderer::setupGLUniformsLocation();
-  gUniformNormalMatrixLocation =
-   glGetUniformLocation(gProgram, "u_NormalMatrix");
+  Renderer::setupGLProgram();
+
+  gVertexPositionLocation = glGetAttribLocation(gProgram, "a_Position");
+  gVertexNormalLocation = glGetAttribLocation(gProgram, "a_Normal");
+  gVertexColorLocation = glGetAttribLocation(gProgram, "a_Color");
 }
 
 void
-ColorLightRenderer::setupGLProgram()
+ColorLightRenderer::setupGLUniformsLocation()
 {
-  gVertexShader = createShader(GL_VERTEX_SHADER, vertexShaderSource);
-  gFragmentShader = createShader(GL_FRAGMENT_SHADER, fragmentShaderSource);
-  gProgram = createProgram(gVertexShader, gFragmentShader);
+  gUniformModelViewMatrixLocation =
+   glGetUniformLocation(gProgram, "u_ModelViewMatrix");
+  gUniformNormalMatrixLocation =
+   glGetUniformLocation(gProgram, "u_NormalMatrix");
+  gUniformProjectionMatrixLocation =
+   glGetUniformLocation(gProgram, "u_ProjectionMatrix");
+
+  gUniformLightSourceAmbientLocation =
+   glGetUniformLocation(gProgram, "u_LightSource_ambient");
+  gUniformLightSourceDiffuseLocation =
+   glGetUniformLocation(gProgram, "u_LightSource_diffuse");
+  gUniformLightSourceSpecularLocation =
+   glGetUniformLocation(gProgram, "u_LightSource_specular");
+  gUniformLightSourcePositionLocation =
+   glGetUniformLocation(gProgram, "u_LightSource_position");
+
+  gUniformMaterialAmbientLocation =
+   glGetUniformLocation(gProgram, "u_Material_ambient");
+  gUniformMaterialDiffuseLocation =
+   glGetUniformLocation(gProgram, "u_Material_diffuse");
+  gUniformMaterialSpecularLocation =
+   glGetUniformLocation(gProgram, "u_Material_specular");
+  gUniformMaterialShininessLocation =
+   glGetUniformLocation(gProgram, "u_Material_shininess");
 }
 
 void
@@ -29,7 +52,99 @@ ColorLightRenderer::setNormalMatrix(const mat3f& m)
   glUniformMatrix3fv(gUniformNormalMatrixLocation, 1, GL_FALSE, m.m);
 }
 
-const char* ColorLightRenderer::vertexShaderSource = R"(
+void
+ColorLightRenderer::setModelViewMatrix(const mat4f& m4)
+{
+  glUniformMatrix4fv(gUniformModelViewMatrixLocation, 1, GL_FALSE, m4.m);
+}
+
+void
+ColorLightRenderer::setProjectionMatrix(const mat4f& m4)
+{
+  glUniformMatrix4fv(gUniformProjectionMatrixLocation, 1, GL_FALSE, m4.m);
+}
+
+void
+ColorLightRenderer::setLightSourceAmbient(const float& r,
+                                          const float& g,
+                                          const float& b,
+                                          const float& a)
+{
+  glUniform4f(gUniformLightSourceAmbientLocation, r, g, b, a);
+}
+
+void
+ColorLightRenderer::setLightSourceDiffuse(const float& r,
+                                          const float& g,
+                                          const float& b,
+                                          const float& a)
+{
+  glUniform4f(gUniformLightSourceDiffuseLocation, r, g, b, a);
+}
+
+void
+ColorLightRenderer::setLightSourceSpecular(const float& r,
+                                           const float& g,
+                                           const float& b,
+                                           const float& a)
+{
+  glUniform4f(gUniformLightSourceSpecularLocation, r, g, b, a);
+}
+
+void
+ColorLightRenderer::setLightSourcePosition(const float& x,
+                                           const float& y,
+                                           const float& z)
+{
+  glUniform4f(gUniformLightSourcePositionLocation, x, y, z, 1.0f);
+}
+
+void
+ColorLightRenderer::setMaterialAmbient(const float& r,
+                                       const float& g,
+                                       const float& b,
+                                       const float& a)
+{
+  glUniform4f(gUniformMaterialAmbientLocation, r, g, b, a);
+}
+
+void
+ColorLightRenderer::setMaterialDiffuse(const float& r,
+                                       const float& g,
+                                       const float& b,
+                                       const float& a)
+{
+  glUniform4f(gUniformMaterialDiffuseLocation, r, g, b, a);
+}
+
+void
+ColorLightRenderer::setMaterialSpecular(const float& r,
+                                        const float& g,
+                                        const float& b,
+                                        const float& a)
+{
+  glUniform4f(gUniformMaterialSpecularLocation, r, g, b, a);
+}
+
+void
+ColorLightRenderer::setMaterialShininess(const float& v)
+{
+  glUniform1f(gUniformMaterialShininessLocation, v);
+}
+
+void
+ColorLightRenderer::render(color_light_buffer& buff)
+{
+  buff.render(GL_TRIANGLE_STRIP,
+              gVertexPositionLocation,
+              gVertexColorLocation,
+              gVertexNormalLocation);
+}
+
+const char*
+ColorLightRenderer::vert_shader_source()
+{
+  return R"(
     attribute vec3 a_Position;
     attribute vec3 a_Normal;
     attribute vec4 a_Color;
@@ -52,8 +167,12 @@ const char* ColorLightRenderer::vertexShaderSource = R"(
         gl_Position /= gl_Position.w;
     }
     )";
+}
 
-const char* ColorLightRenderer::fragmentShaderSource = R"(
+const char*
+ColorLightRenderer::frag_shader_source()
+{
+  return R"(
 #ifdef GL_ES
     precision highp float;
 #endif
@@ -102,4 +221,6 @@ const char* ColorLightRenderer::fragmentShaderSource = R"(
     }
     
     )";
+}
+
 } // namespace molphene

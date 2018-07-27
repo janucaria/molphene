@@ -14,7 +14,6 @@
 #include "mol/Model.hpp"
 #include "mol/Molecule.hpp"
 #include "opengl.hpp"
-#include "sphere_buffer.h"
 #include <fstream>
 #include <istream>
 #include <memory>
@@ -53,9 +52,9 @@ public:
   zoom(float z);
 
 private:
-  sphere_buffer sphere_buff_atoms;
+  color_light_buffer sphere_buff_atoms;
 
-  Renderer renderer;
+  ColorLightRenderer renderer;
 
   mat4f modelMatrix;
 

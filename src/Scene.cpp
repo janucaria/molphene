@@ -1,5 +1,6 @@
 #include "Scene.h"
 #include "m3d.hpp"
+#include "shape/Sphere.hpp"
 #include "sphere_data.h"
 
 namespace molphene {
@@ -77,19 +78,18 @@ Scene::resetMesh()
 
   for(unsigned int i = 0; i < totalAtoms; ++i) {
     auto& atm = *atoms.at(i);
-    const auto& element = atm.element();
-    const vec3f& apos = atm.position();
-    const colour& acol = colorManager.getElementColor(element.symbol);
-    float arad = element.rvdw;
+    const auto element = atm.element();
+    const auto apos = atm.position();
+    const auto arad = element.rvdw;
+    const auto acol = colorManager.getElementColor(element.symbol);
 
-    spheredat.push(apos, arad, acol);
+    spheredat.push(Sphere<float>{arad, apos}, acol);
 
     if(spheredat.is_full()) {
       sphere_buff_atoms.push(spheredat.length(),
                              spheredat.positions(),
                              spheredat.normals(),
-                             spheredat.colors(),
-                             spheredat.radiuses());
+                             spheredat.colors());
       spheredat.resize();
     }
   }
@@ -97,8 +97,7 @@ Scene::resetMesh()
   sphere_buff_atoms.push(spheredat.length(),
                          spheredat.positions(),
                          spheredat.normals(),
-                         spheredat.colors(),
-                         spheredat.radiuses());
+                         spheredat.colors());
 }
 
 void
@@ -118,6 +117,7 @@ Scene::renderFrame()
   renderer.useGLProgram();
   renderer.setProjectionMatrix(camera.getProjectionMatrix());
   renderer.setModelViewMatrix(modelViewMatrix);
+  renderer.setNormalMatrix(normalMalrix);
 
   renderer.render(sphere_buff_atoms);
 
