@@ -6,40 +6,51 @@ ColorLightRenderer::ColorLightRenderer()
 {
 }
 
-void
-ColorLightRenderer::setupGLProgram()
+typename ColorLightRenderer::Attribs_location_name_type
+ColorLightRenderer::get_attribs_location() const noexcept
 {
-  gVertexPositionLocation = glGetAttribLocation(gProgram, "a_Position");
-  gVertexNormalLocation = glGetAttribLocation(gProgram, "a_Normal");
-  gVertexColorLocation = glGetAttribLocation(gProgram, "a_Color");
+  return {{{Attrib_location::vertex, "a_Vertex"},
+           {Attrib_location::normal, "a_Normal"},
+           {Attrib_location::color, "a_Color"}}};
 }
 
 void
-ColorLightRenderer::setupGLUniformsLocation()
+ColorLightRenderer::setup_gl_uniforms_loc() noexcept
 {
   g_uloc_modelview_matrix =
-   glGetUniformLocation(gProgram, "u_ModelViewMatrix");
+   glGetUniformLocation(g_program, "u_ModelViewMatrix");
   g_uloc_projection_matrix =
-   glGetUniformLocation(gProgram, "u_ProjectionMatrix");
-  g_uloc_normal_matrix = glGetUniformLocation(gProgram, "u_NormalMatrix");
+   glGetUniformLocation(g_program, "u_ProjectionMatrix");
+  g_uloc_normal_matrix = glGetUniformLocation(g_program, "u_NormalMatrix");
 
   g_uloc_light_source_ambient =
-   glGetUniformLocation(gProgram, "u_LightSource_ambient");
+   glGetUniformLocation(g_program, "u_LightSource_ambient");
   g_uloc_light_source_diffuse =
-   glGetUniformLocation(gProgram, "u_LightSource_diffuse");
+   glGetUniformLocation(g_program, "u_LightSource_diffuse");
   g_uloc_light_source_specular =
-   glGetUniformLocation(gProgram, "u_LightSource_specular");
+   glGetUniformLocation(g_program, "u_LightSource_specular");
   g_uloc_light_source_position =
-   glGetUniformLocation(gProgram, "u_LightSource_position");
+   glGetUniformLocation(g_program, "u_LightSource_position");
 
   g_uloc_material_ambient =
-   glGetUniformLocation(gProgram, "u_Material_ambient");
+   glGetUniformLocation(g_program, "u_Material_ambient");
   g_uloc_material_diffuse =
-   glGetUniformLocation(gProgram, "u_Material_diffuse");
+   glGetUniformLocation(g_program, "u_Material_diffuse");
   g_uloc_material_specular =
-   glGetUniformLocation(gProgram, "u_Material_specular");
+   glGetUniformLocation(g_program, "u_Material_specular");
   g_uloc_material_shininess =
-   glGetUniformLocation(gProgram, "u_Material_shininess");
+   glGetUniformLocation(g_program, "u_Material_shininess");
+}
+
+void
+ColorLightRenderer::setup_gl_uniforms_val() const noexcept
+{
+}
+
+void
+ColorLightRenderer::setup_gl_attribs_val() const noexcept
+{
+  glVertexAttrib4f(Attrib_location::vertex, 0, 0, 0, 1);
 }
 
 void
@@ -67,16 +78,16 @@ void
 ColorLightRenderer::render(color_light_buffer& buff)
 {
   buff.render(GL_TRIANGLE_STRIP,
-              gVertexPositionLocation,
-              gVertexColorLocation,
-              gVertexNormalLocation);
+              Attrib_location::vertex,
+              Attrib_location::normal,
+              Attrib_location::color);
 }
 
 const char*
 ColorLightRenderer::vert_shader_source() const noexcept
 {
   return R"(
-    attribute vec3 a_Position;
+    attribute vec4 a_Vertex;
     attribute vec3 a_Normal;
     attribute vec4 a_Color;
     
@@ -88,10 +99,8 @@ ColorLightRenderer::vert_shader_source() const noexcept
     varying vec3 v_Normal;
     varying vec4 v_Color;
     void main() {
-        vec4 position = vec4(a_Position, 1.0);
-        position = u_ModelViewMatrix * position;
-        position /= position.w;
-        v_Position = position.xyz;
+        vec4 position = u_ModelViewMatrix * a_Vertex;
+        v_Position = position.xyz / position.w;
         v_Color = a_Color;
         v_Normal = length(a_Normal) != 0.0 ? u_NormalMatrix * a_Normal : a_Normal;
         gl_Position = u_ProjectionMatrix * position;

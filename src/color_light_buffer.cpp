@@ -132,10 +132,10 @@ color_light_buffer::render(GLenum mode,
   glVertexAttribPointer(posloc, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
   glBindBuffer(GL_ARRAY_BUFFER, normal_buffer_);
-  glVertexAttribPointer(colloc, 3, GL_FLOAT, GL_FALSE, 0, 0);
+  glVertexAttribPointer(normloc, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
   glBindBuffer(GL_ARRAY_BUFFER, color_buffer_);
-  glVertexAttribPointer(normloc, 4, GL_UNSIGNED_BYTE, GL_TRUE, 0, 0);
+  glVertexAttribPointer(colloc, 4, GL_UNSIGNED_BYTE, GL_TRUE, 0, 0);
 
   glDrawArrays(mode, 0, capacity_);
 

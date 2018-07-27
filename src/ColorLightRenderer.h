@@ -1,7 +1,9 @@
 #ifndef __Molphene__ColorLightRenderer__
 #define __Molphene__ColorLightRenderer__
 
+#include <array>
 #include <type_traits>
+#include <utility>
 
 #include "Directional_light.hpp"
 #include "Material.hpp"
@@ -14,6 +16,10 @@ class ColorLightRenderer : public Renderer<ColorLightRenderer> {
   friend Renderer<ColorLightRenderer>;
 
 public:
+  using Renderer<ColorLightRenderer>::Attribs_location_name_type;
+
+  enum Attrib_location : GLuint { vertex, normal, color };
+
   ColorLightRenderer();
 
   void
@@ -142,11 +148,17 @@ protected:
   const char*
   frag_shader_source() const noexcept;
 
-  void
-  setupGLProgram();
+  Attribs_location_name_type
+  get_attribs_location() const noexcept;
 
   void
-  setupGLUniformsLocation();
+  setup_gl_attribs_val() const noexcept;
+
+  void
+  setup_gl_uniforms_loc() noexcept;
+
+  void
+  setup_gl_uniforms_val() const noexcept;
 };
 } // namespace molphene
 #endif

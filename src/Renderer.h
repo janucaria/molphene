@@ -13,56 +13,60 @@ namespace molphene {
 template<typename TDerived>
 class Renderer {
 public:
-  Renderer()
-  : gProgram(0)
-  , gVertexShader(0)
-  , gFragmentShader(0)
-  {
-  }
+  using Attribs_location_name_type =
+   std::array<std::pair<GLuint, const GLchar*>, 3>;
+
+  Renderer() noexcept = default;
 
   bool
   setupGL()
   {
-    gVertexShader =
-     createShader(GL_VERTEX_SHADER, as_const_derived()->vert_shader_source());
-    gFragmentShader =
-     createShader(GL_FRAGMENT_SHADER, as_const_derived()->frag_shader_source());
-    gProgram = createProgram(gVertexShader, gFragmentShader);
+    g_program = create_program();
 
-    as_derived()->setupGLProgram();
+    if(g_program) {
+      as_derived()->setup_gl_uniforms_loc();
+      
+      auto current_prog = GLint{0};
+      glGetIntegerv(GL_CURRENT_PROGRAM, &current_prog);
+      glUseProgram(g_program);
+      as_const_derived()->setup_gl_uniforms_val();
+      glUseProgram(current_prog);
 
-    as_derived()->setupGLUniformsLocation();
+      as_const_derived()->setup_gl_attribs_val();
+    }
 
-    return true;
+    return g_program;
   }
   void
   useGLProgram() const
   {
-    glUseProgram(gProgram);
+    glUseProgram(g_program);
   }
 
 protected:
-  GLuint gProgram;
+  GLuint g_program{0};
 
-  GLuint gVertexShader;
-  GLuint gFragmentShader;
+  GLuint g_vert_shader{0};
+
+  GLuint g_frag_shader{0};
 
   GLuint
-  createShader(GLenum shaderType, const char* pSource)
+  create_shader(GLenum shader_type, const char* psource)
   {
-    GLuint shader = glCreateShader(shaderType);
+    auto shader = glCreateShader(shader_type);
     if(shader) {
-      glShaderSource(shader, 1, &pSource, NULL);
+      glShaderSource(shader, 1, &psource, nullptr);
       glCompileShader(shader);
-      GLint compiled = 0;
+      auto compiled = GLint{0};
       glGetShaderiv(shader, GL_COMPILE_STATUS, &compiled);
       if(!compiled) {
-        GLint infoLen = 0;
-        glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &infoLen);
-        if(infoLen) {
-          auto buf = std::make_unique<char>(infoLen);
-          glGetShaderInfoLog(shader, infoLen, NULL, buf.get());
-          // LOG_E("Could not compile shader %d:\n%s\n", shaderType, buf);
+        auto infolen = GLint{0};
+        glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &infolen);
+        if(infolen) {
+          const auto buff = std::make_unique<char>(infolen);
+          glGetShaderInfoLog(shader, infolen, nullptr, buff.get());
+          // TODO(janucaria): LOG_E("Could not compile shader %d:\n%s\n",
+          // shaderType, buf);
         }
         glDeleteShader(shader);
         shader = 0;
@@ -72,31 +76,58 @@ protected:
   }
 
   GLuint
-  createProgram(const GLuint vertexShader, const GLuint fragmentShader)
+  create_program()
   {
-    if(!vertexShader || !fragmentShader) {
+    const auto vert_sh = g_vert_shader =
+     create_shader(GL_VERTEX_SHADER, as_const_derived()->vert_shader_source());
+    const auto frag_sh = g_frag_shader = create_shader(
+     GL_FRAGMENT_SHADER, as_const_derived()->frag_shader_source());
+
+    if(!vert_sh || !frag_sh) {
       return 0;
     }
 
-    GLuint program = glCreateProgram();
-    if(program) {
-      glAttachShader(program, vertexShader);
-      glAttachShader(program, fragmentShader);
-      glLinkProgram(program);
-      GLint linkStatus = GL_FALSE;
-      glGetProgramiv(program, GL_LINK_STATUS, &linkStatus);
-      if(linkStatus != GL_TRUE) {
-        GLint bufLength = 0;
-        glGetProgramiv(program, GL_INFO_LOG_LENGTH, &bufLength);
-        if(bufLength) {
-          auto buf = std::make_unique<char>(bufLength);
-          glGetProgramInfoLog(program, bufLength, NULL, buf.get());
+    auto sh_program = glCreateProgram();
+    if(sh_program) {
+      glAttachShader(sh_program, vert_sh);
+      glAttachShader(sh_program, frag_sh);
+
+      for(auto [index, name] : as_const_derived()->get_attribs_location()) {
+        glBindAttribLocation(sh_program, index, name);
+      }
+
+      auto link_status = GLint{GL_FALSE};
+      glLinkProgram(sh_program);
+      glGetProgramiv(sh_program, GL_LINK_STATUS, &link_status);
+      if(link_status != GL_TRUE) {
+        auto bufflen = GLint{0};
+        glGetProgramiv(sh_program, GL_INFO_LOG_LENGTH, &bufflen);
+        if(bufflen) {
+          const auto buff = std::make_unique<char>(bufflen);
+          glGetProgramInfoLog(sh_program, bufflen, nullptr, buff.get());
+          // TODO(janucaria): LOG_E("Could not link program:\n%s\n", buf);
         }
-        glDeleteProgram(program);
-        program = 0;
+        glDeleteProgram(sh_program);
+        sh_program = 0;
+      }
+
+      glValidateProgram(sh_program);
+      auto validate_status = GLint{GL_FALSE};
+      glGetProgramiv(sh_program, GL_VALIDATE_STATUS, &validate_status);
+      if(validate_status != GL_TRUE) {
+        auto bufflen = GLint{0};
+        glGetProgramiv(sh_program, GL_INFO_LOG_LENGTH, &bufflen);
+        if(bufflen) {
+          const auto buff = std::make_unique<char>(bufflen);
+          glGetProgramInfoLog(sh_program, bufflen, nullptr, buff.get());
+          // TODO(janucaria): LOG_E("Could not link program:\n%s\n", buf);
+        }
+        glDeleteProgram(sh_program);
+        sh_program = 0;
       }
     }
-    return program;
+
+    return sh_program;
   }
 
 private:
