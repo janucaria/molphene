@@ -12,7 +12,7 @@ Scene::setupGraphics()
   glEnable(GL_DEPTH_TEST);
   std::cout << "Hello World" << std::endl;
 
-  color_light_shader_.setupGL();
+  color_light_shader_.init_program();
 
   color_light_shader_.use_program();
 

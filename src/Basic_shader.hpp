@@ -19,7 +19,7 @@ public:
   Basic_shader() noexcept = default;
 
   bool
-  setupGL()
+  init_program()
   {
     g_program = create_program();
 
