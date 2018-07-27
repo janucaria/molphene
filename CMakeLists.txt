@@ -30,7 +30,7 @@ set(MOLPHENE_SRC_FILES
 "${PROJECT_SOURCE_DIR}/src/Camera.cpp"
 "${PROJECT_SOURCE_DIR}/src/color_light_buffer.cpp"
 "${PROJECT_SOURCE_DIR}/src/Color_light_shader.cpp"
-"${PROJECT_SOURCE_DIR}/src/ColourManager.cpp"
+"${PROJECT_SOURCE_DIR}/src/Colour_manager.cpp"
 "${PROJECT_SOURCE_DIR}/src/Scene.cpp"
 "${PROJECT_SOURCE_DIR}/src/sphere_data.cpp")
 

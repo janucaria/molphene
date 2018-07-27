@@ -8,7 +8,7 @@
 #include "Bounding_sphere.hpp"
 #include "Camera.h"
 #include "Color_light_shader.hpp"
-#include "ColourManager.h"
+#include "Colour_manager.hpp"
 #include "mol/Pdb_parser.hpp"
 #include "mol/Atom.hpp"
 #include "mol/Bond.hpp"
@@ -68,7 +68,7 @@ private:
 
   std::unique_ptr<Molecule> molecule_;
 
-  ColourManager colorManager;
+  Colour_manager colour_manager;
 };
 
 } // namespace molphene

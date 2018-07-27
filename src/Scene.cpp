@@ -84,7 +84,7 @@ Scene::resetMesh()
     const auto element = atm.element();
     const auto apos = atm.position();
     const auto arad = element.rvdw;
-    const auto acol = colorManager.getElementColor(element.symbol);
+    const auto acol = colour_manager.get_element_color(element.symbol);
 
     spheredat.push(Sphere<float>{arad, apos}, acol);
 
