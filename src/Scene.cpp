@@ -14,7 +14,7 @@ Scene::setupGraphics()
 
   color_light_shader_.setupGL();
 
-  color_light_shader_.useGLProgram();
+  color_light_shader_.use_program();
 
   light_source_.ambient = 0x7F7F7Fu;
   light_source_.diffuse = 0xFFFFFFu;
@@ -118,7 +118,7 @@ Scene::renderFrame()
   const auto norm_matrix = Mat3f(Mat4f{mv_matrix}.inverse().transpose());
   const auto proj_matrix = camera.getProjectionMatrix();
 
-  color_light_shader_.useGLProgram();
+  color_light_shader_.use_program();
 
   color_light_shader_.projection_matrix(proj_matrix);
   color_light_shader_.modelview_matrix(mv_matrix);

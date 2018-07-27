@@ -38,7 +38,7 @@ public:
     return g_program;
   }
   void
-  useGLProgram() const
+  use_program() const
   {
     glUseProgram(g_program);
   }
