@@ -1,4 +1,5 @@
 #include "color_light_buffer.h"
+#include "Color_light_shader.hpp"
 
 namespace molphene {
 
@@ -101,23 +102,19 @@ color_light_buffer::set_color_data(GLintptr offset,
 }
 
 void
-color_light_buffer::enable_vertex_attribs(GLuint posloc,
-                                          GLuint normloc,
-                                          GLuint colloc)
+color_light_buffer::enable_vertex_attribs()
 {
-  glEnableVertexAttribArray(posloc);
-  glEnableVertexAttribArray(normloc);
-  glEnableVertexAttribArray(colloc);
+  glEnableVertexAttribArray(Color_light_shader::Attrib_location::vertex);
+  glEnableVertexAttribArray(Color_light_shader::Attrib_location::normal);
+  glEnableVertexAttribArray(Color_light_shader::Attrib_location::color);
 }
 
 void
-color_light_buffer::disable_vertex_attribs(GLuint posloc,
-                                           GLuint normloc,
-                                           GLuint colloc)
+color_light_buffer::disable_vertex_attribs()
 {
-  glDisableVertexAttribArray(posloc);
-  glDisableVertexAttribArray(normloc);
-  glDisableVertexAttribArray(colloc);
+  glDisableVertexAttribArray(Color_light_shader::Attrib_location::vertex);
+  glDisableVertexAttribArray(Color_light_shader::Attrib_location::normal);
+  glDisableVertexAttribArray(Color_light_shader::Attrib_location::color);
 }
 
 void
@@ -126,7 +123,7 @@ color_light_buffer::render(GLenum mode,
                            GLuint normloc,
                            GLuint colloc)
 {
-  enable_vertex_attribs(posloc, normloc, colloc);
+  enable_vertex_attribs();
 
   glBindBuffer(GL_ARRAY_BUFFER, position_buffer_);
   glVertexAttribPointer(posloc, 3, GL_FLOAT, GL_FALSE, 0, 0);
@@ -139,7 +136,7 @@ color_light_buffer::render(GLenum mode,
 
   glDrawArrays(mode, 0, capacity_);
 
-  disable_vertex_attribs(posloc, normloc, colloc);
+  disable_vertex_attribs();
 }
 
 } // namespace molphene

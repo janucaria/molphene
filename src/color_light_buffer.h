@@ -46,11 +46,11 @@ protected:
   GLuint normal_buffer_;
   GLuint color_buffer_;
 
-  virtual void
-  enable_vertex_attribs(GLuint posloc, GLuint normloc, GLuint colloc);
+  void
+  enable_vertex_attribs();
 
-  virtual void
-  disable_vertex_attribs(GLuint posloc, GLuint normloc, GLuint colloc);
+  void
+  disable_vertex_attribs();
 };
 } // namespace molphene
 
