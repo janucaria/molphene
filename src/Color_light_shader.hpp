@@ -7,20 +7,20 @@
 
 #include "Directional_light.hpp"
 #include "Material.hpp"
-#include "Renderer.h"
+#include "Basic_shader.hpp"
 #include "m3d.hpp"
 #include "opengl.hpp"
 
 namespace molphene {
-class ColorLightRenderer : public Renderer<ColorLightRenderer> {
-  friend Renderer<ColorLightRenderer>;
+class Color_light_shader : public Basic_shader<Color_light_shader> {
+  friend Basic_shader<Color_light_shader>;
 
 public:
-  using Renderer<ColorLightRenderer>::Attribs_location_name_type;
+  using Basic_shader<Color_light_shader>::Attribs_location_name_type;
 
   enum Attrib_location : GLuint { vertex, normal, color };
 
-  ColorLightRenderer();
+  Color_light_shader();
 
   void
   modelview_matrix(const Mat4f& m4) const noexcept;

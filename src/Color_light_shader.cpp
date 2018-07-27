@@ -1,13 +1,13 @@
-#include "ColorLightRenderer.h"
+#include "Color_light_shader.hpp"
 
 namespace molphene {
 
-ColorLightRenderer::ColorLightRenderer()
+Color_light_shader::Color_light_shader()
 {
 }
 
-typename ColorLightRenderer::Attribs_location_name_type
-ColorLightRenderer::get_attribs_location() const noexcept
+typename Color_light_shader::Attribs_location_name_type
+Color_light_shader::get_attribs_location() const noexcept
 {
   return {{{Attrib_location::vertex, "a_Vertex"},
            {Attrib_location::normal, "a_Normal"},
@@ -15,7 +15,7 @@ ColorLightRenderer::get_attribs_location() const noexcept
 }
 
 void
-ColorLightRenderer::setup_gl_uniforms_loc() noexcept
+Color_light_shader::setup_gl_uniforms_loc() noexcept
 {
   g_uloc_modelview_matrix =
    glGetUniformLocation(g_program, "u_ModelViewMatrix");
@@ -43,39 +43,39 @@ ColorLightRenderer::setup_gl_uniforms_loc() noexcept
 }
 
 void
-ColorLightRenderer::setup_gl_uniforms_val() const noexcept
+Color_light_shader::setup_gl_uniforms_val() const noexcept
 {
 }
 
 void
-ColorLightRenderer::setup_gl_attribs_val() const noexcept
+Color_light_shader::setup_gl_attribs_val() const noexcept
 {
   glVertexAttrib4f(Attrib_location::vertex, 0, 0, 0, 1);
 }
 
 void
-ColorLightRenderer::modelview_matrix(const Mat4f& m4) const noexcept
+Color_light_shader::modelview_matrix(const Mat4f& m4) const noexcept
 {
   glUniformMatrix4fv(
    g_uloc_modelview_matrix, 1, GL_FALSE, static_cast<const float*>(m4.m));
 }
 
 void
-ColorLightRenderer::normal_matrix(const Mat3f& m) const noexcept
+Color_light_shader::normal_matrix(const Mat3f& m) const noexcept
 {
   glUniformMatrix3fv(
    g_uloc_normal_matrix, 1, GL_FALSE, static_cast<const float*>(m.m));
 }
 
 void
-ColorLightRenderer::projection_matrix(const Mat4f& m4) const noexcept
+Color_light_shader::projection_matrix(const Mat4f& m4) const noexcept
 {
   glUniformMatrix4fv(
    g_uloc_projection_matrix, 1, GL_FALSE, static_cast<const float*>(m4.m));
 }
 
 void
-ColorLightRenderer::render(color_light_buffer& buff)
+Color_light_shader::render(color_light_buffer& buff)
 {
   buff.render(GL_TRIANGLE_STRIP,
               Attrib_location::vertex,
@@ -84,7 +84,7 @@ ColorLightRenderer::render(color_light_buffer& buff)
 }
 
 const char*
-ColorLightRenderer::vert_shader_source() const noexcept
+Color_light_shader::vert_shader_source() const noexcept
 {
   return R"(
     attribute vec4 a_Vertex;
@@ -110,7 +110,7 @@ ColorLightRenderer::vert_shader_source() const noexcept
 }
 
 const char*
-ColorLightRenderer::frag_shader_source() const noexcept
+Color_light_shader::frag_shader_source() const noexcept
 {
   return R"(
 #ifdef GL_ES

@@ -7,10 +7,9 @@
 
 #include "Bounding_sphere.hpp"
 #include "Camera.h"
-#include "ColorLightRenderer.h"
+#include "Color_light_shader.hpp"
 #include "ColourManager.h"
 #include "mol/Pdb_parser.hpp"
-#include "Renderer.h"
 #include "mol/Atom.hpp"
 #include "mol/Bond.hpp"
 #include "color_light_buffer.h"
@@ -57,7 +56,7 @@ public:
 private:
   color_light_buffer sphere_buff_atoms;
 
-  ColorLightRenderer renderer;
+  Color_light_shader renderer;
 
   Directional_light<Rgba8, Vec3f> light_source_;
 

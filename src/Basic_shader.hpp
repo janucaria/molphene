@@ -11,12 +11,12 @@
 namespace molphene {
 
 template<typename TDerived>
-class Renderer {
+class Basic_shader {
 public:
   using Attribs_location_name_type =
    std::array<std::pair<GLuint, const GLchar*>, 3>;
 
-  Renderer() noexcept = default;
+  Basic_shader() noexcept = default;
 
   bool
   setupGL()
