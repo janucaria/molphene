@@ -15,13 +15,13 @@ public:
   ColorLightRenderer();
 
   void
-  setModelViewMatrix(const mat4f& m4);
+  modelview_matrix(const Mat4f& m4) const noexcept;
 
   void
-  setNormalMatrix(const mat3f& m);
+  normal_matrix(const Mat3f& m) const noexcept;
 
   void
-  setProjectionMatrix(const mat4f& m4);
+  projection_matrix(const Mat4f& m4) const noexcept;
 
   template<typename T>
   std::enable_if_t<std::is_same_v<Directional_light<Rgba8, Vec3f>, T>>
@@ -120,9 +120,9 @@ protected:
   GLuint gVertexNormalLocation;
   GLuint gVertexColorLocation;
 
-  GLint gUniformModelViewMatrixLocation;
-  GLint gUniformNormalMatrixLocation;
-  GLint gUniformProjectionMatrixLocation;
+  GLint g_uloc_modelview_matrix{-1};
+  GLint g_uloc_normal_matrix{-1};
+  GLint g_uloc_projection_matrix{-1};
 
   GLint g_uloc_light_source_ambient{-1};
   GLint g_uloc_light_source_diffuse{-1};

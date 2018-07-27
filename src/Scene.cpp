@@ -118,9 +118,9 @@ Scene::renderFrame()
   mat3f normalMalrix = mat3f(mat4f(modelViewMatrix).inverse().transpose());
 
   renderer.useGLProgram();
-  renderer.setProjectionMatrix(camera.getProjectionMatrix());
-  renderer.setModelViewMatrix(modelViewMatrix);
-  renderer.setNormalMatrix(normalMalrix);
+  renderer.projection_matrix(camera.getProjectionMatrix());
+  renderer.modelview_matrix(modelViewMatrix);
+  renderer.normal_matrix(normalMalrix);
 
   renderer.render(sphere_buff_atoms);
 

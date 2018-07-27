@@ -3,7 +3,6 @@
 namespace molphene {
 
 ColorLightRenderer::ColorLightRenderer()
-: gUniformNormalMatrixLocation(-1)
 {
 }
 
@@ -20,12 +19,11 @@ ColorLightRenderer::setupGLProgram()
 void
 ColorLightRenderer::setupGLUniformsLocation()
 {
-  gUniformModelViewMatrixLocation =
+  g_uloc_modelview_matrix =
    glGetUniformLocation(gProgram, "u_ModelViewMatrix");
-  gUniformNormalMatrixLocation =
-   glGetUniformLocation(gProgram, "u_NormalMatrix");
-  gUniformProjectionMatrixLocation =
+  g_uloc_projection_matrix =
    glGetUniformLocation(gProgram, "u_ProjectionMatrix");
+  g_uloc_normal_matrix = glGetUniformLocation(gProgram, "u_NormalMatrix");
 
   g_uloc_light_source_ambient =
    glGetUniformLocation(gProgram, "u_LightSource_ambient");
@@ -47,21 +45,24 @@ ColorLightRenderer::setupGLUniformsLocation()
 }
 
 void
-ColorLightRenderer::setNormalMatrix(const mat3f& m)
+ColorLightRenderer::modelview_matrix(const Mat4f& m4) const noexcept
 {
-  glUniformMatrix3fv(gUniformNormalMatrixLocation, 1, GL_FALSE, m.m);
+  glUniformMatrix4fv(
+   g_uloc_modelview_matrix, 1, GL_FALSE, static_cast<const float*>(m4.m));
 }
 
 void
-ColorLightRenderer::setModelViewMatrix(const mat4f& m4)
+ColorLightRenderer::normal_matrix(const Mat3f& m) const noexcept
 {
-  glUniformMatrix4fv(gUniformModelViewMatrixLocation, 1, GL_FALSE, m4.m);
+  glUniformMatrix3fv(
+   g_uloc_normal_matrix, 1, GL_FALSE, static_cast<const float*>(m.m));
 }
 
 void
-ColorLightRenderer::setProjectionMatrix(const mat4f& m4)
+ColorLightRenderer::projection_matrix(const Mat4f& m4) const noexcept
 {
-  glUniformMatrix4fv(gUniformProjectionMatrixLocation, 1, GL_FALSE, m4.m);
+  glUniformMatrix4fv(
+   g_uloc_projection_matrix, 1, GL_FALSE, static_cast<const float*>(m4.m));
 }
 
 void
