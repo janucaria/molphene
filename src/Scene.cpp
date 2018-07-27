@@ -1,4 +1,4 @@
-#include "Scene.h"
+#include "Scene.hpp"
 #include "m3d.hpp"
 #include "shape/Sphere.hpp"
 #include "sphere_data.h"
