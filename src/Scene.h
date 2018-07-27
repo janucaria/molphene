@@ -56,7 +56,7 @@ public:
 private:
   color_light_buffer sphere_buff_atoms;
 
-  Color_light_shader renderer;
+  Color_light_shader color_light_shader_;
 
   Directional_light<Rgba8, Vec3f> light_source_;
 

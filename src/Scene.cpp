@@ -12,9 +12,9 @@ Scene::setupGraphics()
   glEnable(GL_DEPTH_TEST);
   std::cout << "Hello World" << std::endl;
 
-  renderer.setupGL();
+  color_light_shader_.setupGL();
 
-  renderer.useGLProgram();
+  color_light_shader_.useGLProgram();
 
   light_source_.ambient = 0x7F7F7Fu;
   light_source_.diffuse = 0xFFFFFFu;
@@ -26,8 +26,8 @@ Scene::setupGraphics()
   material_.specular = 0x7F7F7Fu;
   material_.shininess = 10;
 
-  renderer.light_source(light_source_);
-  renderer.material(material_);
+  color_light_shader_.light_source(light_source_);
+  color_light_shader_.material(material_);
 
   sphere_buff_atoms.setup();
 
@@ -118,11 +118,11 @@ Scene::renderFrame()
   const auto norm_matrix = Mat3f(Mat4f{mv_matrix}.inverse().transpose());
   const auto proj_matrix = camera.getProjectionMatrix();
 
-  renderer.useGLProgram();
+  color_light_shader_.useGLProgram();
 
-  renderer.projection_matrix(proj_matrix);
-  renderer.modelview_matrix(mv_matrix);
-  renderer.normal_matrix(norm_matrix);
+  color_light_shader_.projection_matrix(proj_matrix);
+  color_light_shader_.modelview_matrix(mv_matrix);
+  color_light_shader_.normal_matrix(norm_matrix);
 
   sphere_buff_atoms.render(GL_TRIANGLE_STRIP);
 
