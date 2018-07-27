@@ -16,16 +16,17 @@ Scene::setupGraphics()
 
   renderer.useGLProgram();
 
-  renderer.setLightSourceAmbient(0.5, 0.5, 0.5, 1.0);
-  renderer.setLightSourceDiffuse(1.0, 1.0, 1.0, 1.0);
-  renderer.setLightSourceSpecular(0.5, 0.5, 0.5, 1.0);
-  renderer.setLightSourcePosition(0.0, 0.0, 0.0);
+  light_source_.ambient = 0x7F7F7Fu;
+  light_source_.diffuse = 0xFFFFFFu;
+  light_source_.specular = 0x7F7F7Fu;
+  light_source_.direction = {0.0, 0.0, 0.0};
 
   material_.ambient = 0x4C4C4Cu;
   material_.diffuse = 0xFFFFFFu;
   material_.specular = 0x7F7F7Fu;
   material_.shininess = 10;
 
+  renderer.light_source(light_source_);
   renderer.material(material_);
 
   sphere_buff_atoms.setup();

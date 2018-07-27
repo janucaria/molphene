@@ -27,13 +27,13 @@ ColorLightRenderer::setupGLUniformsLocation()
   gUniformProjectionMatrixLocation =
    glGetUniformLocation(gProgram, "u_ProjectionMatrix");
 
-  gUniformLightSourceAmbientLocation =
+  g_uloc_light_source_ambient =
    glGetUniformLocation(gProgram, "u_LightSource_ambient");
-  gUniformLightSourceDiffuseLocation =
+  g_uloc_light_source_diffuse =
    glGetUniformLocation(gProgram, "u_LightSource_diffuse");
-  gUniformLightSourceSpecularLocation =
+  g_uloc_light_source_specular =
    glGetUniformLocation(gProgram, "u_LightSource_specular");
-  gUniformLightSourcePositionLocation =
+  g_uloc_light_source_position =
    glGetUniformLocation(gProgram, "u_LightSource_position");
 
   g_uloc_material_ambient =
@@ -62,41 +62,6 @@ void
 ColorLightRenderer::setProjectionMatrix(const mat4f& m4)
 {
   glUniformMatrix4fv(gUniformProjectionMatrixLocation, 1, GL_FALSE, m4.m);
-}
-
-void
-ColorLightRenderer::setLightSourceAmbient(const float& r,
-                                          const float& g,
-                                          const float& b,
-                                          const float& a)
-{
-  glUniform4f(gUniformLightSourceAmbientLocation, r, g, b, a);
-}
-
-void
-ColorLightRenderer::setLightSourceDiffuse(const float& r,
-                                          const float& g,
-                                          const float& b,
-                                          const float& a)
-{
-  glUniform4f(gUniformLightSourceDiffuseLocation, r, g, b, a);
-}
-
-void
-ColorLightRenderer::setLightSourceSpecular(const float& r,
-                                           const float& g,
-                                           const float& b,
-                                           const float& a)
-{
-  glUniform4f(gUniformLightSourceSpecularLocation, r, g, b, a);
-}
-
-void
-ColorLightRenderer::setLightSourcePosition(const float& x,
-                                           const float& y,
-                                           const float& z)
-{
-  glUniform4f(gUniformLightSourcePositionLocation, x, y, z, 1.0f);
 }
 
 void

@@ -1,6 +1,10 @@
 #ifndef __molphene__Scene__
 #define __molphene__Scene__
 
+#include <fstream>
+#include <istream>
+#include <memory>
+
 #include "Bounding_sphere.hpp"
 #include "Camera.h"
 #include "ColorLightRenderer.h"
@@ -15,9 +19,7 @@
 #include "mol/Molecule.hpp"
 #include "opengl.hpp"
 #include "Material.hpp"
-#include <fstream>
-#include <istream>
-#include <memory>
+#include "Directional_light.hpp"
 
 namespace molphene {
 typedef unsigned char colormode_t;
@@ -56,6 +58,8 @@ private:
   color_light_buffer sphere_buff_atoms;
 
   ColorLightRenderer renderer;
+
+  Directional_light<Rgba8, Vec3f> light_source_;
 
   Material<Rgba8, unsigned int> material_;
 
