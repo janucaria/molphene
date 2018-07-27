@@ -12,7 +12,7 @@
 #include "mol/Pdb_parser.hpp"
 #include "mol/Atom.hpp"
 #include "mol/Bond.hpp"
-#include "color_light_buffer.h"
+#include "Color_light_buffer.hpp"
 #include "m3d.hpp"
 #include "mol/Model.hpp"
 #include "mol/Molecule.hpp"
@@ -54,7 +54,7 @@ public:
   zoom(float z);
 
 private:
-  color_light_buffer sphere_buff_atoms;
+  Color_light_buffer sphere_buff_atoms;
 
   Color_light_shader color_light_shader_;
 

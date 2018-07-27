@@ -1,9 +1,9 @@
-#include "color_light_buffer.h"
+#include "Color_light_buffer.hpp"
 #include "Color_light_shader.hpp"
 
 namespace molphene {
 
-color_light_buffer::color_light_buffer()
+Color_light_buffer::Color_light_buffer()
 : size_(0)
 , capacity_(0)
 , position_buffer_(0)
@@ -12,13 +12,13 @@ color_light_buffer::color_light_buffer()
 {
 }
 
-color_light_buffer::~color_light_buffer()
+Color_light_buffer::~Color_light_buffer()
 {
   teardown();
 }
 
 void
-color_light_buffer::setup()
+Color_light_buffer::setup()
 {
   glGenBuffers(1, &position_buffer_);
   glGenBuffers(1, &normal_buffer_);
@@ -27,7 +27,7 @@ color_light_buffer::setup()
 }
 
 void
-color_light_buffer::teardown()
+Color_light_buffer::teardown()
 {
   reserve(0);
   glDeleteBuffers(1, &position_buffer_);
@@ -37,7 +37,7 @@ color_light_buffer::teardown()
 }
 
 void
-color_light_buffer::reserve(GLuint n)
+Color_light_buffer::reserve(GLuint n)
 {
   capacity_ = n;
   size_ = 0;
@@ -56,7 +56,7 @@ color_light_buffer::reserve(GLuint n)
 }
 
 void
-color_light_buffer::push(GLsizeiptr size,
+Color_light_buffer::push(GLsizeiptr size,
                          const vec3f* posdat,
                          const vec3f* normdat,
                          const colour* coldat)
@@ -72,7 +72,7 @@ color_light_buffer::push(GLsizeiptr size,
 }
 
 void
-color_light_buffer::set_position_data(GLintptr offset,
+Color_light_buffer::set_position_data(GLintptr offset,
                                       GLsizeiptr size,
                                       const vec3f* data)
 {
@@ -82,7 +82,7 @@ color_light_buffer::set_position_data(GLintptr offset,
 }
 
 void
-color_light_buffer::set_normal_data(GLintptr offset,
+Color_light_buffer::set_normal_data(GLintptr offset,
                                     GLsizeiptr size,
                                     const vec3f* data)
 {
@@ -92,7 +92,7 @@ color_light_buffer::set_normal_data(GLintptr offset,
 }
 
 void
-color_light_buffer::set_color_data(GLintptr offset,
+Color_light_buffer::set_color_data(GLintptr offset,
                                    GLsizeiptr size,
                                    const colour* data)
 {
@@ -102,7 +102,7 @@ color_light_buffer::set_color_data(GLintptr offset,
 }
 
 void
-color_light_buffer::enable_vertex_attribs()
+Color_light_buffer::enable_vertex_attribs()
 {
   glEnableVertexAttribArray(Color_light_shader::Attrib_location::vertex);
   glEnableVertexAttribArray(Color_light_shader::Attrib_location::normal);
@@ -110,7 +110,7 @@ color_light_buffer::enable_vertex_attribs()
 }
 
 void
-color_light_buffer::disable_vertex_attribs()
+Color_light_buffer::disable_vertex_attribs()
 {
   glDisableVertexAttribArray(Color_light_shader::Attrib_location::vertex);
   glDisableVertexAttribArray(Color_light_shader::Attrib_location::normal);
@@ -118,7 +118,7 @@ color_light_buffer::disable_vertex_attribs()
 }
 
 void
-color_light_buffer::render(GLenum mode)
+Color_light_buffer::render(GLenum mode)
 {
   enable_vertex_attribs();
 

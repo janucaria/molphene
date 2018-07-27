@@ -1,15 +1,15 @@
-#ifndef __Molphene__color_light_buffer__
-#define __Molphene__color_light_buffer__
+#ifndef __Molphene__Color_light_buffer__
+#define __Molphene__Color_light_buffer__
 
 #include "m3d.hpp"
 #include "opengl.hpp"
 
 namespace molphene {
-class color_light_buffer {
+class Color_light_buffer {
 public:
-  color_light_buffer();
+  Color_light_buffer();
 
-  ~color_light_buffer();
+  ~Color_light_buffer();
 
   virtual void
   setup();

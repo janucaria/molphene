@@ -4,7 +4,6 @@
 #include <memory>
 #include <type_traits>
 
-#include "color_light_buffer.h"
 #include "m3d.hpp"
 #include "opengl.hpp"
 
