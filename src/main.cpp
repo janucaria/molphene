@@ -288,8 +288,8 @@ key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 
       is_mol_moi = !is_mol_moi;
 
-      scene.openStream(pdbstm);
-      scene.resetMesh();
+      scene.open_stream(pdbstm);
+      scene.reset_mesh();
     }
   }
 }
@@ -297,7 +297,7 @@ key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 static void
 window_size_callback(GLFWwindow* window, int w, int h)
 {
-  scene.changeDimension(w, h);
+  scene.change_dimension(w, h);
 }
 
 static void
@@ -346,8 +346,8 @@ scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 void
 framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
-  scene.setupGraphics();
-  scene.changeDimension(width, height);
+  scene.setup_graphics();
+  scene.change_dimension(width, height);
 }
 
 bool
@@ -380,7 +380,7 @@ init_window(int width, int height)
 void
 render()
 {
-  scene.renderFrame();
+  scene.render_frame();
 
   glfwSwapBuffers(window);
   glfwPollEvents();
@@ -404,16 +404,16 @@ main(int argc, char* argv[])
   int width = 0, height = 0;
 
   glfwGetFramebufferSize(window, &width, &height);
-  scene.setupGraphics();
-  scene.changeDimension(width, height);
+  scene.setup_graphics();
+  scene.change_dimension(width, height);
 
   if(argc > 1) {
     std::ifstream pdbfile(argv[1]);
     if(pdbfile.is_open()) {
       std::cout << "openfile success!" << std::endl;
 
-      scene.openStream(pdbfile);
-      scene.resetMesh();
+      scene.open_stream(pdbfile);
+      scene.reset_mesh();
       main_loop();
 
       pdbfile.close();
@@ -424,8 +424,8 @@ main(int argc, char* argv[])
     std::stringstream pdbstm;
     pdbstm.str(pdbhem);
 
-    scene.openStream(pdbstm);
-    scene.resetMesh();
+    scene.open_stream(pdbstm);
+    scene.reset_mesh();
     main_loop();
   }
 

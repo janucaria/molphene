@@ -7,70 +7,70 @@
 
 #include "Bounding_sphere.hpp"
 #include "Camera.hpp"
+#include "Color_light_buffer.hpp"
 #include "Color_light_shader.hpp"
 #include "Colour_manager.hpp"
-#include "mol/Pdb_parser.hpp"
+#include "Directional_light.hpp"
+#include "Material.hpp"
+#include "m3d.hpp"
 #include "mol/Atom.hpp"
 #include "mol/Bond.hpp"
-#include "Color_light_buffer.hpp"
-#include "m3d.hpp"
 #include "mol/Model.hpp"
 #include "mol/Molecule.hpp"
+#include "mol/Pdb_parser.hpp"
 #include "opengl.hpp"
-#include "Material.hpp"
-#include "Directional_light.hpp"
 
 namespace molphene {
 typedef unsigned char colormode_t;
 
 class Scene {
 public:
-
   using Camera_type = Camera<float, unsigned int>;
 
+  using Material_type = Material<Rgba8, unsigned int>;
+
+  using Light_source_type = Directional_light<Rgba8, Vec3f>;
+
   bool
-  setupGraphics();
+  setup_graphics();
 
   void
-  resetMesh();
+  reset_mesh();
 
   void
-  changeDimension(GLsizei width, GLsizei height);
+  change_dimension(GLsizei width, GLsizei height);
 
   void
-  clearRect();
-
-  void
-  renderFrame();
+  render_frame();
 
   void
   rotate(float x, float y, float z);
 
   void
-  openStream(std::istream& is);
+  open_stream(std::istream& is);
 
   void
-  reset_molecules();
+  calculate_matrices();
 
   Camera_type&
   get_camera();
 
 private:
-  Color_light_buffer sphere_buff_atoms;
+  Color_light_buffer sphere_buff_atoms_;
 
   Color_light_shader color_light_shader_;
 
-  Directional_light<Rgba8, Vec3f> light_source_;
+  Light_source_type light_source_;
 
-  Material<Rgba8, unsigned int> material_;
+  Material_type material_;
 
-  mat4f modelMatrix;
+  Mat4f model_matrix_;
 
   Camera_type camera_;
 
   std::unique_ptr<Molecule> molecule_;
 
-  Colour_manager colour_manager;
+  Colour_manager colour_manager_;
 };
 
 } // namespace molphene

@@ -6,15 +6,10 @@
 namespace molphene {
 
 bool
-Scene::setupGraphics()
+Scene::setup_graphics()
 {
   glClearColor(0.5, 0.5, 0.5, 1.0);
   glEnable(GL_DEPTH_TEST);
-  std::cout << "Hello World" << std::endl;
-
-  color_light_shader_.init_program();
-
-  color_light_shader_.use_program();
 
   light_source_.ambient = 0x7F7F7Fu;
   light_source_.diffuse = 0xFFFFFFu;
@@ -26,24 +21,26 @@ Scene::setupGraphics()
   material_.specular = 0x7F7F7Fu;
   material_.shininess = 10;
 
+  camera_.projection_mode(true);
+
+  color_light_shader_.init_program();
+  color_light_shader_.use_program();
   color_light_shader_.light_source(light_source_);
   color_light_shader_.material(material_);
 
-  sphere_buff_atoms.setup();
+  sphere_buff_atoms_.setup();
 
   return true;
 }
 
 void
-Scene::changeDimension(GLsizei width, GLsizei height)
+Scene::change_dimension(GLsizei width, GLsizei height)
 {
   camera_.set_resolution(width, height);
-
-  glViewport(0, 0, width, height);
 }
 
 void
-Scene::resetMesh()
+Scene::reset_mesh()
 {
   std::vector<Atom*> atoms;
   std::vector<Bond*> bonds;
@@ -71,24 +68,26 @@ Scene::resetMesh()
     }
   }
 
+  calculate_matrices();
+
   sphere_data spheredat;
 
-  GLuint totalAtoms = static_cast<GLuint>(atoms.size());
-  spheredat.reserve(totalAtoms);
-  GLuint totalVertices = totalAtoms * spheredat.unitlen();
-  sphere_buff_atoms.reserve(totalVertices);
+  const auto total_atoms = static_cast<GLuint>(atoms.size());
+  const auto total_vertices = total_atoms * spheredat.unitlen();
 
-  for(unsigned int i = 0; i < totalAtoms; ++i) {
-    auto& atm = *atoms.at(i);
+  spheredat.reserve(total_atoms);
+  sphere_buff_atoms_.reserve(total_vertices);
+  for(const auto atom : atoms) {
+    const auto& atm = *atom;
     const auto element = atm.element();
     const auto apos = atm.position();
     const auto arad = element.rvdw;
-    const auto acol = colour_manager.get_element_color(element.symbol);
+    const auto acol = colour_manager_.get_element_color(element.symbol);
 
     spheredat.push(Sphere<float>{arad, apos}, acol);
 
     if(spheredat.is_full()) {
-      sphere_buff_atoms.push(spheredat.length(),
+      sphere_buff_atoms_.push(spheredat.length(),
                              spheredat.positions(),
                              spheredat.normals(),
                              spheredat.colors());
@@ -96,26 +95,21 @@ Scene::resetMesh()
     }
   }
 
-  sphere_buff_atoms.push(spheredat.length(),
+  sphere_buff_atoms_.push(spheredat.length(),
                          spheredat.positions(),
                          spheredat.normals(),
                          spheredat.colors());
 }
 
 void
-Scene::clearRect()
+Scene::render_frame()
 {
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-}
-
-void
-Scene::renderFrame()
-{
-  clearRect();
-
-  const auto mv_matrix = modelMatrix * camera_.view_matrix;
-  const auto norm_matrix = Mat3f(Mat4f{mv_matrix}.inverse().transpose());
+  const auto mv_matrix = model_matrix_ * camera_.view_matrix;
+  const auto norm_matrix = Mat3f{Mat4f{mv_matrix}.inverse().transpose()};
   const auto proj_matrix = camera_.projection_matrix();
+
+  glViewport(0, 0, camera_.width, camera_.height);
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
   color_light_shader_.use_program();
 
@@ -123,22 +117,20 @@ Scene::renderFrame()
   color_light_shader_.modelview_matrix(mv_matrix);
   color_light_shader_.normal_matrix(norm_matrix);
 
-  sphere_buff_atoms.render(GL_TRIANGLE_STRIP);
-
+  sphere_buff_atoms_.render(GL_TRIANGLE_STRIP);
   glFlush();
 }
 
 void
 Scene::rotate(float x, float y, float z)
 {
-  modelMatrix.rotate(1.0f, 0.0f, 0.0f, x);
-  modelMatrix.rotate(0.0f, 1.0f, 0.0f, y);
-  modelMatrix.rotate(0.0f, 0.0f, 1.0f, z);
-  renderFrame();
+  model_matrix_.rotate(1.0f, 0.0f, 0.0f, x);
+  model_matrix_.rotate(0.0f, 1.0f, 0.0f, y);
+  model_matrix_.rotate(0.0f, 0.0f, 1.0f, z);
 }
 
 void
-Scene::reset_molecules()
+Scene::calculate_matrices()
 {
   // calculate bounding sphere
   Bounding_sphere<float> bs;
@@ -167,19 +159,16 @@ Scene::reset_molecules()
 
   camera_.view_matrix.set_translate(0, 0, -focal_len);
 
-  modelMatrix.identity().translate(-bs.center());
+  model_matrix_.identity().translate(-bs.center());
 }
 
 void
-Scene::openStream(std::istream& is)
+Scene::open_stream(std::istream& is)
 {
-  sphere_buff_atoms.reserve(0);
+  sphere_buff_atoms_.reserve(0);
   molecule_ = std::make_unique<Molecule>();
-
   Pdb_parser parser;
   parser.parse(molecule_.get(), is);
-
-  reset_molecules();
 }
 
 typename Scene::Camera_type&
