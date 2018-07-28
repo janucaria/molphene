@@ -18,8 +18,6 @@ class Color_light_shader : public Basic_shader<Color_light_shader> {
 public:
   using Basic_shader<Color_light_shader>::Attribs_location_name_type;
 
-  enum Attrib_location : GLuint { vertex, normal, color };
-
   Color_light_shader();
 
   void

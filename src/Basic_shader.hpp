@@ -12,8 +12,10 @@ namespace molphene {
 template<typename TDerived>
 class Basic_shader {
 public:
+  enum Attrib_location : GLuint { vertex, normal, color };
+
   using Attribs_location_name_type =
-   std::array<std::pair<GLuint, const GLchar*>, 3>;
+   std::array<std::pair<Attrib_location, const GLchar*>, 3>;
 
   Basic_shader() noexcept = default;
 
