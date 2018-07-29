@@ -14,9 +14,29 @@ sphere_data::unitlen() const
 {
   return londiv_ * (latdiv_ + 1) * 2 + londiv_ * 2;
 }
+void
+sphere_data::reserve(size_t n)
+{
+  primitive_data::reserve(n);
+  size_t totalvers = n * unitlen();
+  texcoords_ = new Vec2f[totalvers];
+}
+void
+sphere_data::clear()
+{
+  primitive_data::clear();
+  delete[] texcoords_;
+  texcoords_ = nullptr;
+}
+
+const Vec2f*
+sphere_data::texcoords()
+{
+  return texcoords_;
+}
 
 void
-sphere_data::insert(size_t idx, Sphere<float> sphere, colour col)
+sphere_data::insert(size_t idx, Sphere<float> sphere, colour col, Vec2f tex)
 {
   const auto pos = sphere.center;
   const auto rad = sphere.radius;
@@ -39,12 +59,14 @@ sphere_data::insert(size_t idx, Sphere<float> sphere, colour col)
       positions_[idx] = pos + norm * rad;
       normals_[idx] = norm;
       colors_[idx] = col;
+      texcoords_[idx] = tex;
       idx++;
 
       if(j == 0) {
         positions_[idx] = positions_[idx - 1];
         normals_[idx] = normals_[idx - 1];
         colors_[idx] = colors_[idx - 1];
+        texcoords_[idx] = tex;
         idx++;
       }
 
@@ -53,12 +75,14 @@ sphere_data::insert(size_t idx, Sphere<float> sphere, colour col)
       positions_[idx] = pos + norm * rad;
       normals_[idx] = norm;
       colors_[idx] = col;
+      texcoords_[idx] = tex;
       idx++;
 
       if(j == latdiv_) {
         positions_[idx] = positions_[idx - 1];
         normals_[idx] = normals_[idx - 1];
         colors_[idx] = colors_[idx - 1];
+        texcoords_[idx] = tex;
         idx++;
       }
     }

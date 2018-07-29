@@ -16,7 +16,8 @@ class Color_light_shader : public Basic_shader<Color_light_shader> {
   friend Basic_shader<Color_light_shader>;
 
 public:
-  using Basic_shader<Color_light_shader>::Attribs_location_name_type;
+  using Attribs_location_name_type =
+   std::array<std::pair<Attrib_location, const GLchar*>, 3>;
 
   Color_light_shader();
 
@@ -117,6 +118,9 @@ public:
   {
     glUniform1f(g_uloc_material_shininess, v);
   }
+
+  void
+  color_texture_image(GLuint texture) const noexcept;
 
 protected:
   GLuint gVertexPositionLocation;

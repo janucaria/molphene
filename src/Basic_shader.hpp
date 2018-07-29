@@ -12,10 +12,7 @@ namespace molphene {
 template<typename TDerived>
 class Basic_shader {
 public:
-  enum Attrib_location : GLuint { vertex, normal, color };
-
-  using Attribs_location_name_type =
-   std::array<std::pair<Attrib_location, const GLchar*>, 3>;
+  enum Attrib_location : GLuint { vertex, normal, color, texcoord0 };
 
   Basic_shader() noexcept = default;
 
@@ -26,7 +23,7 @@ public:
 
     if(g_program) {
       as_derived()->setup_gl_uniforms_loc();
-      
+
       auto current_prog = GLint{0};
       glGetIntegerv(GL_CURRENT_PROGRAM, &current_prog);
       glUseProgram(g_program);

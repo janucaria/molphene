@@ -71,6 +71,8 @@ private:
   std::unique_ptr<Molecule> molecule_;
 
   Colour_manager colour_manager_;
+
+  GLuint atom_color_tex_{0};
 };
 
 } // namespace molphene

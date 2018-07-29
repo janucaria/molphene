@@ -1,3 +1,5 @@
+#include <cmath>
+
 #include "Scene.hpp"
 #include "m3d.hpp"
 #include "shape/Sphere.hpp"
@@ -29,6 +31,13 @@ Scene::setup_graphics()
   color_light_shader_.material(material_);
 
   sphere_buff_atoms_.setup();
+
+  glGenTextures(1, &atom_color_tex_);
+  glBindTexture(GL_TEXTURE_2D, atom_color_tex_);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
   return true;
 }
@@ -72,33 +81,52 @@ Scene::reset_mesh()
 
   sphere_data spheredat;
 
+  const auto total_instances = atoms.size();
+  const auto tex_size =
+   static_cast<unsigned int>(std::ceil(std::sqrt(total_instances)));
+  auto colors = std::vector<Rgba8>(tex_size * tex_size);
+
   const auto total_atoms = static_cast<GLuint>(atoms.size());
   const auto total_vertices = total_atoms * spheredat.unitlen();
 
   spheredat.reserve(total_atoms);
   sphere_buff_atoms_.reserve(total_vertices);
-  for(const auto atom : atoms) {
-    const auto& atm = *atom;
+  for(auto i = size_t{0}; i < total_instances; ++i) {
+    const auto& atm = *atoms.at(i);
     const auto element = atm.element();
     const auto apos = atm.position();
     const auto arad = element.rvdw;
     const auto acol = colour_manager_.get_element_color(element.symbol);
+    const auto atex = Vec2f{float(i % tex_size) / tex_size,
+                            std::floorf(float(i) / tex_size) / tex_size};
+    colors[i] = acol;
 
-    spheredat.push(Sphere<float>{arad, apos}, acol);
+    spheredat.push(Sphere<float>{arad, apos}, acol, atex);
 
     if(spheredat.is_full()) {
       sphere_buff_atoms_.push(spheredat.length(),
-                             spheredat.positions(),
-                             spheredat.normals(),
-                             spheredat.colors());
+                              spheredat.positions(),
+                              spheredat.normals(),
+                              spheredat.texcoords());
       spheredat.resize();
     }
   }
 
   sphere_buff_atoms_.push(spheredat.length(),
-                         spheredat.positions(),
-                         spheredat.normals(),
-                         spheredat.colors());
+                          spheredat.positions(),
+                          spheredat.normals(),
+                          spheredat.texcoords());
+
+  glBindTexture(GL_TEXTURE_2D, atom_color_tex_);
+  glTexImage2D(GL_TEXTURE_2D,
+               0,
+               GL_RGBA,
+               tex_size,
+               tex_size,
+               0,
+               GL_RGBA,
+               GL_UNSIGNED_BYTE,
+               colors.data());
 }
 
 void
@@ -116,6 +144,7 @@ Scene::render_frame()
   color_light_shader_.projection_matrix(proj_matrix);
   color_light_shader_.modelview_matrix(mv_matrix);
   color_light_shader_.normal_matrix(norm_matrix);
+  color_light_shader_.color_texture_image(atom_color_tex_);
 
   sphere_buff_atoms_.render(GL_TRIANGLE_STRIP);
   glFlush();

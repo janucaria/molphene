@@ -11,7 +11,7 @@ Color_light_shader::get_attribs_location() const noexcept
 {
   return {{{Attrib_location::vertex, "a_Vertex"},
            {Attrib_location::normal, "a_Normal"},
-           {Attrib_location::color, "a_Color"}}};
+           {Attrib_location::texcoord0, "a_TexCoord0"}}};
 }
 
 void
@@ -45,6 +45,7 @@ Color_light_shader::setup_gl_uniforms_loc() noexcept
 void
 Color_light_shader::setup_gl_uniforms_val() const noexcept
 {
+  glUniform1i(glGetUniformLocation(g_program, "u_TexColor"), 0);
 }
 
 void
@@ -74,13 +75,20 @@ Color_light_shader::projection_matrix(const Mat4f& m4) const noexcept
    g_uloc_projection_matrix, 1, GL_FALSE, static_cast<const float*>(m4.m));
 }
 
+void
+Color_light_shader::color_texture_image(GLuint texture) const noexcept
+{
+  glActiveTexture(GL_TEXTURE0 + 0);
+  glBindTexture(GL_TEXTURE_2D, texture);
+}
+
 const char*
 Color_light_shader::vert_shader_source() const noexcept
 {
   return R"(
     attribute vec4 a_Vertex;
     attribute vec3 a_Normal;
-    attribute vec4 a_Color;
+    attribute vec2 a_TexCoord0;
     
     uniform mat4 u_ModelViewMatrix;
     uniform mat3 u_NormalMatrix;
@@ -88,11 +96,11 @@ Color_light_shader::vert_shader_source() const noexcept
     
     varying vec3 v_Position;
     varying vec3 v_Normal;
-    varying vec4 v_Color;
+    varying vec2 v_ColorTexCoord;
     void main() {
         vec4 position = u_ModelViewMatrix * a_Vertex;
         v_Position = position.xyz / position.w;
-        v_Color = a_Color;
+        v_ColorTexCoord = a_TexCoord0;
         v_Normal = length(a_Normal) != 0.0 ? u_NormalMatrix * a_Normal : a_Normal;
         gl_Position = u_ProjectionMatrix * position;
         gl_Position /= gl_Position.w;
@@ -117,10 +125,12 @@ Color_light_shader::frag_shader_source() const noexcept
     uniform vec4 u_Material_diffuse;
     uniform vec4 u_Material_specular;
     uniform float u_Material_shininess;
+
+    uniform sampler2D u_TexColor;
     
     varying vec3 v_Position;
     varying vec3 v_Normal;
-    varying vec4 v_Color;
+    varying vec2 v_ColorTexCoord;
     void main() {
         vec4 finalColor = vec4(0.);
         vec4 ambient = u_LightSource_ambient * u_Material_ambient;
@@ -131,7 +141,6 @@ Color_light_shader::frag_shader_source() const noexcept
         
         if(length(v_Normal) == 0.) {
             finalColor += diffuse + specular * pow(1., u_Material_shininess);
-            gl_FragColor = v_Color * finalColor;
         } else {
             vec3 eyePos   = normalize(-v_Position);
             vec3 normal   = normalize(v_Normal);
@@ -146,9 +155,8 @@ Color_light_shader::frag_shader_source() const noexcept
                 specular *= pow(max(0.0, dot(reflection, eyePos)), u_Material_shininess);
                 finalColor += diffuse + specular;
             }
-            
-            gl_FragColor = v_Color * finalColor;
         }
+        gl_FragColor = texture2D(u_TexColor, v_ColorTexCoord.st) * finalColor;
     }
     
     )";
