@@ -2,8 +2,7 @@
 
 #include "Scene.hpp"
 #include "m3d.hpp"
-#include "shape/Sphere.hpp"
-#include "sphere_data.h"
+#include "shape/Uv_sphere.hpp"
 
 namespace molphene {
 
@@ -29,8 +28,6 @@ Scene::setup_graphics()
   color_light_shader_.use_program();
   color_light_shader_.light_source(light_source_);
   color_light_shader_.material(material_);
-
-  sphere_buff_atoms_.setup();
 
   glGenTextures(1, &atom_color_tex_);
   glBindTexture(GL_TEXTURE_2D, atom_color_tex_);
@@ -79,18 +76,23 @@ Scene::reset_mesh()
 
   calculate_matrices();
 
-  sphere_data spheredat;
+  constexpr auto max_chunk_bytes = size_t{1024 * 1024 * 128};
+  auto mesh_builder = Sphere_mesh_builder{max_chunk_bytes, 10, 20};
 
   const auto total_instances = atoms.size();
+  const auto vertices_per_instance = mesh_builder.get_vertices_size();
+  const auto model_per_chunks = mesh_builder.size();
+  const auto remain_models = total_instances % model_per_chunks;
+
   const auto tex_size =
-   static_cast<unsigned int>(std::ceil(std::sqrt(total_instances)));
+   static_cast<unsigned int>(std::ceil(sqrt(total_instances)));
   auto colors = std::vector<Rgba8>(tex_size * tex_size);
 
-  const auto total_atoms = static_cast<GLuint>(atoms.size());
-  const auto total_vertices = total_atoms * spheredat.unitlen();
+  sphere_buff_atoms_ =
+   std::make_unique<typename decltype(sphere_buff_atoms_)::element_type>(
+    vertices_per_instance, total_instances);
 
-  spheredat.reserve(total_atoms);
-  sphere_buff_atoms_.reserve(total_vertices);
+  auto chunk_count = size_t{0};
   for(auto i = size_t{0}; i < total_instances; ++i) {
     const auto& atm = *atoms.at(i);
     const auto element = atm.element();
@@ -101,21 +103,29 @@ Scene::reset_mesh()
                             std::floorf(float(i) / tex_size) / tex_size};
     colors[i] = acol;
 
-    spheredat.push(Sphere<float>{arad, apos}, acol, atex);
+    mesh_builder.sphere(Uv_sphere<float>{arad, apos});
 
-    if(spheredat.is_full()) {
-      sphere_buff_atoms_.push(spheredat.length(),
-                              spheredat.positions(),
-                              spheredat.normals(),
-                              spheredat.texcoords());
-      spheredat.resize();
+    mesh_builder.texcoord(atex);
+
+    const auto j = i % model_per_chunks;
+    mesh_builder.build(j);
+    if(j == (model_per_chunks - 1)) {
+      sphere_buff_atoms_->set_data(chunk_count * model_per_chunks,
+                     model_per_chunks,
+                     mesh_builder.positions(),
+                     mesh_builder.normals(),
+                     mesh_builder.texcoords());
+      ++chunk_count;
     }
   }
 
-  sphere_buff_atoms_.push(spheredat.length(),
-                          spheredat.positions(),
-                          spheredat.normals(),
-                          spheredat.texcoords());
+  if(remain_models > 0) {
+    sphere_buff_atoms_->set_data(chunk_count * model_per_chunks,
+                   remain_models,
+                   mesh_builder.positions(),
+                   mesh_builder.normals(),
+                   mesh_builder.texcoords());
+  }
 
   glBindTexture(GL_TEXTURE_2D, atom_color_tex_);
   glTexImage2D(GL_TEXTURE_2D,
@@ -146,7 +156,7 @@ Scene::render_frame()
   color_light_shader_.normal_matrix(norm_matrix);
   color_light_shader_.color_texture_image(atom_color_tex_);
 
-  sphere_buff_atoms_.render(GL_TRIANGLE_STRIP);
+  sphere_buff_atoms_->draw();
   glFlush();
 }
 
@@ -194,7 +204,6 @@ Scene::calculate_matrices()
 void
 Scene::open_stream(std::istream& is)
 {
-  sphere_buff_atoms_.reserve(0);
   molecule_ = std::make_unique<Molecule>();
   Pdb_parser parser;
   parser.parse(molecule_.get(), is);

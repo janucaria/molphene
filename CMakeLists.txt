@@ -31,7 +31,7 @@ set(MOLPHENE_SRC_FILES
 "${PROJECT_SOURCE_DIR}/src/Color_light_shader.cpp"
 "${PROJECT_SOURCE_DIR}/src/Colour_manager.cpp"
 "${PROJECT_SOURCE_DIR}/src/Scene.cpp"
-"${PROJECT_SOURCE_DIR}/src/sphere_data.cpp")
+"${PROJECT_SOURCE_DIR}/src/Sphere_mesh_builder.cpp")
 
 find_package(glfw3 REQUIRED)
 

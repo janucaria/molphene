@@ -1,5 +1,5 @@
-#ifndef __molphene__Scene__
-#define __molphene__Scene__
+#ifndef MOLPHENE_SCENE_HPP
+#define MOLPHENE_SCENE_HPP
 
 #include <fstream>
 #include <istream>
@@ -56,7 +56,7 @@ public:
   get_camera();
 
 private:
-  Color_light_buffer sphere_buff_atoms_;
+  std::unique_ptr<Color_light_buffer> sphere_buff_atoms_;
 
   Color_light_shader color_light_shader_;
 

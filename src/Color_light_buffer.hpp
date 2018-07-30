@@ -1,56 +1,50 @@
-#ifndef __Molphene__Color_light_buffer__
-#define __Molphene__Color_light_buffer__
+#ifndef MOLPHENE_COLOR_LIGHT_BUFFER_HPP
+#define MOLPHENE_COLOR_LIGHT_BUFFER_HPP
 
+#include "Sphere_mesh_builder.hpp"
 #include "m3d.hpp"
 #include "opengl.hpp"
+#include <gsl/gsl>
+#include <vector>
 
 namespace molphene {
+
 class Color_light_buffer {
 public:
-  Color_light_buffer();
+  Color_light_buffer(GLsizei verts_per_instances, GLsizeiptr total_instances);
 
   ~Color_light_buffer();
 
-  virtual void
-  setup();
+  Color_light_buffer(const Color_light_buffer&) = delete;
 
-  virtual void
-  teardown();
+  Color_light_buffer(Color_light_buffer&&) = delete;
 
-  virtual void
-  reserve(GLuint size);
+  Color_light_buffer&
+  operator=(const Color_light_buffer&) = delete;
 
-  void
-  set_position_data(GLintptr offset, GLsizeiptr size, const vec3f* data);
+  Color_light_buffer&
+  operator=(Color_light_buffer&&) = delete;
 
   void
-  set_normal_data(GLintptr offset, GLsizeiptr size, const vec3f* data);
+  set_data(GLintptr offset,
+           GLsizeiptr size,
+           gsl::span<const Vec3f> verts,
+           gsl::span<const Vec3f> norms,
+           gsl::span<const Vec2f> texcoords);
 
   void
-  set_texcoord_data(GLintptr offset, GLsizeiptr size, const Vec2f* data);
+  draw();
 
-  void
-  push(GLsizeiptr size,
-       const vec3f* posdat,
-       const vec3f* normdat,
-       const Vec2f* texdat);
+private:
+  GLsizei verts_per_instance_{0};
+  GLsizei instances_per_block_{0};
+  GLsizei remain_instances_{0};
 
-  void
-  render(GLenum mode);
+  GLsizei size_;
 
-protected:
-  GLintptr size_{0};
-  GLuint capacity_{0};
-
-  GLuint position_buffer_{0};
-  GLuint normal_buffer_{0};
-  GLuint texcoord_buffer_{0};
-
-  void
-  enable_vertex_attribs();
-
-  void
-  disable_vertex_attribs();
+  std::vector<GLuint> vert_buffers_;
+  std::vector<GLuint> normal_buffers_;
+  std::vector<GLuint> texcoord_buffers_;
 };
 } // namespace molphene
 
