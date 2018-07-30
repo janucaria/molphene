@@ -30,7 +30,7 @@ public:
 
   Mat4f view_matrix;
 
-  Camera() = default;
+  Camera() noexcept = default;
 
   Floatp_t
   aspect_ratio() const noexcept

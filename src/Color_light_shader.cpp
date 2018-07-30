@@ -2,9 +2,7 @@
 
 namespace molphene {
 
-Color_light_shader::Color_light_shader()
-{
-}
+Color_light_shader::Color_light_shader() noexcept = default;
 
 typename Color_light_shader::Attribs_location_name_type
 Color_light_shader::get_attribs_location() const noexcept

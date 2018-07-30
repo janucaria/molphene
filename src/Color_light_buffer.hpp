@@ -11,7 +11,7 @@ namespace molphene {
 
 class Color_light_buffer {
 public:
-  Color_light_buffer(GLsizei verts_per_instances, GLsizeiptr total_instances);
+  Color_light_buffer(GLsizei verts_per_instance, GLsizeiptr total_instances);
 
   ~Color_light_buffer();
 

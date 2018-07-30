@@ -21,7 +21,6 @@
 #include "opengl.hpp"
 
 namespace molphene {
-typedef unsigned char colormode_t;
 
 class Scene {
 public:

@@ -95,7 +95,7 @@ Scene::reset_mesh()
   auto chunk_count = size_t{0};
   for(auto i = size_t{0}; i < total_instances; ++i) {
     const auto& atm = *atoms.at(i);
-    const auto element = atm.element();
+    const auto& element = atm.element();
     const auto apos = atm.position();
     const auto arad = element.rvdw;
     const auto acol = colour_manager_.get_element_color(element.symbol);

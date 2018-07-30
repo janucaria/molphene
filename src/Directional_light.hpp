@@ -24,7 +24,7 @@ public:
 
   Direction_type direction{0, 1, 0};
 
-  Directional_light() = default;
+  Directional_light() noexcept = default;
 };
 } // namespace molphene
 

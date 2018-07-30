@@ -19,7 +19,7 @@ public:
   using Attribs_location_name_type =
    std::array<std::pair<Attrib_location, const GLchar*>, 3>;
 
-  Color_light_shader();
+  Color_light_shader() noexcept;
 
   void
   modelview_matrix(const Mat4f& m4) const noexcept;
@@ -123,9 +123,6 @@ public:
   color_texture_image(GLuint texture) const noexcept;
 
 protected:
-  GLuint gVertexPositionLocation;
-  GLuint gVertexNormalLocation;
-  GLuint gVertexColorLocation;
 
   GLint g_uloc_modelview_matrix{-1};
   GLint g_uloc_normal_matrix{-1};

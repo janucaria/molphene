@@ -187,7 +187,7 @@ struct Atom::Element {
   const std::string symbol;
 
   Element(std::string name,
-          std::string symb,
+          std::string symbol,
           unsigned char number,
           float rVdW,
           float rcov) noexcept;
