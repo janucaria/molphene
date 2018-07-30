@@ -1,13 +1,13 @@
-#ifndef __Molphene__ColorLightRenderer__
-#define __Molphene__ColorLightRenderer__
+#ifndef MOLPHENE_COLOR_LIGHT_SHADER_HPP
+#define MOLPHENE_COLOR_LIGHT_SHADER_HPP
 
 #include <array>
 #include <type_traits>
 #include <utility>
 
+#include "Basic_shader.hpp"
 #include "Directional_light.hpp"
 #include "Material.hpp"
-#include "Basic_shader.hpp"
 #include "m3d.hpp"
 #include "opengl.hpp"
 

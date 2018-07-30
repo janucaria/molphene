@@ -1,5 +1,5 @@
-#ifndef __molphene__Renderer__
-#define __molphene__Renderer__
+#ifndef MOLPHENE_BASIC_SHADER_HPP
+#define MOLPHENE_BASIC_SHADER_HPP
 
 #include <memory>
 #include <type_traits>

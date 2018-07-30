@@ -26,6 +26,6 @@ public:
 
   Directional_light() = default;
 };
-} // namespace mol
+} // namespace molphene
 
 #endif

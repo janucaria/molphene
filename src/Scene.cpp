@@ -111,20 +111,20 @@ Scene::reset_mesh()
     mesh_builder.build(j);
     if(j == (model_per_chunks - 1)) {
       sphere_buff_atoms_->set_data(chunk_count * model_per_chunks,
-                     model_per_chunks,
-                     mesh_builder.positions(),
-                     mesh_builder.normals(),
-                     mesh_builder.texcoords());
+                                   model_per_chunks,
+                                   mesh_builder.positions(),
+                                   mesh_builder.normals(),
+                                   mesh_builder.texcoords());
       ++chunk_count;
     }
   }
 
   if(remain_models > 0) {
     sphere_buff_atoms_->set_data(chunk_count * model_per_chunks,
-                   remain_models,
-                   mesh_builder.positions(),
-                   mesh_builder.normals(),
-                   mesh_builder.texcoords());
+                                 remain_models,
+                                 mesh_builder.positions(),
+                                 mesh_builder.normals(),
+                                 mesh_builder.texcoords());
   }
 
   glBindTexture(GL_TEXTURE_2D, atom_color_tex_);
