@@ -33,19 +33,27 @@ set(MOLPHENE_SRC_FILES
 "${PROJECT_SOURCE_DIR}/src/Scene.cpp"
 "${PROJECT_SOURCE_DIR}/src/Sphere_mesh_builder.cpp")
 
-find_package(glfw3 REQUIRED)
-
 add_executable(molphene
   ${MOLPHENE_SRC_FILES}
   "${PROJECT_SOURCE_DIR}/src/main.cpp"
 )
 
-target_link_libraries(molphene PRIVATE glfw "-framework CoreVideo" "-framework IOKit" "-framework Cocoa" "-framework OpenGL")
+if(EMSCRIPTEN)
+  set_target_properties(molphene PROPERTIES SUFFIX ".html")
+  set_target_properties(molphene PROPERTIES LINK_FLAGS "-s \"EXTRA_EXPORTED_RUNTIME_METHODS=['stringToUTF8','lengthBytesUTF8']\" -s TOTAL_MEMORY=512MB -s USE_GLFW=3 -O0")
 
-target_compile_options(molphene PRIVATE "-Wall" "-stdlib=libc++")
+else()
+  find_package(glfw3 REQUIRED)
+
+  target_link_libraries(molphene PRIVATE glfw "-framework CoreVideo" "-framework IOKit" "-framework Cocoa" "-framework OpenGL")
+
+  target_compile_options(molphene PRIVATE "-Wall" "-stdlib=libc++")
+
+endif()
 
 target_include_directories(molphene
 PRIVATE
+  "/usr/local/include"
   "${PROJECT_SOURCE_DIR}/include"
   "${PROJECT_SOURCE_DIR}/src"
 )

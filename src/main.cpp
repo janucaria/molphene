@@ -1,3 +1,6 @@
+#ifdef __EMSCRIPTEN__
+#include <emscripten/emscripten.h>
+#endif
 #include <sstream>
 #include <string>
 #define GLFW_INCLUDE_NONE
@@ -365,7 +368,6 @@ init_window(int width, int height)
   }
 
   glfwMakeContextCurrent(window);
-  glfwSwapInterval(1);
 
   glfwSetKeyCallback(window, key_callback);
   glfwSetWindowSizeCallback(window, window_size_callback);
@@ -389,9 +391,13 @@ render()
 void
 main_loop()
 {
+#ifdef __EMSCRIPTEN__
+  emscripten_set_main_loop(render, 0, 1);
+#else
   while(!glfwWindowShouldClose(window)) {
     render();
   }
+#endif
 }
 
 int

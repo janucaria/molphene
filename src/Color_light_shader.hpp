@@ -123,7 +123,6 @@ public:
   color_texture_image(GLuint texture) const noexcept;
 
 protected:
-
   GLint g_uloc_modelview_matrix{-1};
   GLint g_uloc_normal_matrix{-1};
   GLint g_uloc_projection_matrix{-1};

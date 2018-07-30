@@ -117,7 +117,7 @@ Color_light_shader::frag_shader_source() const noexcept
     uniform vec4 u_LightSource_ambient;
     uniform vec4 u_LightSource_diffuse;
     uniform vec4 u_LightSource_specular;
-    uniform vec4 u_LightSource_position;
+    uniform vec3 u_LightSource_position;
     
     uniform vec4 u_Material_ambient;
     uniform vec4 u_Material_diffuse;
@@ -143,7 +143,7 @@ Color_light_shader::frag_shader_source() const noexcept
             vec3 eyePos   = normalize(-v_Position);
             vec3 normal   = normalize(v_Normal);
             
-            vec3 lightDir = normalize(u_LightSource_position.xyz - v_Position);
+            vec3 lightDir = normalize(u_LightSource_position - v_Position);
             float lambertTerm = max(0.0, dot(normal, lightDir));
             
             if(lambertTerm > 0.0) {
