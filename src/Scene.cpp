@@ -12,15 +12,7 @@ Scene::setup_graphics()
   glClearColor(0.5, 0.5, 0.5, 1.0);
   glEnable(GL_DEPTH_TEST);
 
-  light_source_.ambient = 0x7F7F7Fu;
-  light_source_.diffuse = 0xFFFFFFu;
-  light_source_.specular = 0x7F7F7Fu;
-  light_source_.direction = {0.0, 0.0, 0.0};
-
-  material_.ambient = 0x4C4C4Cu;
-  material_.diffuse = 0xFFFFFFu;
-  material_.specular = 0x7F7F7Fu;
-  material_.shininess = 10;
+  material_.diffuse_color = 0xFFFFFF;
 
   camera_.projection_mode(true);
 

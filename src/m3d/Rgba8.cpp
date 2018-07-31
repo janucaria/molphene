@@ -2,7 +2,7 @@
 
 namespace molphene {
 
-Rgba8::Rgba8(uint8_t r, uint8_t g, uint8_t b, uint8_t a)
+Rgba8::Rgba8(uint8_t r, uint8_t g, uint8_t b, uint8_t a) noexcept
 : r{r}
 , g{g}
 , b{b}
@@ -10,7 +10,7 @@ Rgba8::Rgba8(uint8_t r, uint8_t g, uint8_t b, uint8_t a)
 {
 }
 
-Rgba8::Rgba8(uint32_t i)
+Rgba8::Rgba8(uint32_t i) noexcept
 : Rgba8((i & 0x00FF0000u) >> 16u,
         (i & 0x0000FF00u) >> 8u,
         i & 0x000000FFu,

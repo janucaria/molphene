@@ -11,18 +11,13 @@ public:
   using Color_type = TColor;
   using Vec3_type = TVector;
 
-  using Ambient_type = Color_type;
-  using Diffuse_type = Color_type;
-  using Specular_tye = Color_type;
-  using Direction_type = Vec3_type;
+  float ambient_intensity{0};
+  
+  Color_type color{0xFFFFFF};
+  
+  Vec3_type direction{0, 0, -1};
 
-  Ambient_type ambient;
-
-  Diffuse_type diffuse;
-
-  Specular_tye specular;
-
-  Direction_type direction{0, 1, 0};
+  float intensity{1};
 
   Directional_light() noexcept = default;
 };

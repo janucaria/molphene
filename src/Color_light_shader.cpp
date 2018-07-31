@@ -21,21 +21,23 @@ Color_light_shader::setup_gl_uniforms_loc() noexcept
    glGetUniformLocation(g_program, "u_ProjectionMatrix");
   g_uloc_normal_matrix = glGetUniformLocation(g_program, "u_NormalMatrix");
 
-  g_uloc_light_source_ambient =
-   glGetUniformLocation(g_program, "u_LightSource_ambient");
-  g_uloc_light_source_diffuse =
-   glGetUniformLocation(g_program, "u_LightSource_diffuse");
-  g_uloc_light_source_specular =
-   glGetUniformLocation(g_program, "u_LightSource_specular");
-  g_uloc_light_source_position =
-   glGetUniformLocation(g_program, "u_LightSource_position");
+  g_uloc_light_source_color =
+   glGetUniformLocation(g_program, "u_LightSource_color");
+  g_uloc_light_source_direction =
+   glGetUniformLocation(g_program, "u_LightSource_direction");
+  g_uloc_light_source_ambient_intensity =
+   glGetUniformLocation(g_program, "u_LightSource_ambientIntensity");
+  g_uloc_light_source_intensity =
+   glGetUniformLocation(g_program, "u_LightSource_intensity");
 
-  g_uloc_material_ambient =
-   glGetUniformLocation(g_program, "u_Material_ambient");
-  g_uloc_material_diffuse =
-   glGetUniformLocation(g_program, "u_Material_diffuse");
-  g_uloc_material_specular =
-   glGetUniformLocation(g_program, "u_Material_specular");
+  g_uloc_material_ambient_intensity =
+   glGetUniformLocation(g_program, "u_Material_ambientIntensity");
+  g_uloc_material_emissive_color =
+   glGetUniformLocation(g_program, "u_Material_emissiveColor");
+  g_uloc_material_diffuse_color =
+   glGetUniformLocation(g_program, "u_Material_diffuseColor");
+  g_uloc_material_specular_color =
+   glGetUniformLocation(g_program, "u_Material_specularColor");
   g_uloc_material_shininess =
    glGetUniformLocation(g_program, "u_Material_shininess");
 }
@@ -113,16 +115,17 @@ Color_light_shader::frag_shader_source() const noexcept
 #ifdef GL_ES
     precision highp float;
 #endif
+    uniform float u_LightSource_ambientIntensity;
+    uniform float u_LightSource_intensity;
+    uniform vec3 u_LightSource_direction;
+    uniform vec4 u_LightSource_color;
     
-    uniform vec4 u_LightSource_ambient;
-    uniform vec4 u_LightSource_diffuse;
-    uniform vec4 u_LightSource_specular;
-    uniform vec3 u_LightSource_position;
-    
-    uniform vec4 u_Material_ambient;
-    uniform vec4 u_Material_diffuse;
-    uniform vec4 u_Material_specular;
+    uniform float u_Material_ambientIntensity;
+    uniform vec4 u_Material_emissiveColor;
+    uniform vec4 u_Material_diffuseColor;
+    uniform vec4 u_Material_specularColor;
     uniform float u_Material_shininess;
+    // uniform float u_Material_transparency
 
     uniform sampler2D u_TexColor;
     
@@ -130,31 +133,28 @@ Color_light_shader::frag_shader_source() const noexcept
     varying vec3 v_Normal;
     varying vec2 v_ColorTexCoord;
     void main() {
-        vec4 finalColor = vec4(0.);
-        vec4 ambient = u_LightSource_ambient * u_Material_ambient;
-        vec4 diffuse = u_LightSource_diffuse * u_Material_diffuse;
-        vec4 specular = u_LightSource_specular * u_Material_specular;
-        
-        finalColor += ambient;
-        
-        if(length(v_Normal) == 0.) {
-            finalColor += diffuse + specular * pow(1., u_Material_shininess);
-        } else {
-            vec3 eyePos   = normalize(-v_Position);
-            vec3 normal   = normalize(v_Normal);
-            
-            vec3 lightDir = normalize(u_LightSource_position - v_Position);
-            float lambertTerm = max(0.0, dot(normal, lightDir));
-            
-            if(lambertTerm > 0.0) {
-                vec3 reflection = -reflect(lightDir, normal);
-                
-                diffuse *= lambertTerm;
-                specular *= pow(max(0.0, dot(reflection, eyePos)), u_Material_shininess);
-                finalColor += diffuse + specular;
-            }
-        }
-        gl_FragColor = texture2D(u_TexColor, v_ColorTexCoord.st) * finalColor;
+        vec4 texRgba = texture2D(u_TexColor, v_ColorTexCoord.st);
+        vec3 ILrgb = u_LightSource_color.rgb;
+        float Ii = u_LightSource_intensity;
+        float Iia = u_LightSource_ambientIntensity;
+
+        float Oa = u_Material_ambientIntensity;
+        vec3 ODrgb = texRgba.rgb * u_Material_diffuseColor.rgb;
+        vec3 OErgb = u_Material_emissiveColor.rgb;
+        vec3 OSrgb = u_Material_specularColor.rgb;
+        float shininess = u_Material_shininess;
+
+        vec3 L = -u_LightSource_direction;
+        vec3 N = normalize(v_Normal);
+        vec3 V = normalize(v_Position);
+
+        vec3 ambienti = Iia * ODrgb * Oa;
+        vec3 diffusei = Ii * ODrgb * dot( N, L );
+        vec3 speculari = Ii * OSrgb * pow(dot( N , ((L + V) / normalize(L + V))), shininess * 128.);
+
+        vec3 Irgb = OErgb + (ILrgb * (ambienti + diffusei + speculari));
+        float A = texRgba.a;
+        gl_FragColor = vec4(Irgb, A);
     }
     
     )";

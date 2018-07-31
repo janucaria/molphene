@@ -8,11 +8,11 @@ namespace molphene {
 struct Rgba32f {
   float r{0}, g{0}, b{0}, a{0};
 
-  Rgba32f();
+  Rgba32f() noexcept;
 
-  Rgba32f(float r, float g, float b, float a = 1.0);
+  Rgba32f(float r, float g, float b, float a = 1.0) noexcept;
 
-  explicit Rgba32f(const Rgba8& c8);
+  explicit Rgba32f(const Rgba8& c8) noexcept;
 
   Rgba32f&
   operator+=(const Rgba32f& rsh);

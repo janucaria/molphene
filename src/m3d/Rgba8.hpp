@@ -11,11 +11,11 @@ struct Rgba8 {
   uint8_t b{0};
   uint8_t a{255};
 
-  Rgba8() = default;
+  Rgba8() noexcept = default;
 
-  Rgba8(uint8_t r, uint8_t g, uint8_t b, uint8_t a = 255);
+  Rgba8(uint8_t r, uint8_t g, uint8_t b, uint8_t a = 255) noexcept;
 
-  explicit Rgba8(uint32_t i);
+  explicit Rgba8(uint32_t i) noexcept;
 
   Rgba8&
   operator+=(const Rgba8& rsh);

@@ -26,7 +26,7 @@ class Scene {
 public:
   using Camera_type = Camera<float, unsigned int>;
 
-  using Material_type = Material<Rgba8, unsigned int>;
+  using Material_type = Material<Rgba8>;
 
   using Light_source_type = Directional_light<Rgba8, Vec3f>;
 

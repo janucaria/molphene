@@ -5,36 +5,19 @@
 
 namespace molphene {
 
-template<typename TColor, typename TShininess>
+template<typename TColor, typename TScalar = float>
 class Material {
 public:
   using Color_type = TColor;
+  using Scalar_type = TScalar;
 
-  using Ambient_type = Color_type;
-  using Diffuse_type = Color_type;
-  using Specular_type = Color_type;
-  using Shininess_type = TShininess;
-
-  Ambient_type ambient;
-
-  Diffuse_type diffuse;
-
-  Specular_type specular;
-
-  Shininess_type shininess{0};
+  Scalar_type ambient_intensity{0.2};
+  Color_type diffuse_color{0xCCCCCC};
+  Color_type emissive_color;
+  Color_type specular_color;
+  Scalar_type shininess{0.2};
 
   Material() noexcept = default;
-
-  Material(Ambient_type ambient,
-           Diffuse_type diffuse,
-           Specular_type specular,
-           Shininess_type shininess) noexcept
-  : ambient{ambient}
-  , diffuse{diffuse}
-  , specular{specular}
-  , shininess{shininess}
-  {
-  }
 };
 } // namespace molphene
 
