@@ -9,6 +9,7 @@
 #include "Directional_light.hpp"
 #include "Fog.hpp"
 #include "Material.hpp"
+#include "Point_light.hpp"
 #include "m3d.hpp"
 #include "opengl.hpp"
 
@@ -40,6 +41,20 @@ public:
     light_source_color(light.color);
     light_source_direction(light.direction);
     light_source_intensity(light.intensity);
+    light_source_radius(-1);
+  }
+
+  template<typename TColor, typename TVec3>
+  std::void_t<decltype(Rgba32f{std::declval<TColor>()},
+                       Vec3f{std::declval<TVec3>()})>
+  light_source(const Point_light<TColor, TVec3>& light) const
+  {
+    light_source_ambient_intensity(light.ambient_intensity);
+    light_source_attenuation(light.attenuation);
+    light_source_color(light.color);
+    light_source_position(light.location);
+    light_source_intensity(light.intensity);
+    light_source_radius(light.radius);
   }
 
   template<typename T>
@@ -71,6 +86,29 @@ public:
   light_source_intensity(T&& val) const
   {
     glUniform1f(g_uloc_light_source_intensity, val);
+  }
+
+  template<typename... Ts>
+  std::void_t<decltype(Vec3f{std::declval<Ts>()...})>
+  light_source_attenuation(Ts&&... args) const
+  {
+    const auto v = Vec3f{std::forward<Ts>(args)...};
+    glUniform3f(g_uloc_light_source_attenuation, v.x, v.y, v.z);
+  }
+
+  template<typename... Ts>
+  std::void_t<decltype(Vec3f{std::declval<Ts>()...})>
+  light_source_position(Ts&&... args) const
+  {
+    const auto v = Vec3f{std::forward<Ts>(args)...};
+    glUniform3f(g_uloc_light_source_position, v.x, v.y, v.z);
+  }
+
+  template<typename T>
+  std::void_t<decltype(GLfloat(std::declval<T>()))>
+  light_source_radius(T&& val) const
+  {
+    glUniform1f(g_uloc_light_source_radius, val);
   }
 
   template<typename T, typename U>
@@ -126,7 +164,8 @@ public:
   }
 
   template<typename TColor, typename TScalar>
-  std::void_t<decltype(Rgba32f{std::declval<TColor>()}, GLfloat(std::declval<TScalar>()))>
+  std::void_t<decltype(Rgba32f{std::declval<TColor>()},
+                       GLfloat(std::declval<TScalar>()))>
   fog(const Fog<TColor, TScalar>& fog) const
   {
     fog_color(fog.color);
@@ -165,9 +204,12 @@ protected:
   GLint g_uloc_projection_matrix{-1};
 
   GLint g_uloc_light_source_ambient_intensity{-1};
+  GLint g_uloc_light_source_attenuation{-1};
   GLint g_uloc_light_source_intensity{-1};
   GLint g_uloc_light_source_color{-1};
   GLint g_uloc_light_source_direction{-1};
+  GLint g_uloc_light_source_position{-1};
+  GLint g_uloc_light_source_radius{-1};
 
   GLint g_uloc_material_ambient_intensity{-1};
   GLint g_uloc_material_emissive_color{-1};

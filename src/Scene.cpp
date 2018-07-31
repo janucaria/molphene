@@ -14,11 +14,14 @@ Scene::setup_graphics()
 
   material_.diffuse_color = 0xFFFFFF;
 
+  point_light_source_.location = {0, 0, -23};
+  point_light_source_.radius = 5;
+
   camera_.projection_mode(true);
 
   color_light_shader_.init_program();
   color_light_shader_.use_program();
-  color_light_shader_.light_source(light_source_);
+  color_light_shader_.light_source(point_light_source_);
   color_light_shader_.material(material_);
   color_light_shader_.fog(fog_);
 
