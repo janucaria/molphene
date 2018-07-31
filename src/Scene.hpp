@@ -11,6 +11,7 @@
 #include "Color_light_shader.hpp"
 #include "Colour_manager.hpp"
 #include "Directional_light.hpp"
+#include "Fog.hpp"
 #include "Material.hpp"
 #include "m3d.hpp"
 #include "mol/Atom.hpp"
@@ -29,6 +30,8 @@ public:
   using Material_type = Material<Rgba8>;
 
   using Light_source_type = Directional_light<Rgba8, Vec3f>;
+
+  using Fog_type = Fog<Rgba8>;
 
   bool
   setup_graphics();
@@ -60,6 +63,8 @@ private:
   Color_light_shader color_light_shader_;
 
   Light_source_type light_source_;
+
+  Fog_type fog_;
 
   Material_type material_;
 

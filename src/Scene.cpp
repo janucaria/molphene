@@ -20,6 +20,7 @@ Scene::setup_graphics()
   color_light_shader_.use_program();
   color_light_shader_.light_source(light_source_);
   color_light_shader_.material(material_);
+  color_light_shader_.fog(fog_);
 
   glGenTextures(1, &atom_color_tex_);
   glBindTexture(GL_TEXTURE_2D, atom_color_tex_);

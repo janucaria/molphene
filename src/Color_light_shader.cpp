@@ -40,6 +40,10 @@ Color_light_shader::setup_gl_uniforms_loc() noexcept
    glGetUniformLocation(g_program, "u_Material_specularColor");
   g_uloc_material_shininess =
    glGetUniformLocation(g_program, "u_Material_shininess");
+
+  g_uloc_fog_color = glGetUniformLocation(g_program, "u_Fog_color");
+  g_uloc_fog_fog_type = glGetUniformLocation(g_program, "u_Fog_fogTypeLinear");
+  g_uloc_fog_visibility_range = glGetUniformLocation(g_program, "u_Fog_visibilityRange");
 }
 
 void
@@ -127,34 +131,62 @@ Color_light_shader::frag_shader_source() const noexcept
     uniform float u_Material_shininess;
     // uniform float u_Material_transparency
 
+    uniform vec4 u_Fog_color;
+    uniform bool u_Fog_fogTypeLinear;
+    uniform float u_Fog_visibilityRange;
+
     uniform sampler2D u_TexColor;
     
     varying vec3 v_Position;
     varying vec3 v_Normal;
     varying vec2 v_ColorTexCoord;
+
+    float fogInterpolant(float dV) {
+      float fogVisibility = u_Fog_visibilityRange;
+
+      if(fogVisibility == 0.) {
+        return 1.;
+      }
+      
+      if(u_Fog_fogTypeLinear) {
+        if(dV < fogVisibility) {
+          return (fogVisibility-dV) / fogVisibility;
+        }
+      } else if(dV < fogVisibility) {
+        return exp(-dV / (fogVisibility-dV ) );
+      }
+      return 0.;
+    }
+
     void main() {
-        vec4 texRgba = texture2D(u_TexColor, v_ColorTexCoord.st);
-        vec3 ILrgb = u_LightSource_color.rgb;
-        float Ii = u_LightSource_intensity;
-        float Iia = u_LightSource_ambientIntensity;
+      float dV = length(v_Position);
+      float f0 = fogInterpolant(dV);
+      vec3 IFrgb = u_Fog_color.rgb;
 
-        float Oa = u_Material_ambientIntensity;
-        vec3 ODrgb = texRgba.rgb * u_Material_diffuseColor.rgb;
-        vec3 OErgb = u_Material_emissiveColor.rgb;
-        vec3 OSrgb = u_Material_specularColor.rgb;
-        float shininess = u_Material_shininess;
+      vec4 texRgba = texture2D(u_TexColor, v_ColorTexCoord.st);
+      vec3 ILrgb = u_LightSource_color.rgb;
+      float Ii = u_LightSource_intensity;
+      float Iia = u_LightSource_ambientIntensity;
 
-        vec3 L = -u_LightSource_direction;
-        vec3 N = normalize(v_Normal);
-        vec3 V = normalize(v_Position);
+      float Oa = u_Material_ambientIntensity;
+      vec3 ODrgb = texRgba.rgb * u_Material_diffuseColor.rgb;
+      vec3 OErgb = u_Material_emissiveColor.rgb;
+      vec3 OSrgb = u_Material_specularColor.rgb;
+      float shininess = u_Material_shininess;
 
-        vec3 ambienti = Iia * ODrgb * Oa;
-        vec3 diffusei = Ii * ODrgb * dot( N, L );
-        vec3 speculari = Ii * OSrgb * pow(dot( N , ((L + V) / normalize(L + V))), shininess * 128.);
+      vec3 L = -u_LightSource_direction;
+      vec3 N = normalize(v_Normal);
+      vec3 V = normalize(v_Position);
 
-        vec3 Irgb = OErgb + (ILrgb * (ambienti + diffusei + speculari));
-        float A = texRgba.a;
-        gl_FragColor = vec4(Irgb, A);
+      vec3 ambienti = Iia * ODrgb * Oa;
+      vec3 diffusei = Ii * ODrgb * dot( N, L );
+      vec3 speculari = Ii * OSrgb * pow(dot( N , ((L + V) / normalize(L + V))), shininess * 128.);
+      
+      vec3 Irgb = IFrgb * (1. -f0)
+              + f0 * (OErgb + (ILrgb * (ambienti + diffusei + speculari)));
+      float A = texRgba.a;
+
+      gl_FragColor = vec4(Irgb, A);
     }
     
     )";

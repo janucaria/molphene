@@ -7,6 +7,7 @@
 
 #include "Basic_shader.hpp"
 #include "Directional_light.hpp"
+#include "Fog.hpp"
 #include "Material.hpp"
 #include "m3d.hpp"
 #include "opengl.hpp"
@@ -31,7 +32,8 @@ public:
   projection_matrix(const Mat4f& m4) const noexcept;
 
   template<typename TColor, typename TVec3>
-  std::void_t<decltype(Rgba32f{std::declval<TColor>()}, Vec3f{std::declval<TVec3>()})>
+  std::void_t<decltype(Rgba32f{std::declval<TColor>()},
+                       Vec3f{std::declval<TVec3>()})>
   light_source(const Directional_light<TColor, TVec3>& light) const
   {
     light_source_ambient_intensity(light.ambient_intensity);
@@ -123,6 +125,37 @@ public:
     glUniform1f(g_uloc_material_shininess, v);
   }
 
+  template<typename TColor, typename TScalar>
+  std::void_t<decltype(Rgba32f{std::declval<TColor>()}, GLfloat(std::declval<TScalar>()))>
+  fog(const Fog<TColor, TScalar>& fog) const
+  {
+    fog_color(fog.color);
+    fog_fog_type(fog.fog_type == std::decay_t<decltype(fog)>::Type::linear);
+    fog_visibility_range(fog.visibility_range);
+  }
+
+  template<typename... Ts>
+  std::void_t<decltype(Rgba32f{std::declval<Ts>()...})>
+  fog_color(Ts&&... args) const
+  {
+    const auto col = Rgba32f{std::forward<Ts>(args)...};
+    glUniform4fv(g_uloc_fog_color, 1, reinterpret_cast<const GLfloat*>(&col));
+  }
+
+  template<typename T>
+  std::void_t<decltype(bool{std::declval<T>()})>
+  fog_fog_type(T&& val) const
+  {
+    glUniform1i(g_uloc_fog_fog_type, val);
+  }
+
+  template<typename T>
+  std::void_t<decltype(GLfloat{std::declval<T>()})>
+  fog_visibility_range(T&& val) const
+  {
+    glUniform1f(g_uloc_fog_visibility_range, val);
+  }
+
   void
   color_texture_image(GLuint texture) const noexcept;
 
@@ -141,6 +174,10 @@ protected:
   GLint g_uloc_material_diffuse_color{-1};
   GLint g_uloc_material_specular_color{-1};
   GLint g_uloc_material_shininess{-1};
+
+  GLint g_uloc_fog_color{-1};
+  GLint g_uloc_fog_fog_type{-1};
+  GLint g_uloc_fog_visibility_range{-1};
 
   const char*
   vert_shader_source() const noexcept;
