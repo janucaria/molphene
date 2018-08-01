@@ -13,13 +13,14 @@
 #include "Directional_light.hpp"
 #include "Fog.hpp"
 #include "Material.hpp"
+#include "Point_light.hpp"
+#include "Spot_light.hpp"
 #include "m3d.hpp"
 #include "mol/Atom.hpp"
 #include "mol/Bond.hpp"
 #include "mol/Model.hpp"
 #include "mol/Molecule.hpp"
 #include "mol/Pdb_parser.hpp"
-#include "Point_light.hpp"
 #include "opengl.hpp"
 
 namespace molphene {
@@ -28,13 +29,15 @@ class Scene {
 public:
   using Camera_type = Camera<float, unsigned int>;
 
-  using Material_type = Material<Rgba8>;
+  using Fog_type = Fog<Rgba8>;
 
   using Light_source_type = Directional_light<Rgba8, Vec3f>;
 
+  using Material_type = Material<Rgba8>;
+
   using Point_light_type = Point_light<Rgba8, Vec3f>;
 
-  using Fog_type = Fog<Rgba8>;
+  using Spot_light_type = Spot_light<Rgba8, Vec3f>;
 
   bool
   setup_graphics();
@@ -68,6 +71,8 @@ private:
   Light_source_type light_source_;
 
   Point_light_type point_light_source_;
+
+  Spot_light_type spot_light_source_;
 
   Fog_type fog_;
 

@@ -10,6 +10,7 @@
 #include "Fog.hpp"
 #include "Material.hpp"
 #include "Point_light.hpp"
+#include "Spot_light.hpp"
 #include "m3d.hpp"
 #include "opengl.hpp"
 
@@ -52,6 +53,23 @@ public:
     light_source_ambient_intensity(light.ambient_intensity);
     light_source_attenuation(light.attenuation);
     light_source_color(light.color);
+    light_source_direction(TVec3{0, 0, 0});
+    light_source_position(light.location);
+    light_source_intensity(light.intensity);
+    light_source_radius(light.radius);
+  }
+
+  template<typename TColor, typename TVec3>
+  std::void_t<decltype(Rgba32f{std::declval<TColor>()},
+                       Vec3f{std::declval<TVec3>()})>
+  light_source(const Spot_light<TColor, TVec3>& light) const
+  {
+    light_source_ambient_intensity(light.ambient_intensity);
+    light_source_attenuation(light.attenuation);
+    light_source_beam_width(light.beam_width);
+    light_source_color(light.color);
+    light_source_cut_off_angle(light.cut_off_angle);
+    light_source_direction(light.direction);
     light_source_position(light.location);
     light_source_intensity(light.intensity);
     light_source_radius(light.radius);
@@ -64,6 +82,13 @@ public:
     glUniform1f(g_uloc_light_source_ambient_intensity, val);
   }
 
+  template<typename T>
+  std::void_t<decltype(GLfloat(std::declval<T>()))>
+  light_source_beam_width(T&& val) const
+  {
+    glUniform1f(g_uloc_light_source_beam_width, val);
+  }
+
   template<typename... Ts>
   std::void_t<decltype(Rgba32f{std::declval<Ts>()...})>
   light_source_color(Ts&&... args) const
@@ -71,6 +96,13 @@ public:
     const auto col = Rgba32f{std::forward<Ts>(args)...};
     glUniform4fv(
      g_uloc_light_source_color, 1, reinterpret_cast<const GLfloat*>(&col));
+  }
+
+  template<typename T>
+  std::void_t<decltype(GLfloat(std::declval<T>()))>
+  light_source_cut_off_angle(T&& val) const
+  {
+    glUniform1f(g_uloc_light_source_cut_off_angle, val);
   }
 
   template<typename... Ts>
@@ -205,8 +237,10 @@ protected:
 
   GLint g_uloc_light_source_ambient_intensity{-1};
   GLint g_uloc_light_source_attenuation{-1};
+  GLint g_uloc_light_source_beam_width{-1};
   GLint g_uloc_light_source_intensity{-1};
   GLint g_uloc_light_source_color{-1};
+  GLint g_uloc_light_source_cut_off_angle{-1};
   GLint g_uloc_light_source_direction{-1};
   GLint g_uloc_light_source_position{-1};
   GLint g_uloc_light_source_radius{-1};

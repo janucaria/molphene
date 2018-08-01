@@ -35,6 +35,10 @@ Color_light_shader::setup_gl_uniforms_loc() noexcept
    glGetUniformLocation(g_program, "u_LightSource_position");
   g_uloc_light_source_radius =
    glGetUniformLocation(g_program, "u_LightSource_radius");
+  g_uloc_light_source_beam_width =
+   glGetUniformLocation(g_program, "u_LightSource_beamWidth");
+  g_uloc_light_source_cut_off_angle =
+   glGetUniformLocation(g_program, "u_LightSource_cutOffAngle");
 
   g_uloc_material_ambient_intensity =
    glGetUniformLocation(g_program, "u_Material_ambientIntensity");
@@ -128,7 +132,9 @@ Color_light_shader::frag_shader_source() const noexcept
 #endif
     uniform float u_LightSource_ambientIntensity;
     uniform vec3 u_LightSource_attenuation;
+    uniform float u_LightSource_beamWidth;
     uniform vec4 u_LightSource_color;
+    uniform float u_LightSource_cutOffAngle;
     uniform vec3 u_LightSource_direction;
     uniform float u_LightSource_intensity;
     uniform vec3 u_LightSource_position;
@@ -175,6 +181,7 @@ Color_light_shader::frag_shader_source() const noexcept
       vec3 V = normalize(v_Position);
       
       float attenuationi = 0.;
+      float spoti = 1.;
       vec3 L;
       if(isDirLight) {
         L = -u_LightSource_direction;
@@ -190,6 +197,22 @@ Color_light_shader::frag_shader_source() const noexcept
           float c3 = u_LightSource_attenuation.z;
 
           attenuationi = 1. / max(c1 + c2 * dL + c3 * (dL * dL), 1.);
+
+          if(length(u_LightSource_direction) != 0.) {
+            vec3 spotDiri = normalize(u_LightSource_direction);
+            float spotAngle = acos(max(dot(-L, spotDiri), 0.));
+
+            float spotBW = u_LightSource_beamWidth;
+            float spotCO = u_LightSource_cutOffAngle;
+
+            if(spotAngle >= spotCO) {
+              spoti = 0.;
+            } else if(spotAngle <= spotBW) {
+              spoti = 1.;
+            } else if((spotBW < spotAngle) && (spotAngle < spotCO)) {
+              spoti = (spotAngle - spotCO ) / (spotBW - spotCO);
+            }
+          }
         }
       }
 
@@ -213,9 +236,9 @@ Color_light_shader::frag_shader_source() const noexcept
       vec3 speculari = Ii * OSrgb * pow(dot( N , ((L + V) / normalize(L + V))), shininess * 128.);
       
       vec3 Irgb = IFrgb * (1. -f0)
-              + f0 * (OErgb + (attenuationi * ILrgb * (ambienti + diffusei + speculari)));
+              + f0 * (OErgb + (attenuationi * spoti * ILrgb * (ambienti + diffusei + speculari)));
       float A = texRgba.a;
-      
+
       gl_FragColor = vec4(vec3(Irgb), A);
     }
     
