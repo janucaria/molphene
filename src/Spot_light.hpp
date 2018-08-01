@@ -4,32 +4,23 @@
 #include <cmath>
 
 #include "m3d.hpp"
+#include "Point_light.hpp"
 
 namespace molphene {
 
 template<typename TColor, typename TVector>
-class Spot_light {
+class Spot_light : public Point_light<TColor, TVector> {
 public:
-  using Color_type = TColor;
-  using Vec3_type = TVector;
-
-  float ambient_intensity{0};
+  using typename Point_light<TColor, TVector>::Color_type;
+  using typename Point_light<TColor, TVector>::Vec3_type;
 
   float beam_width{M_PI / 4};
 
   float cut_off_angle{M_PI / 2};
 
-  float intensity{1};
-
-  float radius{100};
-
-  Color_type color{0xFFFFFF};
-
-  Vec3_type attenuation{1, 0, 0};
-
   Vec3_type direction{0, 0, -1};
 
-  Vec3_type location{0, 0, 0};
+  using Point_light<TColor, TVector>::Point_light;
 
   Spot_light() noexcept = default;
 };
