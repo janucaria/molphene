@@ -53,7 +53,7 @@ public:
     light_source_ambient_intensity(light.ambient_intensity);
     light_source_attenuation(light.attenuation);
     light_source_color(light.color);
-    light_source_direction(TVec3{0, 0, 0});
+    light_source_direction(.0f, .0f, .0f);
     light_source_position(light.location);
     light_source_intensity(light.intensity);
     light_source_radius(light.radius);
@@ -76,14 +76,14 @@ public:
   }
 
   template<typename T>
-  std::void_t<decltype(GLfloat(std::declval<T>()))>
+  std::enable_if_t<std::is_convertible_v<T, GLfloat>>
   light_source_ambient_intensity(T&& val) const
   {
     glUniform1f(g_uloc_light_source_ambient_intensity, val);
   }
 
   template<typename T>
-  std::void_t<decltype(GLfloat(std::declval<T>()))>
+  std::enable_if_t<std::is_convertible_v<T, GLfloat>>
   light_source_beam_width(T&& val) const
   {
     glUniform1f(g_uloc_light_source_beam_width, val);
@@ -99,7 +99,7 @@ public:
   }
 
   template<typename T>
-  std::void_t<decltype(GLfloat(std::declval<T>()))>
+  std::enable_if_t<std::is_convertible_v<T, GLfloat>>
   light_source_cut_off_angle(T&& val) const
   {
     glUniform1f(g_uloc_light_source_cut_off_angle, val);
@@ -114,7 +114,7 @@ public:
   }
 
   template<typename T>
-  std::void_t<decltype(GLfloat(std::declval<T>()))>
+  std::enable_if_t<std::is_convertible_v<T, GLfloat>>
   light_source_intensity(T&& val) const
   {
     glUniform1f(g_uloc_light_source_intensity, val);
@@ -137,15 +137,16 @@ public:
   }
 
   template<typename T>
-  std::void_t<decltype(GLfloat(std::declval<T>()))>
+  std::enable_if_t<std::is_convertible_v<T, GLfloat>>
   light_source_radius(T&& val) const
   {
     glUniform1f(g_uloc_light_source_radius, val);
   }
 
-  template<typename T, typename U>
-  std::void_t<decltype(Rgba32f{std::declval<T>()}, GLfloat(std::declval<U>()))>
-  material(const Material<T, U>& mater) const
+  template<typename TColor, typename TScalar>
+  std::void_t<decltype(Rgba32f{std::declval<TColor>()},
+                       std::is_constructible_v<TScalar, GLfloat>)>
+  material(const Material<TColor, TScalar>& mater) const
   {
     material_ambient_intensity(mater.ambient_intensity);
     material_emissive_color(mater.emissive_color);
@@ -155,7 +156,7 @@ public:
   }
 
   template<typename T>
-  std::void_t<decltype(GLfloat(std::declval<T>()))>
+  std::enable_if_t<std::is_convertible_v<T, GLfloat>>
   material_ambient_intensity(T&& val) const
   {
     glUniform1f(g_uloc_material_ambient_intensity, val);
@@ -189,7 +190,7 @@ public:
   }
 
   template<typename T>
-  std::void_t<decltype(GLfloat(std::declval<T>()))>
+  std::enable_if_t<std::is_convertible_v<T, GLfloat>>
   material_shininess(T&& v) const
   {
     glUniform1f(g_uloc_material_shininess, v);
@@ -197,7 +198,7 @@ public:
 
   template<typename TColor, typename TScalar>
   std::void_t<decltype(Rgba32f{std::declval<TColor>()},
-                       GLfloat(std::declval<TScalar>()))>
+                       std::is_convertible_v<TScalar, GLfloat>)>
   fog(const Fog<TColor, TScalar>& fog) const
   {
     fog_color(fog.color);
@@ -214,14 +215,14 @@ public:
   }
 
   template<typename T>
-  std::void_t<decltype(bool{std::declval<T>()})>
+  std::enable_if_t<std::is_convertible_v<T, GLint>>
   fog_fog_type(T&& val) const
   {
     glUniform1i(g_uloc_fog_fog_type, val);
   }
 
   template<typename T>
-  std::void_t<decltype(GLfloat{std::declval<T>()})>
+  std::enable_if_t<std::is_convertible_v<T, GLfloat>>
   fog_visibility_range(T&& val) const
   {
     glUniform1f(g_uloc_fog_visibility_range, val);
