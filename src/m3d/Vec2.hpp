@@ -7,32 +7,29 @@ namespace molphene {
 
 template<typename T>
 struct Vec2 {
-  T x{0}, y{0};
+  T x, y;
 
-  Vec2() = default;
+  Vec2() noexcept = default;
 
-  Vec2(T x, T y)
+  explicit Vec2(T s) noexcept
+  : Vec2{s, s}
+  {
+  }
+
+  Vec2(T x, T y) noexcept
   : x{x}
   , y{y}
   {
   }
 
-  Vec2<T>&
-  operator()(const T& x, const T& y)
-  {
-    this->x = x;
-    this->y = y;
-    return *this;
-  }
-
   Vec2
-  operator+(const Vec2& v) const
+  operator+(const Vec2& v) const noexcept
   {
     return Vec2{*this} += v;
   }
 
   Vec2&
-  operator+=(const Vec2& v)
+  operator+=(const Vec2& v) noexcept
   {
     this->x += v.x;
     this->y += v.y;
@@ -40,26 +37,26 @@ struct Vec2 {
   }
 
   Vec2
-  operator-(const Vec2& v) const
+  operator-(const Vec2& v) const noexcept
   {
     return Vec2{*this} -= v;
   }
 
   Vec2&
-  operator-=(const Vec2& v)
+  operator-=(const Vec2& v) noexcept
   {
     this->x -= v.x;
     this->y -= v.y;
     return *this;
   }
 
-  Vec2 operator*(const Vec2& v) const
+  Vec2 operator*(const Vec2& v) const noexcept
   {
     return Vec2{*this} *= v;
   }
 
   Vec2&
-  operator*=(const Vec2& v)
+  operator*=(const Vec2& v) noexcept
   {
     this->x *= v.x;
     this->y *= v.y;
@@ -67,13 +64,13 @@ struct Vec2 {
   }
 
   Vec2
-  operator/(const Vec2& v) const
+  operator/(const Vec2& v) const noexcept
   {
     return Vec2{*this} /= v;
   }
 
   Vec2&
-  operator/=(const Vec2& v)
+  operator/=(const Vec2& v) noexcept
   {
     this->x /= v.x;
     this->y /= v.y;
@@ -81,19 +78,19 @@ struct Vec2 {
   }
 
   Vec2
-  operator-() const
+  operator-() const noexcept
   {
     return {-this->x, -this->y};
   }
 
   Vec2
-  operator+(const T& s) const
+  operator+(const T& s) const noexcept
   {
     return Vec2{*this} += s;
   }
 
   Vec2&
-  operator+=(const T& s)
+  operator+=(const T& s) noexcept
   {
     this->x += s;
     this->y += s;
@@ -101,26 +98,26 @@ struct Vec2 {
   }
 
   Vec2
-  operator-(const T& s) const
+  operator-(const T& s) const noexcept
   {
     return Vec2{*this} -= s;
   }
 
   Vec2&
-  operator-=(const T& s)
+  operator-=(const T& s) noexcept
   {
     this->x -= s;
     this->y -= s;
     return *this;
   }
 
-  Vec2 operator*(const T& s) const
+  Vec2 operator*(const T& s) const noexcept
   {
     return Vec2{*this} *= s;
   }
 
   Vec2&
-  operator*=(const T& s)
+  operator*=(const T& s) noexcept
   {
     this->x *= s;
     this->y *= s;
@@ -128,13 +125,13 @@ struct Vec2 {
   }
 
   Vec2
-  operator/(const T& s) const
+  operator/(const T& s) const noexcept
   {
     return Vec2{*this} /= s;
   }
 
   Vec2&
-  operator/=(const T& s)
+  operator/=(const T& s) noexcept
   {
     this->x /= s;
     this->y /= s;
@@ -142,13 +139,13 @@ struct Vec2 {
   }
 
   T
-  magnitude() const
+  magnitude() const noexcept
   {
     return sqrt(x * x + y * y);
   }
 
   Vec2
-  to_unit()
+  to_unit() noexcept
   {
     return *this / magnitude();
   }

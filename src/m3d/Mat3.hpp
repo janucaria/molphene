@@ -6,9 +6,14 @@
 namespace molphene {
 template<typename T>
 struct Mat3 {
-  T m[9]{1, 0, 0, 0, 1, 0, 0, 0, 1};
+  T m[9];
 
   Mat3() noexcept = default;
+
+  explicit Mat3(T s) noexcept
+  : Mat3{s, 0, 0, 0, s, 0, 0, 0, s}
+  {
+  }
 
   Mat3(T m11, T m12, T m13, T m21, T m22, T m23, T m31, T m32, T m33) noexcept
   : m{m11, m12, m13, m21, m22, m23, m31, m32, m33}

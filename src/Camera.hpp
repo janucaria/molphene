@@ -28,7 +28,7 @@ public:
 
   Resolution_type width{0};
 
-  Mat4f view_matrix;
+  Mat4f view_matrix{1};
 
   Camera() noexcept = default;
 
@@ -99,7 +99,7 @@ public:
   }
 
 private:
-  Mat4_t projection_matrix_;
+  Mat4_t projection_matrix_{1};
 
   bool projection_mode_{false};
 };

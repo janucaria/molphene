@@ -8,9 +8,14 @@ namespace molphene {
 
 template<typename T>
 struct Vec3 {
-  T x{0}, y{0}, z{0};
+  T x, y, z;
 
   Vec3() noexcept = default;
+
+  explicit Vec3(T s) noexcept
+  : Vec3{s, s, s}
+  {
+  }
 
   Vec3(T x, T y, T z) noexcept
   : x{x}

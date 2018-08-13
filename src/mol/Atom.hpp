@@ -49,7 +49,7 @@ private:
 
   std::string name_;
 
-  Position_type position_;
+  Position_type position_{0};
 
   unsigned int serial_;
 };

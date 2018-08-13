@@ -59,7 +59,7 @@ private:
 
   size_t size_;
 
-  Vec2f tex_;
+  Vec2f tex_{0};
 
   std::vector<Vec2f> texcoords_;
 

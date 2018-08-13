@@ -78,7 +78,7 @@ private:
 
   Material_type material_;
 
-  Mat4f model_matrix_;
+  Mat4f model_matrix_{1};
 
   Camera_type camera_;
 

@@ -9,9 +9,14 @@ namespace molphene {
 
 template<typename T>
 struct Mat4 {
-  T m[16]{1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1};
+  T m[16];
 
   Mat4() noexcept = default;
+
+  explicit Mat4(T s) noexcept
+  : Mat4{s, 0, 0, 0, 0, s, 0, 0, 0, 0, s, 0, 0, 0, 0, s}
+  {
+  }
 
   Mat4(T m11,
        T m12,
