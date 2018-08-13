@@ -57,3 +57,23 @@ PRIVATE
   "${PROJECT_SOURCE_DIR}/include"
   "${PROJECT_SOURCE_DIR}/src"
 )
+
+
+find_package(Boost COMPONENTS unit_test_framework)
+
+add_executable(molphene_test
+"${PROJECT_SOURCE_DIR}/test/main.cpp"
+"${PROJECT_SOURCE_DIR}/test/matrix4.cpp"
+"${PROJECT_SOURCE_DIR}/test/vector3.cpp"
+)
+
+target_include_directories(molphene_test
+PRIVATE
+  "/usr/local/include"
+  "${PROJECT_SOURCE_DIR}/include"
+  "${PROJECT_SOURCE_DIR}/src"
+)
+
+target_link_libraries(molphene_test PRIVATE ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY})
+
+target_compile_options(molphene_test PRIVATE "-Wall" "-stdlib=libc++")
