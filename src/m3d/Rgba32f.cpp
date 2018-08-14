@@ -2,7 +2,15 @@
 
 namespace molphene {
 
-Rgba32f::Rgba32f() noexcept = default;
+Rgba32f::Rgba32f(float c) noexcept
+: Rgba32f{c, c}
+{
+}
+
+Rgba32f::Rgba32f(float c, float a) noexcept
+: Rgba32f{c, c, c, a}
+{
+}
 
 Rgba32f::Rgba32f(float r, float g, float b, float a) noexcept
 : r{r}

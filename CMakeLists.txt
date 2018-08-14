@@ -65,6 +65,7 @@ add_executable(molphene_test
 "${PROJECT_SOURCE_DIR}/test/main.cpp"
 "${PROJECT_SOURCE_DIR}/test/matrix4.cpp"
 "${PROJECT_SOURCE_DIR}/test/vector3.cpp"
+"${PROJECT_SOURCE_DIR}/test/color.cpp"
 )
 
 target_include_directories(molphene_test

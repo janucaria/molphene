@@ -13,8 +13,8 @@ public:
 
   Scalar_type ambient_intensity{0.2};
   Color_type diffuse_color{0xCCCCCC};
-  Color_type emissive_color;
-  Color_type specular_color;
+  Color_type emissive_color{0};
+  Color_type specular_color{0};
   Scalar_type shininess{0.2};
 
   Material() noexcept = default;
