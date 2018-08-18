@@ -1,8 +1,7 @@
 #ifndef MOLPHENE_SPHERE_MESH_BUILDER_HPP
 #define MOLPHENE_SPHERE_MESH_BUILDER_HPP
 
-#include <type_traits>
-#include <vector>
+#include "stdafx.hpp"
 
 #include "m3d.hpp"
 #include "shape/Uv_sphere.hpp"
@@ -11,8 +10,7 @@ namespace molphene {
 
 class Sphere_mesh_builder {
 public:
-  using Div_type = unsigned int;
-  using Floatp_t = float;
+  using Div_type = size_t;
 
 public:
   Sphere_mesh_builder(size_t max_bytes, Div_type lat_div, Div_type long_div);
@@ -57,11 +55,11 @@ private:
 
   std::vector<Vec3f> positions_;
 
+  std::vector<Vec2f> texcoords_;
+
   size_t size_;
 
   Vec2f tex_{0};
-
-  std::vector<Vec2f> texcoords_;
 
   Uv_sphere<float> sphere_;
 };

@@ -1,9 +1,10 @@
 #ifndef MOLPHENE_M3D_MAT4_HPP
 #define MOLPHENE_M3D_MAT4_HPP
 
+#include "stdafx.hpp"
+
 #include "Vec2.hpp"
 #include "Vec3.hpp"
-#include <cmath>
 
 namespace molphene {
 

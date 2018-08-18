@@ -1,8 +1,7 @@
 #ifndef MOLPHENE_COLOUR_MANAGER_HPP
 #define MOLPHENE_COLOUR_MANAGER_HPP
 
-#include <string>
-#include <unordered_map>
+#include "stdafx.hpp"
 
 #include "m3d.hpp"
 

@@ -1,9 +1,7 @@
 #ifndef MOLPHENE_SCENE_HPP
 #define MOLPHENE_SCENE_HPP
 
-#include <fstream>
-#include <istream>
-#include <memory>
+#include "stdafx.hpp"
 
 #include "Bounding_sphere.hpp"
 #include "Camera.hpp"
@@ -27,7 +25,7 @@ namespace molphene {
 
 class Scene {
 public:
-  using Camera_type = Camera<float, unsigned int>;
+  using Camera_type = Camera<float>;
 
   using Fog_type = Fog<Rgba8>;
 

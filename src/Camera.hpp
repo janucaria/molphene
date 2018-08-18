@@ -6,12 +6,10 @@
 namespace molphene {
 
 template<typename TFloatingP,
-         typename TResolution,
+         typename TResolution = size_t,
          typename TMat4 = Mat4<TFloatingP>>
 class Camera {
 public:
-  using Floatp_t = TFloatingP;
-  using Mat4_t = TMat4;
   using Floatp_type = TFloatingP;
   using Mat4_type = TMat4;
   using Resolution_type = TResolution;
@@ -32,13 +30,13 @@ public:
 
   Camera() noexcept = default;
 
-  Floatp_t
+  Floatp_type
   aspect_ratio() const noexcept
   {
-    return Floatp_t(width) / height;
+    return Floatp_type(width) / height;
   }
 
-  const Mat4_t&
+  const Mat4_type&
   orthogonal_proj_matrix() noexcept
   {
     const auto top = std::tan(fov / 2) * ((far - near) / 2 + near) * zoom;
@@ -46,7 +44,7 @@ public:
     return projection_matrix_.orthogonal(-right, right, -top, top, near, far);
   }
 
-  const Mat4_t&
+  const Mat4_type&
   perspective_proj_matrix() noexcept
   {
     const auto top = std::tan(fov / 2) * near * zoom;
@@ -54,7 +52,7 @@ public:
     return projection_matrix_.frustum(-right, right, -top, top, near, far);
   }
 
-  const Mat4_t&
+  const Mat4_type&
   projection_matrix() noexcept
   {
     return projection_mode_ ? perspective_proj_matrix()
@@ -99,7 +97,7 @@ public:
   }
 
 private:
-  Mat4_t projection_matrix_{1};
+  Mat4_type projection_matrix_{1};
 
   bool projection_mode_{false};
 };

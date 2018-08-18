@@ -1,11 +1,11 @@
 #ifndef MOLPHENE_COLOR_LIGHT_BUFFER_HPP
 #define MOLPHENE_COLOR_LIGHT_BUFFER_HPP
 
+#include "stdafx.hpp"
+
 #include "Sphere_mesh_builder.hpp"
 #include "m3d.hpp"
 #include "opengl.hpp"
-#include <gsl/gsl>
-#include <vector>
 
 namespace molphene {
 

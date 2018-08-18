@@ -1,8 +1,7 @@
 #ifndef MOLPHENE_BASIC_SHADER_HPP
 #define MOLPHENE_BASIC_SHADER_HPP
 
-#include <memory>
-#include <type_traits>
+#include "stdafx.hpp"
 
 #include "m3d.hpp"
 #include "opengl.hpp"

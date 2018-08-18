@@ -1,8 +1,7 @@
 #ifndef MOLPHENE_M3D_VEC3_HPP
 #define MOLPHENE_M3D_VEC3_HPP
 
-#include <cmath>
-#include <type_traits>
+#include "stdafx.hpp"
 
 namespace molphene {
 

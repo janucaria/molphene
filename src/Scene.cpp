@@ -1,4 +1,4 @@
-#include <cmath>
+#include "stdafx.hpp"
 
 #include "Scene.hpp"
 #include "m3d.hpp"
@@ -83,7 +83,7 @@ Scene::reset_mesh()
   const auto remain_models = total_instances % model_per_chunks;
 
   const auto tex_size =
-   static_cast<unsigned int>(std::ceil(sqrt(total_instances)));
+   static_cast<size_t>(std::ceil(std::sqrt(total_instances)));
   auto colors = std::vector<Rgba8>(tex_size * tex_size);
 
   sphere_buff_atoms_ =

@@ -1,5 +1,6 @@
+#include "stdafx.hpp"
+
 #include "Sphere_mesh_builder.hpp"
-#include <cmath>
 
 namespace molphene {
 
@@ -78,6 +79,12 @@ Sphere_mesh_builder::build(size_t idx)
   const auto rad = sphere_.radius;
   const auto pos = sphere_.center;
 
+  const auto vert_size = get_vertices_size();
+
+  auto positions2 = std::vector<Vec3f>(vert_size);
+  auto normals2 = std::vector<Vec3f>(vert_size);
+  auto texcoords2 = std::vector<Vec2f>(vert_size);
+
   idx *= get_vertices_size();
   for(auto i = Div_type{0}; i < lat_div_; ++i) {
     constexpr auto pi = float{M_PI};
@@ -105,12 +112,20 @@ Sphere_mesh_builder::build(size_t idx)
       normals_[idx] = norm;
       texcoords_[idx] = tex_;
 
+      positions2.emplace_back(pos + norm * rad);
+      normals2.emplace_back(norm);
+      texcoords2.emplace_back(tex_);
+
       idx++;
 
       if(j == 0) {
         positions_[idx] = pos + norm * rad;
         normals_[idx] = norm;
         texcoords_[idx] = tex_;
+
+        positions2.emplace_back(pos + norm * rad);
+        normals2.emplace_back(norm);
+        texcoords2.emplace_back(tex_);
 
         idx++;
       }
@@ -121,12 +136,20 @@ Sphere_mesh_builder::build(size_t idx)
       normals_[idx] = norm;
       texcoords_[idx] = tex_;
 
+      positions2.emplace_back(pos + norm * rad);
+      normals2.emplace_back(norm);
+      texcoords2.emplace_back(tex_);
+
       idx++;
 
       if(j == long_div_) {
         positions_[idx] = pos + norm * rad;
         normals_[idx] = norm;
         texcoords_[idx] = tex_;
+
+        positions2.emplace_back(pos + norm * rad);
+        normals2.emplace_back(norm);
+        texcoords2.emplace_back(tex_);
 
         idx++;
       }

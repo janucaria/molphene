@@ -1,9 +1,7 @@
 #ifndef MOLPHENE_COLOR_LIGHT_SHADER_HPP
 #define MOLPHENE_COLOR_LIGHT_SHADER_HPP
 
-#include <array>
-#include <type_traits>
-#include <utility>
+#include "stdafx.hpp"
 
 #include "Basic_shader.hpp"
 #include "Directional_light.hpp"

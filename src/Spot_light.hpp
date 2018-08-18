@@ -1,7 +1,7 @@
 #ifndef MOLPHENE_SPOT_LIGHT_HPP
 #define MOLPHENE_SPOT_LIGHT_HPP
 
-#include <cmath>
+#include "stdafx.hpp"
 
 #include "Directional_light.hpp"
 #include "Point_light.hpp"
