@@ -2,7 +2,7 @@
 
 #include "Scene.hpp"
 #include "m3d.hpp"
-#include "shape/Uv_sphere.hpp"
+#include "shape/UvSphere.hpp"
 
 namespace molphene {
 
@@ -75,7 +75,7 @@ Scene::reset_mesh()
   calculate_matrices();
 
   constexpr auto max_chunk_bytes = size_t{1024 * 1024 * 128};
-  auto mesh_builder = Sphere_mesh_builder{max_chunk_bytes, 10, 20};
+  auto mesh_builder = SphereMeshBuilder{max_chunk_bytes, 10, 20};
 
   const auto total_instances = atoms.size();
   const auto vertices_per_instance = mesh_builder.get_vertices_size();
@@ -101,7 +101,7 @@ Scene::reset_mesh()
                             std::floorf(float(i) / tex_size) / tex_size};
     colors[i] = acol;
 
-    mesh_builder.sphere(Uv_sphere<float>{arad, apos});
+    mesh_builder.sphere(UvSphere<float>{arad, apos});
 
     mesh_builder.texcoord(atex);
 
@@ -170,7 +170,7 @@ void
 Scene::calculate_matrices()
 {
   // calculate bounding sphere
-  Bounding_sphere<float> bs;
+  BoundingSphere<float> bs;
 
   for(auto& model : Molecule::Models_iterable{*molecule_}) {
     for(auto& chain : Model::Chains_iterable{model}) {
@@ -203,7 +203,7 @@ void
 Scene::open_stream(std::istream& is)
 {
   molecule_ = std::make_unique<Molecule>();
-  Pdb_parser parser;
+  PdbParser parser;
   parser.parse(molecule_.get(), is);
 }
 

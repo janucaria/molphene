@@ -3,27 +3,27 @@
 
 #include "stdafx.hpp"
 
-#include "Sphere_mesh_builder.hpp"
+#include "SphereMeshBuilder.hpp"
 #include "m3d.hpp"
 #include "opengl.hpp"
 
 namespace molphene {
 
-class Color_light_buffer {
+class ColorLightBuffer {
 public:
-  Color_light_buffer(GLsizei verts_per_instance, GLsizeiptr total_instances);
+  ColorLightBuffer(GLsizei verts_per_instance, GLsizeiptr total_instances);
 
-  ~Color_light_buffer();
+  ~ColorLightBuffer();
 
-  Color_light_buffer(const Color_light_buffer&) = delete;
+  ColorLightBuffer(const ColorLightBuffer&) = delete;
 
-  Color_light_buffer(Color_light_buffer&&) = delete;
+  ColorLightBuffer(ColorLightBuffer&&) = delete;
 
-  Color_light_buffer&
-  operator=(const Color_light_buffer&) = delete;
+  ColorLightBuffer&
+  operator=(const ColorLightBuffer&) = delete;
 
-  Color_light_buffer&
-  operator=(Color_light_buffer&&) = delete;
+  ColorLightBuffer&
+  operator=(ColorLightBuffer&&) = delete;
 
   void
   set_data(GLintptr offset,

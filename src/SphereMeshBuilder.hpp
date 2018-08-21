@@ -4,16 +4,16 @@
 #include "stdafx.hpp"
 
 #include "m3d.hpp"
-#include "shape/Uv_sphere.hpp"
+#include "shape/UvSphere.hpp"
 
 namespace molphene {
 
-class Sphere_mesh_builder {
+class SphereMeshBuilder {
 public:
   using Div_type = size_t;
 
 public:
-  Sphere_mesh_builder(size_t max_bytes, Div_type lat_div, Div_type long_div);
+  SphereMeshBuilder(size_t max_bytes, Div_type lat_div, Div_type long_div);
 
   void
   build(size_t idx);
@@ -43,8 +43,8 @@ public:
     return tex_ = Vec2f{std::forward<Ts>(args)...};
   }
 
-  Uv_sphere<float>
-  sphere(Uv_sphere<float> sphere);
+  UvSphere<float>
+  sphere(UvSphere<float> sphere);
 
 private:
   Div_type lat_div_;
@@ -61,7 +61,7 @@ private:
 
   Vec2f tex_{0};
 
-  Uv_sphere<float> sphere_;
+  UvSphere<float> sphere_;
 };
 } // namespace molphene
 

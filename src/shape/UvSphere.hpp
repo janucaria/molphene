@@ -7,7 +7,7 @@
 namespace molphene {
 
 template<typename TRadii, typename TCenter = Vec3<TRadii>>
-struct Uv_sphere : public Sphere<TRadii, TCenter> {
+struct UvSphere : public Sphere<TRadii, TCenter> {
   using typename Sphere<TRadii, TCenter>::Radius_type;
   using typename Sphere<TRadii, TCenter>::Center_type;
   using Axis_type = Center_type;
@@ -16,9 +16,9 @@ struct Uv_sphere : public Sphere<TRadii, TCenter> {
 
   using Sphere<TRadii, TCenter>::Sphere;
 
-  Uv_sphere() noexcept = default;
+  UvSphere() noexcept = default;
 
-  Uv_sphere(Radius_type radii, Center_type center, Axis_type axis) noexcept
+  UvSphere(Radius_type radii, Center_type center, Axis_type axis) noexcept
   : Sphere<TRadii, TCenter>{radii, center}
   , axis{axis}
   {

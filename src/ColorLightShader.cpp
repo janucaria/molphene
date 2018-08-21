@@ -1,11 +1,11 @@
-#include "Color_light_shader.hpp"
+#include "ColorLightShader.hpp"
 
 namespace molphene {
 
-Color_light_shader::Color_light_shader() noexcept = default;
+ColorLightShader::ColorLightShader() noexcept = default;
 
-typename Color_light_shader::Attribs_location_name_type
-Color_light_shader::get_attribs_location() const noexcept
+typename ColorLightShader::Attribs_location_name_type
+ColorLightShader::get_attribs_location() const noexcept
 {
   return {{{Attrib_location::vertex, "a_Vertex"},
            {Attrib_location::normal, "a_Normal"},
@@ -13,7 +13,7 @@ Color_light_shader::get_attribs_location() const noexcept
 }
 
 void
-Color_light_shader::setup_gl_uniforms_loc() noexcept
+ColorLightShader::setup_gl_uniforms_loc() noexcept
 {
   g_uloc_modelview_matrix =
    glGetUniformLocation(g_program, "u_ModelViewMatrix");
@@ -58,47 +58,47 @@ Color_light_shader::setup_gl_uniforms_loc() noexcept
 }
 
 void
-Color_light_shader::setup_gl_uniforms_val() const noexcept
+ColorLightShader::setup_gl_uniforms_val() const noexcept
 {
   glUniform1i(glGetUniformLocation(g_program, "u_TexColor"), 0);
 }
 
 void
-Color_light_shader::setup_gl_attribs_val() const noexcept
+ColorLightShader::setup_gl_attribs_val() const noexcept
 {
   glVertexAttrib4f(Attrib_location::vertex, 0, 0, 0, 1);
 }
 
 void
-Color_light_shader::modelview_matrix(const Mat4f& m4) const noexcept
+ColorLightShader::modelview_matrix(const Mat4f& m4) const noexcept
 {
   glUniformMatrix4fv(
    g_uloc_modelview_matrix, 1, GL_FALSE, static_cast<const float*>(m4.m));
 }
 
 void
-Color_light_shader::normal_matrix(const Mat3f& m) const noexcept
+ColorLightShader::normal_matrix(const Mat3f& m) const noexcept
 {
   glUniformMatrix3fv(
    g_uloc_normal_matrix, 1, GL_FALSE, static_cast<const float*>(m.m));
 }
 
 void
-Color_light_shader::projection_matrix(const Mat4f& m4) const noexcept
+ColorLightShader::projection_matrix(const Mat4f& m4) const noexcept
 {
   glUniformMatrix4fv(
    g_uloc_projection_matrix, 1, GL_FALSE, static_cast<const float*>(m4.m));
 }
 
 void
-Color_light_shader::color_texture_image(GLuint texture) const noexcept
+ColorLightShader::color_texture_image(GLuint texture) const noexcept
 {
   glActiveTexture(GL_TEXTURE0 + 0);
   glBindTexture(GL_TEXTURE_2D, texture);
 }
 
 const char*
-Color_light_shader::vert_shader_source() const noexcept
+ColorLightShader::vert_shader_source() const noexcept
 {
   return R"(
     attribute vec4 a_Vertex;
@@ -124,7 +124,7 @@ Color_light_shader::vert_shader_source() const noexcept
 }
 
 const char*
-Color_light_shader::frag_shader_source() const noexcept
+ColorLightShader::frag_shader_source() const noexcept
 {
   return R"(
 #ifdef GL_ES

@@ -9,11 +9,11 @@
 namespace molphene {
 
 template<typename TDerived>
-class Basic_shader {
+class BasicShader {
 public:
   enum Attrib_location : GLuint { vertex, normal, color, texcoord0 };
 
-  Basic_shader() noexcept = default;
+  BasicShader() noexcept = default;
 
   bool
   init_program()

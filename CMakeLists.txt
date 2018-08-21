@@ -26,12 +26,12 @@ set(MOLPHENE_SRC_FILES
 "${PROJECT_SOURCE_DIR}/src/mol/Compound.cpp"
 "${PROJECT_SOURCE_DIR}/src/mol/Model.cpp"
 "${PROJECT_SOURCE_DIR}/src/mol/Molecule.cpp"
-"${PROJECT_SOURCE_DIR}/src/mol/Pdb_parser.cpp"
-"${PROJECT_SOURCE_DIR}/src/color_light_buffer.cpp"
-"${PROJECT_SOURCE_DIR}/src/Color_light_shader.cpp"
-"${PROJECT_SOURCE_DIR}/src/Colour_manager.cpp"
+"${PROJECT_SOURCE_DIR}/src/mol/PdbParser.cpp"
+"${PROJECT_SOURCE_DIR}/src/ColorLightBuffer.cpp"
+"${PROJECT_SOURCE_DIR}/src/ColorLightShader.cpp"
+"${PROJECT_SOURCE_DIR}/src/ColourManager.cpp"
 "${PROJECT_SOURCE_DIR}/src/Scene.cpp"
-"${PROJECT_SOURCE_DIR}/src/Sphere_mesh_builder.cpp")
+"${PROJECT_SOURCE_DIR}/src/SphereMeshBuilder.cpp")
 
 add_executable(molphene
   ${MOLPHENE_SRC_FILES}

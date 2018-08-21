@@ -3,22 +3,22 @@
 
 #include "stdafx.hpp"
 
-#include "Bounding_sphere.hpp"
+#include "BoundingSphere.hpp"
 #include "Camera.hpp"
-#include "Color_light_buffer.hpp"
-#include "Color_light_shader.hpp"
-#include "Colour_manager.hpp"
-#include "Directional_light.hpp"
+#include "ColorLightBuffer.hpp"
+#include "ColorLightShader.hpp"
+#include "ColourManager.hpp"
+#include "DirectionalLight.hpp"
 #include "Fog.hpp"
 #include "Material.hpp"
-#include "Point_light.hpp"
-#include "Spot_light.hpp"
+#include "PointLight.hpp"
+#include "SpotLight.hpp"
 #include "m3d.hpp"
 #include "mol/Atom.hpp"
 #include "mol/Bond.hpp"
 #include "mol/Model.hpp"
 #include "mol/Molecule.hpp"
-#include "mol/Pdb_parser.hpp"
+#include "mol/PdbParser.hpp"
 #include "opengl.hpp"
 
 namespace molphene {
@@ -29,13 +29,13 @@ public:
 
   using Fog_type = Fog<Rgba8>;
 
-  using Light_source_type = Directional_light<Rgba8, Vec3f>;
+  using Light_source_type = DirectionalLight<Rgba8, Vec3f>;
 
   using Material_type = Material<Rgba8>;
 
-  using Point_light_type = Point_light<Rgba8, Vec3f>;
+  using PointLight_type = PointLight<Rgba8, Vec3f>;
 
-  using Spot_light_type = Spot_light<Rgba8, Vec3f>;
+  using SpotLight_type = SpotLight<Rgba8, Vec3f>;
 
   bool
   setup_graphics();
@@ -62,15 +62,15 @@ public:
   get_camera();
 
 private:
-  std::unique_ptr<Color_light_buffer> sphere_buff_atoms_;
+  std::unique_ptr<ColorLightBuffer> sphere_buff_atoms_;
 
-  Color_light_shader color_light_shader_;
+  ColorLightShader color_light_shader_;
 
   Light_source_type light_source_;
 
-  Point_light_type point_light_source_;
+  PointLight_type point_light_source_;
 
-  Spot_light_type spot_light_source_;
+  SpotLight_type spot_light_source_;
 
   Fog_type fog_;
 
@@ -82,7 +82,7 @@ private:
 
   std::unique_ptr<Molecule> molecule_;
 
-  Colour_manager colour_manager_;
+  ColourManager colour_manager_;
 
   GLuint atom_color_tex_{0};
 };

@@ -7,12 +7,12 @@
 #include "Compound.hpp"
 #include "Model.hpp"
 #include "Molecule.hpp"
-#include "Pdb_parser.hpp"
+#include "PdbParser.hpp"
 
 namespace molphene {
 
 void
-Pdb_parser::parse(Molecule* molptr, std::istream& stream)
+PdbParser::parse(Molecule* molptr, std::istream& stream)
 {
   current_model_ptr_ = nullptr;
   current_chain_ptr_ = nullptr;
@@ -40,7 +40,7 @@ Pdb_parser::parse(Molecule* molptr, std::istream& stream)
 }
 
 bool
-Pdb_parser::build_bond_(Compound& comp1,
+PdbParser::build_bond_(Compound& comp1,
                         const std::string& atomName1,
                         Compound& comp2,
                         const std::string& atomName2)
@@ -74,26 +74,26 @@ Pdb_parser::build_bond_(Compound& comp1,
 }
 
 std::string
-Pdb_parser::column_(unsigned int start, unsigned int end)
+PdbParser::column_(unsigned int start, unsigned int end)
 {
   return line_.substr(start - 1, end - start + 1);
 }
 
 char
-Pdb_parser::get_char_(unsigned int start)
+PdbParser::get_char_(unsigned int start)
 {
   return column_(start, start).at(0);
 }
 
 unsigned int
-Pdb_parser::get_int_(unsigned int start, unsigned int end)
+PdbParser::get_int_(unsigned int start, unsigned int end)
 {
   return static_cast<unsigned int>(
    strtol(column_(start, end).c_str(), nullptr, 0));
 }
 
 float
-Pdb_parser::get_real_(unsigned int start, unsigned int end)
+PdbParser::get_real_(unsigned int start, unsigned int end)
 {
   return static_cast<float>(strtod(column_(start, end).c_str(), nullptr));
 }
@@ -116,7 +116,7 @@ Pdb_parser::get_real_(unsigned int start, unsigned int end)
 // 77 - 78        LString(2)    element      Element symbol, right-justified.
 // 79 - 80        LString(2)    charge       Charge  on the atom.
 void
-Pdb_parser::handle_atom_record_(Molecule* molptr)
+PdbParser::handle_atom_record_(Molecule* molptr)
 {
   auto& mol = *molptr;
   const auto aserial = get_int_(7, 11);
@@ -167,7 +167,7 @@ Pdb_parser::handle_atom_record_(Molecule* molptr)
 // 22 - 26        Integer        serial       Serial number of bonded atom
 // 27 - 31        Integer        serial       Serial number of bonded atom
 void
-Pdb_parser::handle_conect_record_(Molecule* molptr)
+PdbParser::handle_conect_record_(Molecule* molptr)
 {
   Molecule& mol = *molptr;
   const auto aser1 = get_int_(7, 11);
@@ -193,7 +193,7 @@ Pdb_parser::handle_conect_record_(Molecule* molptr)
 // 1 -  6        Record name   "MODEL "
 // 11 - 14        Integer       serial         Model serial number.
 void
-Pdb_parser::handle_model_record_(Molecule* molptr)
+PdbParser::handle_model_record_(Molecule* molptr)
 {
   Molecule& mol = *molptr;
   current_model_ptr_ = &mol.add_model();
@@ -209,11 +209,11 @@ Pdb_parser::handle_model_record_(Molecule* molptr)
 // 23 - 26        Integer       resSeq          Residue sequence number.
 // 27             AChar         iCode           Insertion code.
 void
-Pdb_parser::handle_ter_record_(Molecule* molptr)
+PdbParser::handle_ter_record_(Molecule* molptr)
 {
-  const Pdb_parser::Residue_bond_pairs_map res_bond_pairs(
+  const PdbParser::Residue_bond_pairs_map res_bond_pairs(
    {{"ALA",
-     Pdb_parser::Bond_pairs_type({{"N", "CA"},
+     PdbParser::Bond_pairs_type({{"N", "CA"},
                                   {"N", "H"},
                                   {"N", "H2"},
                                   {"CA", "C"},
@@ -226,7 +226,7 @@ Pdb_parser::handle_ter_record_(Molecule* molptr)
                                   {"CB", "HB3"},
                                   {"OXT", "HXT"}})},
     {"ARG",
-     Pdb_parser::Bond_pairs_type(
+     PdbParser::Bond_pairs_type(
       {{"N", "CA"},     {"N", "H"},      {"N", "H2"},     {"CA", "C"},
        {"CA", "CB"},    {"CA", "HA"},    {"C", "O"},      {"C", "OXT"},
        {"CB", "CG"},    {"CB", "HB2"},   {"CB", "HB3"},   {"CG", "CD"},
@@ -235,7 +235,7 @@ Pdb_parser::handle_ter_record_(Molecule* molptr)
        {"CZ", "NH2"},   {"NH1", "HH11"}, {"NH1", "HH12"}, {"NH2", "HH21"},
        {"NH2", "HH22"}, {"OXT", "HXT"}})},
     {"ASN",
-     Pdb_parser::Bond_pairs_type({{"N", "CA"},
+     PdbParser::Bond_pairs_type({{"N", "CA"},
                                   {"N", "H"},
                                   {"N", "H2"},
                                   {"CA", "C"},
@@ -252,7 +252,7 @@ Pdb_parser::handle_ter_record_(Molecule* molptr)
                                   {"ND2", "HD22"},
                                   {"OXT", "HXT"}})},
     {"ASP",
-     Pdb_parser::Bond_pairs_type({{"N", "CA"},
+     PdbParser::Bond_pairs_type({{"N", "CA"},
                                   {"N", "H"},
                                   {"N", "H2"},
                                   {"CA", "C"},
@@ -268,7 +268,7 @@ Pdb_parser::handle_ter_record_(Molecule* molptr)
                                   {"OD2", "HD2"},
                                   {"OXT", "HXT"}})},
     {"CYS",
-     Pdb_parser::Bond_pairs_type({{"N", "CA"},
+     PdbParser::Bond_pairs_type({{"N", "CA"},
                                   {"N", "H"},
                                   {"N", "H2"},
                                   {"CA", "C"},
@@ -282,7 +282,7 @@ Pdb_parser::handle_ter_record_(Molecule* molptr)
                                   {"SG", "HG"},
                                   {"OXT", "HXT"}})},
     {"GLN",
-     Pdb_parser::Bond_pairs_type({{"N", "CA"},
+     PdbParser::Bond_pairs_type({{"N", "CA"},
                                   {"N", "H"},
                                   {"N", "H2"},
                                   {"CA", "C"},
@@ -302,7 +302,7 @@ Pdb_parser::handle_ter_record_(Molecule* molptr)
                                   {"NE2", "HE22"},
                                   {"OXT", "HXT"}})},
     {"GLU",
-     Pdb_parser::Bond_pairs_type({{"N", "CA"},
+     PdbParser::Bond_pairs_type({{"N", "CA"},
                                   {"N", "H"},
                                   {"N", "H2"},
                                   {"CA", "C"},
@@ -321,7 +321,7 @@ Pdb_parser::handle_ter_record_(Molecule* molptr)
                                   {"OE2", "HE2"},
                                   {"OXT", "HXT"}})},
     {"GLY",
-     Pdb_parser::Bond_pairs_type({{"N", "CA"},
+     PdbParser::Bond_pairs_type({{"N", "CA"},
                                   {"N", "H"},
                                   {"N", "H2"},
                                   {"CA", "C"},
@@ -331,7 +331,7 @@ Pdb_parser::handle_ter_record_(Molecule* molptr)
                                   {"C", "OXT"},
                                   {"OXT", "HXT"}})},
     {"HIS",
-     Pdb_parser::Bond_pairs_type(
+     PdbParser::Bond_pairs_type(
       {{"N", "CA"},    {"N", "H"},     {"N", "H2"},    {"CA", "C"},
        {"CA", "CB"},   {"CA", "HA"},   {"C", "O"},     {"C", "OXT"},
        {"CB", "CG"},   {"CB", "HB2"},  {"CB", "HB3"},  {"CG", "ND1"},
@@ -339,7 +339,7 @@ Pdb_parser::handle_ter_record_(Molecule* molptr)
        {"CD2", "HD2"}, {"CE1", "NE2"}, {"CE1", "HE1"}, {"NE2", "HE2"},
        {"OXT", "HXT"}})},
     {"ILE",
-     Pdb_parser::Bond_pairs_type(
+     PdbParser::Bond_pairs_type(
       {{"N", "CA"},     {"N", "H"},      {"N", "H2"},     {"CA", "C"},
        {"CA", "CB"},    {"CA", "HA"},    {"C", "O"},      {"C", "OXT"},
        {"CB", "CG1"},   {"CB", "CG2"},   {"CB", "HB"},    {"CG1", "CD1"},
@@ -347,7 +347,7 @@ Pdb_parser::handle_ter_record_(Molecule* molptr)
        {"CG2", "HG23"}, {"CD1", "HD11"}, {"CD1", "HD12"}, {"CD1", "HD13"},
        {"OXT", "HXT"}})},
     {"LEU",
-     Pdb_parser::Bond_pairs_type(
+     PdbParser::Bond_pairs_type(
       {{"N", "CA"},     {"N", "H"},      {"N", "H2"},     {"CA", "C"},
        {"CA", "CB"},    {"CA", "HA"},    {"C", "O"},      {"C", "OXT"},
        {"CB", "CG"},    {"CB", "HB2"},   {"CB", "HB3"},   {"CG", "CD1"},
@@ -355,7 +355,7 @@ Pdb_parser::handle_ter_record_(Molecule* molptr)
        {"CD1", "HD13"}, {"CD2", "HD21"}, {"CD2", "HD22"}, {"CD2", "HD23"},
        {"OXT", "HXT"}})},
     {"LYS",
-     Pdb_parser::Bond_pairs_type(
+     PdbParser::Bond_pairs_type(
       {{"N", "CA"},   {"N", "H"},    {"N", "H2"},   {"CA", "C"},
        {"CA", "CB"},  {"CA", "HA"},  {"C", "O"},    {"C", "OXT"},
        {"CB", "CG"},  {"CB", "HB2"}, {"CB", "HB3"}, {"CG", "CD"},
@@ -363,7 +363,7 @@ Pdb_parser::handle_ter_record_(Molecule* molptr)
        {"CD", "HD3"}, {"CE", "NZ"},  {"CE", "HE2"}, {"CE", "HE3"},
        {"NZ", "HZ1"}, {"NZ", "HZ2"}, {"NZ", "HZ3"}, {"OXT", "HXT"}})},
     {"MET",
-     Pdb_parser::Bond_pairs_type({{"N", "CA"},
+     PdbParser::Bond_pairs_type({{"N", "CA"},
                                   {"N", "H"},
                                   {"N", "H2"},
                                   {"CA", "C"},
@@ -383,7 +383,7 @@ Pdb_parser::handle_ter_record_(Molecule* molptr)
                                   {"CE", "HE3"},
                                   {"OXT", "HXT"}})},
     {"PHE",
-     Pdb_parser::Bond_pairs_type(
+     PdbParser::Bond_pairs_type(
       {{"N", "CA"},    {"N", "H"},     {"N", "H2"},    {"CA", "C"},
        {"CA", "CB"},   {"CA", "HA"},   {"C", "O"},     {"C", "OXT"},
        {"CB", "CG"},   {"CB", "HB2"},  {"CB", "HB3"},  {"CG", "CD1"},
@@ -391,7 +391,7 @@ Pdb_parser::handle_ter_record_(Molecule* molptr)
        {"CD2", "HD2"}, {"CE1", "CZ"},  {"CE1", "HE1"}, {"CE2", "CZ"},
        {"CE2", "HE2"}, {"CZ", "HZ"},   {"OXT", "HXT"}})},
     {"PRO",
-     Pdb_parser::Bond_pairs_type({{"N", "CA"},
+     PdbParser::Bond_pairs_type({{"N", "CA"},
                                   {"N", "CD"},
                                   {"N", "H"},
                                   {"CA", "C"},
@@ -409,7 +409,7 @@ Pdb_parser::handle_ter_record_(Molecule* molptr)
                                   {"CD", "HD3"},
                                   {"OXT", "HXT"}})},
     {"SER",
-     Pdb_parser::Bond_pairs_type({{"N", "CA"},
+     PdbParser::Bond_pairs_type({{"N", "CA"},
                                   {"N", "H"},
                                   {"N", "H2"},
                                   {"CA", "C"},
@@ -423,7 +423,7 @@ Pdb_parser::handle_ter_record_(Molecule* molptr)
                                   {"OG", "HG"},
                                   {"OXT", "HXT"}})},
     {"THR",
-     Pdb_parser::Bond_pairs_type({{"N", "CA"},
+     PdbParser::Bond_pairs_type({{"N", "CA"},
                                   {"N", "H"},
                                   {"N", "H2"},
                                   {"CA", "C"},
@@ -440,7 +440,7 @@ Pdb_parser::handle_ter_record_(Molecule* molptr)
                                   {"CG2", "HG23"},
                                   {"OXT", "HXT"}})},
     {"TRP",
-     Pdb_parser::Bond_pairs_type(
+     PdbParser::Bond_pairs_type(
       {{"N", "CA"},    {"N", "H"},     {"N", "H2"},    {"CA", "C"},
        {"CA", "CB"},   {"CA", "HA"},   {"C", "O"},     {"C", "OXT"},
        {"CB", "CG"},   {"CB", "HB2"},  {"CB", "HB3"},  {"CG", "CD1"},
@@ -449,7 +449,7 @@ Pdb_parser::handle_ter_record_(Molecule* molptr)
        {"CE3", "CZ3"}, {"CE3", "HE3"}, {"CZ2", "CH2"}, {"CZ2", "HZ2"},
        {"CZ3", "CH2"}, {"CZ3", "HZ3"}, {"CH2", "HH2"}, {"OXT", "HXT"}})},
     {"TYR",
-     Pdb_parser::Bond_pairs_type(
+     PdbParser::Bond_pairs_type(
       {{"N", "CA"},    {"N", "H"},     {"N", "H2"},    {"CA", "C"},
        {"CA", "CB"},   {"CA", "HA"},   {"C", "O"},     {"C", "OXT"},
        {"CB", "CG"},   {"CB", "HB2"},  {"CB", "HB3"},  {"CG", "CD1"},
@@ -457,7 +457,7 @@ Pdb_parser::handle_ter_record_(Molecule* molptr)
        {"CD2", "HD2"}, {"CE1", "CZ"},  {"CE1", "HE1"}, {"CE2", "CZ"},
        {"CE2", "HE2"}, {"CZ", "OH"},   {"OH", "HH"},   {"OXT", "HXT"}})},
     {"VAL",
-     Pdb_parser::Bond_pairs_type({{"N", "CA"},
+     PdbParser::Bond_pairs_type({{"N", "CA"},
                                   {"N", "H"},
                                   {"N", "H2"},
                                   {"CA", "C"},
@@ -476,7 +476,7 @@ Pdb_parser::handle_ter_record_(Molecule* molptr)
                                   {"CG2", "HG23"},
                                   {"OXT", "HXT"}})},
     {"DA",
-     Pdb_parser::Bond_pairs_type(
+     PdbParser::Bond_pairs_type(
       {{"OP3", "P"},    {"OP3", "HOP3"}, {"P", "OP1"},   {"P", "OP2"},
        {"P", "O5'"},    {"OP2", "HOP2"}, {"O5'", "C5'"}, {"C5'", "C4'"},
        {"C5'", "H5'"},  {"C5'", "H5''"}, {"C4'", "O4'"}, {"C4'", "C3'"},
@@ -488,7 +488,7 @@ Pdb_parser::handle_ter_record_(Molecule* molptr)
        {"N6", "H61"},   {"N6", "H62"},   {"N1", "C2"},   {"C2", "N3"},
        {"C2", "H2"},    {"N3", "C4"}})},
     {"DC",
-     Pdb_parser::Bond_pairs_type(
+     PdbParser::Bond_pairs_type(
       {{"OP3", "P"},    {"OP3", "HOP3"}, {"P", "OP1"},   {"P", "OP2"},
        {"P", "O5'"},    {"OP2", "HOP2"}, {"O5'", "C5'"}, {"C5'", "C4'"},
        {"C5'", "H5'"},  {"C5'", "H5''"}, {"C4'", "O4'"}, {"C4'", "C3'"},
@@ -499,7 +499,7 @@ Pdb_parser::handle_ter_record_(Molecule* molptr)
        {"C4", "N4"},    {"C4", "C5"},    {"N4", "H41"},  {"N4", "H42"},
        {"C5", "C6"},    {"C5", "H5"},    {"C6", "H6"}})},
     {"DG",
-     Pdb_parser::Bond_pairs_type(
+     PdbParser::Bond_pairs_type(
       {{"OP3", "P"},    {"OP3", "HOP3"}, {"P", "OP1"},   {"P", "OP2"},
        {"P", "O5'"},    {"OP2", "HOP2"}, {"O5'", "C5'"}, {"C5'", "C4'"},
        {"C5'", "H5'"},  {"C5'", "H5''"}, {"C4'", "O4'"}, {"C4'", "C3'"},
@@ -511,7 +511,7 @@ Pdb_parser::handle_ter_record_(Molecule* molptr)
        {"N1", "C2"},    {"N1", "H1"},    {"C2", "N2"},   {"C2", "N3"},
        {"N2", "H21"},   {"N2", "H22"},   {"N3", "C4"}})},
     {"DT",
-     Pdb_parser::Bond_pairs_type(
+     PdbParser::Bond_pairs_type(
       {{"OP3", "P"},    {"OP3", "HOP3"}, {"P", "OP1"},   {"P", "OP2"},
        {"P", "O5'"},    {"OP2", "HOP2"}, {"O5'", "C5'"}, {"C5'", "C4'"},
        {"C5'", "H5'"},  {"C5'", "H5''"}, {"C4'", "O4'"}, {"C4'", "C3'"},
@@ -523,7 +523,7 @@ Pdb_parser::handle_ter_record_(Molecule* molptr)
        {"C5", "C6"},    {"C7", "H71"},   {"C7", "H72"},  {"C7", "H73"},
        {"C6", "H6"}})},
     {"A",
-     Pdb_parser::Bond_pairs_type(
+     PdbParser::Bond_pairs_type(
       {{"OP3", "P"},    {"OP3", "HOP3"}, {"P", "OP1"},   {"P", "OP2"},
        {"P", "O5'"},    {"OP2", "HOP2"}, {"O5'", "C5'"}, {"C5'", "C4'"},
        {"C5'", "H5'"},  {"C5'", "H5''"}, {"C4'", "O4'"}, {"C4'", "C3'"},
@@ -535,7 +535,7 @@ Pdb_parser::handle_ter_record_(Molecule* molptr)
        {"N6", "H61"},   {"N6", "H62"},   {"N1", "C2"},   {"C2", "N3"},
        {"C2", "H2"},    {"N3", "C4"}})},
     {"C",
-     Pdb_parser::Bond_pairs_type(
+     PdbParser::Bond_pairs_type(
       {{"OP3", "P"},    {"OP3", "HOP3"}, {"P", "OP1"},   {"P", "OP2"},
        {"P", "O5'"},    {"OP2", "HOP2"}, {"O5'", "C5'"}, {"C5'", "C4'"},
        {"C5'", "H5'"},  {"C5'", "H5''"}, {"C4'", "O4'"}, {"C4'", "C3'"},
@@ -546,7 +546,7 @@ Pdb_parser::handle_ter_record_(Molecule* molptr)
        {"C4", "N4"},    {"C4", "C5"},    {"N4", "H41"},  {"N4", "H42"},
        {"C5", "C6"},    {"C5", "H5"},    {"C6", "H6"}})},
     {"G",
-     Pdb_parser::Bond_pairs_type(
+     PdbParser::Bond_pairs_type(
       {{"OP3", "P"},    {"OP3", "HOP3"}, {"P", "OP1"},   {"P", "OP2"},
        {"P", "O5'"},    {"OP2", "HOP2"}, {"O5'", "C5'"}, {"C5'", "C4'"},
        {"C5'", "H5'"},  {"C5'", "H5''"}, {"C4'", "O4'"}, {"C4'", "C3'"},
@@ -558,7 +558,7 @@ Pdb_parser::handle_ter_record_(Molecule* molptr)
        {"N1", "C2"},    {"N1", "H1"},    {"C2", "N2"},   {"C2", "N3"},
        {"N2", "H21"},   {"N2", "H22"},   {"N3", "C4"}})},
     {"U",
-     Pdb_parser::Bond_pairs_type(
+     PdbParser::Bond_pairs_type(
       {{"OP3", "P"},   {"OP3", "HOP3"}, {"P", "OP1"},   {"P", "OP2"},
        {"P", "O5'"},   {"OP2", "HOP2"}, {"O5'", "C5'"}, {"C5'", "C4'"},
        {"C5'", "H5'"}, {"C5'", "H5''"}, {"C4'", "O4'"}, {"C4'", "C3'"},

@@ -10,7 +10,7 @@
 #include "Molecule.hpp"
 
 namespace molphene {
-class Pdb_parser {
+class PdbParser {
   using Bond_pair = std::pair<std::string, std::string>;
 
   using Bond_pairs_type = std::set<Bond_pair>;

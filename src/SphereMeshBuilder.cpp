@@ -1,10 +1,10 @@
 #include "stdafx.hpp"
 
-#include "Sphere_mesh_builder.hpp"
+#include "SphereMeshBuilder.hpp"
 
 namespace molphene {
 
-Sphere_mesh_builder::Sphere_mesh_builder(size_t max_bytes,
+SphereMeshBuilder::SphereMeshBuilder(size_t max_bytes,
                                          Div_type lat_div,
                                          Div_type long_div)
 : lat_div_{lat_div}
@@ -22,49 +22,49 @@ Sphere_mesh_builder::Sphere_mesh_builder(size_t max_bytes,
 }
 
 size_t
-Sphere_mesh_builder::size()
+SphereMeshBuilder::size()
 {
   return size_;
 }
 
 size_t
-Sphere_mesh_builder::get_vertices_size()
+SphereMeshBuilder::get_vertices_size()
 {
   return lat_div_ * (long_div_ + 1) * 2 + lat_div_ * 2;
 }
 
 size_t
-Sphere_mesh_builder::size_bytes()
+SphereMeshBuilder::size_bytes()
 {
   return sizeof(Vec3f) * 2 + sizeof(Vec2f);
 }
 
 const std::vector<Vec3f>&
-Sphere_mesh_builder::positions() const noexcept
+SphereMeshBuilder::positions() const noexcept
 {
   return positions_;
 }
 
 const std::vector<Vec3f>&
-Sphere_mesh_builder::normals() const noexcept
+SphereMeshBuilder::normals() const noexcept
 {
   return normals_;
 }
 
 const std::vector<Vec2f>&
-Sphere_mesh_builder::texcoords() const noexcept
+SphereMeshBuilder::texcoords() const noexcept
 {
   return texcoords_;
 }
 
-Uv_sphere<float>
-Sphere_mesh_builder::sphere(Uv_sphere<float> sphere)
+UvSphere<float>
+SphereMeshBuilder::sphere(UvSphere<float> sphere)
 {
   return sphere_ = sphere;
 }
 
 void
-Sphere_mesh_builder::build(size_t idx)
+SphereMeshBuilder::build(size_t idx)
 {
   const auto dir = sphere_.axis.to_unit();
   const auto top = [&dir]() {

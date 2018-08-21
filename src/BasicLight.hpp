@@ -6,7 +6,7 @@
 namespace molphene {
 
 template<typename TColor, typename TVector>
-struct Basic_light {
+struct BasicLight {
   using Color_type = TColor;
   using Vec3_type = TVector;
 
@@ -16,7 +16,7 @@ struct Basic_light {
 
   float intensity{1};
 
-  Basic_light() noexcept = default;
+  BasicLight() noexcept = default;
 };
 } // namespace molphene
 

@@ -3,24 +3,24 @@
 
 #include "stdafx.hpp"
 
-#include "Basic_shader.hpp"
-#include "Directional_light.hpp"
+#include "BasicShader.hpp"
+#include "DirectionalLight.hpp"
 #include "Fog.hpp"
 #include "Material.hpp"
-#include "Point_light.hpp"
-#include "Spot_light.hpp"
+#include "PointLight.hpp"
+#include "SpotLight.hpp"
 #include "m3d.hpp"
 #include "opengl.hpp"
 
 namespace molphene {
-class Color_light_shader : public Basic_shader<Color_light_shader> {
-  friend Basic_shader<Color_light_shader>;
+class ColorLightShader : public BasicShader<ColorLightShader> {
+  friend BasicShader<ColorLightShader>;
 
 public:
   using Attribs_location_name_type =
    std::array<std::pair<Attrib_location, const GLchar*>, 3>;
 
-  Color_light_shader() noexcept;
+  ColorLightShader() noexcept;
 
   void
   modelview_matrix(const Mat4f& m4) const noexcept;
@@ -34,7 +34,7 @@ public:
   template<typename TColor, typename TVec3>
   std::void_t<decltype(Rgba32f{std::declval<TColor>()},
                        Vec3f{std::declval<TVec3>()})>
-  light_source(const Directional_light<TColor, TVec3>& light) const
+  light_source(const DirectionalLight<TColor, TVec3>& light) const
   {
     light_source_ambient_intensity(light.ambient_intensity);
     light_source_color(light.color);
@@ -46,7 +46,7 @@ public:
   template<typename TColor, typename TVec3>
   std::void_t<decltype(Rgba32f{std::declval<TColor>()},
                        Vec3f{std::declval<TVec3>()})>
-  light_source(const Point_light<TColor, TVec3>& light) const
+  light_source(const PointLight<TColor, TVec3>& light) const
   {
     light_source_ambient_intensity(light.ambient_intensity);
     light_source_attenuation(light.attenuation);
@@ -60,7 +60,7 @@ public:
   template<typename TColor, typename TVec3>
   std::void_t<decltype(Rgba32f{std::declval<TColor>()},
                        Vec3f{std::declval<TVec3>()})>
-  light_source(const Spot_light<TColor, TVec3>& light) const
+  light_source(const SpotLight<TColor, TVec3>& light) const
   {
     light_source_ambient_intensity(light.ambient_intensity);
     light_source_attenuation(light.attenuation);
