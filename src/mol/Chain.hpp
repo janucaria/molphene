@@ -9,10 +9,10 @@ namespace molphene {
 class Model;
 
 class Chain {
-  using Compounds_type = std::vector<Compound>;
+  using Compounds = std::vector<Compound>;
 
   using Compound_map =
-   std::map<Compound::Residue_number, Compounds_type::size_type>;
+   std::map<Compound::Residue_number, Compounds::size_type>;
 
 public:
   class Residue_iterator;
@@ -21,7 +21,7 @@ public:
 
   class Ligan_iterator;
 
-  using Compounds_iterator = Compounds_type::iterator;
+  using Compounds_iterator = Compounds::iterator;
 
   Chain(Model* model, char chainId);
 
@@ -34,7 +34,7 @@ public:
   Compound*
   get_compound(unsigned int reseq, std::string resname, char icode);
 
-  const Compounds_type&
+  const Compounds&
   compounds() const noexcept;
 
   char
@@ -49,13 +49,13 @@ public:
 private:
   char chain_id_;
 
-  Compounds_type compounds_;
+  Compounds compounds_;
 
   Model* model_ptr_;
 
   Compound_map res_lookup_;
 
-  Compounds_type::size_type ter_{0};
+  Compounds::size_type ter_{0};
 };
 
 class Chain::Residue_iterator {

@@ -23,14 +23,14 @@ Model::add_bond(Atom& a1, Atom& a2)
 Chain&
 Model::add_chain(char cid)
 {
-  std::pair<Chains_type::iterator, bool> emplaced =
+  std::pair<Chains::iterator, bool> emplaced =
    chains_.emplace(std::piecewise_construct,
                    std::make_tuple(cid),
                    std::forward_as_tuple(this, cid));
   return emplaced.first->second;
 }
 
-const Model::Chains_type&
+const Model::Chains&
 Model::chains() const
 {
   return chains_;

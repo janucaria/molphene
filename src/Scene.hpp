@@ -25,17 +25,17 @@ namespace molphene {
 
 class Scene {
 public:
-  using Camera_type = Camera<float>;
+  using Camera = Camera<float>;
 
-  using Fog_type = Fog<Rgba8>;
+  using Fog = Fog<Rgba8>;
 
-  using Light_source_type = DirectionalLight<Rgba8, Vec3f>;
+  using Light_source = DirectionalLight<Rgba8, Vec3f>;
 
-  using Material_type = Material<Rgba8>;
+  using Material = Material<Rgba8>;
 
-  using PointLight_type = PointLight<Rgba8, Vec3f>;
+  using PointLight = PointLight<Rgba8, Vec3f>;
 
-  using SpotLight_type = SpotLight<Rgba8, Vec3f>;
+  using SpotLight = SpotLight<Rgba8, Vec3f>;
 
   bool
   setup_graphics();
@@ -58,7 +58,7 @@ public:
   void
   calculate_matrices();
 
-  Camera_type&
+  Camera&
   get_camera();
 
 private:
@@ -66,19 +66,19 @@ private:
 
   ColorLightShader color_light_shader_;
 
-  Light_source_type light_source_;
+  Light_source light_source_;
 
-  PointLight_type point_light_source_;
+  PointLight point_light_source_;
 
-  SpotLight_type spot_light_source_;
+  SpotLight spot_light_source_;
 
-  Fog_type fog_;
+  Fog fog_;
 
-  Material_type material_;
+  Material material_;
 
   Mat4f model_matrix_{1};
 
-  Camera_type camera_;
+  Camera camera_;
 
   std::unique_ptr<Molecule> molecule_;
 

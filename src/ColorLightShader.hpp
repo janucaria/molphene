@@ -17,8 +17,8 @@ class ColorLightShader : public BasicShader<ColorLightShader> {
   friend BasicShader<ColorLightShader>;
 
 public:
-  using Attribs_location_name_type =
-   std::array<std::pair<Attrib_location, const GLchar*>, 3>;
+  using Attribs_location_name =
+   std::array<std::pair<AttribLocation, const GLchar*>, 3>;
 
   ColorLightShader() noexcept;
 
@@ -260,7 +260,7 @@ protected:
   const char*
   frag_shader_source() const noexcept;
 
-  Attribs_location_name_type
+  Attribs_location_name
   get_attribs_location() const noexcept;
 
   void

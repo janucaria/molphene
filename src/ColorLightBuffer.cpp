@@ -110,15 +110,15 @@ ColorLightBuffer::set_data(GLintptr offset,
 void
 ColorLightBuffer::draw()
 {
-  glEnableVertexAttribArray(ColorLightShader::Attrib_location::vertex);
-  glEnableVertexAttribArray(ColorLightShader::Attrib_location::normal);
-  glEnableVertexAttribArray(ColorLightShader::Attrib_location::texcoord0);
+  glEnableVertexAttribArray(ColorLightShader::AttribLocation::vertex);
+  glEnableVertexAttribArray(ColorLightShader::AttribLocation::normal);
+  glEnableVertexAttribArray(ColorLightShader::AttribLocation::texcoord0);
   for(auto i = GLsizei{0}; i < size_; ++i) {
     const auto verts_count =
      GLsizei{i == (size_ - 1) ? remain_instances_ : instances_per_block_};
 
     glBindBuffer(GL_ARRAY_BUFFER, vert_buffers_[i]);
-    glVertexAttribPointer(ColorLightShader::Attrib_location::vertex,
+    glVertexAttribPointer(ColorLightShader::AttribLocation::vertex,
                           3,
                           GL_FLOAT,
                           GL_FALSE,
@@ -126,7 +126,7 @@ ColorLightBuffer::draw()
                           nullptr);
 
     glBindBuffer(GL_ARRAY_BUFFER, normal_buffers_[i]);
-    glVertexAttribPointer(ColorLightShader::Attrib_location::normal,
+    glVertexAttribPointer(ColorLightShader::AttribLocation::normal,
                           3,
                           GL_FLOAT,
                           GL_FALSE,
@@ -134,7 +134,7 @@ ColorLightBuffer::draw()
                           nullptr);
 
     glBindBuffer(GL_ARRAY_BUFFER, texcoord_buffers_[i]);
-    glVertexAttribPointer(ColorLightShader::Attrib_location::texcoord0,
+    glVertexAttribPointer(ColorLightShader::AttribLocation::texcoord0,
                           2,
                           GL_FLOAT,
                           GL_FALSE,
@@ -143,9 +143,9 @@ ColorLightBuffer::draw()
 
     glDrawArrays(GL_TRIANGLE_STRIP, 0, verts_count * verts_per_instance_);
   }
-  glEnableVertexAttribArray(ColorLightShader::Attrib_location::vertex);
-  glEnableVertexAttribArray(ColorLightShader::Attrib_location::normal);
-  glEnableVertexAttribArray(ColorLightShader::Attrib_location::texcoord0);
+  glEnableVertexAttribArray(ColorLightShader::AttribLocation::vertex);
+  glEnableVertexAttribArray(ColorLightShader::AttribLocation::normal);
+  glEnableVertexAttribArray(ColorLightShader::AttribLocation::texcoord0);
 }
 
 } // namespace molphene

@@ -8,17 +8,17 @@ namespace molphene {
 template<typename TColor, typename TScalar = float>
 class Fog {
 public:
-  using Color_type = TColor;
-  using Scalar_type = TScalar;
+  using Color = TColor;
+  using Scalar = TScalar;
 
   enum class Type {
     linear,
     exponential
   };
 
-  Scalar_type visibility_range{0};
+  Scalar visibility_range{0};
 
-  Color_type color{0xFFFFFF};
+  Color color{0xFFFFFF};
 
   Type fog_type{Type::linear};
 

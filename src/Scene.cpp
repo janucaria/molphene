@@ -207,7 +207,7 @@ Scene::open_stream(std::istream& is)
   parser.parse(molecule_.get(), is);
 }
 
-typename Scene::Camera_type&
+typename Scene::Camera&
 Scene::get_camera()
 {
   return camera_;

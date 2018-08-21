@@ -9,18 +9,18 @@ namespace molphene {
 template<typename TRadii, typename TCenter = Vec3<TRadii>>
 class BoundingSphere {
 public:
-  using Sphere_type = Sphere<TRadii, TCenter>;
-  using Sphere_Radius_type = typename Sphere_type::Radius_type;
-  using Sphere_Center_type = typename Sphere_type::Center_type;
+  using Sphere = Sphere<TRadii, TCenter>;
+  using SphereRadius = typename Sphere::Radius;
+  using SphereCenter = typename Sphere::Center;
 
 private:
-  Sphere_type sphere_{-1};
+  Sphere sphere_{-1};
 
 public:
   BoundingSphere() noexcept = default;
 
   void
-  expand(Sphere_Center_type position) noexcept
+  expand(SphereCenter position) noexcept
   {
     if(sphere_.radius < 0.0) {
       sphere_.center = position;
@@ -39,13 +39,13 @@ public:
     }
   }
 
-  Sphere_Center_type
+  SphereCenter
   center() const noexcept
   {
     return sphere_.center;
   }
 
-  Sphere_Radius_type
+  SphereRadius
   radius() const noexcept
   {
     return sphere_.radius;

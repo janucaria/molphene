@@ -8,14 +8,14 @@ namespace molphene {
 template<typename TColor, typename TScalar = float>
 class Material {
 public:
-  using Color_type = TColor;
-  using Scalar_type = TScalar;
+  using Color = TColor;
+  using Scalar = TScalar;
 
-  Scalar_type ambient_intensity{0.2};
-  Color_type diffuse_color{0xCCCCCC};
-  Color_type emissive_color{0};
-  Color_type specular_color{0};
-  Scalar_type shininess{0.2};
+  Scalar ambient_intensity{0.2};
+  Color diffuse_color{0xCCCCCC};
+  Color emissive_color{0};
+  Color specular_color{0};
+  Scalar shininess{0.2};
 
   Material() noexcept = default;
 };

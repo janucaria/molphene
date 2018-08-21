@@ -7,12 +7,12 @@ namespace molphene {
 
 template<typename TColor, typename TVector>
 struct BasicLight {
-  using Color_type = TColor;
-  using Vec3_type = TVector;
+  using Color = TColor;
+  using Vec3 = TVector;
 
   float ambient_intensity{0};
 
-  Color_type color{0xFFFFFF};
+  Color color{0xFFFFFF};
 
   float intensity{1};
 

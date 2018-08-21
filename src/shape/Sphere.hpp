@@ -7,20 +7,20 @@ namespace molphene {
 
 template<typename TRadii, typename TCenter = Vec3<TRadii>>
 struct Sphere {
-  using Radius_type = TRadii;
-  using Center_type = TCenter;
+  using Radius = TRadii;
+  using Center = TCenter;
 
-  Radius_type radius{0};
-  Center_type center{0, 0, 0};
+  Radius radius{0};
+  Center center{0, 0, 0};
 
   Sphere() noexcept = default;
 
-  explicit Sphere(Radius_type radii) noexcept
+  explicit Sphere(Radius radii) noexcept
   : radius{radii}
   {
   }
 
-  Sphere(Radius_type radii, Center_type center) noexcept
+  Sphere(Radius radii, Center center) noexcept
   : radius{radii}
   , center{center}
   {

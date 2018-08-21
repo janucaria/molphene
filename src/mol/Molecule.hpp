@@ -7,14 +7,14 @@
 
 namespace molphene {
 class Molecule {
-  using Models_type = std::vector<Model>;
+  using Models = std::vector<Model>;
 
 public:
   class Chains_iterator;
 
   class Models_iterable;
 
-  using Models_iterator = Models_type::iterator;
+  using Models_iterator = Models::iterator;
 
   Model&
   add_model();
@@ -32,7 +32,7 @@ public:
   models_end();
 
 private:
-  Models_type models_;
+  Models models_;
 };
 
 class Molecule::Chains_iterator

@@ -11,14 +11,14 @@ namespace molphene {
 
 template<typename TColor, typename TVector>
 struct SpotLight : PointLight<TColor, TVector> {
-  using typename PointLight<TColor, TVector>::Color_type;
-  using typename PointLight<TColor, TVector>::Vec3_type;
+  using typename PointLight<TColor, TVector>::Color;
+  using typename PointLight<TColor, TVector>::Vec3;
 
   float beam_width{M_PI / 4};
 
   float cut_off_angle{M_PI / 2};
 
-  Vec3_type direction{0, 0, -1};
+  Vec3 direction{0, 0, -1};
   
   using PointLight<TColor, TVector>::PointLight;
 

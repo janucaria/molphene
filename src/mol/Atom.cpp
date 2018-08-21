@@ -509,7 +509,7 @@ Atom::name() const
   return name_;
 }
 
-const Atom::Position_type&
+const Atom::Position&
 Atom::position() const
 {
   return position_;
@@ -527,7 +527,7 @@ Atom::altloc(char altloc)
   altloc_ = altloc == ' ' ? 0 : altloc;
 }
 
-const Atom::Position_type&
+const Atom::Position&
 Atom::position(float x, float y, float z)
 {
   return position_ = Vec3f{x, y, z};

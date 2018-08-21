@@ -12,7 +12,7 @@ class Atom {
 public:
   struct Element;
 
-  using Position_type = Vec3f;
+  using Position = Vec3f;
 
   Atom(Compound& compound,
        std::string elsym,
@@ -28,7 +28,7 @@ public:
   std::string
   name() const;
 
-  const Position_type&
+  const Position&
   position() const;
 
   unsigned int
@@ -37,7 +37,7 @@ public:
   void
   altloc(char altloc);
 
-  const Position_type&
+  const Position&
   position(float x, float y, float z);
 
 private:
@@ -49,13 +49,13 @@ private:
 
   std::string name_;
 
-  Position_type position_{0};
+  Position position_{0};
 
   unsigned int serial_;
 };
 
 struct Atom::Element {
-  enum class Element_symbol {
+  enum class ElementSymbol {
     h = 1,
     he = 2,
     li = 3,

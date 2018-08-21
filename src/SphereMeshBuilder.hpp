@@ -10,10 +10,10 @@ namespace molphene {
 
 class SphereMeshBuilder {
 public:
-  using Div_type = size_t;
+  using Div = size_t;
 
 public:
-  SphereMeshBuilder(size_t max_bytes, Div_type lat_div, Div_type long_div);
+  SphereMeshBuilder(size_t max_bytes, Div lat_div, Div long_div);
 
   void
   build(size_t idx);
@@ -47,9 +47,9 @@ public:
   sphere(UvSphere<float> sphere);
 
 private:
-  Div_type lat_div_;
+  Div lat_div_;
 
-  Div_type long_div_;
+  Div long_div_;
 
   std::vector<Vec3f> normals_;
 

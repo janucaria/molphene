@@ -11,11 +11,11 @@ namespace molphene {
 class Molecule;
 
 class Model {
-  using Bonds_type = std::vector<Bond>;
+  using Bonds = std::vector<Bond>;
 
-  using Chains_type = std::map<char, Chain>;
+  using Chains = std::map<char, Chain>;
 
-  using Atoms_type = std::map<unsigned int, Atom*>;
+  using Atoms = std::map<unsigned int, Atom*>;
 
 public:
   class Chains_iterable;
@@ -24,7 +24,7 @@ public:
 
   class Chains_iterator;
 
-  using Bonds_iterator = Bonds_type::iterator;
+  using Bonds_iterator = Bonds::iterator;
 
   explicit Model(Molecule& molecule);
 
@@ -34,7 +34,7 @@ public:
   void
   add_bond(Atom& a1, Atom& a2);
 
-  const Chains_type&
+  const Chains&
   chains() const;
 
   Chain&
@@ -56,11 +56,11 @@ public:
   molecule() const;
 
 private:
-  Atoms_type atoms_;
+  Atoms atoms_;
 
-  Bonds_type bonds_;
+  Bonds bonds_;
 
-  Chains_type chains_;
+  Chains chains_;
 
   Molecule* molecule_ptr_;
 };
@@ -94,9 +94,9 @@ private:
 };
 
 class Model::Chains_iterator
-: public std::iterator<Chains_type::iterator::iterator_category,
-                       Chains_type::iterator,
-                       Chains_type::iterator::difference_type,
+: public std::iterator<Chains::iterator::iterator_category,
+                       Chains::iterator,
+                       Chains::iterator::difference_type,
                        Chain*,
                        Chain&> {
 public:

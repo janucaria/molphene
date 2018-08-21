@@ -4,12 +4,12 @@ namespace molphene {
 
 ColorLightShader::ColorLightShader() noexcept = default;
 
-typename ColorLightShader::Attribs_location_name_type
+typename ColorLightShader::Attribs_location_name
 ColorLightShader::get_attribs_location() const noexcept
 {
-  return {{{Attrib_location::vertex, "a_Vertex"},
-           {Attrib_location::normal, "a_Normal"},
-           {Attrib_location::texcoord0, "a_TexCoord0"}}};
+  return {{{AttribLocation::vertex, "a_Vertex"},
+           {AttribLocation::normal, "a_Normal"},
+           {AttribLocation::texcoord0, "a_TexCoord0"}}};
 }
 
 void
@@ -66,7 +66,7 @@ ColorLightShader::setup_gl_uniforms_val() const noexcept
 void
 ColorLightShader::setup_gl_attribs_val() const noexcept
 {
-  glVertexAttrib4f(Attrib_location::vertex, 0, 0, 0, 1);
+  glVertexAttrib4f(AttribLocation::vertex, 0, 0, 0, 1);
 }
 
 void

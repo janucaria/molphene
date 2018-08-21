@@ -8,10 +8,10 @@ namespace molphene {
 
 template<typename TColor, typename TVector>
 struct DirectionalLight : BasicLight<TColor, TVector> {
-  using typename BasicLight<TColor, TVector>::Color_type;
-  using typename BasicLight<TColor, TVector>::Vec3_type;
+  using typename BasicLight<TColor, TVector>::Color;
+  using typename BasicLight<TColor, TVector>::Vec3;
   
-  Vec3_type direction{0, 0, -1};
+  Vec3 direction{0, 0, -1};
 
   using BasicLight<TColor, TVector>::BasicLight;
 

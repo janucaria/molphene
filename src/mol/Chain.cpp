@@ -40,7 +40,7 @@ Chain::get_compound(unsigned int reseq, std::string resname, char icode)
   return get_compound(Compound::Residue_number(reseq, resname, icode));
 }
 
-const Chain::Compounds_type&
+const Chain::Compounds&
 Chain::compounds() const noexcept
 {
   return compounds_;

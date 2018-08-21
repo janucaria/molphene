@@ -10,33 +10,33 @@ template<typename TFloatingP,
          typename TMat4 = Mat4<TFloatingP>>
 class Camera {
 public:
-  using Floatp_type = TFloatingP;
-  using Mat4_type = TMat4;
-  using Resolution_type = TResolution;
+  using Floatp = TFloatingP;
+  using Mat4 = TMat4;
+  using Resolution = TResolution;
 
-  Floatp_type far{0};
+  Floatp far{0};
 
-  Floatp_type fov{M_PI_4};
+  Floatp fov{M_PI_4};
 
-  Floatp_type near{0};
+  Floatp near{0};
 
-  Floatp_type zoom{1};
+  Floatp zoom{1};
 
-  Resolution_type height{0};
+  Resolution height{0};
 
-  Resolution_type width{0};
+  Resolution width{0};
 
   Mat4f view_matrix{1};
 
   Camera() noexcept = default;
 
-  Floatp_type
+  Floatp
   aspect_ratio() const noexcept
   {
-    return Floatp_type(width) / height;
+    return Floatp(width) / height;
   }
 
-  const Mat4_type&
+  const Mat4&
   orthogonal_proj_matrix() noexcept
   {
     const auto top = std::tan(fov / 2) * ((far - near) / 2 + near) * zoom;
@@ -44,7 +44,7 @@ public:
     return projection_matrix_.orthogonal(-right, right, -top, top, near, far);
   }
 
-  const Mat4_type&
+  const Mat4&
   perspective_proj_matrix() noexcept
   {
     const auto top = std::tan(fov / 2) * near * zoom;
@@ -52,7 +52,7 @@ public:
     return projection_matrix_.frustum(-right, right, -top, top, near, far);
   }
 
-  const Mat4_type&
+  const Mat4&
   projection_matrix() noexcept
   {
     return projection_mode_ ? perspective_proj_matrix()
@@ -66,13 +66,13 @@ public:
   }
 
   void
-  set_resolution(Resolution_type size) noexcept
+  set_resolution(Resolution size) noexcept
   {
     width = height = size;
   }
 
   void
-  set_resolution(Resolution_type width, Resolution_type height) noexcept
+  set_resolution(Resolution width, Resolution height) noexcept
   {
     this->width = width;
     this->height = height;
@@ -97,7 +97,7 @@ public:
   }
 
 private:
-  Mat4_type projection_matrix_{1};
+  Mat4 projection_matrix_{1};
 
   bool projection_mode_{false};
 };

@@ -5,8 +5,8 @@
 namespace molphene {
 
 SphereMeshBuilder::SphereMeshBuilder(size_t max_bytes,
-                                         Div_type lat_div,
-                                         Div_type long_div)
+                                         Div lat_div,
+                                         Div long_div)
 : lat_div_{lat_div}
 , long_div_{long_div}
 {
@@ -86,7 +86,7 @@ SphereMeshBuilder::build(size_t idx)
   auto texcoords2 = std::vector<Vec2f>(vert_size);
 
   idx *= get_vertices_size();
-  for(auto i = Div_type{0}; i < lat_div_; ++i) {
+  for(auto i = Div{0}; i < lat_div_; ++i) {
     constexpr auto pi = float{M_PI};
 
     const auto theta = pi / lat_div_ * i;
@@ -97,7 +97,7 @@ SphereMeshBuilder::build(size_t idx)
     const auto next_sint = std::sin(next_theta);
     const auto next_cost = std::cos(next_theta);
 
-    for(auto j = Div_type{0}; j <= long_div_; ++j) {
+    for(auto j = Div{0}; j <= long_div_; ++j) {
       const auto phi = pi * 2 * j / long_div_;
       const auto sin_phi = std::sin(phi);
       const auto cos_phi = std::cos(phi);
