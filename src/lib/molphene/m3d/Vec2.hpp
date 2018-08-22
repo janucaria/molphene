@@ -1,7 +1,7 @@
 #ifndef MOLPHENE_M3D_VEC2_HPP
 #define MOLPHENE_M3D_VEC2_HPP
 
-#include "stdafx.hpp"
+#include "../stdafx.hpp"
 
 namespace molphene {
 

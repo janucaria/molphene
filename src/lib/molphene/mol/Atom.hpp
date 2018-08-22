@@ -1,7 +1,7 @@
 #ifndef MOLPHENE_MOL_ATOM_HPP
 #define MOLPHENE_MOL_ATOM_HPP
 
-#include "m3d.hpp"
+#include "../m3d.hpp"
 #include <string>
 #include <unordered_map>
 

@@ -6,7 +6,7 @@
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
 
-#include "Scene.hpp"
+#include <molphene/Scene.hpp>
 
 const char* pdbhem = R"(
 ATOM      1  CHA HEM A   1      -2.161  -0.125   0.490  1.00 10.00           C

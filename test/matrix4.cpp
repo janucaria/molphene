@@ -4,7 +4,7 @@
 #define BOOST_TEST_DYN_LINK
 #include <boost/test/unit_test.hpp>
 
-#include "../src/m3d.hpp"
+#include <molphene/m3d.hpp>
 
 BOOST_AUTO_TEST_SUITE(float_matrix4_test)
 

@@ -1,7 +1,7 @@
 #ifndef MOLPHENE_M3D_RGBA8_HPP
 #define MOLPHENE_M3D_RGBA8_HPP
 
-#include "stdafx.hpp"
+#include "../stdafx.hpp"
 
 namespace molphene {
 
