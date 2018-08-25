@@ -23,7 +23,7 @@ Scene::setup_graphics()
 
   color_light_shader_.init_program();
   color_light_shader_.use_program();
-  color_light_shader_.light_source(spot_light_source_);
+  color_light_shader_.light_source(light_source_);
   color_light_shader_.material(material_);
   color_light_shader_.fog(fog_);
 
@@ -41,6 +41,7 @@ void
 Scene::change_dimension(GLsizei width, GLsizei height)
 {
   camera_.set_resolution(width, height);
+  calculate_matrices();
 }
 
 void
@@ -71,6 +72,22 @@ Scene::reset_mesh()
       bonds.push_back(&bond);
     }
   }
+
+  // calculate bounding sphere
+  BoundingSphere<float> bs;
+
+  for(auto& model : Molecule::Models_iterable{*molecule_}) {
+    for(auto& chain : Model::Chains_iterable{model}) {
+      for(auto& residue : Chain::Compound_iterator{chain}) {
+        for(auto& atom : Compound::Atoms_iterable{residue}) {
+          bs.expand(atom.position());
+        }
+      }
+    }
+  }
+
+  camera_.top = bs.radius() + 2;
+  model_matrix_.identity().translate(-bs.center());
 
   calculate_matrices();
 
@@ -169,34 +186,23 @@ Scene::rotate(float x, float y, float z)
 void
 Scene::calculate_matrices()
 {
-  // calculate bounding sphere
-  BoundingSphere<float> bs;
-
-  for(auto& model : Molecule::Models_iterable{*molecule_}) {
-    for(auto& chain : Model::Chains_iterable{model}) {
-      for(auto& residue : Chain::Compound_iterator{chain}) {
-        for(auto& atom : Compound::Atoms_iterable{residue}) {
-          bs.expand(atom.position());
-        }
-      }
-    }
-  }
-
   const auto fov = camera_.fov;
-  const auto theta = fov / 2.0f;
-  const auto tan_theta = tan(theta);
-  const auto y = bs.radius() + 2.0f;
-  const auto focal_len = y / tan_theta;
-  const auto near = focal_len - y;
-  const auto far = focal_len + y;
+  const auto top = camera_.top;
+  const auto aspect = camera_.aspect_ratio();
+  const auto tan_theta = tan(fov / 2);
+  const auto focal_len = [=]()
+  {
+    auto focal = top / tan_theta;
+    if(aspect < 1) {
+      focal /= aspect;
+    }
+    return focal;
+  }();
 
-  camera_.fov = fov;
-  camera_.near = near;
-  camera_.far = far;
+  camera_.near = focal_len - top;
+  camera_.far = focal_len + top;
 
   camera_.view_matrix.set_translate(0, 0, -focal_len);
-
-  model_matrix_.identity().translate(-bs.center());
 }
 
 void

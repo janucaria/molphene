@@ -20,6 +20,8 @@ public:
 
   Floatp near{0};
 
+  Floatp top{0};
+
   Floatp zoom{1};
 
   Resolution height{0};
