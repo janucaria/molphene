@@ -12,5 +12,5 @@ PRIVATE
   "${PROJECT_SOURCE_DIR}/src/lib"
 )
 
-target_link_libraries(molphene-test PRIVATE libmolphene ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY})
+target_link_libraries(molphene-test PRIVATE molphene ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY})
 target_compile_options(molphene-test PRIVATE ${MOLPHENE_WARNING_OPTIONS} "-stdlib=libc++")

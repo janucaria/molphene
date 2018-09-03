@@ -1,4 +1,4 @@
-add_library(libmolphene
+add_library(molphene
 "${PROJECT_SOURCE_DIR}/src/lib/molphene/m3d/Rgba8.cpp"
 "${PROJECT_SOURCE_DIR}/src/lib/molphene/m3d/Rgba32f.cpp"
 "${PROJECT_SOURCE_DIR}/src/lib/molphene/mol/Atom.cpp"
@@ -15,12 +15,12 @@ add_library(libmolphene
 "${PROJECT_SOURCE_DIR}/src/lib/molphene/SphereMeshBuilder.cpp")
 
 if(NOT EMSCRIPTEN)
-  target_link_libraries(libmolphene PRIVATE "-framework OpenGL")
+  target_link_libraries(molphene PRIVATE "-framework OpenGL")
 endif()
 
-target_include_directories(libmolphene
+target_include_directories(molphene
 PUBLIC
   "${PROJECT_SOURCE_DIR}/third_party/GSL/include"
 )
 
-target_compile_options(libmolphene PRIVATE ${MOLPHENE_WARNING_OPTIONS} "-stdlib=libc++")
+target_compile_options(molphene PRIVATE ${MOLPHENE_WARNING_OPTIONS} "-stdlib=libc++")

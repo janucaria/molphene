@@ -9,7 +9,7 @@ PRIVATE
 "${PROJECT_SOURCE_DIR}/src/lib"
 )
 
-target_link_libraries(molphene-web PRIVATE libmolphene)
+target_link_libraries(molphene-web PRIVATE molphene)
 
 target_compile_options(molphene-web PRIVATE ${MOLPHENE_WARNING_OPTIONS} "-stdlib=libc++")
 

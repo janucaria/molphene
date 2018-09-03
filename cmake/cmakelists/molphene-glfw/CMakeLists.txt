@@ -6,7 +6,7 @@ target_include_directories(molphene-glfw
 PRIVATE
 "${PROJECT_SOURCE_DIR}/src/lib"
 )
-target_link_libraries(molphene-glfw PRIVATE libmolphene)
+target_link_libraries(molphene-glfw PRIVATE molphene)
 
 if(EMSCRIPTEN)
 
