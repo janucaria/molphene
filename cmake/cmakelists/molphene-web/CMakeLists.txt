@@ -11,6 +11,8 @@ PRIVATE
 
 target_link_libraries(molphene-web PRIVATE libmolphene)
 
+target_compile_options(molphene-web PRIVATE ${MOLPHENE_WARNING_OPTIONS} "-stdlib=libc++")
+
 string(JOIN " -s " MOLPHENE_EM_SETTINGS
 "GL_ASSERTIONS=1"
 "GL_DEBUG=1"

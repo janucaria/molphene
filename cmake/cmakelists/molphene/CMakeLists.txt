@@ -18,6 +18,6 @@ find_package(glfw3 REQUIRED)
 
 target_link_libraries(molphene PRIVATE glfw "-framework CoreVideo" "-framework IOKit" "-framework Cocoa")
 
-target_compile_options(molphene PRIVATE "-Wall" "-stdlib=libc++")
+target_compile_options(molphene PRIVATE ${MOLPHENE_WARNING_OPTIONS} "-stdlib=libc++")
 
 endif()

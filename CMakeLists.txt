@@ -22,6 +22,8 @@ else()
   message(SEND_ERROR "Unable to find the Boost header files. Please set BOOST_ROOT to the root directory containing Boost or BOOST_INCLUDEDIR to the directory containing Boost's headers.")
 endif()
 
+set(MOLPHENE_WARNING_OPTIONS "-Wall" "-Wpedantic")
+
 add_subdirectory("${PROJECT_SOURCE_DIR}/cmake/cmakelists/libmolphene")
 add_subdirectory("${PROJECT_SOURCE_DIR}/cmake/cmakelists/molphene")
 add_subdirectory("${PROJECT_SOURCE_DIR}/cmake/cmakelists/molphene-test")

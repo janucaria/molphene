@@ -22,3 +22,5 @@ target_include_directories(libmolphene
 PUBLIC
   "${PROJECT_SOURCE_DIR}/third_party/GSL/include"
 )
+
+target_compile_options(libmolphene PRIVATE ${MOLPHENE_WARNING_OPTIONS} "-stdlib=libc++")

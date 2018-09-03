@@ -13,4 +13,4 @@ PRIVATE
 )
 
 target_link_libraries(molphene-test PRIVATE libmolphene ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY})
-target_compile_options(molphene-test PRIVATE "-Wall" "-stdlib=libc++")
+target_compile_options(molphene-test PRIVATE ${MOLPHENE_WARNING_OPTIONS} "-stdlib=libc++")
