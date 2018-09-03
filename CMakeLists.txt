@@ -25,7 +25,7 @@ endif()
 set(MOLPHENE_WARNING_OPTIONS "-Wall" "-Wpedantic")
 
 add_subdirectory("${PROJECT_SOURCE_DIR}/cmake/cmakelists/libmolphene")
-add_subdirectory("${PROJECT_SOURCE_DIR}/cmake/cmakelists/molphene")
+add_subdirectory("${PROJECT_SOURCE_DIR}/cmake/cmakelists/molphene-glfw")
 add_subdirectory("${PROJECT_SOURCE_DIR}/cmake/cmakelists/molphene-test")
 add_subdirectory("${PROJECT_SOURCE_DIR}/cmake/cmakelists/molphene-web")
 
