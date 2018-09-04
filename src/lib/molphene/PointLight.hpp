@@ -7,12 +7,12 @@
 namespace molphene {
 
 template<typename TColor, typename TVector>
-struct PointLight : BasicLight<TColor, TVector>{
+struct PointLight : BasicLight<TColor, TVector> {
   using typename BasicLight<TColor, TVector>::Color;
   using typename BasicLight<TColor, TVector>::Vec3;
-  
+
   float radius{100};
-  
+
   Vec3 attenuation{1, 0, 0};
 
   Vec3 location{0, 0, 0};

@@ -1,8 +1,8 @@
 #ifndef MOLPHENE_SHAPE_UV_SPHERE_HPP
 #define MOLPHENE_SHAPE_UV_SPHERE_HPP
 
-#include "Sphere.hpp"
 #include "../m3d.hpp"
+#include "Sphere.hpp"
 
 namespace molphene {
 

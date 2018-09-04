@@ -5,8 +5,8 @@
 namespace molphene {
 
 SphereMeshBuilder::SphereMeshBuilder(size_t max_bytes,
-                                         Div lat_div,
-                                         Div long_div)
+                                     Div lat_div,
+                                     Div long_div)
 : lat_div_{lat_div}
 , long_div_{long_div}
 {

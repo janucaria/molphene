@@ -21,9 +21,11 @@ public:
   void
   run();
 
-  void open_pdb_data(std::string pdbdata);
+  void
+  open_pdb_data(std::string pdbdata);
 
-  void canvas_size_change_callback(int width, int height);
+  void
+  canvas_size_change_callback(int width, int height);
 
 private:
   ClickState click_state{false, 0, 0};

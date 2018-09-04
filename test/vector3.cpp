@@ -92,7 +92,7 @@ BOOST_AUTO_TEST_CASE(addition)
 BOOST_AUTO_TEST_CASE(vector3d_subtraction)
 {
   using Vec3f = molphene::Vec3<float>;
-  
+
   {
     auto vt = Vec3f{1.5, 2.2, 8.9} - Vec3f{0};
     BOOST_CHECK_CLOSE_FRACTION(vt.x, 1.5f, FLT_EPSILON);

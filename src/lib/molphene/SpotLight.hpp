@@ -19,7 +19,7 @@ struct SpotLight : PointLight<TColor, TVector> {
   float cut_off_angle{M_PI / 2};
 
   Vec3 direction{0, 0, -1};
-  
+
   using PointLight<TColor, TVector>::PointLight;
 
   SpotLight() noexcept = default;

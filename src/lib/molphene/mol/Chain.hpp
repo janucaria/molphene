@@ -11,8 +11,7 @@ class Model;
 class Chain {
   using Compounds = std::vector<Compound>;
 
-  using Compound_map =
-   std::map<Compound::Residue_number, Compounds::size_type>;
+  using Compound_map = std::map<Compound::Residue_number, Compounds::size_type>;
 
 public:
   class Residue_iterator;

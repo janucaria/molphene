@@ -11,10 +11,7 @@ public:
   using Color = TColor;
   using Scalar = TScalar;
 
-  enum class Type {
-    linear,
-    exponential
-  };
+  enum class Type { linear, exponential };
 
   Scalar visibility_range{0};
 

@@ -5,7 +5,7 @@
 namespace molphene {
 
 ColorLightBuffer::ColorLightBuffer(GLsizei verts_per_instance,
-                                       GLsizeiptr total_instances)
+                                   GLsizeiptr total_instances)
 : verts_per_instance_{verts_per_instance}
 {
   const auto bytes_per_vert = GLsizeiptr{sizeof(Vec3f) * 2 + sizeof(Vec2f)};
@@ -63,10 +63,10 @@ ColorLightBuffer::~ColorLightBuffer()
 
 void
 ColorLightBuffer::set_data(GLintptr offset,
-                             GLsizeiptr size,
-                             gsl::span<const Vec3f> verts,
-                             gsl::span<const Vec3f> norms,
-                             gsl::span<const Vec2f> texcoords)
+                           GLsizeiptr size,
+                           gsl::span<const Vec3f> verts,
+                           gsl::span<const Vec3f> norms,
+                           gsl::span<const Vec2f> texcoords)
 {
   auto data_offset = GLsizeiptr{0};
   while(size > 0) {

@@ -10,7 +10,7 @@ template<typename TColor, typename TVector>
 struct DirectionalLight : BasicLight<TColor, TVector> {
   using typename BasicLight<TColor, TVector>::Color;
   using typename BasicLight<TColor, TVector>::Vec3;
-  
+
   Vec3 direction{0, 0, -1};
 
   using BasicLight<TColor, TVector>::BasicLight;

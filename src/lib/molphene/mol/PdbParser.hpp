@@ -15,8 +15,7 @@ class PdbParser {
 
   using Bond_pairs = std::set<Bond_pair>;
 
-  using Residue_bond_pairs_map =
-   std::unordered_map<std::string, Bond_pairs>;
+  using Residue_bond_pairs_map = std::unordered_map<std::string, Bond_pairs>;
 
 public:
   void

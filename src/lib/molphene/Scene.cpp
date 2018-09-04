@@ -190,8 +190,7 @@ Scene::calculate_matrices()
   const auto top = camera_.top;
   const auto aspect = camera_.aspect_ratio();
   const auto tan_theta = tan(fov / 2);
-  const auto focal_len = [=]()
-  {
+  const auto focal_len = [=]() {
     auto focal = top / tan_theta;
     if(aspect < 1) {
       focal /= aspect;
