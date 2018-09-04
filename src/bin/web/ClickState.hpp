@@ -3,7 +3,8 @@
 
 namespace molphene {
 
-struct ClickState {
+class ClickState {
+public:
   bool is_down;
   long last_x;
   long last_y;

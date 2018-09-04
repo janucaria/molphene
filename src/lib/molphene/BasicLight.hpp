@@ -6,7 +6,8 @@
 namespace molphene {
 
 template<typename TColor, typename TVector>
-struct BasicLight {
+class BasicLight {
+public:
   using Color = TColor;
   using Vec3 = TVector;
 

@@ -10,7 +10,8 @@
 namespace molphene {
 
 template<typename TColor, typename TVector>
-struct SpotLight : PointLight<TColor, TVector> {
+class SpotLight : public PointLight<TColor, TVector> {
+public:
   using typename PointLight<TColor, TVector>::Color;
   using typename PointLight<TColor, TVector>::Vec3;
 

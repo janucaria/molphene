@@ -7,7 +7,8 @@
 namespace molphene {
 
 template<typename TRadii, typename TCenter = Vec3<TRadii>>
-struct UvSphere : public Sphere<TRadii, TCenter> {
+class UvSphere : public Sphere<TRadii, TCenter> {
+public:
   using typename Sphere<TRadii, TCenter>::Radius;
   using typename Sphere<TRadii, TCenter>::Center;
   using Axis = Center;

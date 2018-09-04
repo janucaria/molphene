@@ -10,7 +10,7 @@ class Compound;
 
 class Atom {
 public:
-  struct Element;
+  class Element;
 
   using Position = Vec3f;
 
@@ -54,7 +54,8 @@ private:
   unsigned int serial_;
 };
 
-struct Atom::Element {
+class Atom::Element {
+public:
   enum class ElementSymbol {
     h = 1,
     he = 2,

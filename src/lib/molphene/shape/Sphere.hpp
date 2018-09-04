@@ -6,7 +6,8 @@
 namespace molphene {
 
 template<typename TRadii, typename TCenter = Vec3<TRadii>>
-struct Sphere {
+class Sphere {
+public:
   using Radius = TRadii;
   using Center = TCenter;
 
