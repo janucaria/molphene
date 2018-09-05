@@ -12,7 +12,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-find_package(Boost)
+find_package(Boost COMPONENTS unit_test_framework)
 
 if(Boost_FOUND)
   include_directories(${Boost_INCLUDE_DIR})
@@ -28,6 +28,10 @@ set(MOLPHENE_WARNING_OPTIONS "-Wall" "-Wpedantic")
 
 add_subdirectory("${PROJECT_SOURCE_DIR}/cmake/cmakelists/libmolphene")
 add_subdirectory("${PROJECT_SOURCE_DIR}/cmake/cmakelists/molphene-glfw")
-add_subdirectory("${PROJECT_SOURCE_DIR}/cmake/cmakelists/molphene-test")
-add_subdirectory("${PROJECT_SOURCE_DIR}/cmake/cmakelists/molphene-web")
+
+if(EMSCRIPTEN)
+  add_subdirectory("${PROJECT_SOURCE_DIR}/cmake/cmakelists/molphene-web")
+else()
+  add_subdirectory("${PROJECT_SOURCE_DIR}/cmake/cmakelists/molphene-test")
+endif()
 

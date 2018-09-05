@@ -4,8 +4,6 @@ set(Molphene_TEST_SRC_FILES
 "${PROJECT_SOURCE_DIR}/test/matrix4.cpp"
 )
 
-find_package(Boost COMPONENTS unit_test_framework)
-
 foreach(Molphene_FILES ${Molphene_TEST_SRC_FILES})
 
   get_filename_component(Molphene_NAME ${Molphene_FILES} NAME_WE)
