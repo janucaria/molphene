@@ -1,6 +1,7 @@
 #include <cfloat>
 #include <type_traits>
 
+#define BOOST_TEST_MODULE "m3d vector"
 #define BOOST_TEST_DYN_LINK
 #include <boost/test/floating_point_comparison.hpp>
 #include <boost/test/unit_test.hpp>

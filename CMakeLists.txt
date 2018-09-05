@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.11)
 project(Molphene)
 
+enable_testing()
+
 if(EMSCRIPTEN)
   set(CMAKE_CXX_COMPILER ${CMAKE_CXX_COMPILER} CACHE FILEPATH "Compiler")
   set(CMAKE_C_COMPILER ${CMAKE_C_COMPILER} CACHE FILEPATH "Compiler")
