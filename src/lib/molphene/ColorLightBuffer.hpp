@@ -11,6 +11,9 @@ namespace molphene {
 
 class ColorLightBuffer {
 public:
+  using Vec2f = Vec2<float>;
+  using Vec3f = Vec3<float>;
+
   ColorLightBuffer(GLsizei verts_per_instance, GLsizeiptr total_instances);
 
   ~ColorLightBuffer();

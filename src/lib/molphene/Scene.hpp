@@ -25,17 +25,31 @@ namespace molphene {
 
 class Scene {
 public:
-  using Camera = Camera<float>;
+  struct ConfigType {
+    using float_type = double;
+  };
 
-  using Fog = Fog<Rgba8>;
+  using float_t = typename type_configs<ConfigType>::float_type;
+  using size_t = typename type_configs<ConfigType>::size_type;
 
-  using Light_source = DirectionalLight<Rgba8, Vec3f>;
+  using Vec3f = Vec3<float_t>;
+  using Vec2f = Vec2<float_t>;
+  using Mat4f = Mat4<float_t>;
+  using Mat3f = Mat3<float_t>;
 
-  using Material = Material<Rgba8>;
+  using Camera = Camera<ConfigType>;
 
-  using PointLight = PointLight<Rgba8, Vec3f>;
+  using Fog = Fog<Rgba8, ConfigType>;
 
-  using SpotLight = SpotLight<Rgba8, Vec3f>;
+  using Material = Material<Rgba8, ConfigType>;
+
+  using Light_source = DirectionalLight<Rgba8, ConfigType>;
+
+  using PointLight = PointLight<Rgba8, ConfigType>;
+
+  using SpotLight = SpotLight<Rgba8, ConfigType>;
+
+  using SphereMeshBuilder = SphereMeshBuilder<ConfigType>;
 
   bool
   setup_graphics();
@@ -50,7 +64,7 @@ public:
   render_frame();
 
   void
-  rotate(float x, float y, float z);
+  rotate(Vec3f rot);
 
   void
   open_stream(std::istream& is);

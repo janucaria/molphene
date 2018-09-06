@@ -5,17 +5,17 @@
 
 namespace molphene {
 
-template<typename TColor, typename TVector>
+template<typename TColor, typename TConfig>
 class BasicLight {
 public:
+  using float_t = typename type_configs<TConfig>::float_type;
   using Color = TColor;
-  using Vec3 = TVector;
 
-  float ambient_intensity{0};
+  float_t ambient_intensity{0};
 
   Color color{0xFFFFFF};
 
-  float intensity{1};
+  float_t intensity{1};
 
   BasicLight() noexcept = default;
 };

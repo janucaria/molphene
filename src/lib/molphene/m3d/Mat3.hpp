@@ -33,6 +33,20 @@ struct Mat3 {
   {
   }
 
+  template<typename U, typename = std::enable_if_t<std::is_convertible_v<U, T>>>
+  explicit Mat3(const Mat3<U>& m3) noexcept
+  : Mat3(m3.m[0],
+         m3.m[1],
+         m3.m[2],
+         m3.m[3],
+         m3.m[4],
+         m3.m[5],
+         m3.m[6],
+         m3.m[7],
+         m3.m[8])
+  {
+  }
+
   Mat3&
   operator()(
    T m11, T m12, T m13, T m21, T m22, T m23, T m31, T m32, T m33) noexcept

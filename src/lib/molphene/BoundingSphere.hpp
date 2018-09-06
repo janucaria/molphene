@@ -6,10 +6,10 @@
 
 namespace molphene {
 
-template<typename TRadii, typename TCenter = Vec3<TRadii>>
+template<typename TRadii>
 class BoundingSphere {
 public:
-  using Sphere = Sphere<TRadii, TCenter>;
+  using Sphere = Sphere<TRadii>;
   using SphereRadius = typename Sphere::Radius;
   using SphereCenter = typename Sphere::Center;
 

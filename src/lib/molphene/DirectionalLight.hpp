@@ -6,15 +6,16 @@
 
 namespace molphene {
 
-template<typename TColor, typename TVector>
-class DirectionalLight : public BasicLight<TColor, TVector> {
+template<typename TColor, typename TConfig>
+class DirectionalLight : public BasicLight<TColor, TConfig> {
 public:
-  using typename BasicLight<TColor, TVector>::Color;
-  using typename BasicLight<TColor, TVector>::Vec3;
+  using typename BasicLight<TColor, TConfig>::float_t;
+  using typename BasicLight<TColor, TConfig>::Color;
+  using Vec3f = Vec3<float_t>;
 
-  Vec3 direction{0, 0, -1};
+  Vec3f direction{0, 0, -1};
 
-  using BasicLight<TColor, TVector>::BasicLight;
+  using BasicLight<TColor, TConfig>::BasicLight;
 
   DirectionalLight() noexcept = default;
 };

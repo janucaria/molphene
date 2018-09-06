@@ -16,4 +16,6 @@
 
 #include <gsl/gsl>
 
+#include "type_configs.hpp"
+
 #endif

@@ -12,7 +12,7 @@ class Atom {
 public:
   class Element;
 
-  using Position = Vec3f;
+  using Position = Vec3<float>;
 
   Atom(Compound& compound,
        std::string elsym,

@@ -17,6 +17,9 @@ class ColorLightShader : public BasicShader<ColorLightShader> {
   friend BasicShader<ColorLightShader>;
 
 public:
+  using Mat4f = Mat4<float>;
+  using Mat3f = Mat3<float>;
+  using Vec3f = Vec3<float>;
   using Attribs_location_name =
    std::array<std::pair<AttribLocation, const GLchar*>, 3>;
 
@@ -25,16 +28,38 @@ public:
   void
   modelview_matrix(const Mat4f& m4) const noexcept;
 
+  template<typename U>
+  std::enable_if_t<std::is_constructible_v<Mat4f, U>>
+  modelview_matrix(const U& m) const noexcept
+  {
+    modelview_matrix(Mat4f(m));
+  }
+
   void
   normal_matrix(const Mat3f& m) const noexcept;
+
+  template<typename U>
+  std::enable_if_t<std::is_constructible_v<Mat3f, U>>
+  normal_matrix(const U& m) const noexcept
+  {
+    normal_matrix(Mat3f(m));
+  }
 
   void
   projection_matrix(const Mat4f& m4) const noexcept;
 
-  template<typename TColor, typename TVec3>
-  std::void_t<decltype(Rgba32f{std::declval<TColor>()},
-                       Vec3f{std::declval<TVec3>()})>
-  light_source(const DirectionalLight<TColor, TVec3>& light) const
+  template<typename U>
+  std::enable_if_t<std::is_constructible_v<Mat4f, U>>
+  projection_matrix(const U& m) const noexcept
+  {
+    projection_matrix(Mat4f(m));
+  }
+
+  template<typename TColor, typename TConfig>
+  std::void_t<decltype(
+   Rgba32f{std::declval<TColor>()},
+   Vec3f{std::declval<typename DirectionalLight<TColor, TConfig>::Vec3f>()})>
+  light_source(const DirectionalLight<TColor, TConfig>& light) const
   {
     light_source_ambient_intensity(light.ambient_intensity);
     light_source_color(light.color);
@@ -43,10 +68,11 @@ public:
     light_source_radius(-1);
   }
 
-  template<typename TColor, typename TVec3>
-  std::void_t<decltype(Rgba32f{std::declval<TColor>()},
-                       Vec3f{std::declval<TVec3>()})>
-  light_source(const PointLight<TColor, TVec3>& light) const
+  template<typename TColor, typename TConfig>
+  std::void_t<
+   decltype(Rgba32f{std::declval<TColor>()},
+            Vec3f{std::declval<typename PointLight<TColor, TConfig>::Vec3f>()})>
+  light_source(const PointLight<TColor, TConfig>& light) const
   {
     light_source_ambient_intensity(light.ambient_intensity);
     light_source_attenuation(light.attenuation);
@@ -57,10 +83,11 @@ public:
     light_source_radius(light.radius);
   }
 
-  template<typename TColor, typename TVec3>
-  std::void_t<decltype(Rgba32f{std::declval<TColor>()},
-                       Vec3f{std::declval<TVec3>()})>
-  light_source(const SpotLight<TColor, TVec3>& light) const
+  template<typename TColor, typename TConfig>
+  std::void_t<
+   decltype(Rgba32f{std::declval<TColor>()},
+            Vec3f{std::declval<typename SpotLight<TColor, TConfig>::Vec3f>()})>
+  light_source(const SpotLight<TColor, TConfig>& light) const
   {
     light_source_ambient_intensity(light.ambient_intensity);
     light_source_attenuation(light.attenuation);

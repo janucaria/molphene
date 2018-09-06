@@ -9,19 +9,20 @@
 
 namespace molphene {
 
-template<typename TColor, typename TVector>
-class SpotLight : public PointLight<TColor, TVector> {
+template<typename TColor, typename TConfig>
+class SpotLight : public PointLight<TColor, TConfig> {
 public:
-  using typename PointLight<TColor, TVector>::Color;
-  using typename PointLight<TColor, TVector>::Vec3;
+  using typename PointLight<TColor, TConfig>::float_t;
+  using typename PointLight<TColor, TConfig>::Color;
+  using Vec3f = Vec3<float_t>;
 
-  float beam_width{M_PI / 4};
+  float_t beam_width{M_PI / 4};
 
-  float cut_off_angle{M_PI / 2};
+  float_t cut_off_angle{M_PI / 2};
 
-  Vec3 direction{0, 0, -1};
+  Vec3f direction{0, 0, -1};
 
-  using PointLight<TColor, TVector>::PointLight;
+  using PointLight<TColor, TConfig>::PointLight;
 
   SpotLight() noexcept = default;
 };

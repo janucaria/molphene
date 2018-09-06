@@ -22,6 +22,18 @@ struct Vec2 {
   {
   }
 
+  template<typename U, typename = std::enable_if_t<std::is_convertible_v<U, T>>>
+  explicit Vec2(Vec2<U> v) noexcept
+  : Vec2(v.x, v.y)
+  {
+  }
+
+  template<typename U, typename = std::enable_if_t<std::is_convertible_v<U, T>>>
+  explicit Vec2(Vec2<U> x, Vec2<U> y) noexcept
+  : Vec2(x.x, y.y)
+  {
+  }
+
   Vec2
   operator+(const Vec2& v) const noexcept
   {

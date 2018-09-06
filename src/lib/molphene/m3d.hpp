@@ -8,26 +8,4 @@
 #include "m3d/Vec2.hpp"
 #include "m3d/Vec3.hpp"
 
-namespace molphene {
-
-using Vec2f = Vec2<float>;
-
-using Vec3f = Vec3<float>;
-
-using Mat4f = Mat4<float>;
-
-using Mat3f = Mat3<float>;
-
-using vec2f = Vec2<float>;
-
-using vec3f = Vec3<float>;
-
-using mat4f = Mat4<float>;
-
-using mat3f = Mat3<float>;
-
-using colour = Rgba8;
-
-} // namespace molphene
-
 #endif

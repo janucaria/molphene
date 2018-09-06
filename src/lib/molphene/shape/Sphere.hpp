@@ -5,11 +5,11 @@
 
 namespace molphene {
 
-template<typename TRadii, typename TCenter = Vec3<TRadii>>
+template<typename TRadii>
 class Sphere {
 public:
   using Radius = TRadii;
-  using Center = TCenter;
+  using Center = Vec3<TRadii>;
 
   Radius radius{0};
   Center center{0, 0, 0};
@@ -24,6 +24,22 @@ public:
   Sphere(Radius radii, Center center) noexcept
   : radius{radii}
   , center{center}
+  {
+  }
+
+  template<typename U,
+           typename = std::enable_if_t<std::is_constructible_v<Center, U>>>
+  explicit Sphere(const Sphere<U>& sphere) noexcept
+  : radius(sphere.radius)
+  , center(sphere.center)
+  {
+  }
+
+  template<typename U,
+           typename = std::enable_if_t<std::is_constructible_v<Center, U>>>
+  Sphere(U radii, Vec3<U> center) noexcept
+  : radius(radii)
+  , center(center)
   {
   }
 };

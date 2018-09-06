@@ -6,19 +6,20 @@
 
 namespace molphene {
 
-template<typename TColor, typename TVector>
-class PointLight : public BasicLight<TColor, TVector> {
+template<typename TColor, typename TConfig>
+class PointLight : public BasicLight<TColor, TConfig> {
 public:
-  using typename BasicLight<TColor, TVector>::Color;
-  using typename BasicLight<TColor, TVector>::Vec3;
+  using typename BasicLight<TColor, TConfig>::float_t;
+  using typename BasicLight<TColor, TConfig>::Color;
+  using Vec3f = Vec3<float_t>;
 
-  float radius{100};
+  float_t radius{100};
 
-  Vec3 attenuation{1, 0, 0};
+  Vec3f attenuation{1, 0, 0};
 
-  Vec3 location{0, 0, 0};
+  Vec3f location{0, 0, 0};
 
-  using BasicLight<TColor, TVector>::BasicLight;
+  using BasicLight<TColor, TConfig>::BasicLight;
 
   PointLight() noexcept = default;
 };

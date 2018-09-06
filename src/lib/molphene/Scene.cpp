@@ -74,13 +74,13 @@ Scene::reset_mesh()
   }
 
   // calculate bounding sphere
-  BoundingSphere<float> bs;
+  auto bs = BoundingSphere<float_t>{};
 
   for(auto& model : Molecule::Models_iterable{*molecule_}) {
     for(auto& chain : Model::Chains_iterable{model}) {
       for(auto& residue : Chain::Compound_iterator{chain}) {
         for(auto& atom : Compound::Atoms_iterable{residue}) {
-          bs.expand(atom.position());
+          bs.expand(Vec3f(atom.position()));
         }
       }
     }
@@ -114,11 +114,11 @@ Scene::reset_mesh()
     const auto apos = atm.position();
     const auto arad = element.rvdw;
     const auto acol = colour_manager_.get_element_color(element.symbol);
-    const auto atex = Vec2f{float(i % tex_size) / tex_size,
-                            std::floorf(float(i) / tex_size) / tex_size};
+    const auto atex = Vec2f{float_t(i % tex_size) / tex_size,
+                            std::floorf(float_t(i) / tex_size) / tex_size};
     colors[i] = acol;
 
-    mesh_builder.sphere(UvSphere<float>{arad, apos});
+    mesh_builder.sphere(UvSphere<float_t>{arad, apos});
 
     mesh_builder.texcoord(atex);
 
@@ -176,8 +176,9 @@ Scene::render_frame()
 }
 
 void
-Scene::rotate(float x, float y, float z)
+Scene::rotate(Scene::Vec3f rot)
 {
+  const auto [x, y, z] = rot;
   model_matrix_.rotate(1.0f, 0.0f, 0.0f, x);
   model_matrix_.rotate(0.0f, 1.0f, 0.0f, y);
   model_matrix_.rotate(0.0f, 0.0f, 1.0f, z);

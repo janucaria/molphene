@@ -6,22 +6,30 @@
 
 namespace molphene {
 
-template<typename TRadii, typename TCenter = Vec3<TRadii>>
-class UvSphere : public Sphere<TRadii, TCenter> {
+template<typename TRadii>
+class UvSphere : public Sphere<TRadii> {
 public:
-  using typename Sphere<TRadii, TCenter>::Radius;
-  using typename Sphere<TRadii, TCenter>::Center;
+  using typename Sphere<TRadii>::Radius;
+  using typename Sphere<TRadii>::Center;
   using Axis = Center;
 
   Axis axis{0, 1, 0};
 
-  using Sphere<TRadii, TCenter>::Sphere;
+  using Sphere<TRadii>::Sphere;
 
   UvSphere() noexcept = default;
 
   UvSphere(Radius radii, Center center, Axis axis) noexcept
-  : Sphere<TRadii, TCenter>{radii, center}
+  : Sphere<TRadii>{radii, center}
   , axis{axis}
+  {
+  }
+
+  template<typename U,
+           typename = std::enable_if_t<std::is_constructible_v<Center, U>>>
+  explicit UvSphere(const UvSphere<U>& sphere) noexcept
+  : Sphere<TRadii>(sphere.radius, sphere.center)
+  , axis(sphere.axis)
   {
   }
 };

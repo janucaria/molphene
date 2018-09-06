@@ -326,7 +326,7 @@ cursor_pos_callback(GLFWwindow* window, double xpos, double ypos)
 
     switch(mouse_button) {
     case GLFW_MOUSE_BUTTON_LEFT:
-      scene.rotate(delt_y / 80, delt_x / 80, 0);
+      scene.rotate({delt_y / 80, delt_x / 80, 0});
       break;
     case GLFW_MOUSE_BUTTON_RIGHT:
 

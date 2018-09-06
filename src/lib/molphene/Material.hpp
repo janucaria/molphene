@@ -5,17 +5,17 @@
 
 namespace molphene {
 
-template<typename TColor, typename TScalar = float>
+template<typename TColor, typename TConfig>
 class Material {
 public:
+  using float_t = typename type_configs<TConfig>::float_type;
   using Color = TColor;
-  using Scalar = TScalar;
 
-  Scalar ambient_intensity{0.2};
+  float_t ambient_intensity{0.2};
   Color diffuse_color{0xCCCCCC};
   Color emissive_color{0};
   Color specular_color{0};
-  Scalar shininess{0.2};
+  float_t shininess{0.2};
 
   Material() noexcept = default;
 };

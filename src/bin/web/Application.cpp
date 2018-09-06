@@ -92,7 +92,7 @@ Application::mouse_move_handler(int eventType,
   const auto delta_x = static_cast<double>(app.click_state.last_x) - old_x;
   const auto delta_y = static_cast<double>(app.click_state.last_y) - old_y;
 
-  app.scene.rotate(M_PI * delta_y / 180, M_PI * delta_x / 180, 0);
+  app.scene.rotate({M_PI * delta_y / 180, M_PI * delta_x / 180, 0});
   app.scene.render_frame();
 
   return EM_TRUE;
@@ -114,16 +114,16 @@ Application::mouse_move_handler(int eventType,
     return EM_TRUE;
   }
 
-  const auto new_x = mouseEvent->clientX;
-  const auto new_y = mouseEvent->clientY;
+  const auto old_x = app.click_state.last_x;
+  const auto old_y = app.click_state.last_y;
 
-  const auto delta_x = new_x - app.click_state.last_x;
-  const auto delta_y = new_y - app.click_state.last_y;
+  app.click_state.last_x = mouseEvent->clientX;
+  app.click_state.last_y = mouseEvent->clientY;
 
-  app.click_state.last_x = new_x;
-  app.click_state.last_y = new_y;
+  const auto delta_x = static_cast<double>(app.click_state.last_x) - old_x;
+  const auto delta_y = static_cast<double>(app.click_state.last_y) - old_y;
 
-  app.scene.rotate(M_PI * delta_y / 180, M_PI * delta_x / 80, 0);
+  app.scene.rotate({M_PI * delta_y / 180, M_PI * delta_x / 180, 0});
   app.scene.render_frame();
 
   return EM_TRUE;
@@ -150,8 +150,6 @@ Application::canvas_size_change_callback(int width, int height)
 void
 Application::init_context()
 {
-  // emscripten_set_canvas_element_size(canvas_target, 640, 480);
-
   const auto attrs = []() {
     auto attrs = EmscriptenWebGLContextAttributes{};
     emscripten_webgl_init_context_attributes(&attrs);

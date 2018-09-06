@@ -5,15 +5,15 @@
 
 namespace molphene {
 
-template<typename TColor, typename TScalar = float>
+template<typename TColor, typename TConfig>
 class Fog {
 public:
   using Color = TColor;
-  using Scalar = TScalar;
+  using float_t = typename type_configs<TConfig>::float_type;
 
   enum class Type { linear, exponential };
 
-  Scalar visibility_range{0};
+  float_t visibility_range{0};
 
   Color color{0xFFFFFF};
 

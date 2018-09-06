@@ -23,6 +23,28 @@ struct Vec3 {
   {
   }
 
+  template<typename U, typename = std::enable_if_t<std::is_convertible_v<U, T>>>
+  explicit Vec3(Vec3<U> v) noexcept
+  : Vec3(v.x, v.y, v.z)
+  {
+  }
+
+  template<typename U, typename = std::enable_if_t<std::is_convertible_v<U, T>>>
+  explicit Vec3(Vec3<U> x, Vec3<U> y, Vec3<U> z) noexcept
+  : Vec3(x.x, y.y, z.z)
+  {
+  }
+
+  template<typename U, typename = std::enable_if_t<std::is_convertible_v<U, T>>>
+  Vec3&
+  operator=(const Vec3<U> rhs) noexcept
+  {
+    x = rhs.x;
+    y = rhs.y;
+    z = rhs.z;
+    return *this;
+  }
+
   Vec3&
   operator+=(const Vec3& rhs) noexcept
   {

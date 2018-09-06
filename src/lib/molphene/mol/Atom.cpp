@@ -530,7 +530,7 @@ Atom::altloc(char altloc)
 const Atom::Position&
 Atom::position(float x, float y, float z)
 {
-  return position_ = Vec3f{x, y, z};
+  return position_ = {x, y, z};
 }
 
 Atom::Element::Element(std::string name,
