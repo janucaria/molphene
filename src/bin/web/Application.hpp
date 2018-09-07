@@ -13,8 +13,6 @@ namespace molphene {
 
 class Application {
 public:
-  Application() noexcept;
-
   void
   init_context();
 
@@ -36,35 +34,72 @@ private:
 
   molphene::Scene scene{};
 
-  static EM_BOOL
-  enable_drag_handler(int eventType,
-                      const EmscriptenMouseEvent* mouseEvent,
-                      void* userData);
+  template<typename T>
+  static auto mouse_event(const T* event)
+  {
+    if constexpr(std::is_same_v<T, EmscriptenTouchEvent>) {
+      if(event->numTouches < 1) {
+        return static_cast<const EmscriptenTouchPoint*>(nullptr);
+      }
 
-  static EM_BOOL
-  enable_drag_handler(int eventType,
-                      const EmscriptenTouchEvent* mouseEvent,
-                      void* userData);
+      return std::addressof(event->touches[0]);
+    } else {
+      return event;
+    }
+  }
 
+  template<typename T>
   static EM_BOOL
-  disable_drag_handler(int eventType,
-                       const EmscriptenMouseEvent* mouseEvent,
-                       void* userData);
+  enable_drag_handler(int eventType, T* inEevent, void* userData)
+  {
+    auto event = mouse_event(inEevent);
+    auto app = static_cast<Application*>(userData);
 
-  static EM_BOOL
-  disable_drag_handler(int eventType,
-                       const EmscriptenTouchEvent* mouseEvent,
-                       void* userData);
+    if(event) {
+      app->click_state.is_down = true;
+      app->click_state.last_x = event->clientX;
+      app->click_state.last_y = event->clientY;
+    }
 
-  static EM_BOOL
-  mouse_move_handler(int eventType,
-                     const EmscriptenMouseEvent* mouseEvent,
-                     void* userData);
+    return EM_TRUE;
+  }
 
+  template<typename T>
   static EM_BOOL
-  mouse_move_handler(int eventType,
-                     const EmscriptenTouchEvent* mouseEvent,
-                     void* userData);
+  disable_drag_handler(int eventType, T* inEvent, void* userData)
+  {
+    auto app = static_cast<Application*>(userData);
+
+    app->click_state.is_down = false;
+    app->click_state.last_x = 0;
+    app->click_state.last_y = 0;
+
+    return EM_TRUE;
+  }
+
+  template<typename T>
+  static EM_BOOL
+  mouse_move_handler(int eventType, T* inEvent, void* userData)
+  {
+    auto event = mouse_event(inEvent);
+    auto app = static_cast<Application*>(userData);
+
+    if(event && app->click_state.is_down) {
+      const auto old_x = app->click_state.last_x;
+      const auto old_y = app->click_state.last_y;
+
+      app->click_state.last_x = event->clientX;
+      app->click_state.last_y = event->clientY;
+
+      const auto delta_x = static_cast<double>(app->click_state.last_x) - old_x;
+      const auto delta_y = static_cast<double>(app->click_state.last_y) - old_y;
+
+      app->scene.rotate({M_PI * delta_y / 180, M_PI * delta_x / 180, 0});
+      app->scene.render_frame();
+    }
+
+    return EM_TRUE;
+  }
 };
 } // namespace molphene
 
