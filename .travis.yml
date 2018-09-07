@@ -4,8 +4,8 @@ sudo: false
 compiler: clang++
 os: osx
 osx_image: xcode9.4
-install:
-  - brew install glfw
+before_install:
+  - brew update && brew bundle
 before_script:
   - cmake -B./build -H.
 script:
