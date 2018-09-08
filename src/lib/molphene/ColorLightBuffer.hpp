@@ -6,6 +6,7 @@
 #include "SphereMeshBuilder.hpp"
 #include "m3d.hpp"
 #include "opengl.hpp"
+#include "GlRenderer.hpp"
 
 namespace molphene {
 
@@ -13,6 +14,8 @@ class ColorLightBuffer {
 public:
   using Vec2f = Vec2<float>;
   using Vec3f = Vec3<float>;
+
+  friend GlRenderer<>;
 
   ColorLightBuffer(GLsizei verts_per_instance, GLsizeiptr total_instances);
 
@@ -34,9 +37,6 @@ public:
            gsl::span<const Vec3f> verts,
            gsl::span<const Vec3f> norms,
            gsl::span<const Vec2f> texcoords);
-
-  void
-  draw();
 
 private:
   GLsizei verts_per_instance_{0};
