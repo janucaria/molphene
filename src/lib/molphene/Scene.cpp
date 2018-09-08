@@ -157,22 +157,8 @@ Scene::reset_mesh()
 void
 Scene::render_frame()
 {
-  const auto mv_matrix = model_matrix_ * camera_.view_matrix;
-  const auto norm_matrix = Mat3f{Mat4f{mv_matrix}.inverse().transpose()};
-  const auto proj_matrix = camera_.projection_matrix();
-
-  glViewport(0, 0, camera_.width, camera_.height);
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-  color_light_shader_.use_program();
-
-  color_light_shader_.projection_matrix(proj_matrix);
-  color_light_shader_.modelview_matrix(mv_matrix);
-  color_light_shader_.normal_matrix(norm_matrix);
-  color_light_shader_.color_texture_image(atom_color_tex_);
-
-  sphere_buff_atoms_->draw();
-  glFlush();
+  auto renderer = Renderer{};
+  renderer.render(*this, camera_);
 }
 
 void

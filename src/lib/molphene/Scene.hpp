@@ -21,6 +21,8 @@
 #include "mol/PdbParser.hpp"
 #include "opengl.hpp"
 
+#include "GlRenderer.hpp"
+
 namespace molphene {
 
 class Scene {
@@ -50,6 +52,10 @@ public:
   using SpotLight = SpotLight<Rgba8, ConfigType>;
 
   using SphereMeshBuilder = SphereMeshBuilder<ConfigType>;
+
+  using Renderer = GlRenderer<>;
+
+  friend Renderer;
 
   bool
   setup_graphics();
