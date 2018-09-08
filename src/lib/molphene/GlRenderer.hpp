@@ -27,7 +27,6 @@ public:
     using Mat4f = typename TScene::Mat4f;
 
     auto& model_matrix_ = scene.model_matrix_;
-    auto& atom_color_tex_ = scene.atom_color_tex_;
     auto& sphere_buff_atoms_ = scene.sphere_buff_atoms_;
     auto& light_source_ = scene.light_source_;
     auto& material_ = scene.material_;
@@ -42,7 +41,7 @@ public:
     color_light_shader_.projection_matrix(proj_matrix);
     color_light_shader_.modelview_matrix(mv_matrix);
     color_light_shader_.normal_matrix(norm_matrix);
-    color_light_shader_.color_texture_image(atom_color_tex_);
+    color_light_shader_.color_texture_image(sphere_buff_atoms_->color_texture_image());
 
     color_light_shader_.light_source(light_source_);
     color_light_shader_.material(material_);

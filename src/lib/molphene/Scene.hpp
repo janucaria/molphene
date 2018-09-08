@@ -18,9 +18,8 @@
 #include "mol/Model.hpp"
 #include "mol/Molecule.hpp"
 #include "mol/PdbParser.hpp"
-#include "opengl.hpp"
-
 #include "GlRenderer.hpp"
+#include "SphereMeshBuilder.hpp"
 
 namespace molphene {
 
@@ -100,8 +99,6 @@ private:
   std::unique_ptr<Molecule> molecule_;
 
   ColourManager colour_manager_;
-
-  GLuint atom_color_tex_{0};
 
   Renderer renderer;
 };

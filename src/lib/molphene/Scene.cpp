@@ -20,13 +20,6 @@ Scene::setup_graphics()
 
   renderer.init();
 
-  glGenTextures(1, &atom_color_tex_);
-  glBindTexture(GL_TEXTURE_2D, atom_color_tex_);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
   return true;
 }
 
@@ -92,13 +85,12 @@ Scene::reset_mesh()
   const auto model_per_chunks = mesh_builder.size();
   const auto remain_models = total_instances % model_per_chunks;
 
-  const auto tex_size =
-   static_cast<size_t>(std::ceil(std::sqrt(total_instances)));
-  auto colors = std::vector<Rgba8>(tex_size * tex_size);
-
   sphere_buff_atoms_ =
    std::make_unique<typename decltype(sphere_buff_atoms_)::element_type>(
     vertices_per_instance, total_instances);
+
+  const auto tex_size = sphere_buff_atoms_->color_texture_size();
+  auto colors = std::vector<Rgba8>(tex_size * tex_size);
 
   auto chunk_count = size_t{0};
   for(auto i = size_t{0}; i < total_instances; ++i) {
@@ -135,16 +127,7 @@ Scene::reset_mesh()
                                  mesh_builder.texcoords());
   }
 
-  glBindTexture(GL_TEXTURE_2D, atom_color_tex_);
-  glTexImage2D(GL_TEXTURE_2D,
-               0,
-               GL_RGBA,
-               tex_size,
-               tex_size,
-               0,
-               GL_RGBA,
-               GL_UNSIGNED_BYTE,
-               colors.data());
+  sphere_buff_atoms_->color_texture_image_data(colors.data());
 }
 
 void
