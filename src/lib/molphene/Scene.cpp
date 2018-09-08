@@ -18,8 +18,6 @@ Scene::setup_graphics()
 
   camera_.projection_mode(true);
 
-  renderer.init();
-
   return true;
 }
 
@@ -128,12 +126,6 @@ Scene::reset_mesh()
   }
 
   sphere_buff_atoms_->color_texture_image_data(colors.data());
-}
-
-void
-Scene::render_frame()
-{
-  renderer.render(*this, camera_);
 }
 
 void

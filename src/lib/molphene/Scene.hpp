@@ -65,9 +65,6 @@ public:
   change_dimension(GLsizei width, GLsizei height);
 
   void
-  render_frame();
-
-  void
   rotate(Vec3f rot);
 
   void
@@ -99,8 +96,6 @@ private:
   std::unique_ptr<Molecule> molecule_;
 
   ColourManager colour_manager_;
-
-  Renderer renderer;
 };
 
 } // namespace molphene

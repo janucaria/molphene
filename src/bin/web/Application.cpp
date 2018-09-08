@@ -17,14 +17,20 @@ Application::open_pdb_data(std::string pdbdata)
 
   scene.open_stream(pdbstm);
   scene.reset_mesh();
-  scene.render_frame();
+  render_frame();
 }
 
 void
 Application::canvas_size_change_callback(int width, int height)
 {
   scene.change_dimension(width, height);
-  scene.render_frame();
+  render_frame();
+}
+
+void
+Application::render_frame()
+{
+  renderer.render(scene, scene.get_camera());
 }
 
 void
@@ -225,6 +231,7 @@ END
   init_context();
 
   scene.setup_graphics();
+  renderer.init();
 
   auto width = 0;
   auto height = 0;
@@ -237,7 +244,7 @@ END
 
   scene.open_stream(pdbstm);
   scene.reset_mesh();
-  scene.render_frame();
+  render_frame();
 }
 
 } // namespace molphene
