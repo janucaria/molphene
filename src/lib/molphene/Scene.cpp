@@ -9,9 +9,6 @@ namespace molphene {
 bool
 Scene::setup_graphics()
 {
-  glClearColor(0.5, 0.5, 0.5, 1.0);
-  glEnable(GL_DEPTH_TEST);
-
   material_.diffuse_color = 0xFFFFFF;
 
   point_light_source_.location = {0, 0, -23};
@@ -21,11 +18,7 @@ Scene::setup_graphics()
 
   camera_.projection_mode(true);
 
-  color_light_shader_.init_program();
-  color_light_shader_.use_program();
-  color_light_shader_.light_source(light_source_);
-  color_light_shader_.material(material_);
-  color_light_shader_.fog(fog_);
+  renderer.init();
 
   glGenTextures(1, &atom_color_tex_);
   glBindTexture(GL_TEXTURE_2D, atom_color_tex_);
@@ -157,7 +150,6 @@ Scene::reset_mesh()
 void
 Scene::render_frame()
 {
-  auto renderer = Renderer{};
   renderer.render(*this, camera_);
 }
 

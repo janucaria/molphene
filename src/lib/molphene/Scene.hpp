@@ -6,7 +6,6 @@
 #include "BoundingSphere.hpp"
 #include "Camera.hpp"
 #include "ColorLightBuffer.hpp"
-#include "ColorLightShader.hpp"
 #include "ColourManager.hpp"
 #include "DirectionalLight.hpp"
 #include "Fog.hpp"
@@ -84,8 +83,6 @@ public:
 private:
   std::unique_ptr<ColorLightBuffer> sphere_buff_atoms_;
 
-  ColorLightShader color_light_shader_;
-
   Light_source light_source_;
 
   PointLight point_light_source_;
@@ -105,6 +102,8 @@ private:
   ColourManager colour_manager_;
 
   GLuint atom_color_tex_{0};
+
+  Renderer renderer;
 };
 
 } // namespace molphene

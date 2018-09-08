@@ -3,14 +3,22 @@
 
 #include "stdafx.hpp"
 
-#include "m3d.hpp"
 #include "ColorLightShader.hpp"
+#include "m3d.hpp"
 
 namespace molphene {
 
 template<typename = void>
 class GlRenderer {
 public:
+
+  void init() noexcept {
+    glClearColor(0.5, 0.5, 0.5, 1.0);
+    glEnable(GL_DEPTH_TEST);
+
+    color_light_shader_.init_program();
+  }
+
   template<typename TScene, typename TCamera>
   void
   render(const TScene& scene, TCamera&& camera)
@@ -19,9 +27,11 @@ public:
     using Mat4f = typename TScene::Mat4f;
 
     auto& model_matrix_ = scene.model_matrix_;
-    auto& color_light_shader_ = scene.color_light_shader_;
     auto& atom_color_tex_ = scene.atom_color_tex_;
     auto& sphere_buff_atoms_ = scene.sphere_buff_atoms_;
+    auto& light_source_ = scene.light_source_;
+    auto& material_ = scene.material_;
+    auto& fog_ = scene.fog_;
 
     const auto mv_matrix = model_matrix_ * camera.view_matrix;
     const auto norm_matrix = Mat3f{Mat4f{mv_matrix}.inverse().transpose()};
@@ -33,6 +43,10 @@ public:
     color_light_shader_.modelview_matrix(mv_matrix);
     color_light_shader_.normal_matrix(norm_matrix);
     color_light_shader_.color_texture_image(atom_color_tex_);
+
+    color_light_shader_.light_source(light_source_);
+    color_light_shader_.material(material_);
+    color_light_shader_.fog(fog_);
 
     auto&& size_ = sphere_buff_atoms_->size_;
     auto&& remain_instances_ = sphere_buff_atoms_->remain_instances_;
@@ -83,6 +97,7 @@ public:
   }
 
 private:
+  ColorLightShader color_light_shader_;
 };
 
 } // namespace molphene
