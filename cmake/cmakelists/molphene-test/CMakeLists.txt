@@ -22,9 +22,15 @@ foreach(Molphene_FILES ${Molphene_TEST_SRC_FILES})
 
   target_compile_options(${Molphene_TARGET_NAME} PRIVATE ${MOLPHENE_WARNING_OPTIONS} "-stdlib=libc++")
 
-  add_test(
-    NAME ${Molphene_TARGET_NAME}
-    COMMAND ${Molphene_TARGET_NAME}
-    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+  if(EMSCRIPTEN)
+    add_test(
+      NAME ${Molphene_TARGET_NAME}
+      COMMAND node "${CMAKE_CURRENT_BINARY_DIR}/${Molphene_TARGET_NAME}.js")
+  else()
+    add_test(
+      NAME ${Molphene_TARGET_NAME}
+      COMMAND ${Molphene_TARGET_NAME}
+      WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+  endif()
 
 endforeach()
