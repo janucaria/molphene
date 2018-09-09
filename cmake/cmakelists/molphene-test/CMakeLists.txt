@@ -12,11 +12,12 @@ foreach(Molphene_FILES ${Molphene_TEST_SRC_FILES})
 
   add_executable(${Molphene_TARGET_NAME} ${Molphene_FILES})
 
-  target_link_libraries(${Molphene_TARGET_NAME} PRIVATE molphene ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY})
+  target_link_libraries(${Molphene_TARGET_NAME} PRIVATE molphene)
 
   target_include_directories(${Molphene_TARGET_NAME}
   PRIVATE
     "${PROJECT_SOURCE_DIR}/src/lib"
+    "${PROJECT_SOURCE_DIR}/third_party/Catch2/single_include"
   )
 
   target_compile_options(${Molphene_TARGET_NAME} PRIVATE ${MOLPHENE_WARNING_OPTIONS} "-stdlib=libc++")
