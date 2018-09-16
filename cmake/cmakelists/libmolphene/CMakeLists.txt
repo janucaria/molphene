@@ -11,6 +11,7 @@ add_library(molphene
 "${PROJECT_SOURCE_DIR}/src/lib/molphene/ColorLightBuffer.cpp"
 "${PROJECT_SOURCE_DIR}/src/lib/molphene/ColorLightShader.cpp"
 "${PROJECT_SOURCE_DIR}/src/lib/molphene/ColourManager.cpp"
+"${PROJECT_SOURCE_DIR}/src/lib/molphene/GlRenderer.cpp"
 "${PROJECT_SOURCE_DIR}/src/lib/molphene/Scene.cpp")
 
 if(APPLE)

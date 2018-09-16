@@ -8,21 +8,14 @@
 
 namespace molphene {
 
-template<typename = void>
 class GlRenderer {
 public:
   void
-  init() noexcept
-  {
-    glClearColor(0.5, 0.5, 0.5, 1.0);
-    glEnable(GL_DEPTH_TEST);
-
-    color_light_shader_.init_program();
-  }
+  init() noexcept;
 
   template<typename TScene, typename TCamera>
   void
-  render(const TScene& scene, TCamera&& camera)
+  render(const TScene& scene, TCamera&& camera) noexcept
   {
     using Mat3f = typename TScene::Mat3f;
     using Mat4f = typename TScene::Mat4f;

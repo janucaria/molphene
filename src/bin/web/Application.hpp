@@ -38,7 +38,7 @@ private:
 
   molphene::Scene scene{};
 
-  molphene::GlRenderer<> renderer;
+  molphene::GlRenderer renderer;
 
   template<typename T>
   static auto mouse_event(const T* event)

@@ -253,7 +253,7 @@ END
 )";
 
 static molphene::Scene scene;
-static molphene::GlRenderer<> renderer;
+static molphene::GlRenderer renderer;
 static GLFWwindow* window;
 static bool is_mol_moi = false;
 static bool mouse_press = false;
