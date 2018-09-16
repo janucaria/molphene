@@ -172,4 +172,35 @@ Scene::get_camera()
   return camera_;
 }
 
+typename Scene::Mat4f
+Scene::model_matrix() const noexcept
+{
+  return model_matrix_;
+}
+
+typename Scene::LightSource
+Scene::light_source() const noexcept
+{
+  return light_source_;
+}
+
+typename Scene::Material
+Scene::material() const noexcept
+{
+  return material_;
+}
+
+typename Scene::Fog
+Scene::fog() const noexcept
+{
+  return fog_;
+}
+
+const ColorLightBuffer*
+Scene::mesh_buffers() const noexcept
+{
+  return sphere_buff_atoms_.get();
+}
+
+
 } // namespace molphene

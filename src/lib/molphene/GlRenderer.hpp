@@ -11,8 +11,9 @@ namespace molphene {
 template<typename = void>
 class GlRenderer {
 public:
-
-  void init() noexcept {
+  void
+  init() noexcept
+  {
     glClearColor(0.5, 0.5, 0.5, 1.0);
     glEnable(GL_DEPTH_TEST);
 
@@ -26,34 +27,32 @@ public:
     using Mat3f = typename TScene::Mat3f;
     using Mat4f = typename TScene::Mat4f;
 
-    auto& model_matrix_ = scene.model_matrix_;
-    auto& sphere_buff_atoms_ = scene.sphere_buff_atoms_;
-    auto& light_source_ = scene.light_source_;
-    auto& material_ = scene.material_;
-    auto& fog_ = scene.fog_;
+    const auto* mbuffers = scene.mesh_buffers();
 
-    const auto mv_matrix = model_matrix_ * camera.view_matrix;
+    const auto mv_matrix = scene.model_matrix() * camera.view_matrix;
     const auto norm_matrix = Mat3f{Mat4f{mv_matrix}.inverse().transpose()};
     const auto proj_matrix = camera.projection_matrix();
+
     glViewport(0, 0, camera.width, camera.height);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
     color_light_shader_.use_program();
     color_light_shader_.projection_matrix(proj_matrix);
     color_light_shader_.modelview_matrix(mv_matrix);
     color_light_shader_.normal_matrix(norm_matrix);
-    color_light_shader_.color_texture_image(sphere_buff_atoms_->color_texture_image());
+    color_light_shader_.color_texture_image(mbuffers->color_texture_image());
+    color_light_shader_.light_source(scene.light_source());
+    color_light_shader_.fog(scene.fog());
+    color_light_shader_.material(scene.material());
 
-    color_light_shader_.light_source(light_source_);
-    color_light_shader_.material(material_);
-    color_light_shader_.fog(fog_);
-
-    auto&& size_ = sphere_buff_atoms_->size_;
-    auto&& remain_instances_ = sphere_buff_atoms_->remain_instances_;
-    auto&& instances_per_block_ = sphere_buff_atoms_->instances_per_block_;
-    auto&& vert_buffers_ = sphere_buff_atoms_->vert_buffers_;
-    auto&& normal_buffers_ = sphere_buff_atoms_->normal_buffers_;
-    auto&& texcoord_buffers_ = sphere_buff_atoms_->texcoord_buffers_;
-    auto&& verts_per_instance_ = sphere_buff_atoms_->verts_per_instance_;
+    // TODO(janucaria): fix mesh buffers rendering
+    auto&& size_ = mbuffers->size_;
+    auto&& remain_instances_ = mbuffers->remain_instances_;
+    auto&& instances_per_block_ = mbuffers->instances_per_block_;
+    auto&& vert_buffers_ = mbuffers->vert_buffers_;
+    auto&& normal_buffers_ = mbuffers->normal_buffers_;
+    auto&& texcoord_buffers_ = mbuffers->texcoord_buffers_;
+    auto&& verts_per_instance_ = mbuffers->verts_per_instance_;
 
     glEnableVertexAttribArray(ColorLightShader::AttribLocation::vertex);
     glEnableVertexAttribArray(ColorLightShader::AttribLocation::normal);

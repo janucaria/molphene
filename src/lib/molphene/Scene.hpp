@@ -18,7 +18,6 @@
 #include "mol/Model.hpp"
 #include "mol/Molecule.hpp"
 #include "mol/PdbParser.hpp"
-#include "GlRenderer.hpp"
 #include "SphereMeshBuilder.hpp"
 
 namespace molphene {
@@ -43,17 +42,13 @@ public:
 
   using Material = Material<Rgba8, ConfigType>;
 
-  using Light_source = DirectionalLight<Rgba8, ConfigType>;
+  using LightSource = DirectionalLight<Rgba8, ConfigType>;
 
   using PointLight = PointLight<Rgba8, ConfigType>;
 
   using SpotLight = SpotLight<Rgba8, ConfigType>;
 
   using SphereMeshBuilder = SphereMeshBuilder<ConfigType>;
-
-  using Renderer = GlRenderer<>;
-
-  friend Renderer;
 
   bool
   setup_graphics();
@@ -76,10 +71,25 @@ public:
   Camera&
   get_camera();
 
+  Mat4f
+  model_matrix() const noexcept;
+
+  LightSource
+  light_source() const noexcept;
+
+  Material
+  material() const noexcept;
+
+  Fog
+  fog() const noexcept;
+
+  const ColorLightBuffer*
+  mesh_buffers() const noexcept;
+
 private:
   std::unique_ptr<ColorLightBuffer> sphere_buff_atoms_;
 
-  Light_source light_source_;
+  LightSource light_source_;
 
   PointLight point_light_source_;
 
