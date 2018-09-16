@@ -11,7 +11,7 @@ Require
 
 Test
 ———————
-Molphene use Boost.Test for testing.
+Molphene use Catch2 (https://github.com/catchorg/Catch2) for testing.
 
 Authors
 ———————
