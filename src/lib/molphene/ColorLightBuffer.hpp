@@ -9,10 +9,14 @@
 
 namespace molphene {
 
+class GlRenderer;
+
 class ColorLightBuffer {
 public:
   using Vec2f = Vec2<float>;
   using Vec3f = Vec3<float>;
+
+  friend GlRenderer;
 
   ColorLightBuffer(GLsizei verts_per_instance, GLsizeiptr total_instances);
 
@@ -36,7 +40,13 @@ public:
            gsl::span<const Vec2f> texcoords);
 
   void
-  draw();
+  color_texture_image_data(const GLvoid* data) const noexcept;
+
+  GLsizei
+  color_texture_size() const noexcept;
+
+  GLuint
+  color_texture_image() const noexcept;
 
 private:
   GLsizei verts_per_instance_{0};
@@ -44,6 +54,9 @@ private:
   GLsizei remain_instances_{0};
 
   GLsizei size_;
+
+  GLuint color_tex_{0};
+  GLsizei color_tex_size_{0};
 
   std::vector<GLuint> vert_buffers_;
   std::vector<GLuint> normal_buffers_;

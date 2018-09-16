@@ -9,9 +9,6 @@ namespace molphene {
 bool
 Scene::setup_graphics()
 {
-  glClearColor(0.5, 0.5, 0.5, 1.0);
-  glEnable(GL_DEPTH_TEST);
-
   material_.diffuse_color = 0xFFFFFF;
 
   point_light_source_.location = {0, 0, -23};
@@ -20,19 +17,6 @@ Scene::setup_graphics()
   spot_light_source_.location = {0, 0, -20};
 
   camera_.projection_mode(true);
-
-  color_light_shader_.init_program();
-  color_light_shader_.use_program();
-  color_light_shader_.light_source(light_source_);
-  color_light_shader_.material(material_);
-  color_light_shader_.fog(fog_);
-
-  glGenTextures(1, &atom_color_tex_);
-  glBindTexture(GL_TEXTURE_2D, atom_color_tex_);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
   return true;
 }
@@ -99,13 +83,12 @@ Scene::reset_mesh()
   const auto model_per_chunks = mesh_builder.size();
   const auto remain_models = total_instances % model_per_chunks;
 
-  const auto tex_size =
-   static_cast<size_t>(std::ceil(std::sqrt(total_instances)));
-  auto colors = std::vector<Rgba8>(tex_size * tex_size);
-
   sphere_buff_atoms_ =
    std::make_unique<typename decltype(sphere_buff_atoms_)::element_type>(
     vertices_per_instance, total_instances);
+
+  const auto tex_size = sphere_buff_atoms_->color_texture_size();
+  auto colors = std::vector<Rgba8>(tex_size * tex_size);
 
   auto chunk_count = size_t{0};
   for(auto i = size_t{0}; i < total_instances; ++i) {
@@ -142,37 +125,7 @@ Scene::reset_mesh()
                                  mesh_builder.texcoords());
   }
 
-  glBindTexture(GL_TEXTURE_2D, atom_color_tex_);
-  glTexImage2D(GL_TEXTURE_2D,
-               0,
-               GL_RGBA,
-               tex_size,
-               tex_size,
-               0,
-               GL_RGBA,
-               GL_UNSIGNED_BYTE,
-               colors.data());
-}
-
-void
-Scene::render_frame()
-{
-  const auto mv_matrix = model_matrix_ * camera_.view_matrix;
-  const auto norm_matrix = Mat3f{Mat4f{mv_matrix}.inverse().transpose()};
-  const auto proj_matrix = camera_.projection_matrix();
-
-  glViewport(0, 0, camera_.width, camera_.height);
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-  color_light_shader_.use_program();
-
-  color_light_shader_.projection_matrix(proj_matrix);
-  color_light_shader_.modelview_matrix(mv_matrix);
-  color_light_shader_.normal_matrix(norm_matrix);
-  color_light_shader_.color_texture_image(atom_color_tex_);
-
-  sphere_buff_atoms_->draw();
-  glFlush();
+  sphere_buff_atoms_->color_texture_image_data(colors.data());
 }
 
 void
@@ -218,5 +171,36 @@ Scene::get_camera()
 {
   return camera_;
 }
+
+typename Scene::Mat4f
+Scene::model_matrix() const noexcept
+{
+  return model_matrix_;
+}
+
+typename Scene::LightSource
+Scene::light_source() const noexcept
+{
+  return light_source_;
+}
+
+typename Scene::Material
+Scene::material() const noexcept
+{
+  return material_;
+}
+
+typename Scene::Fog
+Scene::fog() const noexcept
+{
+  return fog_;
+}
+
+const ColorLightBuffer*
+Scene::mesh_buffers() const noexcept
+{
+  return sphere_buff_atoms_.get();
+}
+
 
 } // namespace molphene

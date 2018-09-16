@@ -7,7 +7,15 @@ namespace molphene {
 ColorLightBuffer::ColorLightBuffer(GLsizei verts_per_instance,
                                    GLsizeiptr total_instances)
 : verts_per_instance_{verts_per_instance}
+, color_tex_size_(static_cast<GLsizei>(std::ceil(std::sqrt(total_instances))))
 {
+  glGenTextures(1, &color_tex_);
+  glBindTexture(GL_TEXTURE_2D, color_tex_);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
   const auto bytes_per_vert = GLsizeiptr{sizeof(Vec3f) * 2 + sizeof(Vec2f)};
   const auto bytes_per_mesh = GLsizeiptr{verts_per_instance_ * bytes_per_vert};
   const auto max_bytes_per_chunk = GLsizeiptr{1024 * 1024 * 512};
@@ -108,44 +116,30 @@ ColorLightBuffer::set_data(GLintptr offset,
 }
 
 void
-ColorLightBuffer::draw()
+ColorLightBuffer::color_texture_image_data(const GLvoid* data) const noexcept
 {
-  glEnableVertexAttribArray(ColorLightShader::AttribLocation::vertex);
-  glEnableVertexAttribArray(ColorLightShader::AttribLocation::normal);
-  glEnableVertexAttribArray(ColorLightShader::AttribLocation::texcoord0);
-  for(auto i = GLsizei{0}; i < size_; ++i) {
-    const auto verts_count =
-     GLsizei{i == (size_ - 1) ? remain_instances_ : instances_per_block_};
+  glBindTexture(GL_TEXTURE_2D, color_tex_);
+  glTexImage2D(GL_TEXTURE_2D,
+               0,
+               GL_RGBA,
+               color_tex_size_,
+               color_tex_size_,
+               0,
+               GL_RGBA,
+               GL_UNSIGNED_BYTE,
+               data);
+}
 
-    glBindBuffer(GL_ARRAY_BUFFER, vert_buffers_[i]);
-    glVertexAttribPointer(ColorLightShader::AttribLocation::vertex,
-                          3,
-                          GL_FLOAT,
-                          GL_FALSE,
-                          0,
-                          nullptr);
+GLuint
+ColorLightBuffer::color_texture_image() const noexcept
+{
+  return color_tex_;
+}
 
-    glBindBuffer(GL_ARRAY_BUFFER, normal_buffers_[i]);
-    glVertexAttribPointer(ColorLightShader::AttribLocation::normal,
-                          3,
-                          GL_FLOAT,
-                          GL_FALSE,
-                          0,
-                          nullptr);
-
-    glBindBuffer(GL_ARRAY_BUFFER, texcoord_buffers_[i]);
-    glVertexAttribPointer(ColorLightShader::AttribLocation::texcoord0,
-                          2,
-                          GL_FLOAT,
-                          GL_FALSE,
-                          0,
-                          nullptr);
-
-    glDrawArrays(GL_TRIANGLE_STRIP, 0, verts_count * verts_per_instance_);
-  }
-  glEnableVertexAttribArray(ColorLightShader::AttribLocation::vertex);
-  glEnableVertexAttribArray(ColorLightShader::AttribLocation::normal);
-  glEnableVertexAttribArray(ColorLightShader::AttribLocation::texcoord0);
+GLsizei
+ColorLightBuffer::color_texture_size() const noexcept
+{
+  return color_tex_size_;
 }
 
 } // namespace molphene

@@ -6,7 +6,6 @@
 #include "BoundingSphere.hpp"
 #include "Camera.hpp"
 #include "ColorLightBuffer.hpp"
-#include "ColorLightShader.hpp"
 #include "ColourManager.hpp"
 #include "DirectionalLight.hpp"
 #include "Fog.hpp"
@@ -19,7 +18,7 @@
 #include "mol/Model.hpp"
 #include "mol/Molecule.hpp"
 #include "mol/PdbParser.hpp"
-#include "opengl.hpp"
+#include "SphereMeshBuilder.hpp"
 
 namespace molphene {
 
@@ -43,7 +42,7 @@ public:
 
   using Material = Material<Rgba8, ConfigType>;
 
-  using Light_source = DirectionalLight<Rgba8, ConfigType>;
+  using LightSource = DirectionalLight<Rgba8, ConfigType>;
 
   using PointLight = PointLight<Rgba8, ConfigType>;
 
@@ -61,9 +60,6 @@ public:
   change_dimension(GLsizei width, GLsizei height);
 
   void
-  render_frame();
-
-  void
   rotate(Vec3f rot);
 
   void
@@ -75,12 +71,25 @@ public:
   Camera&
   get_camera();
 
+  Mat4f
+  model_matrix() const noexcept;
+
+  LightSource
+  light_source() const noexcept;
+
+  Material
+  material() const noexcept;
+
+  Fog
+  fog() const noexcept;
+
+  const ColorLightBuffer*
+  mesh_buffers() const noexcept;
+
 private:
   std::unique_ptr<ColorLightBuffer> sphere_buff_atoms_;
 
-  ColorLightShader color_light_shader_;
-
-  Light_source light_source_;
+  LightSource light_source_;
 
   PointLight point_light_source_;
 
@@ -97,8 +106,6 @@ private:
   std::unique_ptr<Molecule> molecule_;
 
   ColourManager colour_manager_;
-
-  GLuint atom_color_tex_{0};
 };
 
 } // namespace molphene

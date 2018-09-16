@@ -6,6 +6,7 @@
 
 #include <molphene/Scene.hpp>
 #include <molphene/stdafx.hpp>
+#include <molphene/GlRenderer.hpp>
 
 #include "ClickState.hpp"
 
@@ -25,6 +26,9 @@ public:
   void
   canvas_size_change_callback(int width, int height);
 
+  void
+  render_frame();
+
 private:
   ClickState click_state{false, 0, 0};
 
@@ -33,6 +37,8 @@ private:
   const char* canvas_target{"canvas"};
 
   molphene::Scene scene{};
+
+  molphene::GlRenderer renderer;
 
   template<typename T>
   static auto mouse_event(const T* event)
@@ -95,7 +101,7 @@ private:
       const auto delta_y = static_cast<double>(app->click_state.last_y) - old_y;
 
       app->scene.rotate({M_PI * delta_y / 180, M_PI * delta_x / 180, 0});
-      app->scene.render_frame();
+      app->render_frame();
     }
 
     return EM_TRUE;

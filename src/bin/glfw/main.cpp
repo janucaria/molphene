@@ -7,6 +7,7 @@
 #include <GLFW/glfw3.h>
 
 #include <molphene/Scene.hpp>
+#include <molphene/GlRenderer.hpp>
 
 const char* pdbhem = R"(
 ATOM      1  CHA HEM A   1      -2.161  -0.125   0.490  1.00 10.00           C
@@ -252,6 +253,7 @@ END
 )";
 
 static molphene::Scene scene;
+static molphene::GlRenderer renderer;
 static GLFWwindow* window;
 static bool is_mol_moi = false;
 static bool mouse_press = false;
@@ -382,7 +384,7 @@ init_window(int width, int height)
 void
 render()
 {
-  scene.render_frame();
+  renderer.render(scene, scene.get_camera());
 
   glfwSwapBuffers(window);
   glfwPollEvents();
@@ -412,6 +414,8 @@ main(int argc, char* argv[])
   glfwGetFramebufferSize(window, &width, &height);
   scene.setup_graphics();
   scene.change_dimension(width, height);
+
+  renderer.init();
 
   if(argc > 1) {
     std::ifstream pdbfile(argv[1]);

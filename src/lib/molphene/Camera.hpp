@@ -36,27 +36,26 @@ public:
     return float_t(width) / height;
   }
 
-  const Mat4f&
-  orthogonal_proj_matrix() noexcept
+  Mat4f
+  orthogonal_proj_matrix() const noexcept
   {
     const auto top = std::tan(fov / 2) * ((far - near) / 2 + near) * zoom;
     const auto right = aspect_ratio() * top;
-    return projection_matrix_.orthogonal(-right, right, -top, top, near, far);
+    return Mat4f{1}.orthogonal(-right, right, -top, top, near, far);
   }
 
-  const Mat4f&
-  perspective_proj_matrix() noexcept
+  Mat4f
+  perspective_proj_matrix() const noexcept
   {
     const auto top = std::tan(fov / 2) * near * zoom;
     const auto right = aspect_ratio() * top;
-    return projection_matrix_.frustum(-right, right, -top, top, near, far);
+    return Mat4f{1}.frustum(-right, right, -top, top, near, far);
   }
 
-  const Mat4f&
-  projection_matrix() noexcept
+  Mat4f
+  projection_matrix() const noexcept
   {
-    return projection_mode_ ? perspective_proj_matrix()
-                            : orthogonal_proj_matrix();
+    return projection_mode_ ? perspective_proj_matrix() : orthogonal_proj_matrix();
   }
 
   bool
