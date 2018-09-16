@@ -15,7 +15,7 @@ public:
 
   template<typename TScene, typename TCamera>
   void
-  render(const TScene& scene, TCamera&& camera) noexcept
+  render(const TScene& scene, const TCamera& camera) noexcept
   {
     using Mat3f = typename TScene::Mat3f;
     using Mat4f = typename TScene::Mat4f;
