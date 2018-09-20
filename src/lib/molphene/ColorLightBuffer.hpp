@@ -3,7 +3,9 @@
 
 #include "stdafx.hpp"
 
+#include "ShaderAttribLocation.hpp"
 #include "SphereMeshBuilder.hpp"
+#include "VertexAttribsBuffer.hpp"
 #include "m3d.hpp"
 #include "opengl.hpp"
 
@@ -13,8 +15,15 @@ class GlRenderer;
 
 class ColorLightBuffer {
 public:
-  using Vec2f = Vec2<float>;
-  using Vec3f = Vec3<float>;
+  using Vec2f = Vec2<GLfloat>;
+  using Vec3f = Vec3<GLfloat>;
+
+  using PositionAttribsBuffers =
+   std::vector<VertexAttribsBuffer<Vec3f, ShaderAttribLocation::vertex>>;
+  using NormalAttribsBuffers =
+   std::vector<VertexAttribsBuffer<Vec3f, ShaderAttribLocation::normal>>;
+  using ColorAttribsBuffers =
+   std::vector<VertexAttribsBuffer<Vec2f, ShaderAttribLocation::texcoordcolor>>;
 
   friend GlRenderer;
 
@@ -58,9 +67,9 @@ private:
   GLuint color_tex_{0};
   GLsizei color_tex_size_{0};
 
-  std::vector<GLuint> vert_buffers_;
-  std::vector<GLuint> normal_buffers_;
-  std::vector<GLuint> texcoord_buffers_;
+  PositionAttribsBuffers vert_buffers_;
+  NormalAttribsBuffers normal_buffers_;
+  ColorAttribsBuffers texcoord_buffers_;
 };
 } // namespace molphene
 

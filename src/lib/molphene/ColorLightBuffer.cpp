@@ -31,30 +31,17 @@ ColorLightBuffer::ColorLightBuffer(GLsizei verts_per_instance,
   }
 
   vert_buffers_.reserve(size_);
-  glGenBuffers(size_, vert_buffers_.data());
-
   normal_buffers_.reserve(size_);
-  glGenBuffers(size_, normal_buffers_.data());
-
   texcoord_buffers_.reserve(size_);
-  glGenBuffers(size_, texcoord_buffers_.data());
 
   for(auto i = GLsizei{0}; i < size_; ++i) {
     const GLsizeiptr meshes =
      i == (size_ - 1) ? remain_instances_ : instances_per_block_;
     const GLsizeiptr verts = meshes * verts_per_instance_;
 
-    glBindBuffer(GL_ARRAY_BUFFER, vert_buffers_[i]);
-    glBufferData(
-     GL_ARRAY_BUFFER, verts * sizeof(Vec3f), nullptr, GL_STATIC_DRAW);
-
-    glBindBuffer(GL_ARRAY_BUFFER, normal_buffers_[i]);
-    glBufferData(
-     GL_ARRAY_BUFFER, verts * sizeof(Vec3f), nullptr, GL_STATIC_DRAW);
-
-    glBindBuffer(GL_ARRAY_BUFFER, texcoord_buffers_[i]);
-    glBufferData(
-     GL_ARRAY_BUFFER, verts * sizeof(Vec2f), nullptr, GL_STATIC_DRAW);
+    vert_buffers_.emplace_back(verts, GL_STATIC_DRAW);
+    normal_buffers_.emplace_back(verts, GL_STATIC_DRAW);
+    texcoord_buffers_.emplace_back(verts, GL_STATIC_DRAW);
   }
 
   glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -62,10 +49,6 @@ ColorLightBuffer::ColorLightBuffer(GLsizei verts_per_instance,
 
 ColorLightBuffer::~ColorLightBuffer()
 {
-  glDeleteBuffers(size_, vert_buffers_.data());
-  glDeleteBuffers(size_, normal_buffers_.data());
-  glDeleteBuffers(size_, texcoord_buffers_.data());
-
   size_ = verts_per_instance_ = remain_instances_ = 0;
 }
 
@@ -84,29 +67,19 @@ ColorLightBuffer::set_data(GLintptr offset,
     const auto elems_fill = GLsizeiptr{instances_per_block_ - index};
     const auto fill_size = GLsizeiptr{size < elems_fill ? size : elems_fill};
 
-    glBindBuffer(GL_ARRAY_BUFFER, vert_buffers_[chunk]);
-    glBufferSubData(GL_ARRAY_BUFFER,
-                    index * verts_per_instance_ *
-                     sizeof(std::remove_pointer_t<decltype(verts)::value_type>),
-                    fill_size * verts_per_instance_ *
-                     sizeof(std::remove_pointer_t<decltype(verts)::value_type>),
-                    verts.first(data_offset * verts_per_instance_).data());
+    vert_buffers_[chunk].sub_data(
+     index * verts_per_instance_,
+     fill_size * verts_per_instance_,
+     verts.first(data_offset * verts_per_instance_).data());
 
-    glBindBuffer(GL_ARRAY_BUFFER, normal_buffers_[chunk]);
-    glBufferSubData(GL_ARRAY_BUFFER,
-                    index * verts_per_instance_ *
-                     sizeof(std::remove_pointer_t<decltype(norms)::value_type>),
-                    fill_size * verts_per_instance_ *
-                     sizeof(std::remove_pointer_t<decltype(norms)::value_type>),
-                    norms.first(data_offset * verts_per_instance_).data());
+    normal_buffers_[chunk].sub_data(
+     index * verts_per_instance_,
+     fill_size * verts_per_instance_,
+     norms.first(data_offset * verts_per_instance_).data());
 
-    glBindBuffer(GL_ARRAY_BUFFER, texcoord_buffers_[chunk]);
-    glBufferSubData(
-     GL_ARRAY_BUFFER,
-     index * verts_per_instance_ *
-      sizeof(std::remove_pointer_t<decltype(texcoords)::value_type>),
-     fill_size * verts_per_instance_ *
-      sizeof(std::remove_pointer_t<decltype(texcoords)::value_type>),
+    texcoord_buffers_[chunk].sub_data(
+     index * verts_per_instance_,
+     fill_size * verts_per_instance_,
      texcoords.first(data_offset * verts_per_instance_).data());
 
     size -= fill_size;

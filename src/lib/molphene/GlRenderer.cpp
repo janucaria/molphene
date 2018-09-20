@@ -13,7 +13,8 @@ GlRenderer::init() noexcept
 }
 
 void
-GlRenderer::render(const Scene& scene, const GlRenderer::Camera& camera) noexcept
+GlRenderer::render(const Scene& scene,
+                   const GlRenderer::Camera& camera) noexcept
 {
   using Mat3f = typename Scene::Mat3f;
   using Mat4f = typename Scene::Mat4f;
@@ -47,43 +48,24 @@ GlRenderer::render(const Scene& scene, const GlRenderer::Camera& camera) noexcep
 
   glEnableVertexAttribArray(static_cast<GLuint>(ShaderAttribLocation::vertex));
   glEnableVertexAttribArray(static_cast<GLuint>(ShaderAttribLocation::normal));
-  glEnableVertexAttribArray(static_cast<GLuint>(ShaderAttribLocation::texcoordcolor));
+  glEnableVertexAttribArray(
+   static_cast<GLuint>(ShaderAttribLocation::texcoordcolor));
   for(auto i = GLsizei{0}; i < size_; ++i) {
     const auto verts_count =
-      GLsizei{i == (size_ - 1) ? remain_instances_ : instances_per_block_};
+     GLsizei{i == (size_ - 1) ? remain_instances_ : instances_per_block_};
 
-    glBindBuffer(GL_ARRAY_BUFFER, vert_buffers_[i]);
-    glVertexAttribPointer(static_cast<GLuint>(ShaderAttribLocation::vertex),
-                          3,
-                          GL_FLOAT,
-                          GL_FALSE,
-                          0,
-                          nullptr);
-
-    glBindBuffer(GL_ARRAY_BUFFER, normal_buffers_[i]);
-    glVertexAttribPointer(static_cast<GLuint>(ShaderAttribLocation::normal),
-                          3,
-                          GL_FLOAT,
-                          GL_FALSE,
-                          0,
-                          nullptr);
-
-    glBindBuffer(GL_ARRAY_BUFFER, texcoord_buffers_[i]);
-    glVertexAttribPointer(static_cast<GLuint>(ShaderAttribLocation::texcoordcolor),
-                          2,
-                          GL_FLOAT,
-                          GL_FALSE,
-                          0,
-                          nullptr);
+    vert_buffers_[i].attrib_pointer(3, GL_FLOAT, GL_FALSE);
+    normal_buffers_[i].attrib_pointer(3, GL_FLOAT, GL_FALSE);
+    texcoord_buffers_[i].attrib_pointer(2, GL_FLOAT, GL_FALSE);
 
     glDrawArrays(GL_TRIANGLE_STRIP, 0, verts_count * verts_per_instance_);
   }
   glEnableVertexAttribArray(static_cast<GLuint>(ShaderAttribLocation::vertex));
   glEnableVertexAttribArray(static_cast<GLuint>(ShaderAttribLocation::normal));
-  glEnableVertexAttribArray(static_cast<GLuint>(ShaderAttribLocation::texcoordcolor));
+  glEnableVertexAttribArray(
+   static_cast<GLuint>(ShaderAttribLocation::texcoordcolor));
 
   glFlush();
 }
-
 
 } // namespace molphene
