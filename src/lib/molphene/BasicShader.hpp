@@ -48,7 +48,7 @@ protected:
   GLuint g_frag_shader{0};
 
   GLuint
-  create_shader(GLenum shader_type, const char* psource)
+  create_shader(GLenum shader_type, const char* psource) noexcept
   {
     auto shader = glCreateShader(shader_type);
     if(shader) {
@@ -57,14 +57,17 @@ protected:
       auto compiled = GLint{0};
       glGetShaderiv(shader, GL_COMPILE_STATUS, &compiled);
       if(!compiled) {
+#ifndef NDEBUG
         auto infolen = GLint{0};
         glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &infolen);
         if(infolen) {
           const auto buff = std::make_unique<char>(infolen);
           glGetShaderInfoLog(shader, infolen, nullptr, buff.get());
-          // TODO(janucaria): LOG_E("Could not compile shader %d:\n%s\n",
-          // shaderType, buf);
+          std::cerr << "Could not compile shader "
+                    << std::to_string(shader_type) << '\n'
+                    << buff.get() << '\n';
         }
+#endif
         glDeleteShader(shader);
         shader = 0;
       }
@@ -97,13 +100,15 @@ protected:
       glLinkProgram(sh_program);
       glGetProgramiv(sh_program, GL_LINK_STATUS, &link_status);
       if(link_status != GL_TRUE) {
+#ifndef NDEBUG
         auto bufflen = GLint{0};
         glGetProgramiv(sh_program, GL_INFO_LOG_LENGTH, &bufflen);
         if(bufflen) {
           const auto buff = std::make_unique<char>(bufflen);
           glGetProgramInfoLog(sh_program, bufflen, nullptr, buff.get());
-          // TODO(janucaria): LOG_E("Could not link program:\n%s\n", buf);
+          std::cerr << "Could not link program\n" << buff.get() << '\n';
         }
+#endif
         glDeleteProgram(sh_program);
         sh_program = 0;
       }
@@ -112,13 +117,15 @@ protected:
       auto validate_status = GLint{GL_FALSE};
       glGetProgramiv(sh_program, GL_VALIDATE_STATUS, &validate_status);
       if(validate_status != GL_TRUE) {
+#ifndef NDEBUG
         auto bufflen = GLint{0};
         glGetProgramiv(sh_program, GL_INFO_LOG_LENGTH, &bufflen);
         if(bufflen) {
           const auto buff = std::make_unique<char>(bufflen);
           glGetProgramInfoLog(sh_program, bufflen, nullptr, buff.get());
-          // TODO(janucaria): LOG_E("Could not link program:\n%s\n", buf);
+          std::cerr << "Could not validate program\n" << buff.get() << '\n';
         }
+#endif
         glDeleteProgram(sh_program);
         sh_program = 0;
       }
