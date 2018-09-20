@@ -11,8 +11,6 @@ namespace molphene {
 template<typename TDerived>
 class BasicShader {
 public:
-  enum AttribLocation : GLuint { vertex, normal, color, texcoord0 };
-
   BasicShader() noexcept = default;
 
   bool
@@ -93,7 +91,7 @@ protected:
       glAttachShader(sh_program, frag_sh);
 
       for(auto [index, name] : as_const_derived()->get_attribs_location()) {
-        glBindAttribLocation(sh_program, index, name);
+        glBindAttribLocation(sh_program, static_cast<GLuint>(index), name);
       }
 
       auto link_status = GLint{GL_FALSE};

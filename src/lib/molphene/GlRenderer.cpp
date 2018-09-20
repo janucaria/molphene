@@ -1,4 +1,5 @@
 #include "GlRenderer.hpp"
+#include "ShaderAttribLocation.hpp"
 
 namespace molphene {
 
@@ -44,15 +45,15 @@ GlRenderer::render(const Scene& scene, const GlRenderer::Camera& camera) noexcep
   auto&& texcoord_buffers_ = mbuffers->texcoord_buffers_;
   auto&& verts_per_instance_ = mbuffers->verts_per_instance_;
 
-  glEnableVertexAttribArray(ColorLightShader::AttribLocation::vertex);
-  glEnableVertexAttribArray(ColorLightShader::AttribLocation::normal);
-  glEnableVertexAttribArray(ColorLightShader::AttribLocation::texcoord0);
+  glEnableVertexAttribArray(static_cast<GLuint>(ShaderAttribLocation::vertex));
+  glEnableVertexAttribArray(static_cast<GLuint>(ShaderAttribLocation::normal));
+  glEnableVertexAttribArray(static_cast<GLuint>(ShaderAttribLocation::texcoordcolor));
   for(auto i = GLsizei{0}; i < size_; ++i) {
     const auto verts_count =
       GLsizei{i == (size_ - 1) ? remain_instances_ : instances_per_block_};
 
     glBindBuffer(GL_ARRAY_BUFFER, vert_buffers_[i]);
-    glVertexAttribPointer(ColorLightShader::AttribLocation::vertex,
+    glVertexAttribPointer(static_cast<GLuint>(ShaderAttribLocation::vertex),
                           3,
                           GL_FLOAT,
                           GL_FALSE,
@@ -60,7 +61,7 @@ GlRenderer::render(const Scene& scene, const GlRenderer::Camera& camera) noexcep
                           nullptr);
 
     glBindBuffer(GL_ARRAY_BUFFER, normal_buffers_[i]);
-    glVertexAttribPointer(ColorLightShader::AttribLocation::normal,
+    glVertexAttribPointer(static_cast<GLuint>(ShaderAttribLocation::normal),
                           3,
                           GL_FLOAT,
                           GL_FALSE,
@@ -68,7 +69,7 @@ GlRenderer::render(const Scene& scene, const GlRenderer::Camera& camera) noexcep
                           nullptr);
 
     glBindBuffer(GL_ARRAY_BUFFER, texcoord_buffers_[i]);
-    glVertexAttribPointer(ColorLightShader::AttribLocation::texcoord0,
+    glVertexAttribPointer(static_cast<GLuint>(ShaderAttribLocation::texcoordcolor),
                           2,
                           GL_FLOAT,
                           GL_FALSE,
@@ -77,9 +78,9 @@ GlRenderer::render(const Scene& scene, const GlRenderer::Camera& camera) noexcep
 
     glDrawArrays(GL_TRIANGLE_STRIP, 0, verts_count * verts_per_instance_);
   }
-  glEnableVertexAttribArray(ColorLightShader::AttribLocation::vertex);
-  glEnableVertexAttribArray(ColorLightShader::AttribLocation::normal);
-  glEnableVertexAttribArray(ColorLightShader::AttribLocation::texcoord0);
+  glEnableVertexAttribArray(static_cast<GLuint>(ShaderAttribLocation::vertex));
+  glEnableVertexAttribArray(static_cast<GLuint>(ShaderAttribLocation::normal));
+  glEnableVertexAttribArray(static_cast<GLuint>(ShaderAttribLocation::texcoordcolor));
 
   glFlush();
 }
