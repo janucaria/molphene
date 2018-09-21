@@ -11,8 +11,6 @@
 
 namespace molphene {
 
-class GlRenderer;
-
 class ColorLightBuffer {
 public:
   using Vec2f = Vec2<GLfloat>;
@@ -24,8 +22,6 @@ public:
    std::vector<VertexAttribsBuffer<Vec3f, ShaderAttribLocation::normal>>;
   using ColorAttribsBuffers =
    std::vector<VertexAttribsBuffer<Vec2f, ShaderAttribLocation::texcoordcolor>>;
-
-  friend GlRenderer;
 
   ColorLightBuffer(GLsizei verts_per_instance, GLsizeiptr total_instances);
 
@@ -56,6 +52,23 @@ public:
 
   GLuint
   color_texture_image() const noexcept;
+
+  template<typename TCallback>
+  void
+  setup_attrib_pointer(TCallback fn) const
+   noexcept(noexcept(fn(std::declval<GLsizei>())))
+  {
+    for(auto i = GLsizei{0}; i < size_; ++i) {
+      const auto verts_count =
+       GLsizei{i == (size_ - 1) ? remain_instances_ : instances_per_block_};
+
+      vert_buffers_[i].attrib_pointer();
+      normal_buffers_[i].attrib_pointer();
+      texcoord_buffers_[i].attrib_pointer();
+
+      fn(verts_count * verts_per_instance_);
+    }
+  }
 
 private:
   GLsizei verts_per_instance_{0};

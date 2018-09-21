@@ -37,29 +37,14 @@ GlRenderer::render(const Scene& scene,
   color_light_shader_.fog(scene.fog());
   color_light_shader_.material(scene.material());
 
-  // TODO(janucaria): fix mesh buffers rendering
-  auto&& size_ = mbuffers->size_;
-  auto&& remain_instances_ = mbuffers->remain_instances_;
-  auto&& instances_per_block_ = mbuffers->instances_per_block_;
-  auto&& vert_buffers_ = mbuffers->vert_buffers_;
-  auto&& normal_buffers_ = mbuffers->normal_buffers_;
-  auto&& texcoord_buffers_ = mbuffers->texcoord_buffers_;
-  auto&& verts_per_instance_ = mbuffers->verts_per_instance_;
-
   glEnableVertexAttribArray(static_cast<GLuint>(ShaderAttribLocation::vertex));
   glEnableVertexAttribArray(static_cast<GLuint>(ShaderAttribLocation::normal));
   glEnableVertexAttribArray(
    static_cast<GLuint>(ShaderAttribLocation::texcoordcolor));
-  for(auto i = GLsizei{0}; i < size_; ++i) {
-    const auto verts_count =
-     GLsizei{i == (size_ - 1) ? remain_instances_ : instances_per_block_};
 
-    vert_buffers_[i].attrib_pointer();
-    normal_buffers_[i].attrib_pointer();
-    texcoord_buffers_[i].attrib_pointer();
+  mbuffers->setup_attrib_pointer(
+   [](auto count) { glDrawArrays(GL_TRIANGLE_STRIP, 0, count); });
 
-    glDrawArrays(GL_TRIANGLE_STRIP, 0, verts_count * verts_per_instance_);
-  }
   glEnableVertexAttribArray(static_cast<GLuint>(ShaderAttribLocation::vertex));
   glEnableVertexAttribArray(static_cast<GLuint>(ShaderAttribLocation::normal));
   glEnableVertexAttribArray(
