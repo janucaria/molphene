@@ -7,9 +7,9 @@ ColorLightShader::ColorLightShader() noexcept = default;
 typename ColorLightShader::Attribs_location_name
 ColorLightShader::get_attribs_location() const noexcept
 {
-  return {{{AttribLocation::vertex, "a_Vertex"},
-           {AttribLocation::normal, "a_Normal"},
-           {AttribLocation::texcoord0, "a_TexCoord0"}}};
+  return {{{ShaderAttribLocation::vertex, "a_Vertex"},
+           {ShaderAttribLocation::normal, "a_Normal"},
+           {ShaderAttribLocation::texcoordcolor, "a_TexCoord0"}}};
 }
 
 void
@@ -66,7 +66,7 @@ ColorLightShader::setup_gl_uniforms_val() const noexcept
 void
 ColorLightShader::setup_gl_attribs_val() const noexcept
 {
-  glVertexAttrib4f(AttribLocation::vertex, 0, 0, 0, 1);
+  glVertexAttrib4f(static_cast<GLuint>(ShaderAttribLocation::vertex), 0, 0, 0, 1);
 }
 
 void

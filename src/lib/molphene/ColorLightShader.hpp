@@ -11,6 +11,7 @@
 #include "SpotLight.hpp"
 #include "m3d.hpp"
 #include "opengl.hpp"
+#include "ShaderAttribLocation.hpp"
 
 namespace molphene {
 class ColorLightShader : public BasicShader<ColorLightShader> {
@@ -21,7 +22,7 @@ public:
   using Mat3f = Mat3<float>;
   using Vec3f = Vec3<float>;
   using Attribs_location_name =
-   std::array<std::pair<AttribLocation, const GLchar*>, 3>;
+   std::array<std::pair<ShaderAttribLocation, const GLchar*>, 3>;
 
   ColorLightShader() noexcept;
 
