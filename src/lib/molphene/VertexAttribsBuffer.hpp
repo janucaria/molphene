@@ -7,7 +7,9 @@
 
 namespace molphene {
 
-template<class DataType, ShaderAttribLocation AttribLocation>
+template<class DataType,
+         ShaderAttribLocation attrib_index,
+         GLboolean normalized = GL_FALSE>
 class VertexAttribsBuffer {
 public:
   VertexAttribsBuffer(GLsizeiptr size, GLenum usage) noexcept
@@ -52,11 +54,15 @@ public:
   }
 
   void
-  attrib_pointer(GLint size, GLenum type, GLboolean normalized) const noexcept
+  attrib_pointer() const noexcept
   {
     glBindBuffer(GL_ARRAY_BUFFER, *buffer_);
-    glVertexAttribPointer(
-     static_cast<GLuint>(AttribLocation), size, type, normalized, 0, nullptr);
+    glVertexAttribPointer(static_cast<GLuint>(attrib_index),
+                          gl_vertex_attrib<DataType>::size,
+                          gl_vertex_attrib<DataType>::type,
+                          normalized,
+                          0,
+                          nullptr);
   }
 
 private:

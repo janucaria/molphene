@@ -54,9 +54,9 @@ GlRenderer::render(const Scene& scene,
     const auto verts_count =
      GLsizei{i == (size_ - 1) ? remain_instances_ : instances_per_block_};
 
-    vert_buffers_[i].attrib_pointer(3, GL_FLOAT, GL_FALSE);
-    normal_buffers_[i].attrib_pointer(3, GL_FLOAT, GL_FALSE);
-    texcoord_buffers_[i].attrib_pointer(2, GL_FLOAT, GL_FALSE);
+    vert_buffers_[i].attrib_pointer();
+    normal_buffers_[i].attrib_pointer();
+    texcoord_buffers_[i].attrib_pointer();
 
     glDrawArrays(GL_TRIANGLE_STRIP, 0, verts_count * verts_per_instance_);
   }
