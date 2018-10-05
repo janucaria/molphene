@@ -17,7 +17,7 @@ public:
   using Vec2f = Vec2<float>;
 
 public:
-  SphereMeshBuilder(size_t max_bytes, size_t lat_div, size_t long_div)
+  SphereMeshBuilder(size_t max_bytes, size_t lat_div, size_t long_div) noexcept
   : lat_div_{lat_div}
   , long_div_{long_div}
   {
@@ -33,10 +33,10 @@ public:
   }
 
   void
-  build(size_t idx)
+  build(size_t idx) noexcept
   {
     const auto dir = sphere_.axis.to_unit();
-    const auto top = [&dir]() {
+    const auto top = [&dir]() noexcept {
       auto top = dir.cross({0, 1, 0});
       if(top.magnitude() == 0) {
         top = {0, 0, 1};
@@ -105,19 +105,19 @@ public:
   }
 
   size_t
-  get_vertices_size()
+  get_vertices_size() const noexcept
   {
     return lat_div_ * (long_div_ + 1) * 2 + lat_div_ * 2;
   }
 
   size_t
-  size_bytes()
+  size_bytes() const noexcept
   {
     return sizeof(Vec3f) * 2 + sizeof(Vec2f);
   }
 
   size_t
-  size()
+  size() const noexcept
   {
     return size_;
   }
@@ -148,7 +148,7 @@ public:
   }
 
   UvSphere<float_t>
-  sphere(UvSphere<float_t> sphere)
+  sphere(UvSphere<float_t> sphere) noexcept
   {
     return sphere_ = sphere;
   }

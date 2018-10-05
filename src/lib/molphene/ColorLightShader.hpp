@@ -60,7 +60,7 @@ public:
   std::void_t<decltype(
    Rgba32f{std::declval<TColor>()},
    Vec3f{std::declval<typename DirectionalLight<TColor, TConfig>::Vec3f>()})>
-  light_source(const DirectionalLight<TColor, TConfig>& light) const
+  light_source(const DirectionalLight<TColor, TConfig>& light) const noexcept
   {
     light_source_ambient_intensity(light.ambient_intensity);
     light_source_color(light.color);
@@ -73,7 +73,7 @@ public:
   std::void_t<
    decltype(Rgba32f{std::declval<TColor>()},
             Vec3f{std::declval<typename PointLight<TColor, TConfig>::Vec3f>()})>
-  light_source(const PointLight<TColor, TConfig>& light) const
+  light_source(const PointLight<TColor, TConfig>& light) const noexcept
   {
     light_source_ambient_intensity(light.ambient_intensity);
     light_source_attenuation(light.attenuation);
@@ -88,7 +88,7 @@ public:
   std::void_t<
    decltype(Rgba32f{std::declval<TColor>()},
             Vec3f{std::declval<typename SpotLight<TColor, TConfig>::Vec3f>()})>
-  light_source(const SpotLight<TColor, TConfig>& light) const
+  light_source(const SpotLight<TColor, TConfig>& light) const noexcept
   {
     light_source_ambient_intensity(light.ambient_intensity);
     light_source_attenuation(light.attenuation);
@@ -103,21 +103,21 @@ public:
 
   template<typename T>
   std::enable_if_t<std::is_convertible_v<T, GLfloat>>
-  light_source_ambient_intensity(T&& val) const
+  light_source_ambient_intensity(T&& val) const noexcept
   {
     glUniform1f(g_uloc_light_source_ambient_intensity, val);
   }
 
   template<typename T>
   std::enable_if_t<std::is_convertible_v<T, GLfloat>>
-  light_source_beam_width(T&& val) const
+  light_source_beam_width(T&& val) const noexcept
   {
     glUniform1f(g_uloc_light_source_beam_width, val);
   }
 
   template<typename... Ts>
   std::void_t<decltype(Rgba32f{std::declval<Ts>()...})>
-  light_source_color(Ts&&... args) const
+  light_source_color(Ts&&... args) const noexcept
   {
     const auto col = Rgba32f{std::forward<Ts>(args)...};
     glUniform4fv(
@@ -126,14 +126,14 @@ public:
 
   template<typename T>
   std::enable_if_t<std::is_convertible_v<T, GLfloat>>
-  light_source_cut_off_angle(T&& val) const
+  light_source_cut_off_angle(T&& val) const noexcept
   {
     glUniform1f(g_uloc_light_source_cut_off_angle, val);
   }
 
   template<typename... Ts>
   std::void_t<decltype(Vec3f{std::declval<Ts>()...})>
-  light_source_direction(Ts&&... args) const
+  light_source_direction(Ts&&... args) const noexcept
   {
     const auto v = Vec3f{std::forward<Ts>(args)...};
     glUniform3f(g_uloc_light_source_direction, v.x, v.y, v.z);
@@ -141,14 +141,14 @@ public:
 
   template<typename T>
   std::enable_if_t<std::is_convertible_v<T, GLfloat>>
-  light_source_intensity(T&& val) const
+  light_source_intensity(T&& val) const noexcept
   {
     glUniform1f(g_uloc_light_source_intensity, val);
   }
 
   template<typename... Ts>
   std::void_t<decltype(Vec3f{std::declval<Ts>()...})>
-  light_source_attenuation(Ts&&... args) const
+  light_source_attenuation(Ts&&... args) const noexcept
   {
     const auto v = Vec3f{std::forward<Ts>(args)...};
     glUniform3f(g_uloc_light_source_attenuation, v.x, v.y, v.z);
@@ -156,7 +156,7 @@ public:
 
   template<typename... Ts>
   std::void_t<decltype(Vec3f{std::declval<Ts>()...})>
-  light_source_position(Ts&&... args) const
+  light_source_position(Ts&&... args) const noexcept
   {
     const auto v = Vec3f{std::forward<Ts>(args)...};
     glUniform3f(g_uloc_light_source_position, v.x, v.y, v.z);
@@ -164,7 +164,7 @@ public:
 
   template<typename T>
   std::enable_if_t<std::is_convertible_v<T, GLfloat>>
-  light_source_radius(T&& val) const
+  light_source_radius(T&& val) const noexcept
   {
     glUniform1f(g_uloc_light_source_radius, val);
   }
@@ -172,7 +172,7 @@ public:
   template<typename TColor, typename TScalar>
   std::void_t<decltype(Rgba32f{std::declval<TColor>()},
                        std::is_constructible_v<TScalar, GLfloat>)>
-  material(const Material<TColor, TScalar>& mater) const
+  material(const Material<TColor, TScalar>& mater) const noexcept
   {
     material_ambient_intensity(mater.ambient_intensity);
     material_emissive_color(mater.emissive_color);
@@ -183,14 +183,14 @@ public:
 
   template<typename T>
   std::enable_if_t<std::is_convertible_v<T, GLfloat>>
-  material_ambient_intensity(T&& val) const
+  material_ambient_intensity(T&& val) const noexcept
   {
     glUniform1f(g_uloc_material_ambient_intensity, val);
   }
 
   template<typename... Ts>
   std::void_t<decltype(Rgba32f{std::declval<Ts>()...})>
-  material_emissive_color(Ts&&... args) const
+  material_emissive_color(Ts&&... args) const noexcept
   {
     const auto col = Rgba32f{std::forward<Ts>(args)...};
     glUniform4fv(
@@ -199,7 +199,7 @@ public:
 
   template<typename... Ts>
   std::void_t<decltype(Rgba32f{std::declval<Ts>()...})>
-  material_diffuse_color(Ts&&... args) const
+  material_diffuse_color(Ts&&... args) const noexcept
   {
     const auto col = Rgba32f{std::forward<Ts>(args)...};
     glUniform4fv(
@@ -208,7 +208,7 @@ public:
 
   template<typename... Ts>
   std::void_t<decltype(Rgba32f{std::declval<Ts>()...})>
-  material_specular_color(Ts&&... args) const
+  material_specular_color(Ts&&... args) const noexcept
   {
     const auto col = Rgba32f{std::forward<Ts>(args)...};
     glUniform4fv(
@@ -217,7 +217,7 @@ public:
 
   template<typename T>
   std::enable_if_t<std::is_convertible_v<T, GLfloat>>
-  material_shininess(T&& v) const
+  material_shininess(T&& v) const noexcept
   {
     glUniform1f(g_uloc_material_shininess, v);
   }
@@ -225,7 +225,7 @@ public:
   template<typename TColor, typename TScalar>
   std::void_t<decltype(Rgba32f{std::declval<TColor>()},
                        std::is_convertible_v<TScalar, GLfloat>)>
-  fog(const Fog<TColor, TScalar>& fog) const
+  fog(const Fog<TColor, TScalar>& fog) const noexcept
   {
     fog_color(fog.color);
     fog_fog_type(fog.fog_type == std::decay_t<decltype(fog)>::Type::linear);
@@ -234,7 +234,7 @@ public:
 
   template<typename... Ts>
   std::void_t<decltype(Rgba32f{std::declval<Ts>()...})>
-  fog_color(Ts&&... args) const
+  fog_color(Ts&&... args) const noexcept
   {
     const auto col = Rgba32f{std::forward<Ts>(args)...};
     glUniform4fv(g_uloc_fog_color, 1, reinterpret_cast<const GLfloat*>(&col));
@@ -242,14 +242,14 @@ public:
 
   template<typename T>
   std::enable_if_t<std::is_convertible_v<T, GLint>>
-  fog_fog_type(T&& val) const
+  fog_fog_type(T&& val) const noexcept
   {
     glUniform1i(g_uloc_fog_fog_type, val);
   }
 
   template<typename T>
   std::enable_if_t<std::is_convertible_v<T, GLfloat>>
-  fog_visibility_range(T&& val) const
+  fog_visibility_range(T&& val) const noexcept
   {
     glUniform1f(g_uloc_fog_visibility_range, val);
   }

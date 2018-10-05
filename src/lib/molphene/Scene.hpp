@@ -51,25 +51,25 @@ public:
   using SphereMeshBuilder = SphereMeshBuilder<ConfigType>;
 
   bool
-  setup_graphics();
+  setup_graphics() noexcept;
 
   void
-  reset_mesh();
+  reset_mesh() noexcept;
 
   void
-  change_dimension(GLsizei width, GLsizei height);
+  change_dimension(GLsizei width, GLsizei height) noexcept;
 
   void
-  rotate(Vec3f rot);
+  rotate(Vec3f rot) noexcept;
 
   void
   open_stream(std::istream& is);
 
   void
-  calculate_matrices();
+  calculate_matrices() noexcept;
 
   Camera&
-  get_camera();
+  get_camera() noexcept;
 
   Mat4f
   model_matrix() const noexcept;

@@ -7,7 +7,7 @@
 namespace molphene {
 
 bool
-Scene::setup_graphics()
+Scene::setup_graphics() noexcept
 {
   material_.diffuse_color = 0xFFFFFF;
 
@@ -22,14 +22,14 @@ Scene::setup_graphics()
 }
 
 void
-Scene::change_dimension(GLsizei width, GLsizei height)
+Scene::change_dimension(GLsizei width, GLsizei height) noexcept
 {
   camera_.set_resolution(width, height);
   calculate_matrices();
 }
 
 void
-Scene::reset_mesh()
+Scene::reset_mesh() noexcept
 {
   std::vector<Atom*> atoms;
   std::vector<Bond*> bonds;
@@ -129,7 +129,7 @@ Scene::reset_mesh()
 }
 
 void
-Scene::rotate(Scene::Vec3f rot)
+Scene::rotate(Scene::Vec3f rot) noexcept
 {
   const auto [x, y, z] = rot;
   model_matrix_.rotate(1.0f, 0.0f, 0.0f, x);
@@ -138,13 +138,13 @@ Scene::rotate(Scene::Vec3f rot)
 }
 
 void
-Scene::calculate_matrices()
+Scene::calculate_matrices() noexcept
 {
   const auto fov = camera_.fov;
   const auto top = camera_.top;
   const auto aspect = camera_.aspect_ratio();
   const auto tan_theta = tan(fov / 2);
-  const auto focal_len = [=]() {
+  const auto focal_len = [=]() noexcept {
     auto focal = top / tan_theta;
     if(aspect < 1) {
       focal /= aspect;
@@ -167,7 +167,7 @@ Scene::open_stream(std::istream& is)
 }
 
 typename Scene::Camera&
-Scene::get_camera()
+Scene::get_camera() noexcept
 {
   return camera_;
 }

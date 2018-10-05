@@ -29,7 +29,7 @@ Rgba32f::Rgba32f(const Rgba8& c8) noexcept
 }
 
 Rgba32f&
-Rgba32f::operator+=(const Rgba32f& rsh)
+Rgba32f::operator+=(const Rgba32f& rsh) noexcept
 {
   r = (1.0f - r) > rsh.r ? r + rsh.r : 1.0f;
   g = (1.0f - g) > rsh.g ? g + rsh.g : 1.0f;
@@ -40,7 +40,7 @@ Rgba32f::operator+=(const Rgba32f& rsh)
 }
 
 Rgba32f&
-Rgba32f::operator-=(const Rgba32f& rsh)
+Rgba32f::operator-=(const Rgba32f& rsh) noexcept
 {
   r = rsh.r < r ? r - rsh.r : 0.0f;
   g = rsh.g < g ? g - rsh.g : 0.0f;
@@ -51,7 +51,7 @@ Rgba32f::operator-=(const Rgba32f& rsh)
 }
 
 Rgba32f&
-Rgba32f::operator()(float r, float g, float b, float a)
+Rgba32f::operator()(float r, float g, float b, float a) noexcept
 {
   this->r = r;
   this->g = g;
@@ -62,13 +62,13 @@ Rgba32f::operator()(float r, float g, float b, float a)
 }
 
 Rgba32f
-operator+(const Rgba32f& lsh, const Rgba32f& rsh)
+operator+(const Rgba32f& lsh, const Rgba32f& rsh) noexcept
 {
   return Rgba32f(lsh).operator+=(rsh);
 }
 
 Rgba32f
-operator-(const Rgba32f& lsh, const Rgba32f& rsh)
+operator-(const Rgba32f& lsh, const Rgba32f& rsh) noexcept
 {
   return Rgba32f(lsh).operator-=(rsh);
 }

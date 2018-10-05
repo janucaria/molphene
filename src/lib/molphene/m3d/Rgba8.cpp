@@ -19,7 +19,7 @@ Rgba8::Rgba8(uint32_t i) noexcept
 }
 
 Rgba8&
-Rgba8::operator+=(const Rgba8& rsh)
+Rgba8::operator+=(const Rgba8& rsh) noexcept
 {
   r = (255 - r) > rsh.r ? r + rsh.r : 255;
   g = (255 - g) > rsh.g ? g + rsh.g : 255;
@@ -30,7 +30,7 @@ Rgba8::operator+=(const Rgba8& rsh)
 }
 
 Rgba8&
-Rgba8::operator-=(const Rgba8& rsh)
+Rgba8::operator-=(const Rgba8& rsh) noexcept
 {
   r = rsh.r < r ? r - rsh.r : 0;
   g = rsh.g < g ? g - rsh.g : 0;
@@ -41,7 +41,7 @@ Rgba8::operator-=(const Rgba8& rsh)
 }
 
 Rgba8&
-Rgba8::operator()(uint8_t r, uint8_t g, uint8_t b, uint8_t a)
+Rgba8::operator()(uint8_t r, uint8_t g, uint8_t b, uint8_t a) noexcept
 {
   this->r = r;
   this->g = g;
@@ -52,7 +52,7 @@ Rgba8::operator()(uint8_t r, uint8_t g, uint8_t b, uint8_t a)
 }
 
 Rgba8&
-Rgba8::operator()(uint32_t i)
+Rgba8::operator()(uint32_t i) noexcept
 {
   return this->operator()((i & 0x00FF0000u) >> 16u,
                           (i & 0x0000FF00u) >> 8u,
@@ -61,7 +61,7 @@ Rgba8::operator()(uint32_t i)
 }
 
 Rgba8&
-Rgba8::operator=(uint32_t i)
+Rgba8::operator=(uint32_t i) noexcept
 {
   this->operator()((i & 0x00FF0000u) >> 16u,
                    (i & 0x0000FF00u) >> 8u,
@@ -72,13 +72,13 @@ Rgba8::operator=(uint32_t i)
 }
 
 Rgba8
-operator+(const Rgba8& lsh, const Rgba8& rsh)
+operator+(const Rgba8& lsh, const Rgba8& rsh) noexcept
 {
   return Rgba8(lsh).operator+=(rsh);
 }
 
 Rgba8
-operator-(const Rgba8& lsh, const Rgba8& rsh)
+operator-(const Rgba8& lsh, const Rgba8& rsh) noexcept
 {
   return Rgba8(lsh).operator-=(rsh);
 }

@@ -19,20 +19,20 @@ struct Rgba32f {
   explicit Rgba32f(const Rgba8& c8) noexcept;
 
   Rgba32f&
-  operator+=(const Rgba32f& rsh);
+  operator+=(const Rgba32f& rsh) noexcept;
 
   Rgba32f&
-  operator-=(const Rgba32f& rsh);
+  operator-=(const Rgba32f& rsh) noexcept;
 
   Rgba32f&
-  operator()(float r, float g, float b, float a = 1.0);
+  operator()(float r, float g, float b, float a = 1.0) noexcept;
 };
 
 Rgba32f
-operator+(const Rgba32f& lsh, const Rgba32f& rsh);
+operator+(const Rgba32f& lsh, const Rgba32f& rsh) noexcept;
 
 Rgba32f
-operator-(const Rgba32f& lsh, const Rgba32f& rsh);
+operator-(const Rgba32f& lsh, const Rgba32f& rsh) noexcept;
 } // namespace molphene
 
 #endif

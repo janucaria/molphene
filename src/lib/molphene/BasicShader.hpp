@@ -14,7 +14,7 @@ public:
   BasicShader() noexcept = default;
 
   bool
-  init_program()
+  init_program() noexcept
   {
     g_program = create_program();
 
@@ -33,7 +33,7 @@ public:
     return g_program;
   }
   void
-  use_program() const
+  use_program() const noexcept
   {
     glUseProgram(g_program);
   }
@@ -74,7 +74,7 @@ protected:
   }
 
   GLuint
-  create_program()
+  create_program() noexcept
   {
     const auto vert_sh = g_vert_shader =
      create_shader(GL_VERTEX_SHADER, as_const_derived()->vert_shader_source());
