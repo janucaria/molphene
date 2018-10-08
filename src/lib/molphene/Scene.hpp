@@ -52,11 +52,18 @@ public:
 
   using SphereMeshBuilder = SphereMeshBuilder<ConfigType>;
 
+  size_t width;
+  
+  size_t height;
+
   bool
   setup_graphics() noexcept;
 
   void
   reset_mesh() noexcept;
+
+  void
+  change_dimension(size_t width, size_t height) noexcept;
 
   void
   rotate(Vec3f rot) noexcept;

@@ -25,7 +25,8 @@ Application::open_pdb_data(std::string pdbdata)
 void
 Application::canvas_size_change_callback(int width, int height)
 {
-  camera.set_resolution(width, height);
+  scene.change_dimension(width, height);
+  camera.aspect_ratio(width, height);
   camera.update_view_matrix();
   render_frame();
 }
@@ -240,7 +241,8 @@ END
   auto height = 0;
   emscripten_webgl_get_drawing_buffer_size(glctx, &width, &height);
 
-  camera.set_resolution(width, height);
+  scene.change_dimension(width, height);
+  camera.aspect_ratio(width, height);
   camera.update_view_matrix();
 
   std::stringstream pdbstm;

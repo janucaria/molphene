@@ -21,11 +21,11 @@ GlRenderer::render(const Scene& scene,
 
   const auto* mbuffers = scene.mesh_buffers();
 
-  const auto mv_matrix = scene.model_matrix() * camera.view_matrix;
+  const auto mv_matrix = scene.model_matrix() * camera.view_matrix();
   const auto norm_matrix = Mat3f{Mat4f{mv_matrix}.inverse().transpose()};
   const auto proj_matrix = camera.projection_matrix();
 
-  glViewport(0, 0, camera.width, camera.height);
+  glViewport(0, 0, scene.width, scene.height);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
   color_light_shader_.use_program();

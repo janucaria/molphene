@@ -164,6 +164,13 @@ Scene::mesh_buffers() const noexcept
   return sphere_buff_atoms_.get();
 }
 
+void
+Scene::change_dimension(size_t width, size_t height) noexcept
+{
+  this->width = width;
+  this->height = height;
+}
+
 auto
 Scene::bounding_sphere() const noexcept -> BoundingSphere
 {

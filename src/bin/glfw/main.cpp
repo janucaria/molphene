@@ -307,7 +307,8 @@ key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 static void
 window_size_callback(GLFWwindow* window, int width, int height)
 {
-  camera.set_resolution(width, height);
+  scene.change_dimension(width, height);
+  camera.aspect_ratio(width, height);
   camera.update_view_matrix();
 }
 
@@ -358,7 +359,8 @@ void
 framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
   scene.setup_graphics();
-  camera.set_resolution(width, height);
+  scene.change_dimension(width, height);
+  camera.aspect_ratio(width, height);
   camera.update_view_matrix();
 }
 
@@ -420,7 +422,8 @@ main(int argc, char* argv[])
 
   glfwGetFramebufferSize(window, &width, &height);
   scene.setup_graphics();
-  camera.set_resolution(width, height);
+  scene.change_dimension(width, height);
+  camera.aspect_ratio(width, height);
   camera.projection_mode(true);
 
   renderer.init();
