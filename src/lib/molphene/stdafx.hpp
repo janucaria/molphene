@@ -8,6 +8,7 @@
 #include <fstream>
 #include <iostream>
 #include <istream>
+#include <limits>
 #include <memory>
 #include <string>
 #include <type_traits>

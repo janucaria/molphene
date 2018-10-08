@@ -23,9 +23,7 @@ public:
   using ColorAttribsBuffers =
    std::vector<VertexAttribsBuffer<Vec2f, ShaderAttribLocation::texcoordcolor>>;
 
-  ColorLightBuffer(GLsizei verts_per_instance, GLsizeiptr total_instances);
-
-  ~ColorLightBuffer();
+  ColorLightBuffer(GLsizei verts_per_instance, GLsizeiptr total_instances) noexcept;
 
   ColorLightBuffer(const ColorLightBuffer&) = delete;
 
@@ -42,7 +40,7 @@ public:
            GLsizeiptr size,
            gsl::span<const Vec3f> verts,
            gsl::span<const Vec3f> norms,
-           gsl::span<const Vec2f> texcoords);
+           gsl::span<const Vec2f> texcoords) const noexcept;
 
   void
   color_texture_image_data(const GLvoid* data) const noexcept;
@@ -56,7 +54,7 @@ public:
   template<typename TCallback>
   void
   setup_attrib_pointer(TCallback fn) const
-   noexcept(noexcept(fn(std::declval<GLsizei>())))
+   noexcept(std::is_nothrow_invocable_v<decltype(fn), GLsizei>)
   {
     for(auto i = GLsizei{0}; i < size_; ++i) {
       const auto verts_count =

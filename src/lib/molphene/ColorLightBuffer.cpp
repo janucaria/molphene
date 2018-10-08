@@ -5,7 +5,7 @@
 namespace molphene {
 
 ColorLightBuffer::ColorLightBuffer(GLsizei verts_per_instance,
-                                   GLsizeiptr total_instances)
+                                   GLsizeiptr total_instances) noexcept
 : verts_per_instance_{verts_per_instance}
 , color_tex_size_(static_cast<GLsizei>(std::ceil(std::sqrt(total_instances))))
 {
@@ -16,9 +16,9 @@ ColorLightBuffer::ColorLightBuffer(GLsizei verts_per_instance,
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-  const auto bytes_per_vert = GLsizeiptr{sizeof(Vec3f) * 2 + sizeof(Vec2f)};
+  constexpr auto max_bytes_per_chunk = std::numeric_limits<GLsizeiptr>::max();
+  constexpr auto bytes_per_vert = GLsizeiptr{sizeof(Vec3f) * 2 + sizeof(Vec2f)};
   const auto bytes_per_mesh = GLsizeiptr{verts_per_instance_ * bytes_per_vert};
-  const auto max_bytes_per_chunk = GLsizeiptr{1024 * 1024 * 512};
 
   instances_per_block_ = GLsizei(max_bytes_per_chunk / bytes_per_mesh);
   size_ = GLsizei(total_instances / instances_per_block_);
@@ -35,9 +35,9 @@ ColorLightBuffer::ColorLightBuffer(GLsizei verts_per_instance,
   texcoord_buffers_.reserve(size_);
 
   for(auto i = GLsizei{0}; i < size_; ++i) {
-    const GLsizeiptr meshes =
+    const auto meshes =
      i == (size_ - 1) ? remain_instances_ : instances_per_block_;
-    const GLsizeiptr verts = meshes * verts_per_instance_;
+    const auto verts = GLsizeiptr{meshes * verts_per_instance_};
 
     vert_buffers_.emplace_back(verts, GL_STATIC_DRAW);
     normal_buffers_.emplace_back(verts, GL_STATIC_DRAW);
@@ -47,24 +47,19 @@ ColorLightBuffer::ColorLightBuffer(GLsizei verts_per_instance,
   glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-ColorLightBuffer::~ColorLightBuffer()
-{
-  size_ = verts_per_instance_ = remain_instances_ = 0;
-}
-
 void
 ColorLightBuffer::set_data(GLintptr offset,
                            GLsizeiptr size,
                            gsl::span<const Vec3f> verts,
                            gsl::span<const Vec3f> norms,
-                           gsl::span<const Vec2f> texcoords)
+                           gsl::span<const Vec2f> texcoords) const noexcept
 {
   auto data_offset = GLsizeiptr{0};
   while(size > 0) {
     const auto chunk = GLsizeiptr{offset / instances_per_block_};
     const auto index = GLsizeiptr{offset % instances_per_block_};
 
-    const auto elems_fill = GLsizeiptr{instances_per_block_ - index};
+    const auto elems_fill = instances_per_block_ - index;
     const auto fill_size = GLsizeiptr{size < elems_fill ? size : elems_fill};
 
     vert_buffers_[chunk].sub_data(
