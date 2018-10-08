@@ -167,8 +167,14 @@ Scene::mesh_buffers() const noexcept
 void
 Scene::change_dimension(size_t width, size_t height) noexcept
 {
-  this->width = width;
-  this->height = height;
+  viewport_.width = width;
+  viewport_.height = height;
+}
+
+auto
+Scene::viewport() const noexcept -> Viewport
+{
+  return viewport_;
 }
 
 auto

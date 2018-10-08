@@ -19,6 +19,7 @@
 #include "mol/Molecule.hpp"
 #include "mol/PdbParser.hpp"
 #include "SphereMeshBuilder.hpp"
+#include "Viewport.hpp"
 
 namespace molphene {
 
@@ -52,9 +53,7 @@ public:
 
   using SphereMeshBuilder = SphereMeshBuilder<ConfigType>;
 
-  size_t width;
-  
-  size_t height;
+  using Viewport = Viewport<size_t, float_t>;
 
   bool
   setup_graphics() noexcept;
@@ -83,6 +82,9 @@ public:
   Fog
   fog() const noexcept;
 
+  Viewport
+  viewport() const noexcept;
+
   const ColorLightBuffer*
   mesh_buffers() const noexcept;
 
@@ -101,6 +103,8 @@ private:
   Fog fog_;
 
   Material material_;
+
+  Viewport viewport_;
 
   Mat4f model_matrix_{1};
 

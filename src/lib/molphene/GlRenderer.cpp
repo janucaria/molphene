@@ -24,8 +24,9 @@ GlRenderer::render(const Scene& scene,
   const auto mv_matrix = scene.model_matrix() * camera.view_matrix();
   const auto norm_matrix = Mat3f{Mat4f{mv_matrix}.inverse().transpose()};
   const auto proj_matrix = camera.projection_matrix();
+  const auto viewport = scene.viewport();
 
-  glViewport(0, 0, scene.width, scene.height);
+  glViewport(viewport.x, viewport.y, viewport.width, viewport.height);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
   color_light_shader_.use_program();
