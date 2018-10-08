@@ -16,16 +16,7 @@ Scene::setup_graphics() noexcept
 
   spot_light_source_.location = {0, 0, -20};
 
-  camera_.projection_mode(true);
-
   return true;
-}
-
-void
-Scene::change_dimension(GLsizei width, GLsizei height) noexcept
-{
-  camera_.set_resolution(width, height);
-  calculate_matrices();
 }
 
 void
@@ -58,7 +49,8 @@ Scene::reset_mesh() noexcept
   }
 
   // calculate bounding sphere
-  auto bs = BoundingSphere<float_t>{};
+  bounding_sphere_.reset();
+  auto& bs = bounding_sphere_;
 
   for(auto& model : Molecule::Models_iterable{*molecule_}) {
     for(auto& chain : Model::Chains_iterable{model}) {
@@ -70,10 +62,7 @@ Scene::reset_mesh() noexcept
     }
   }
 
-  camera_.top = bs.radius() + 2;
   model_matrix_.identity().translate(-bs.center());
-
-  calculate_matrices();
 
   constexpr auto max_chunk_bytes = size_t{1024 * 1024 * 128};
   auto mesh_builder = SphereMeshBuilder{max_chunk_bytes, 10, 20};
@@ -138,38 +127,11 @@ Scene::rotate(Scene::Vec3f rot) noexcept
 }
 
 void
-Scene::calculate_matrices() noexcept
-{
-  const auto fov = camera_.fov;
-  const auto top = camera_.top;
-  const auto aspect = camera_.aspect_ratio();
-  const auto tan_theta = tan(fov / 2);
-  const auto focal_len = [=]() noexcept {
-    auto focal = top / tan_theta;
-    if(aspect < 1) {
-      focal /= aspect;
-    }
-    return focal;
-  }();
-
-  camera_.near = focal_len - top;
-  camera_.far = focal_len + top;
-
-  camera_.view_matrix.set_translate(0, 0, -focal_len);
-}
-
-void
 Scene::open_stream(std::istream& is)
 {
   molecule_ = std::make_unique<Molecule>();
   PdbParser parser;
   parser.parse(molecule_.get(), is);
-}
-
-typename Scene::Camera&
-Scene::get_camera() noexcept
-{
-  return camera_;
 }
 
 typename Scene::Mat4f
@@ -202,5 +164,10 @@ Scene::mesh_buffers() const noexcept
   return sphere_buff_atoms_.get();
 }
 
+auto
+Scene::bounding_sphere() const noexcept -> BoundingSphere
+{
+  return bounding_sphere_;
+}
 
 } // namespace molphene

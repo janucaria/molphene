@@ -95,6 +95,25 @@ public:
     zoom = std::max(zoom / 1.1, 1 / 1.1 / 200);
   }
 
+  void
+  update_view_matrix() noexcept
+  {
+    const auto aspect = aspect_ratio();
+    const auto tan_theta = std::tan(fov / 2);
+    const auto focal_len = [=]() noexcept {
+      auto focal = top / tan_theta;
+      if(aspect < 1) {
+        focal /= aspect;
+      }
+      return focal;
+    }();
+
+    near = focal_len - top;
+    far = focal_len + top;
+
+    view_matrix.set_translate(0, 0, -focal_len);
+  }
+
 private:
   Mat4f projection_matrix_{1};
 

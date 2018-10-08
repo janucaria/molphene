@@ -8,6 +8,7 @@
 
 #include <molphene/Scene.hpp>
 #include <molphene/GlRenderer.hpp>
+#include <molphene/Camera.hpp>
 
 const char* pdbhem = R"(
 ATOM      1  CHA HEM A   1      -2.161  -0.125   0.490  1.00 10.00           C
@@ -252,8 +253,10 @@ CONECT   40   20
 END
 )";
 
+
 static molphene::Scene scene;
 static molphene::GlRenderer renderer;
+static molphene::Scene::Camera camera;
 static GLFWwindow* window;
 static bool is_mol_moi = false;
 static bool mouse_press = false;
@@ -278,10 +281,10 @@ key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
       glfwSetWindowShouldClose(window, GL_TRUE);
       break;
     case GLFW_KEY_P:
-      scene.get_camera().projection_mode(true);
+      camera.projection_mode(true);
       break;
     case GLFW_KEY_O:
-      scene.get_camera().projection_mode(false);
+      camera.projection_mode(false);
       break;
     case GLFW_KEY_E:
       std::stringstream pdbstm;
@@ -295,14 +298,17 @@ key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 
       scene.open_stream(pdbstm);
       scene.reset_mesh();
+      camera.top = scene.bounding_sphere().radius() + 2;
+      camera.update_view_matrix();
     }
   }
 }
 
 static void
-window_size_callback(GLFWwindow* window, int w, int h)
+window_size_callback(GLFWwindow* window, int width, int height)
 {
-  scene.change_dimension(w, h);
+  camera.set_resolution(width, height);
+  camera.update_view_matrix();
 }
 
 static void
@@ -345,14 +351,15 @@ cursor_pos_callback(GLFWwindow* window, double xpos, double ypos)
 void
 scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
-  yoffset > 0 ? scene.get_camera().zoom_in() : scene.get_camera().zoom_out();
+  yoffset > 0 ? camera.zoom_in() : camera.zoom_out();
 }
 
 void
 framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
   scene.setup_graphics();
-  scene.change_dimension(width, height);
+  camera.set_resolution(width, height);
+  camera.update_view_matrix();
 }
 
 bool
@@ -384,7 +391,7 @@ init_window(int width, int height)
 void
 render()
 {
-  renderer.render(scene, scene.get_camera());
+  renderer.render(scene, camera);
 
   glfwSwapBuffers(window);
   glfwPollEvents();
@@ -413,7 +420,8 @@ main(int argc, char* argv[])
 
   glfwGetFramebufferSize(window, &width, &height);
   scene.setup_graphics();
-  scene.change_dimension(width, height);
+  camera.set_resolution(width, height);
+  camera.projection_mode(true);
 
   renderer.init();
 
@@ -424,6 +432,8 @@ main(int argc, char* argv[])
 
       scene.open_stream(pdbfile);
       scene.reset_mesh();
+      camera.top = scene.bounding_sphere().radius() + 2;
+      camera.update_view_matrix();
       main_loop();
 
       pdbfile.close();
@@ -436,6 +446,8 @@ main(int argc, char* argv[])
 
     scene.open_stream(pdbstm);
     scene.reset_mesh();
+    camera.top = scene.bounding_sphere().radius() + 2;
+    camera.update_view_matrix();
     main_loop();
   }
 

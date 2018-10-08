@@ -36,6 +36,8 @@ public:
   using Mat4f = Mat4<float_t>;
   using Mat3f = Mat3<float_t>;
 
+  using BoundingSphere = BoundingSphere<float_t>;
+
   using Camera = Camera<ConfigType>;
 
   using Fog = Fog<Rgba8, ConfigType>;
@@ -57,19 +59,10 @@ public:
   reset_mesh() noexcept;
 
   void
-  change_dimension(GLsizei width, GLsizei height) noexcept;
-
-  void
   rotate(Vec3f rot) noexcept;
 
   void
   open_stream(std::istream& is);
-
-  void
-  calculate_matrices() noexcept;
-
-  Camera&
-  get_camera() noexcept;
 
   Mat4f
   model_matrix() const noexcept;
@@ -86,6 +79,9 @@ public:
   const ColorLightBuffer*
   mesh_buffers() const noexcept;
 
+  BoundingSphere
+  bounding_sphere() const noexcept;
+
 private:
   std::unique_ptr<ColorLightBuffer> sphere_buff_atoms_;
 
@@ -101,7 +97,7 @@ private:
 
   Mat4f model_matrix_{1};
 
-  Camera camera_;
+  BoundingSphere bounding_sphere_;
 
   std::unique_ptr<Molecule> molecule_;
 

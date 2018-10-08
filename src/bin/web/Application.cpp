@@ -17,20 +17,23 @@ Application::open_pdb_data(std::string pdbdata)
 
   scene.open_stream(pdbstm);
   scene.reset_mesh();
+  camera.top = scene.bounding_sphere().radius() + 2;
+  camera.update_view_matrix();
   render_frame();
 }
 
 void
 Application::canvas_size_change_callback(int width, int height)
 {
-  scene.change_dimension(width, height);
+  camera.set_resolution(width, height);
+  camera.update_view_matrix();
   render_frame();
 }
 
 void
 Application::render_frame()
 {
-  renderer.render(scene, scene.get_camera());
+  renderer.render(scene, camera);
 }
 
 void
@@ -237,13 +240,16 @@ END
   auto height = 0;
   emscripten_webgl_get_drawing_buffer_size(glctx, &width, &height);
 
-  scene.change_dimension(width, height);
+  camera.set_resolution(width, height);
+  camera.update_view_matrix();
 
   std::stringstream pdbstm;
   pdbstm.str(pdbhem);
 
   scene.open_stream(pdbstm);
   scene.reset_mesh();
+  camera.top = scene.bounding_sphere().radius() + 2;
+  camera.update_view_matrix();
   render_frame();
 }
 
