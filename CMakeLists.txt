@@ -12,6 +12,10 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+if(APPLE)
+  add_compile_definitions(GL_SILENCE_DEPRECATION)
+endif()
+
 find_package(Boost)
 
 if(Boost_FOUND)
