@@ -4,7 +4,7 @@ namespace molphene {
 
 ColorLightShader::ColorLightShader() noexcept = default;
 
-typename ColorLightShader::Attribs_location_name
+typename ColorLightShader::AttribsLocationName
 ColorLightShader::get_attribs_location() const noexcept
 {
   return {{{ShaderAttribLocation::vertex, "a_Vertex"},

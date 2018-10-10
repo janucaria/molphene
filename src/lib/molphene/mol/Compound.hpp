@@ -12,23 +12,23 @@ class Chain;
 
 class Compound {
 public:
-  class Atoms_iterator;
+  class AtomsIterator;
 
-  class Atoms_iterable;
+  class AtomsIterable;
 
-  using Atoms_container = std::multimap<std::string, Atom>;
+  using AtomsContainer = std::multimap<std::string, Atom>;
 
-  using Residue_number = std::tuple<unsigned int, std::string, char>;
+  using ResidueNumber = std::tuple<unsigned int, std::string, char>;
 
   Compound(Chain& chain, unsigned int seqres, std::string resname, char icode);
 
   Atom&
   add_atom(const std::string& element, std::string name, unsigned int serial);
 
-  Atoms_iterator
+  AtomsIterator
   atoms_begin(const std::string& name);
 
-  Atoms_iterator
+  AtomsIterator
   atoms_end(const std::string& name);
 
   Chain&
@@ -40,40 +40,40 @@ public:
   std::string
   name() const;
 
-  Residue_number
+  ResidueNumber
   resnum() const;
 
   unsigned int
   sequence() const;
 
 private:
-  Atoms_container atoms_;
+  AtomsContainer atoms_;
 
   Chain* chain_ptr_;
 
-  Residue_number resnum_;
+  ResidueNumber resnum_;
 };
 
-class Compound::Atoms_iterator
-: public std::iterator<Atoms_container::iterator::iterator_category,
-                       Atoms_container::iterator,
-                       Atoms_container::iterator::difference_type,
+class Compound::AtomsIterator
+: public std::iterator<AtomsContainer::iterator::iterator_category,
+                       AtomsContainer::iterator,
+                       AtomsContainer::iterator::difference_type,
                        Atom*,
                        Atom&> {
 public:
-  explicit Atoms_iterator(value_type it);
+  explicit AtomsIterator(value_type it);
 
-  Atoms_iterator&
+  AtomsIterator&
   operator++();
 
-  const Atoms_iterator
+  const AtomsIterator
   operator++(int);
 
   bool
-  operator==(const Atoms_iterator& rhs);
+  operator==(const AtomsIterator& rhs);
 
   bool
-  operator!=(const Atoms_iterator& rhs);
+  operator!=(const AtomsIterator& rhs);
 
   reference operator*();
 
@@ -83,14 +83,14 @@ private:
   value_type it_;
 };
 
-class Compound::Atoms_iterable {
+class Compound::AtomsIterable {
 public:
-  explicit Atoms_iterable(Compound& compound);
+  explicit AtomsIterable(Compound& compound);
 
-  Compound::Atoms_iterator
+  Compound::AtomsIterator
   begin();
 
-  Compound::Atoms_iterator
+  Compound::AtomsIterator
   end();
 
 private:

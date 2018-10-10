@@ -10,51 +10,51 @@ class Molecule {
   using Models = std::vector<Model>;
 
 public:
-  class Chains_iterator;
+  class ChainsIterator;
 
-  class Models_iterable;
+  class ModelsIterable;
 
-  using Models_iterator = Models::iterator;
+  using ModelsIterator = Models::iterator;
 
   Model&
   add_model();
 
-  Chains_iterator
+  ChainsIterator
   chains_begin();
 
-  Chains_iterator
+  ChainsIterator
   chains_end();
 
-  Models_iterator
+  ModelsIterator
   models_begin();
 
-  Models_iterator
+  ModelsIterator
   models_end();
 
 private:
   Models models_;
 };
 
-class Molecule::Chains_iterator
-: public std::iterator<Models_iterator::iterator_category,
-                       Models_iterator,
-                       Models_iterator::difference_type,
+class Molecule::ChainsIterator
+: public std::iterator<ModelsIterator::iterator_category,
+                       ModelsIterator,
+                       ModelsIterator::difference_type,
                        Chain*,
                        Chain&> {
 public:
-  explicit Chains_iterator(value_type it);
+  explicit ChainsIterator(value_type it);
 
-  Chains_iterator&
+  ChainsIterator&
   operator++();
 
-  const Chains_iterator
+  const ChainsIterator
   operator++(int);
 
   bool
-  operator==(const Chains_iterator& rhs);
+  operator==(const ChainsIterator& rhs);
 
   bool
-  operator!=(const Chains_iterator& rhs);
+  operator!=(const ChainsIterator& rhs);
 
   reference operator*();
 
@@ -62,18 +62,18 @@ public:
 
 private:
   value_type it_;
-  Model::Chains_iterator cit_;
-  Model::Chains_iterator cet_;
+  Model::ChainsIterator cit_;
+  Model::ChainsIterator cet_;
 };
 
-class Molecule::Models_iterable {
+class Molecule::ModelsIterable {
 public:
-  explicit Models_iterable(Molecule& molecule);
+  explicit ModelsIterable(Molecule& molecule);
 
-  Molecule::Models_iterator
+  Molecule::ModelsIterator
   begin();
 
-  Molecule::Models_iterator
+  Molecule::ModelsIterator
   end();
 
 private:

@@ -9,40 +9,40 @@ Molecule::add_model()
   return models_.at(models_.size() - 1);
 }
 
-Molecule::Chains_iterator
+Molecule::ChainsIterator
 Molecule::chains_begin()
 {
-  return Molecule::Chains_iterator(models_.begin());
+  return Molecule::ChainsIterator(models_.begin());
 }
 
-Molecule::Chains_iterator
+Molecule::ChainsIterator
 Molecule::chains_end()
 {
-  return Molecule::Chains_iterator(models_.end());
+  return Molecule::ChainsIterator(models_.end());
 }
 
-Molecule::Models_iterator
+Molecule::ModelsIterator
 Molecule::models_begin()
 {
   return models_.begin();
 }
 
-Molecule::Models_iterator
+Molecule::ModelsIterator
 Molecule::models_end()
 {
   return models_.end();
 }
 
-Molecule::Chains_iterator::Chains_iterator(
- Molecule::Chains_iterator::value_type it)
+Molecule::ChainsIterator::ChainsIterator(
+ Molecule::ChainsIterator::value_type it)
 : it_(it)
 , cit_(it_->chains_begin())
 , cet_(it_->chains_end())
 {
 }
 
-Molecule::Chains_iterator&
-Molecule::Chains_iterator::operator++()
+Molecule::ChainsIterator&
+Molecule::ChainsIterator::operator++()
 {
   ++cit_;
   if(cit_ == cet_) {
@@ -54,49 +54,49 @@ Molecule::Chains_iterator::operator++()
   return *this;
 }
 
-const Molecule::Chains_iterator
-Molecule::Chains_iterator::operator++(int)
+const Molecule::ChainsIterator
+Molecule::ChainsIterator::operator++(int)
 {
-  Molecule::Chains_iterator tmp(*this);
+  Molecule::ChainsIterator tmp(*this);
   operator++();
   return tmp;
 }
 
 bool
-Molecule::Chains_iterator::operator==(const Molecule::Chains_iterator& rhs)
+Molecule::ChainsIterator::operator==(const Molecule::ChainsIterator& rhs)
 {
   return it_ == rhs.it_;
 }
 
 bool
-Molecule::Chains_iterator::operator!=(const Molecule::Chains_iterator& rhs)
+Molecule::ChainsIterator::operator!=(const Molecule::ChainsIterator& rhs)
 {
   return it_ != rhs.it_;
 }
 
-Molecule::Chains_iterator::reference Molecule::Chains_iterator::operator*()
+Molecule::ChainsIterator::reference Molecule::ChainsIterator::operator*()
 {
   return cit_.operator*();
 }
 
-Molecule::Chains_iterator::pointer Molecule::Chains_iterator::operator->()
+Molecule::ChainsIterator::pointer Molecule::ChainsIterator::operator->()
 {
   return cit_.operator->();
 }
 
-Molecule::Models_iterable::Models_iterable(Molecule& molecule)
+Molecule::ModelsIterable::ModelsIterable(Molecule& molecule)
 : molecule_{molecule}
 {
 }
 
-Molecule::Models_iterator
-Molecule::Models_iterable::begin()
+Molecule::ModelsIterator
+Molecule::ModelsIterable::begin()
 {
   return {molecule_.models_.begin()};
 }
 
-Molecule::Models_iterator
-Molecule::Models_iterable::end()
+Molecule::ModelsIterator
+Molecule::ModelsIterable::end()
 {
   return {molecule_.models_.end()};
 }

@@ -18,13 +18,13 @@ class Model {
   using Atoms = std::map<unsigned int, Atom*>;
 
 public:
-  class Chains_iterable;
+  class ChainsIterable;
 
-  class Bonds_iterable;
+  class BondsIterable;
 
-  class Chains_iterator;
+  class ChainsIterator;
 
-  using Bonds_iterator = Bonds::iterator;
+  using BondsIterator = Bonds::iterator;
 
   explicit Model(Molecule& molecule);
 
@@ -40,10 +40,10 @@ public:
   Chain&
   add_chain(char cid);
 
-  Chains_iterator
+  ChainsIterator
   chains_begin();
 
-  Chains_iterator
+  ChainsIterator
   chains_end();
 
   Atom*
@@ -65,54 +65,54 @@ private:
   Molecule* molecule_ptr_;
 };
 
-class Model::Chains_iterable {
+class Model::ChainsIterable {
 public:
-  explicit Chains_iterable(Model& model);
+  explicit ChainsIterable(Model& model);
 
-  Model::Chains_iterator
+  Model::ChainsIterator
   begin();
 
-  Model::Chains_iterator
+  Model::ChainsIterator
   end();
 
 private:
   Model& model_;
 };
 
-class Model::Bonds_iterable {
+class Model::BondsIterable {
 public:
-  explicit Bonds_iterable(Model& model);
+  explicit BondsIterable(Model& model);
 
-  Model::Bonds_iterator
+  Model::BondsIterator
   begin();
 
-  Model::Bonds_iterator
+  Model::BondsIterator
   end();
 
 private:
   Model model_;
 };
 
-class Model::Chains_iterator
+class Model::ChainsIterator
 : public std::iterator<Chains::iterator::iterator_category,
                        Chains::iterator,
                        Chains::iterator::difference_type,
                        Chain*,
                        Chain&> {
 public:
-  explicit Chains_iterator(value_type it);
+  explicit ChainsIterator(value_type it);
 
-  Chains_iterator&
+  ChainsIterator&
   operator++();
 
-  const Chains_iterator
+  const ChainsIterator
   operator++(int);
 
   bool
-  operator==(const Chains_iterator& rhs);
+  operator==(const ChainsIterator& rhs);
 
   bool
-  operator!=(const Chains_iterator& rhs);
+  operator!=(const ChainsIterator& rhs);
 
   reference operator*();
 

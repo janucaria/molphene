@@ -10,12 +10,12 @@ Chain::Chain(Model* model, char chainId)
 }
 
 Compound&
-Chain::add_compound(const Compound::Residue_number& resnum)
+Chain::add_compound(const Compound::ResidueNumber& resnum)
 {
   compounds_.emplace_back(
    *this, std::get<0>(resnum), std::get<1>(resnum), std::get<2>(resnum));
 
-  std::pair<Compound_map::iterator, bool> emplaced =
+  std::pair<CompoundMap::iterator, bool> emplaced =
    res_lookup_.emplace(std::piecewise_construct,
                        std::make_tuple(resnum),
                        std::forward_as_tuple(compounds_.size() - 1));
@@ -23,7 +23,7 @@ Chain::add_compound(const Compound::Residue_number& resnum)
 }
 
 Compound*
-Chain::get_compound(const Compound::Residue_number& resnum)
+Chain::get_compound(const Compound::ResidueNumber& resnum)
 {
   auto comptypeit = res_lookup_.find(resnum);
   if(comptypeit == res_lookup_.end()) {
@@ -37,7 +37,7 @@ Chain::get_compound(const Compound::Residue_number& resnum)
 Compound*
 Chain::get_compound(unsigned int reseq, std::string resname, char icode)
 {
-  return get_compound(Compound::Residue_number(reseq, resname, icode));
+  return get_compound(Compound::ResidueNumber(reseq, resname, icode));
 }
 
 const Chain::Compounds&
@@ -64,57 +64,57 @@ Chain::terminate()
   ter_ = compounds_.size();
 }
 
-Chain::Residue_iterator::Residue_iterator(Chain& chain)
+Chain::ResidueIterator::ResidueIterator(Chain& chain)
 : chain_{chain}
 {
 }
 
-Chain::Compounds_iterator
-Chain::Residue_iterator::begin()
+Chain::CompoundsIterator
+Chain::ResidueIterator::begin()
 {
   return chain_.compounds_.begin();
 }
 
-Chain::Compounds_iterator
-Chain::Residue_iterator::end()
+Chain::CompoundsIterator
+Chain::ResidueIterator::end()
 {
   auto it = begin();
   std::advance(it, chain_.ter_);
   return it;
 }
 
-Chain::Compound_iterator::Compound_iterator(Chain& chain)
+Chain::CompoundIterator::CompoundIterator(Chain& chain)
 : chain_{chain}
 {
 }
 
-Chain::Compounds_iterator
-Chain::Compound_iterator::begin()
+Chain::CompoundsIterator
+Chain::CompoundIterator::begin()
 {
   return chain_.compounds_.begin();
 }
 
-Chain::Compounds_iterator
-Chain::Compound_iterator::end()
+Chain::CompoundsIterator
+Chain::CompoundIterator::end()
 {
   return chain_.compounds_.end();
 }
 
-Chain::Ligan_iterator::Ligan_iterator(Chain& chain)
+Chain::LiganIterator::LiganIterator(Chain& chain)
 : chain_{chain}
 {
 }
 
-Chain::Compounds_iterator
-Chain::Ligan_iterator::begin()
+Chain::CompoundsIterator
+Chain::LiganIterator::begin()
 {
   auto it = std::begin(chain_.compounds_);
   std::advance(it, chain_.ter_);
   return it;
 }
 
-Chain::Compounds_iterator
-Chain::Ligan_iterator::end()
+Chain::CompoundsIterator
+Chain::LiganIterator::end()
 {
   return chain_.compounds_.end();
 }

@@ -25,25 +25,25 @@ Scene::reset_mesh() noexcept
   std::vector<Atom*> atoms;
   std::vector<Bond*> bonds;
 
-  for(auto& model : Molecule::Models_iterable{*molecule_}) {
-    for(auto& chain : Model::Chains_iterable{model}) {
-      for(auto& residue : Chain::Residue_iterator{chain}) {
-        for(auto& atom : Compound::Atoms_iterable{residue}) {
+  for(auto& model : Molecule::ModelsIterable{*molecule_}) {
+    for(auto& chain : Model::ChainsIterable{model}) {
+      for(auto& residue : Chain::ResidueIterator{chain}) {
+        for(auto& atom : Compound::AtomsIterable{residue}) {
           const auto atm = std::addressof(atom);
           atoms.push_back(atm);
         }
       }
 
-      for(auto& ligan : Chain::Ligan_iterator{chain}) {
+      for(auto& ligan : Chain::LiganIterator{chain}) {
         const auto compname = ligan.name();
-        for(auto& atom : Compound::Atoms_iterable{ligan}) {
+        for(auto& atom : Compound::AtomsIterable{ligan}) {
           const auto atm = std::addressof(atom);
           atoms.push_back(atm);
         }
       }
     }
 
-    for(auto& bond : Model::Bonds_iterable{model}) {
+    for(auto& bond : Model::BondsIterable{model}) {
       bonds.push_back(&bond);
     }
   }
@@ -52,10 +52,10 @@ Scene::reset_mesh() noexcept
   bounding_sphere_.reset();
   auto& bs = bounding_sphere_;
 
-  for(auto& model : Molecule::Models_iterable{*molecule_}) {
-    for(auto& chain : Model::Chains_iterable{model}) {
-      for(auto& residue : Chain::Compound_iterator{chain}) {
-        for(auto& atom : Compound::Atoms_iterable{residue}) {
+  for(auto& model : Molecule::ModelsIterable{*molecule_}) {
+    for(auto& chain : Model::ChainsIterable{model}) {
+      for(auto& residue : Chain::CompoundIterator{chain}) {
+        for(auto& atom : Compound::AtomsIterable{residue}) {
           bs.expand(Vec3f(atom.position()));
         }
       }

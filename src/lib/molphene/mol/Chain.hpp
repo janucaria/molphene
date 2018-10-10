@@ -11,24 +11,24 @@ class Model;
 class Chain {
   using Compounds = std::vector<Compound>;
 
-  using Compound_map = std::map<Compound::Residue_number, Compounds::size_type>;
+  using CompoundMap = std::map<Compound::ResidueNumber, Compounds::size_type>;
 
 public:
-  class Residue_iterator;
+  class ResidueIterator;
 
-  class Compound_iterator;
+  class CompoundIterator;
 
-  class Ligan_iterator;
+  class LiganIterator;
 
-  using Compounds_iterator = Compounds::iterator;
+  using CompoundsIterator = Compounds::iterator;
 
   Chain(Model* model, char chainId);
 
   Compound&
-  add_compound(const Compound::Residue_number& resnum);
+  add_compound(const Compound::ResidueNumber& resnum);
 
   Compound*
-  get_compound(const Compound::Residue_number& resnum);
+  get_compound(const Compound::ResidueNumber& resnum);
 
   Compound*
   get_compound(unsigned int reseq, std::string resname, char icode);
@@ -52,47 +52,47 @@ private:
 
   Model* model_ptr_;
 
-  Compound_map res_lookup_;
+  CompoundMap res_lookup_;
 
   Compounds::size_type ter_{0};
 };
 
-class Chain::Residue_iterator {
+class Chain::ResidueIterator {
 public:
-  explicit Residue_iterator(Chain& chain);
+  explicit ResidueIterator(Chain& chain);
 
-  Chain::Compounds_iterator
+  Chain::CompoundsIterator
   begin();
 
-  Chain::Compounds_iterator
+  Chain::CompoundsIterator
   end();
 
 private:
   Chain& chain_;
 };
 
-class Chain::Compound_iterator {
+class Chain::CompoundIterator {
 public:
-  explicit Compound_iterator(Chain& chain);
+  explicit CompoundIterator(Chain& chain);
 
-  Chain::Compounds_iterator
+  Chain::CompoundsIterator
   begin();
 
-  Chain::Compounds_iterator
+  Chain::CompoundsIterator
   end();
 
 private:
   Chain& chain_;
 };
 
-class Chain::Ligan_iterator {
+class Chain::LiganIterator {
 public:
-  explicit Ligan_iterator(Chain& chain);
+  explicit LiganIterator(Chain& chain);
 
-  Chain::Compounds_iterator
+  Chain::CompoundsIterator
   begin();
 
-  Chain::Compounds_iterator
+  Chain::CompoundsIterator
   end();
 
 private:

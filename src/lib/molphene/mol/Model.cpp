@@ -36,16 +36,16 @@ Model::chains() const
   return chains_;
 }
 
-Model::Chains_iterator
+Model::ChainsIterator
 Model::chains_begin()
 {
-  return Model::Chains_iterator(chains_.begin());
+  return Model::ChainsIterator(chains_.begin());
 }
 
-Model::Chains_iterator
+Model::ChainsIterator
 Model::chains_end()
 {
-  return Model::Chains_iterator(chains_.end());
+  return Model::ChainsIterator(chains_.end());
 }
 
 Atom*
@@ -70,78 +70,78 @@ Model::molecule() const
   return *molecule_ptr_;
 }
 
-Model::Chains_iterable::Chains_iterable(Model& model)
+Model::ChainsIterable::ChainsIterable(Model& model)
 : model_{model}
 {
 }
 
-Model::Chains_iterator
-Model::Chains_iterable::begin()
+Model::ChainsIterator
+Model::ChainsIterable::begin()
 {
-  return Model::Chains_iterator(model_.chains_.begin());
+  return Model::ChainsIterator(model_.chains_.begin());
 }
 
-Model::Chains_iterator
-Model::Chains_iterable::end()
+Model::ChainsIterator
+Model::ChainsIterable::end()
 {
-  return Model::Chains_iterator(model_.chains_.end());
+  return Model::ChainsIterator(model_.chains_.end());
 }
 
-Model::Bonds_iterable::Bonds_iterable(Model& model)
+Model::BondsIterable::BondsIterable(Model& model)
 : model_(model)
 {
 }
 
-Model::Bonds_iterator
-Model::Bonds_iterable::begin()
+Model::BondsIterator
+Model::BondsIterable::begin()
 {
   return {model_.bonds_.begin()};
 }
 
-Model::Bonds_iterator
-Model::Bonds_iterable::end()
+Model::BondsIterator
+Model::BondsIterable::end()
 {
   return {model_.bonds_.end()};
 }
 
-Model::Chains_iterator::Chains_iterator(Model::Chains_iterator::value_type it)
+Model::ChainsIterator::ChainsIterator(Model::ChainsIterator::value_type it)
 : it_(it)
 {
 }
 
-Model::Chains_iterator&
-Model::Chains_iterator::operator++()
+Model::ChainsIterator&
+Model::ChainsIterator::operator++()
 {
   ++it_;
   return *this;
 }
 
-const Model::Chains_iterator
-Model::Chains_iterator::operator++(int)
+const Model::ChainsIterator
+Model::ChainsIterator::operator++(int)
 {
-  Model::Chains_iterator tmp(*this);
+  Model::ChainsIterator tmp(*this);
   operator++();
   return tmp;
 }
 
 bool
-Model::Chains_iterator::operator==(const Model::Chains_iterator& rhs)
+Model::ChainsIterator::operator==(const Model::ChainsIterator& rhs)
 {
   return it_ == rhs.it_;
 }
 
 bool
-Model::Chains_iterator::operator!=(const Model::Chains_iterator& rhs)
+Model::ChainsIterator::operator!=(const Model::ChainsIterator& rhs)
 {
   return it_ != rhs.it_;
 }
 
-Model::Chains_iterator::reference Model::Chains_iterator::operator*()
+Model::ChainsIterator::reference Model::ChainsIterator::operator*()
 {
   return it_->second;
 }
 
-Model::Chains_iterator::pointer Model::Chains_iterator::operator->()
+Model::ChainsIterator::pointer Model::ChainsIterator::operator->()
 {
   return &it_->second;
 }

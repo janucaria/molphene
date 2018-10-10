@@ -21,7 +21,7 @@ public:
   using Mat4f = Mat4<float>;
   using Mat3f = Mat3<float>;
   using Vec3f = Vec3<float>;
-  using Attribs_location_name =
+  using AttribsLocationName =
    std::array<std::pair<ShaderAttribLocation, const GLchar*>, 3>;
 
   ColorLightShader() noexcept;
@@ -288,7 +288,7 @@ protected:
   const char*
   frag_shader_source() const noexcept;
 
-  Attribs_location_name
+  AttribsLocationName
   get_attribs_location() const noexcept;
 
   void

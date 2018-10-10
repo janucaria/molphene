@@ -11,11 +11,11 @@
 
 namespace molphene {
 class PdbParser {
-  using Bond_pair = std::pair<std::string, std::string>;
+  using BondPair = std::pair<std::string, std::string>;
 
-  using Bond_pairs = std::set<Bond_pair>;
+  using BondPairs = std::set<BondPair>;
 
-  using Residue_bond_pairs_map = std::unordered_map<std::string, Bond_pairs>;
+  using ResidueBondPairsMap = std::unordered_map<std::string, BondPairs>;
 
 public:
   void
