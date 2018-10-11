@@ -10,6 +10,45 @@ GlRenderer::init() noexcept
   glEnable(GL_DEPTH_TEST);
 
   color_light_shader_.init_program();
+  quad_shader_.init_program();
+
+  glGenFramebuffers(1, &color_light_fbo_);
+
+  glGenTextures(1, &color_light_color_tex_);
+  glBindTexture(GL_TEXTURE_2D, color_light_color_tex_);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+  glGenRenderbuffers(1, &color_light_depth_rbo_);
+
+  glBindFramebuffer(GL_FRAMEBUFFER, color_light_fbo_);
+  glBindTexture(GL_TEXTURE_2D, color_light_color_tex_);
+  glFramebufferTexture2D(GL_FRAMEBUFFER,
+                         GL_COLOR_ATTACHMENT0 + 0,
+                         GL_TEXTURE_2D,
+                         color_light_color_tex_,
+                         0);
+
+  glBindFramebuffer(GL_FRAMEBUFFER, color_light_fbo_);
+  glBindRenderbuffer(GL_RENDERBUFFER, color_light_depth_rbo_);
+  glFramebufferRenderbuffer(GL_FRAMEBUFFER,
+                            GL_DEPTH_ATTACHMENT,
+                            GL_RENDERBUFFER,
+                            color_light_depth_rbo_);
+  
+  const auto quad_verts = std::array<Vec2f, 4>{
+    Vec2f{-1, 1},
+    Vec2f{-1, -1}, 
+    Vec2f{1, 1}, 
+    Vec2f{1, -1}
+  };
+
+  quad_verts_buffer_ = std::make_unique<decltype(quad_verts_buffer_)::element_type>();
+
+  quad_verts_buffer_->size(quad_verts.size());
+  quad_verts_buffer_->data(0, quad_verts.size(), quad_verts.data());
 }
 
 void
@@ -26,6 +65,22 @@ GlRenderer::render(const Scene& scene,
   const auto proj_matrix = camera.projection_matrix();
   const auto viewport = scene.viewport();
 
+  glBindTexture(GL_TEXTURE_2D, color_light_color_tex_);
+  glTexImage2D(GL_TEXTURE_2D,
+               0,
+               GL_RGBA,
+               viewport.width,
+               viewport.height,
+               0,
+               GL_RGBA,
+               GL_UNSIGNED_BYTE,
+               nullptr);
+
+  glBindRenderbuffer(GL_RENDERBUFFER, color_light_depth_rbo_);
+  glRenderbufferStorage(
+   GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, viewport.width, viewport.height);
+
+  glBindFramebuffer(GL_FRAMEBUFFER, color_light_fbo_);
   glViewport(viewport.x, viewport.y, viewport.width, viewport.height);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -44,13 +99,30 @@ GlRenderer::render(const Scene& scene,
    static_cast<GLuint>(ShaderAttribLocation::texcoordcolor));
 
   mbuffers->setup_attrib_pointer(
-   [](auto count) { glDrawArrays(GL_TRIANGLE_STRIP, 0, count); });
+   [](auto count) noexcept { glDrawArrays(GL_TRIANGLE_STRIP, 0, count); });
 
-  glEnableVertexAttribArray(static_cast<GLuint>(ShaderAttribLocation::vertex));
-  glEnableVertexAttribArray(static_cast<GLuint>(ShaderAttribLocation::normal));
-  glEnableVertexAttribArray(
+  glDisableVertexAttribArray(static_cast<GLuint>(ShaderAttribLocation::vertex));
+  glDisableVertexAttribArray(static_cast<GLuint>(ShaderAttribLocation::normal));
+  glDisableVertexAttribArray(
    static_cast<GLuint>(ShaderAttribLocation::texcoordcolor));
 
+  glFlush();
+
+
+  glBindFramebuffer(GL_FRAMEBUFFER, 0);
+  glViewport(viewport.x, viewport.y, viewport.width, viewport.height);
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+  quad_shader_.use_program();
+  quad_shader_.color_texture_image(color_light_color_tex_);
+
+  glEnableVertexAttribArray(static_cast<GLuint>(ShaderAttribLocation::vertex));
+
+  quad_verts_buffer_->attrib_pointer();
+
+  glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+
+  glDisableVertexAttribArray(static_cast<GLuint>(ShaderAttribLocation::vertex));
   glFlush();
 }
 
