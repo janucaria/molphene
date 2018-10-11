@@ -17,11 +17,11 @@ public:
   using Vec3f = Vec3<GLfloat>;
 
   using PositionAttribsBuffers =
-   std::vector<VertexAttribsBuffer<Vec3f, ShaderAttribLocation::vertex>>;
+   std::unique_ptr<VertexAttribsBuffer<Vec3f, ShaderAttribLocation::vertex>[]>;
   using NormalAttribsBuffers =
-   std::vector<VertexAttribsBuffer<Vec3f, ShaderAttribLocation::normal>>;
+   std::unique_ptr<VertexAttribsBuffer<Vec3f, ShaderAttribLocation::normal>[]>;
   using ColorAttribsBuffers =
-   std::vector<VertexAttribsBuffer<Vec2f, ShaderAttribLocation::texcoordcolor>>;
+   std::unique_ptr<VertexAttribsBuffer<Vec2f, ShaderAttribLocation::texcoordcolor>[]>;
 
   ColorLightBuffer(GLsizei verts_per_instance, GLsizeiptr total_instances) noexcept;
 

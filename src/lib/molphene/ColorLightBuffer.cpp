@@ -30,18 +30,18 @@ ColorLightBuffer::ColorLightBuffer(GLsizei verts_per_instance,
     ++size_;
   }
 
-  vert_buffers_.reserve(size_);
-  normal_buffers_.reserve(size_);
-  texcoord_buffers_.reserve(size_);
+  vert_buffers_ = std::make_unique<decltype(vert_buffers_)::element_type[]>(size_);
+  normal_buffers_ = std::make_unique<decltype(normal_buffers_)::element_type[]>(size_);
+  texcoord_buffers_ = std::make_unique<decltype(texcoord_buffers_)::element_type[]>(size_);
 
   for(auto i = GLsizei{0}; i < size_; ++i) {
     const auto meshes =
      i == (size_ - 1) ? remain_instances_ : instances_per_block_;
-    const auto verts = GLsizeiptr{meshes * verts_per_instance_};
+    const auto verts_count = GLsizeiptr{meshes * verts_per_instance_};
 
-    vert_buffers_.emplace_back(verts, GL_STATIC_DRAW);
-    normal_buffers_.emplace_back(verts, GL_STATIC_DRAW);
-    texcoord_buffers_.emplace_back(verts, GL_STATIC_DRAW);
+    vert_buffers_[i].size(verts_count);
+    normal_buffers_[i].size(verts_count);
+    texcoord_buffers_[i].size(verts_count);
   }
 
   glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -62,17 +62,17 @@ ColorLightBuffer::set_data(GLintptr offset,
     const auto elems_fill = instances_per_block_ - index;
     const auto fill_size = GLsizeiptr{size < elems_fill ? size : elems_fill};
 
-    vert_buffers_[chunk].sub_data(
+    vert_buffers_[chunk].data(
      index * verts_per_instance_,
      fill_size * verts_per_instance_,
      verts.first(data_offset * verts_per_instance_).data());
 
-    normal_buffers_[chunk].sub_data(
+    normal_buffers_[chunk].data(
      index * verts_per_instance_,
      fill_size * verts_per_instance_,
      norms.first(data_offset * verts_per_instance_).data());
 
-    texcoord_buffers_[chunk].sub_data(
+    texcoord_buffers_[chunk].data(
      index * verts_per_instance_,
      fill_size * verts_per_instance_,
      texcoords.first(data_offset * verts_per_instance_).data());

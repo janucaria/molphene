@@ -9,34 +9,22 @@ namespace molphene {
 
 template<class DataType,
          ShaderAttribLocation attrib_index,
-         GLboolean normalized = GL_FALSE>
+         GLboolean normalized = GL_FALSE,
+         GLenum usage = GL_STATIC_DRAW>
 class VertexAttribsBuffer {
 public:
-  VertexAttribsBuffer(GLsizeiptr size, GLenum usage) noexcept
-  : size_{size}
-  , buffer_{new GLuint}
+  VertexAttribsBuffer() noexcept
   {
-    glGenBuffers(1, buffer_);
-
-    glBindBuffer(GL_ARRAY_BUFFER, *buffer_);
-    glBufferData(GL_ARRAY_BUFFER, size_ * sizeof(DataType), nullptr, usage);
+    glGenBuffers(1, &buffer_);
   }
 
   VertexAttribsBuffer(const VertexAttribsBuffer& rsh) = delete;
 
-  VertexAttribsBuffer(VertexAttribsBuffer&& rsh) noexcept
-  : size_{rsh.size_}
-  , buffer_{rsh.buffer_}
-  {
-    rsh.buffer_ = nullptr;
-  }
+  VertexAttribsBuffer(VertexAttribsBuffer&& rsh) = delete;
 
-  ~VertexAttribsBuffer()
+  ~VertexAttribsBuffer() noexcept
   {
-    if(buffer_ != nullptr) {
-      glDeleteBuffers(1, buffer_);
-      delete buffer_;
-    }
+    glDeleteBuffers(1, &buffer_);
   }
 
   VertexAttribsBuffer&
@@ -46,9 +34,16 @@ public:
   operator=(VertexAttribsBuffer&& rsh) = delete;
 
   void
-  sub_data(GLintptr offset, GLsizeiptr size, const GLvoid* data) const noexcept
+  size(GLsizeiptr size) const noexcept
   {
-    glBindBuffer(GL_ARRAY_BUFFER, *buffer_);
+    glBindBuffer(GL_ARRAY_BUFFER, buffer_);
+    glBufferData(GL_ARRAY_BUFFER, size * sizeof(DataType), nullptr, usage);
+  }
+
+  void
+  data(GLintptr offset, GLsizeiptr size, const GLvoid* data) const noexcept
+  {
+    glBindBuffer(GL_ARRAY_BUFFER, buffer_);
     glBufferSubData(
      GL_ARRAY_BUFFER, offset * sizeof(DataType), size * sizeof(DataType), data);
   }
@@ -56,7 +51,7 @@ public:
   void
   attrib_pointer() const noexcept
   {
-    glBindBuffer(GL_ARRAY_BUFFER, *buffer_);
+    glBindBuffer(GL_ARRAY_BUFFER, buffer_);
     glVertexAttribPointer(static_cast<GLuint>(attrib_index),
                           gl_vertex_attrib<DataType>::size,
                           gl_vertex_attrib<DataType>::type,
@@ -66,8 +61,7 @@ public:
   }
 
 private:
-  GLsizeiptr size_;
-  GLuint* buffer_{nullptr};
+  GLuint buffer_{0};
 };
 
 } // namespace molphene
