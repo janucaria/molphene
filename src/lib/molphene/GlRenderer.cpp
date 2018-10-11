@@ -38,17 +38,13 @@ GlRenderer::init() noexcept
                             GL_RENDERBUFFER,
                             color_light_depth_rbo_);
   
-  const auto quad_verts = std::array<Vec2f, 4>{
+  quad_verts_buffer_ = std::make_unique<decltype(quad_verts_buffer_)::element_type>();
+  quad_verts_buffer_->init(std::array<Vec2f, 4>{
     Vec2f{-1, 1},
     Vec2f{-1, -1}, 
     Vec2f{1, 1}, 
     Vec2f{1, -1}
-  };
-
-  quad_verts_buffer_ = std::make_unique<decltype(quad_verts_buffer_)::element_type>();
-
-  quad_verts_buffer_->size(quad_verts.size());
-  quad_verts_buffer_->data(0, quad_verts.size(), quad_verts.data());
+  });
 }
 
 void
