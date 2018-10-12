@@ -18,17 +18,19 @@ public:
   {
     g_program = create_program();
 
-    if(g_program) {
-      as_derived()->setup_gl_uniforms_loc();
-
-      auto current_prog = GLint{0};
-      glGetIntegerv(GL_CURRENT_PROGRAM, &current_prog);
-      glUseProgram(g_program);
-      as_const_derived()->setup_gl_uniforms_val();
-      glUseProgram(current_prog);
-
-      as_const_derived()->setup_gl_attribs_val();
+    if(!g_program) {
+      std::terminate();
     }
+    
+    as_derived()->setup_gl_uniforms_loc();
+
+    auto current_prog = GLint{0};
+    glGetIntegerv(GL_CURRENT_PROGRAM, &current_prog);
+    glUseProgram(g_program);
+    as_const_derived()->setup_gl_uniforms_val();
+    glUseProgram(current_prog);
+
+    as_const_derived()->setup_gl_attribs_val();
 
     return g_program;
   }
