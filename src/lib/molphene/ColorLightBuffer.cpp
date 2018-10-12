@@ -1,12 +1,10 @@
 #include "ColorLightBuffer.hpp"
-#include "ColorLightShader.hpp"
-#include "opengl.hpp"
 
 namespace molphene {
 
 ColorLightBuffer::ColorLightBuffer(GLsizei verts_per_instance,
                                    GLsizeiptr total_instances) noexcept
-: verts_per_instance_{verts_per_instance}
+: AttribsBufferArray{verts_per_instance, total_instances}
 , color_tex_size_(static_cast<GLsizei>(std::ceil(std::sqrt(total_instances))))
 {
   glGenTextures(1, &color_tex_);
@@ -15,72 +13,6 @@ ColorLightBuffer::ColorLightBuffer(GLsizei verts_per_instance,
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-  constexpr auto max_bytes_per_chunk = std::numeric_limits<GLsizeiptr>::max();
-  constexpr auto bytes_per_vert = GLsizeiptr{sizeof(Vec3f) * 2 + sizeof(Vec2f)};
-  const auto bytes_per_mesh = GLsizeiptr{verts_per_instance_ * bytes_per_vert};
-
-  instances_per_block_ = GLsizei(max_bytes_per_chunk / bytes_per_mesh);
-  size_ = GLsizei(total_instances / instances_per_block_);
-  remain_instances_ = total_instances % instances_per_block_;
-
-  if(remain_instances_ == 0) {
-    remain_instances_ = instances_per_block_;
-  } else {
-    ++size_;
-  }
-
-  vert_buffers_ = std::make_unique<decltype(vert_buffers_)::element_type[]>(size_);
-  normal_buffers_ = std::make_unique<decltype(normal_buffers_)::element_type[]>(size_);
-  texcoord_buffers_ = std::make_unique<decltype(texcoord_buffers_)::element_type[]>(size_);
-
-  for(auto i = GLsizei{0}; i < size_; ++i) {
-    const auto meshes =
-     i == (size_ - 1) ? remain_instances_ : instances_per_block_;
-    const auto verts_count = GLsizeiptr{meshes * verts_per_instance_};
-
-    vert_buffers_[i].size(verts_count);
-    normal_buffers_[i].size(verts_count);
-    texcoord_buffers_[i].size(verts_count);
-  }
-
-  glBindBuffer(GL_ARRAY_BUFFER, 0);
-}
-
-void
-ColorLightBuffer::set_data(GLintptr offset,
-                           GLsizeiptr size,
-                           gsl::span<const Vec3f> verts,
-                           gsl::span<const Vec3f> norms,
-                           gsl::span<const Vec2f> texcoords) const noexcept
-{
-  auto data_offset = GLsizeiptr{0};
-  while(size > 0) {
-    const auto chunk = GLsizeiptr{offset / instances_per_block_};
-    const auto index = GLsizeiptr{offset % instances_per_block_};
-
-    const auto elems_fill = instances_per_block_ - index;
-    const auto fill_size = GLsizeiptr{size < elems_fill ? size : elems_fill};
-
-    vert_buffers_[chunk].data(
-     index * verts_per_instance_,
-     fill_size * verts_per_instance_,
-     verts.first(data_offset * verts_per_instance_).data());
-
-    normal_buffers_[chunk].data(
-     index * verts_per_instance_,
-     fill_size * verts_per_instance_,
-     norms.first(data_offset * verts_per_instance_).data());
-
-    texcoord_buffers_[chunk].data(
-     index * verts_per_instance_,
-     fill_size * verts_per_instance_,
-     texcoords.first(data_offset * verts_per_instance_).data());
-
-    size -= fill_size;
-    offset += fill_size;
-    data_offset += fill_size;
-  }
 }
 
 void

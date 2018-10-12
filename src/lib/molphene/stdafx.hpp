@@ -11,12 +11,16 @@
 #include <limits>
 #include <memory>
 #include <string>
+#include <tuple>
 #include <type_traits>
 #include <unordered_map>
 #include <utility>
 #include <vector>
 
 #include <gsl/gsl>
+
+#include <boost/fusion/adapted/std_tuple.hpp>
+#include <boost/fusion/algorithm.hpp>
 
 #include "type_configs.hpp"
 
