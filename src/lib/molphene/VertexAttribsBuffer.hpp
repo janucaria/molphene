@@ -7,12 +7,14 @@
 
 namespace molphene {
 
-template<class DataType,
+template<class TDataType,
          ShaderAttribLocation attrib_index,
          GLboolean normalized = GL_FALSE,
          GLenum usage = GL_STATIC_DRAW>
 class VertexAttribsBuffer {
 public:
+  using DataType = TDataType;
+
   VertexAttribsBuffer() noexcept
   {
     glGenBuffers(1, &buffer_);
