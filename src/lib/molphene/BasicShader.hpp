@@ -8,41 +8,41 @@
 
 namespace molphene {
 
-template<typename TDerived>
+template<typename TShader>
 class BasicShader {
-  struct accessor : TDerived {
+  struct accessor : TShader {
     static void
-    call_setup_gl_attribs_val(const TDerived* shader) noexcept
+    call_setup_gl_attribs_val(const TShader* shader) noexcept
     {
       std::invoke(&accessor::setup_gl_attribs_val, *shader);
     }
 
     static const char*
-    call_vert_shader_source(const TDerived* shader) noexcept
+    call_vert_shader_source(const TShader* shader) noexcept
     {
       return std::invoke(&accessor::vert_shader_source, *shader);
     }
 
     static const char*
-    call_frag_shader_source(const TDerived* shader) noexcept
+    call_frag_shader_source(const TShader* shader) noexcept
     {
       return std::invoke(&accessor::frag_shader_source, *shader);
     }
 
-    static typename TDerived::AttribsLocationName
-    call_get_attribs_location(const TDerived* shader) noexcept
+    static typename TShader::AttribsLocationName
+    call_get_attribs_location(const TShader* shader) noexcept
     {
       return std::invoke(&accessor::get_attribs_location, *shader);
     }
 
     static void
-    call_setup_gl_uniforms_loc(TDerived* shader) noexcept
+    call_setup_gl_uniforms_loc(TShader* shader) noexcept
     {
       std::invoke(&accessor::setup_gl_uniforms_loc, *shader);
     }
 
     static void
-    call_setup_gl_uniforms_val(const TDerived* shader) noexcept
+    call_setup_gl_uniforms_val(const TShader* shader) noexcept
     {
       std::invoke(&accessor::setup_gl_uniforms_val, *shader);
     }
@@ -176,13 +176,13 @@ private:
   inline auto
   as_const_derived() const noexcept
   {
-    return static_cast<const TDerived*>(this);
+    return static_cast<const TShader*>(this);
   }
 
   inline auto
   as_derived() noexcept
   {
-    return static_cast<TDerived*>(this);
+    return static_cast<TShader*>(this);
   }
 };
 } // namespace molphene
