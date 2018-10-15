@@ -15,8 +15,6 @@
 
 namespace molphene {
 class ColorLightShader : public BasicShader<ColorLightShader> {
-  friend BasicShader<ColorLightShader>;
-
 public:
   using Mat4f = Mat4<float>;
   using Mat3f = Mat3<float>;

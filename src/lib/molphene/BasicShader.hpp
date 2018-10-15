@@ -10,6 +10,44 @@ namespace molphene {
 
 template<typename TDerived>
 class BasicShader {
+  struct accessor : TDerived {
+    static void
+    call_setup_gl_attribs_val(const TDerived* shader) noexcept
+    {
+      std::invoke(&accessor::setup_gl_attribs_val, *shader);
+    }
+
+    static const char*
+    call_vert_shader_source(const TDerived* shader) noexcept
+    {
+      return std::invoke(&accessor::vert_shader_source, *shader);
+    }
+
+    static const char*
+    call_frag_shader_source(const TDerived* shader) noexcept
+    {
+      return std::invoke(&accessor::frag_shader_source, *shader);
+    }
+
+    static typename TDerived::AttribsLocationName
+    call_get_attribs_location(const TDerived* shader) noexcept
+    {
+      return std::invoke(&accessor::get_attribs_location, *shader);
+    }
+
+    static void
+    call_setup_gl_uniforms_loc(TDerived* shader) noexcept
+    {
+      std::invoke(&accessor::setup_gl_uniforms_loc, *shader);
+    }
+
+    static void
+    call_setup_gl_uniforms_val(const TDerived* shader) noexcept
+    {
+      std::invoke(&accessor::setup_gl_uniforms_val, *shader);
+    }
+  };
+
 public:
   BasicShader() noexcept = default;
 
@@ -22,15 +60,15 @@ public:
       std::terminate();
     }
     
-    as_derived()->setup_gl_uniforms_loc();
+    accessor::call_setup_gl_uniforms_loc(as_derived());
 
     auto current_prog = GLint{0};
     glGetIntegerv(GL_CURRENT_PROGRAM, &current_prog);
     glUseProgram(g_program);
-    as_const_derived()->setup_gl_uniforms_val();
+    accessor::call_setup_gl_uniforms_val(as_const_derived());
     glUseProgram(current_prog);
 
-    as_const_derived()->setup_gl_attribs_val();
+    accessor::call_setup_gl_attribs_val(as_const_derived());
 
     return g_program;
   }
@@ -79,9 +117,9 @@ protected:
   create_program() noexcept
   {
     const auto vert_sh = g_vert_shader =
-     create_shader(GL_VERTEX_SHADER, as_const_derived()->vert_shader_source());
+     create_shader(GL_VERTEX_SHADER, accessor::call_vert_shader_source(as_const_derived()));
     const auto frag_sh = g_frag_shader = create_shader(
-     GL_FRAGMENT_SHADER, as_const_derived()->frag_shader_source());
+     GL_FRAGMENT_SHADER, accessor::call_frag_shader_source(as_const_derived()));
 
     if(!vert_sh || !frag_sh) {
       return 0;
@@ -92,7 +130,7 @@ protected:
       glAttachShader(sh_program, vert_sh);
       glAttachShader(sh_program, frag_sh);
 
-      for(auto [index, name] : as_const_derived()->get_attribs_location()) {
+      for(auto [index, name] : accessor::call_get_attribs_location(as_const_derived())) {
         glBindAttribLocation(sh_program, static_cast<GLuint>(index), name);
       }
 

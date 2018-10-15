@@ -9,8 +9,6 @@
 
 namespace molphene {
 class QuadShader : public BasicShader<QuadShader> {
-  friend BasicShader<QuadShader>;
-
 public:
   using AttribsLocationName =
    std::array<std::pair<ShaderAttribLocation, const GLchar*>, 1>;
