@@ -60,15 +60,15 @@ public:
       std::terminate();
     }
     
-    accessor::call_setup_gl_uniforms_loc(as_derived());
+    accessor::call_setup_gl_uniforms_loc(derived_ptr());
 
     auto current_prog = GLint{0};
     glGetIntegerv(GL_CURRENT_PROGRAM, &current_prog);
     glUseProgram(g_program);
-    accessor::call_setup_gl_uniforms_val(as_const_derived());
+    accessor::call_setup_gl_uniforms_val(cderived_ptr());
     glUseProgram(current_prog);
 
-    accessor::call_setup_gl_attribs_val(as_const_derived());
+    accessor::call_setup_gl_attribs_val(cderived_ptr());
 
     return g_program;
   }
@@ -117,9 +117,9 @@ protected:
   create_program() noexcept
   {
     const auto vert_sh = g_vert_shader =
-     create_shader(GL_VERTEX_SHADER, accessor::call_vert_shader_source(as_const_derived()));
+     create_shader(GL_VERTEX_SHADER, accessor::call_vert_shader_source(cderived_ptr()));
     const auto frag_sh = g_frag_shader = create_shader(
-     GL_FRAGMENT_SHADER, accessor::call_frag_shader_source(as_const_derived()));
+     GL_FRAGMENT_SHADER, accessor::call_frag_shader_source(cderived_ptr()));
 
     if(!vert_sh || !frag_sh) {
       return 0;
@@ -130,7 +130,7 @@ protected:
       glAttachShader(sh_program, vert_sh);
       glAttachShader(sh_program, frag_sh);
 
-      for(auto [index, name] : accessor::call_get_attribs_location(as_const_derived())) {
+      for(auto [index, name] : accessor::call_get_attribs_location(cderived_ptr())) {
         glBindAttribLocation(sh_program, static_cast<GLuint>(index), name);
       }
 
@@ -174,13 +174,13 @@ protected:
 
 private:
   inline auto
-  as_const_derived() const noexcept
+  cderived_ptr() const noexcept
   {
     return static_cast<const TShader*>(this);
   }
 
   inline auto
-  as_derived() noexcept
+  derived_ptr() noexcept
   {
     return static_cast<TShader*>(this);
   }
