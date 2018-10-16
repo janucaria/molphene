@@ -13,88 +13,9 @@ ColorLightShader::get_attribs_location() const noexcept
 }
 
 void
-ColorLightShader::setup_gl_uniforms_loc() noexcept
-{
-  g_uloc_modelview_matrix =
-   glGetUniformLocation(g_program, "u_ModelViewMatrix");
-  g_uloc_projection_matrix =
-   glGetUniformLocation(g_program, "u_ProjectionMatrix");
-  g_uloc_normal_matrix = glGetUniformLocation(g_program, "u_NormalMatrix");
-
-  g_uloc_light_source_ambient_intensity =
-   glGetUniformLocation(g_program, "u_LightSource_ambientIntensity");
-  g_uloc_light_source_attenuation =
-   glGetUniformLocation(g_program, "u_LightSource_attenuation");
-  g_uloc_light_source_color =
-   glGetUniformLocation(g_program, "u_LightSource_color");
-  g_uloc_light_source_direction =
-   glGetUniformLocation(g_program, "u_LightSource_direction");
-  g_uloc_light_source_intensity =
-   glGetUniformLocation(g_program, "u_LightSource_intensity");
-  g_uloc_light_source_position =
-   glGetUniformLocation(g_program, "u_LightSource_position");
-  g_uloc_light_source_radius =
-   glGetUniformLocation(g_program, "u_LightSource_radius");
-  g_uloc_light_source_beam_width =
-   glGetUniformLocation(g_program, "u_LightSource_beamWidth");
-  g_uloc_light_source_cut_off_angle =
-   glGetUniformLocation(g_program, "u_LightSource_cutOffAngle");
-
-  g_uloc_material_ambient_intensity =
-   glGetUniformLocation(g_program, "u_Material_ambientIntensity");
-  g_uloc_material_emissive_color =
-   glGetUniformLocation(g_program, "u_Material_emissiveColor");
-  g_uloc_material_diffuse_color =
-   glGetUniformLocation(g_program, "u_Material_diffuseColor");
-  g_uloc_material_shininess =
-   glGetUniformLocation(g_program, "u_Material_shininess");
-  g_uloc_material_specular_color =
-   glGetUniformLocation(g_program, "u_Material_specularColor");
-
-  g_uloc_fog_color = glGetUniformLocation(g_program, "u_Fog_color");
-  g_uloc_fog_fog_type = glGetUniformLocation(g_program, "u_Fog_fogTypeLinear");
-  g_uloc_fog_visibility_range =
-   glGetUniformLocation(g_program, "u_Fog_visibilityRange");
-}
-
-void
-ColorLightShader::setup_gl_uniforms_val() const noexcept
-{
-  glUniform1i(glGetUniformLocation(g_program, "u_TexColor"), 0);
-}
-
-void
 ColorLightShader::setup_gl_attribs_val() const noexcept
 {
   glVertexAttrib4f(static_cast<GLuint>(ShaderAttribLocation::vertex), 0, 0, 0, 1);
-}
-
-void
-ColorLightShader::modelview_matrix(const Mat4f& m4) const noexcept
-{
-  glUniformMatrix4fv(
-   g_uloc_modelview_matrix, 1, GL_FALSE, static_cast<const float*>(m4.m));
-}
-
-void
-ColorLightShader::normal_matrix(const Mat3f& m) const noexcept
-{
-  glUniformMatrix3fv(
-   g_uloc_normal_matrix, 1, GL_FALSE, static_cast<const float*>(m.m));
-}
-
-void
-ColorLightShader::projection_matrix(const Mat4f& m4) const noexcept
-{
-  glUniformMatrix4fv(
-   g_uloc_projection_matrix, 1, GL_FALSE, static_cast<const float*>(m4.m));
-}
-
-void
-ColorLightShader::color_texture_image(GLuint texture) const noexcept
-{
-  glActiveTexture(GL_TEXTURE0 + 0);
-  glBindTexture(GL_TEXTURE_2D, texture);
 }
 
 const char*
@@ -151,7 +72,7 @@ ColorLightShader::frag_shader_source() const noexcept
     uniform bool u_Fog_fogTypeLinear;
     uniform float u_Fog_visibilityRange;
 
-    uniform sampler2D u_TexColor;
+    uniform sampler2D u_TexColorImage;
     
     varying vec3 v_Position;
     varying vec3 v_Normal;
@@ -175,7 +96,7 @@ ColorLightShader::frag_shader_source() const noexcept
     }
 
     void main() {
-      vec4 texRgba = texture2D(u_TexColor, v_ColorTexCoord.st);
+      vec4 texRgba = texture2D(u_TexColorImage, v_ColorTexCoord.st);
       bool isDirLight = u_LightSource_radius < 0.;
 
       vec3 N = normalize(v_Normal);

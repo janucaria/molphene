@@ -6,17 +6,20 @@
 #include "BasicShader.hpp"
 #include "opengl.hpp"
 #include "ShaderAttribLocation.hpp"
+#include "MixShaderUniforms.hpp"
 
 namespace molphene {
-class QuadShader : public BasicShader<QuadShader> {
+class QuadShader
+: public BasicShader<
+    QuadShader,
+    MixShaderUniforms<QuadShader, Color2dSamplerUniform>
+  >
+{
 public:
   using AttribsLocationName =
    std::array<std::pair<ShaderAttribLocation, const GLchar*>, 1>;
 
   QuadShader() noexcept = default;
-
-  void
-  color_texture_image(GLuint texture) const noexcept;
 
 protected:
 
@@ -31,12 +34,6 @@ protected:
 
   void
   setup_gl_attribs_val() const noexcept;
-
-  void
-  setup_gl_uniforms_loc() noexcept;
-
-  void
-  setup_gl_uniforms_val() const noexcept;
 };
 } // namespace molphene
 #endif

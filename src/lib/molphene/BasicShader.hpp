@@ -5,11 +5,12 @@
 
 #include "m3d.hpp"
 #include "opengl.hpp"
+#include "MixShaderUniforms.hpp"
 
 namespace molphene {
 
-template<typename TShader>
-class BasicShader {
+template<typename TShader, typename TMixShaderUniform>
+class BasicShader : public TMixShaderUniform {
   struct accessor : TShader {
     static void
     call_setup_gl_attribs_val(const TShader* shader) noexcept
@@ -34,18 +35,6 @@ class BasicShader {
     {
       return std::invoke(&accessor::get_attribs_location, *shader);
     }
-
-    static void
-    call_setup_gl_uniforms_loc(TShader* shader) noexcept
-    {
-      std::invoke(&accessor::setup_gl_uniforms_loc, *shader);
-    }
-
-    static void
-    call_setup_gl_uniforms_val(const TShader* shader) noexcept
-    {
-      std::invoke(&accessor::setup_gl_uniforms_val, *shader);
-    }
   };
 
 public:
@@ -59,14 +48,8 @@ public:
     if(!g_program) {
       std::terminate();
     }
-    
-    accessor::call_setup_gl_uniforms_loc(derived_ptr());
 
-    auto current_prog = GLint{0};
-    glGetIntegerv(GL_CURRENT_PROGRAM, &current_prog);
-    glUseProgram(g_program);
-    accessor::call_setup_gl_uniforms_val(cderived_ptr());
-    glUseProgram(current_prog);
+    this->init_uniform_location(g_program);
 
     accessor::call_setup_gl_attribs_val(cderived_ptr());
 
@@ -79,11 +62,10 @@ public:
   }
 
 protected:
-  GLuint g_program{0};
 
-  GLuint g_vert_shader{0};
-
-  GLuint g_frag_shader{0};
+  GLuint gprogram() const noexcept {
+    return g_program;
+  }
 
   GLuint
   create_shader(GLenum shader_type, const char* psource) noexcept
@@ -173,6 +155,12 @@ protected:
   }
 
 private:
+  GLuint g_program{0};
+
+  GLuint g_vert_shader{0};
+
+  GLuint g_frag_shader{0};
+
   inline auto
   cderived_ptr() const noexcept
   {
