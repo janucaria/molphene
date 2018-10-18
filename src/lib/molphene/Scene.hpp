@@ -11,15 +11,15 @@
 #include "Fog.hpp"
 #include "Material.hpp"
 #include "PointLight.hpp"
+#include "SphereMeshBuilder.hpp"
 #include "SpotLight.hpp"
+#include "Viewport.hpp"
 #include "m3d.hpp"
 #include "mol/Atom.hpp"
 #include "mol/Bond.hpp"
 #include "mol/Model.hpp"
 #include "mol/Molecule.hpp"
 #include "mol/PdbParser.hpp"
-#include "SphereMeshBuilder.hpp"
-#include "Viewport.hpp"
 
 namespace molphene {
 
@@ -106,7 +106,7 @@ private:
 
   Viewport viewport_;
 
-  Mat4f model_matrix_{1};
+  Mat4f model_matrix_ {1};
 
   BoundingSphere bounding_sphere_;
 

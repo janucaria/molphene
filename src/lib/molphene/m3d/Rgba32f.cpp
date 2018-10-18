@@ -3,28 +3,28 @@
 namespace molphene {
 
 Rgba32f::Rgba32f(float c) noexcept
-: Rgba32f{c, c}
+: Rgba32f {c, c}
 {
 }
 
 Rgba32f::Rgba32f(float c, float a) noexcept
-: Rgba32f{c, c, c, a}
+: Rgba32f {c, c, c, a}
 {
 }
 
 Rgba32f::Rgba32f(float r, float g, float b, float a) noexcept
-: r{r}
-, g{g}
-, b{b}
-, a{a}
+: r {r}
+, g {g}
+, b {b}
+, a {a}
 {
 }
 
 Rgba32f::Rgba32f(const Rgba8& c8) noexcept
-: r{float(c8.r) / 255}
-, g{float(c8.g) / 255}
-, b{float(c8.b) / 255}
-, a{float(c8.a) / 255}
+: r {float(c8.r) / 255}
+, g {float(c8.g) / 255}
+, b {float(c8.b) / 255}
+, a {float(c8.a) / 255}
 {
 }
 

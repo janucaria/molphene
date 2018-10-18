@@ -11,11 +11,11 @@ public:
   using float_t = typename type_configs<TConfig>::float_type;
   using Color = TColor;
 
-  float_t ambient_intensity{0};
+  float_t ambient_intensity {0};
 
-  Color color{0xFFFFFF};
+  Color color {0xFFFFFF};
 
-  float_t intensity{1};
+  float_t intensity {1};
 
   BasicLight() noexcept = default;
 };

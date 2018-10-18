@@ -4,9 +4,9 @@
 #include <emscripten/emscripten.h>
 #include <emscripten/html5.h>
 
+#include <molphene/GlRenderer.hpp>
 #include <molphene/Scene.hpp>
 #include <molphene/stdafx.hpp>
-#include <molphene/GlRenderer.hpp>
 
 #include "ClickState.hpp"
 
@@ -30,20 +30,21 @@ public:
   render_frame();
 
 private:
-  ClickState click_state{false, 0, 0};
+  ClickState click_state {false, 0, 0};
 
-  EMSCRIPTEN_WEBGL_CONTEXT_HANDLE glctx{0};
+  EMSCRIPTEN_WEBGL_CONTEXT_HANDLE glctx {0};
 
-  const char* canvas_target{"canvas"};
+  const char* canvas_target {"canvas"};
 
-  molphene::Scene scene{};
+  molphene::Scene scene {};
 
   molphene::GlRenderer renderer;
 
   molphene::Scene::Camera camera;
 
   template<typename T>
-  static auto mouse_event(const T* event)
+  static auto
+  mouse_event(const T* event)
   {
     if constexpr(std::is_same_v<T, EmscriptenTouchEvent>) {
       if(event->numTouches < 1) {

@@ -18,8 +18,8 @@ public:
 
 public:
   SphereMeshBuilder(size_t max_bytes, size_t lat_div, size_t long_div) noexcept
-  : lat_div_{lat_div}
-  , long_div_{long_div}
+  : lat_div_ {lat_div}
+  , long_div_ {long_div}
   {
     const auto vertices_per_model = get_vertices_size();
     const auto bytes_per_vertex = size_bytes();
@@ -36,21 +36,23 @@ public:
   build(size_t idx) noexcept
   {
     const auto dir = sphere_.axis.to_unit();
-    const auto top = [&dir]() noexcept {
+    const auto top = [&dir]() noexcept
+    {
       auto top = dir.cross({0, 1, 0});
       if(top.magnitude() == 0) {
         top = {0, 0, 1};
       }
       return top.to_unit();
-    }();
+    }
+    ();
     const auto right = top.cross(dir);
 
     const auto rad = sphere_.radius;
     const auto pos = sphere_.center;
 
     idx *= get_vertices_size();
-    for(auto i = size_t{0}; i < lat_div_; ++i) {
-      constexpr auto pi = float{M_PI};
+    for(auto i = size_t {0}; i < lat_div_; ++i) {
+      constexpr auto pi = float {M_PI};
 
       const auto theta = pi / lat_div_ * i;
       const auto sin_theta = std::sin(theta);
@@ -60,7 +62,7 @@ public:
       const auto next_sint = std::sin(next_theta);
       const auto next_cost = std::cos(next_theta);
 
-      for(auto j = size_t{0}; j <= long_div_; ++j) {
+      for(auto j = size_t {0}; j <= long_div_; ++j) {
         const auto phi = pi * 2 * j / long_div_;
         const auto sin_phi = std::sin(phi);
         const auto cos_phi = std::cos(phi);
@@ -144,7 +146,7 @@ public:
   Vec2f
   texcoord(Ts&&... args) noexcept
   {
-    return tex_ = Vec2f{std::forward<Ts>(args)...};
+    return tex_ = Vec2f {std::forward<Ts>(args)...};
   }
 
   UvSphere<float_t>
@@ -166,7 +168,7 @@ private:
 
   size_t size_;
 
-  Vec2f tex_{0};
+  Vec2f tex_ {0};
 
   UvSphere<float_t> sphere_;
 };

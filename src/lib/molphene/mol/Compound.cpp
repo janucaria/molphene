@@ -65,8 +65,7 @@ Compound::sequence() const
   return std::get<0>(resnum_);
 }
 
-Compound::AtomsIterator::AtomsIterator(
- Compound::AtomsIterator::value_type it)
+Compound::AtomsIterator::AtomsIterator(Compound::AtomsIterator::value_type it)
 : it_(it)
 {
 }
@@ -81,7 +80,7 @@ Compound::AtomsIterator::operator++()
 const Compound::AtomsIterator
 Compound::AtomsIterator::operator++(int)
 {
-  Compound::AtomsIterator tmp{*this};
+  Compound::AtomsIterator tmp {*this};
   operator++();
   return tmp;
 }
@@ -109,7 +108,7 @@ Compound::AtomsIterator::pointer Compound::AtomsIterator::operator->()
 }
 
 Compound::AtomsIterable::AtomsIterable(Compound& compound)
-: compound_{compound}
+: compound_ {compound}
 {
 }
 

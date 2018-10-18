@@ -15,7 +15,7 @@ struct Mat4 {
   Mat4() noexcept = default;
 
   explicit Mat4(T s) noexcept
-  : Mat4{s, 0, 0, 0, 0, s, 0, 0, 0, 0, s, 0, 0, 0, 0, s}
+  : Mat4 {s, 0, 0, 0, 0, s, 0, 0, 0, 0, s, 0, 0, 0, 0, s}
   {
   }
 
@@ -35,22 +35,22 @@ struct Mat4 {
        T m42,
        T m43,
        T m44) noexcept
-  : m{m11,
-      m12,
-      m13,
-      m14,
-      m21,
-      m22,
-      m23,
-      m24,
-      m31,
-      m32,
-      m33,
-      m34,
-      m41,
-      m42,
-      m43,
-      m44}
+  : m {m11,
+       m12,
+       m13,
+       m14,
+       m21,
+       m22,
+       m23,
+       m24,
+       m31,
+       m32,
+       m33,
+       m34,
+       m41,
+       m42,
+       m43,
+       m44}
   {
   }
 
@@ -237,7 +237,7 @@ struct Mat4 {
 
     const auto s = sinf(a);
     const auto c = cosf(a);
-    const auto t = T{1} - c;
+    const auto t = T {1} - c;
     const auto xx = x * x;
     const auto xy = x * y;
     const auto yy = y * y;

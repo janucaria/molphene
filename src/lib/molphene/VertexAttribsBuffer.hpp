@@ -75,7 +75,7 @@ public:
   }
 
 private:
-  GLuint buffer_{0};
+  GLuint buffer_ {0};
 };
 
 } // namespace molphene

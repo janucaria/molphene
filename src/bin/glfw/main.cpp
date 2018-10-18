@@ -6,9 +6,9 @@
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
 
-#include <molphene/Scene.hpp>
-#include <molphene/GlRenderer.hpp>
 #include <molphene/Camera.hpp>
+#include <molphene/GlRenderer.hpp>
+#include <molphene/Scene.hpp>
 
 const char* pdbhem = R"(
 ATOM      1  CHA HEM A   1      -2.161  -0.125   0.490  1.00 10.00           C
@@ -252,7 +252,6 @@ CONECT   39   19
 CONECT   40   20
 END
 )";
-
 
 static molphene::Scene scene;
 static molphene::GlRenderer renderer;

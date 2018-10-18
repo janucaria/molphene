@@ -4,7 +4,7 @@ namespace molphene {
 
 ColorLightBuffer::ColorLightBuffer(GLsizei verts_per_instance,
                                    GLsizeiptr total_instances) noexcept
-: AttribsBufferArray{verts_per_instance, total_instances}
+: AttribsBufferArray {verts_per_instance, total_instances}
 , color_tex_size_(static_cast<GLsizei>(std::ceil(std::sqrt(total_instances))))
 {
   glGenTextures(1, &color_tex_);

@@ -14,7 +14,7 @@ public:
   using SphereCenter = typename Sphere::Center;
 
 private:
-  Sphere sphere_{-1};
+  Sphere sphere_ {-1};
 
 public:
   BoundingSphere() noexcept = default;

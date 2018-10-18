@@ -25,25 +25,25 @@ Scene::reset_mesh() noexcept
   std::vector<Atom*> atoms;
   std::vector<Bond*> bonds;
 
-  for(auto& model : Molecule::ModelsIterable{*molecule_}) {
-    for(auto& chain : Model::ChainsIterable{model}) {
-      for(auto& residue : Chain::ResidueIterator{chain}) {
-        for(auto& atom : Compound::AtomsIterable{residue}) {
+  for(auto& model : Molecule::ModelsIterable {*molecule_}) {
+    for(auto& chain : Model::ChainsIterable {model}) {
+      for(auto& residue : Chain::ResidueIterator {chain}) {
+        for(auto& atom : Compound::AtomsIterable {residue}) {
           const auto atm = std::addressof(atom);
           atoms.push_back(atm);
         }
       }
 
-      for(auto& ligan : Chain::LiganIterator{chain}) {
+      for(auto& ligan : Chain::LiganIterator {chain}) {
         const auto compname = ligan.name();
-        for(auto& atom : Compound::AtomsIterable{ligan}) {
+        for(auto& atom : Compound::AtomsIterable {ligan}) {
           const auto atm = std::addressof(atom);
           atoms.push_back(atm);
         }
       }
     }
 
-    for(auto& bond : Model::BondsIterable{model}) {
+    for(auto& bond : Model::BondsIterable {model}) {
       bonds.push_back(&bond);
     }
   }
@@ -52,10 +52,10 @@ Scene::reset_mesh() noexcept
   bounding_sphere_.reset();
   auto& bs = bounding_sphere_;
 
-  for(auto& model : Molecule::ModelsIterable{*molecule_}) {
-    for(auto& chain : Model::ChainsIterable{model}) {
-      for(auto& residue : Chain::CompoundIterator{chain}) {
-        for(auto& atom : Compound::AtomsIterable{residue}) {
+  for(auto& model : Molecule::ModelsIterable {*molecule_}) {
+    for(auto& chain : Model::ChainsIterable {model}) {
+      for(auto& residue : Chain::CompoundIterator {chain}) {
+        for(auto& atom : Compound::AtomsIterable {residue}) {
           bs.expand(Vec3f(atom.position()));
         }
       }
@@ -64,8 +64,8 @@ Scene::reset_mesh() noexcept
 
   model_matrix_.identity().translate(-bs.center());
 
-  constexpr auto max_chunk_bytes = size_t{1024 * 1024 * 128};
-  auto mesh_builder = SphereMeshBuilder{max_chunk_bytes, 10, 20};
+  constexpr auto max_chunk_bytes = size_t {1024 * 1024 * 128};
+  auto mesh_builder = SphereMeshBuilder {max_chunk_bytes, 10, 20};
 
   const auto total_instances = atoms.size();
   const auto vertices_per_instance = mesh_builder.get_vertices_size();
@@ -79,18 +79,18 @@ Scene::reset_mesh() noexcept
   const auto tex_size = sphere_buff_atoms_->color_texture_size();
   auto colors = std::vector<Rgba8>(tex_size * tex_size);
 
-  auto chunk_count = size_t{0};
-  for(auto i = size_t{0}; i < total_instances; ++i) {
+  auto chunk_count = size_t {0};
+  for(auto i = size_t {0}; i < total_instances; ++i) {
     const auto& atm = *atoms.at(i);
     const auto& element = atm.element();
     const auto apos = atm.position();
     const auto arad = element.rvdw;
     const auto acol = colour_manager_.get_element_color(element.symbol);
-    const auto atex = Vec2f{float_t(i % tex_size) / tex_size,
-                            std::floorf(float_t(i) / tex_size) / tex_size};
+    const auto atex = Vec2f {float_t(i % tex_size) / tex_size,
+                             std::floorf(float_t(i) / tex_size) / tex_size};
     colors[i] = acol;
 
-    mesh_builder.sphere(UvSphere<float_t>{arad, apos});
+    mesh_builder.sphere(UvSphere<float_t> {arad, apos});
 
     mesh_builder.texcoord(atex);
 

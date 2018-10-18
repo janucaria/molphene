@@ -68,11 +68,11 @@ protected:
     if(shader) {
       glShaderSource(shader, 1, &psource, nullptr);
       glCompileShader(shader);
-      auto compiled = GLint{0};
+      auto compiled = GLint {0};
       glGetShaderiv(shader, GL_COMPILE_STATUS, &compiled);
       if(!compiled) {
 #ifndef NDEBUG
-        auto infolen = GLint{0};
+        auto infolen = GLint {0};
         glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &infolen);
         if(infolen) {
           const auto buff = std::make_unique<char>(infolen);
@@ -108,12 +108,12 @@ protected:
 
       BasicShader::bind_attrib_locations(sh_program);
 
-      auto link_status = GLint{GL_FALSE};
+      auto link_status = GLint {GL_FALSE};
       glLinkProgram(sh_program);
       glGetProgramiv(sh_program, GL_LINK_STATUS, &link_status);
       if(link_status != GL_TRUE) {
 #ifndef NDEBUG
-        auto bufflen = GLint{0};
+        auto bufflen = GLint {0};
         glGetProgramiv(sh_program, GL_INFO_LOG_LENGTH, &bufflen);
         if(bufflen) {
           const auto buff = std::make_unique<char>(bufflen);
@@ -126,11 +126,11 @@ protected:
       }
 
       glValidateProgram(sh_program);
-      auto validate_status = GLint{GL_FALSE};
+      auto validate_status = GLint {GL_FALSE};
       glGetProgramiv(sh_program, GL_VALIDATE_STATUS, &validate_status);
       if(validate_status != GL_TRUE) {
 #ifndef NDEBUG
-        auto bufflen = GLint{0};
+        auto bufflen = GLint {0};
         glGetProgramiv(sh_program, GL_INFO_LOG_LENGTH, &bufflen);
         if(bufflen) {
           const auto buff = std::make_unique<char>(bufflen);
@@ -147,11 +147,11 @@ protected:
   }
 
 private:
-  GLuint g_program{0};
+  GLuint g_program {0};
 
-  GLuint g_vert_shader{0};
+  GLuint g_vert_shader {0};
 
-  GLuint g_frag_shader{0};
+  GLuint g_frag_shader {0};
 
   inline auto
   cderived_ptr() const noexcept

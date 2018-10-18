@@ -12,14 +12,14 @@ struct Vec3 {
   Vec3() noexcept = default;
 
   explicit Vec3(T s) noexcept
-  : Vec3{s, s, s}
+  : Vec3 {s, s, s}
   {
   }
 
   Vec3(T x, T y, T z) noexcept
-  : x{x}
-  , y{y}
-  , z{z}
+  : x {x}
+  , y {y}
+  , z {z}
   {
   }
 

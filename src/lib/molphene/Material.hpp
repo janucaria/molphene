@@ -11,11 +11,11 @@ public:
   using float_t = typename type_configs<TConfig>::float_type;
   using Color = TColor;
 
-  float_t ambient_intensity{0.2};
-  Color diffuse_color{0xCCCCCC};
-  Color emissive_color{0};
-  Color specular_color{0};
-  float_t shininess{0.2};
+  float_t ambient_intensity {0.2};
+  Color diffuse_color {0xCCCCCC};
+  Color emissive_color {0};
+  Color specular_color {0};
+  float_t shininess {0.2};
 
   Material() noexcept = default;
 };

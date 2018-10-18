@@ -13,7 +13,7 @@ public:
   using typename BasicLight<TColor, TConfig>::Color;
   using Vec3f = Vec3<float_t>;
 
-  Vec3f direction{0, 0, -1};
+  Vec3f direction {0, 0, -1};
 
   using BasicLight<TColor, TConfig>::BasicLight;
 

@@ -11,19 +11,19 @@ public:
   using Radius = TRadii;
   using Center = Vec3<TRadii>;
 
-  Radius radius{0};
-  Center center{0, 0, 0};
+  Radius radius {0};
+  Center center {0, 0, 0};
 
   Sphere() noexcept = default;
 
   explicit Sphere(Radius radii) noexcept
-  : radius{radii}
+  : radius {radii}
   {
   }
 
   Sphere(Radius radii, Center center) noexcept
-  : radius{radii}
-  , center{center}
+  : radius {radii}
+  , center {center}
   {
   }
 

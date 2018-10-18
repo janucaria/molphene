@@ -54,7 +54,7 @@ private:
 
   CompoundMap res_lookup_;
 
-  Compounds::size_type ter_{0};
+  Compounds::size_type ter_ {0};
 };
 
 class Chain::ResidueIterator {

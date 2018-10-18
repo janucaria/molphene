@@ -4,9 +4,9 @@
 #include "stdafx.hpp"
 
 #include "BasicShader.hpp"
-#include "opengl.hpp"
-#include "ShaderAttribLocation.hpp"
 #include "MixShaderUniforms.hpp"
+#include "ShaderAttribLocation.hpp"
+#include "opengl.hpp"
 
 namespace molphene {
 class QuadShader

@@ -12,13 +12,13 @@ struct Vec2 {
   Vec2() noexcept = default;
 
   explicit Vec2(T s) noexcept
-  : Vec2{s, s}
+  : Vec2 {s, s}
   {
   }
 
   Vec2(T x, T y) noexcept
-  : x{x}
-  , y{y}
+  : x {x}
+  , y {y}
   {
   }
 
@@ -37,7 +37,7 @@ struct Vec2 {
   Vec2
   operator+(const Vec2& v) const noexcept
   {
-    return Vec2{*this} += v;
+    return Vec2 {*this} += v;
   }
 
   Vec2&
@@ -51,7 +51,7 @@ struct Vec2 {
   Vec2
   operator-(const Vec2& v) const noexcept
   {
-    return Vec2{*this} -= v;
+    return Vec2 {*this} -= v;
   }
 
   Vec2&
@@ -64,7 +64,7 @@ struct Vec2 {
 
   Vec2 operator*(const Vec2& v) const noexcept
   {
-    return Vec2{*this} *= v;
+    return Vec2 {*this} *= v;
   }
 
   Vec2&
@@ -78,7 +78,7 @@ struct Vec2 {
   Vec2
   operator/(const Vec2& v) const noexcept
   {
-    return Vec2{*this} /= v;
+    return Vec2 {*this} /= v;
   }
 
   Vec2&
@@ -98,7 +98,7 @@ struct Vec2 {
   Vec2
   operator+(const T& s) const noexcept
   {
-    return Vec2{*this} += s;
+    return Vec2 {*this} += s;
   }
 
   Vec2&
@@ -112,7 +112,7 @@ struct Vec2 {
   Vec2
   operator-(const T& s) const noexcept
   {
-    return Vec2{*this} -= s;
+    return Vec2 {*this} -= s;
   }
 
   Vec2&
@@ -125,7 +125,7 @@ struct Vec2 {
 
   Vec2 operator*(const T& s) const noexcept
   {
-    return Vec2{*this} *= s;
+    return Vec2 {*this} *= s;
   }
 
   Vec2&
@@ -139,7 +139,7 @@ struct Vec2 {
   Vec2
   operator/(const T& s) const noexcept
   {
-    return Vec2{*this} /= s;
+    return Vec2 {*this} /= s;
   }
 
   Vec2&

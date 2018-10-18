@@ -37,14 +37,11 @@ GlRenderer::init() noexcept
                             GL_DEPTH_ATTACHMENT,
                             GL_RENDERBUFFER,
                             color_light_depth_rbo_);
-  
-  quad_verts_buffer_ = std::make_unique<decltype(quad_verts_buffer_)::element_type>();
-  quad_verts_buffer_->init(std::array<Vec2f, 4>{
-    Vec2f{-1, 1},
-    Vec2f{-1, -1}, 
-    Vec2f{1, 1}, 
-    Vec2f{1, -1}
-  });
+
+  quad_verts_buffer_ =
+   std::make_unique<decltype(quad_verts_buffer_)::element_type>();
+  quad_verts_buffer_->init(std::array<Vec2f, 4> {
+   Vec2f {-1, 1}, Vec2f {-1, -1}, Vec2f {1, 1}, Vec2f {1, -1}});
 }
 
 void
@@ -57,7 +54,7 @@ GlRenderer::render(const Scene& scene,
   const auto* mbuffers = scene.mesh_buffers();
 
   const auto mv_matrix = scene.model_matrix() * camera.view_matrix();
-  const auto norm_matrix = Mat3f{Mat4f{mv_matrix}.inverse().transpose()};
+  const auto norm_matrix = Mat3f {Mat4f {mv_matrix}.inverse().transpose()};
   const auto proj_matrix = camera.projection_matrix();
   const auto viewport = scene.viewport();
 
@@ -103,7 +100,6 @@ GlRenderer::render(const Scene& scene,
    static_cast<GLuint>(ShaderAttribLocation::texcoordcolor));
 
   glFlush();
-
 
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
   glViewport(viewport.x, viewport.y, viewport.width, viewport.height);
