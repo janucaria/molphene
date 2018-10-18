@@ -3,9 +3,10 @@
 
 #include "stdafx.hpp"
 
+#include "MixShaderUniforms.hpp"
+#include "ShaderAttribLocation.hpp"
 #include "m3d.hpp"
 #include "opengl.hpp"
-#include "MixShaderUniforms.hpp"
 
 namespace molphene {
 
@@ -28,12 +29,6 @@ class BasicShader : public TMixShaderUniform {
     call_frag_shader_source(const TShader* shader) noexcept
     {
       return std::invoke(&accessor::frag_shader_source, *shader);
-    }
-
-    static typename TShader::AttribsLocationName
-    call_get_attribs_location(const TShader* shader) noexcept
-    {
-      return std::invoke(&accessor::get_attribs_location, *shader);
     }
   };
 
@@ -62,8 +57,9 @@ public:
   }
 
 protected:
-
-  GLuint gprogram() const noexcept {
+  GLuint
+  gprogram() const noexcept
+  {
     return g_program;
   }
 
@@ -98,8 +94,8 @@ protected:
   GLuint
   create_program() noexcept
   {
-    const auto vert_sh = g_vert_shader =
-     create_shader(GL_VERTEX_SHADER, accessor::call_vert_shader_source(cderived_ptr()));
+    const auto vert_sh = g_vert_shader = create_shader(
+     GL_VERTEX_SHADER, accessor::call_vert_shader_source(cderived_ptr()));
     const auto frag_sh = g_frag_shader = create_shader(
      GL_FRAGMENT_SHADER, accessor::call_frag_shader_source(cderived_ptr()));
 
@@ -112,9 +108,7 @@ protected:
       glAttachShader(sh_program, vert_sh);
       glAttachShader(sh_program, frag_sh);
 
-      for(auto [index, name] : accessor::call_get_attribs_location(cderived_ptr())) {
-        glBindAttribLocation(sh_program, static_cast<GLuint>(index), name);
-      }
+      BasicShader::bind_attrib_locations(sh_program);
 
       auto link_status = GLint{GL_FALSE};
       glLinkProgram(sh_program);
@@ -171,6 +165,21 @@ private:
   derived_ptr() noexcept
   {
     return static_cast<TShader*>(this);
+  }
+
+  static void
+  bind_attrib_locations(GLuint gprogram)
+  {
+    bind_attrib_locations(gprogram, typename TShader::AttribLocations());
+  }
+
+  template<ShaderAttribLocation... locations>
+  static void
+  bind_attrib_locations(GLuint gprogram, ShaderAttribList<locations...>)
+  {
+    (glBindAttribLocation(
+      gprogram, static_cast<GLuint>(locations), traits<locations>::name),
+     ...);
   }
 };
 } // namespace molphene

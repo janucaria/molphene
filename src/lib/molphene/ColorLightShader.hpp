@@ -7,47 +7,36 @@
 #include "DirectionalLight.hpp"
 #include "Fog.hpp"
 #include "Material.hpp"
+#include "MixShaderUniforms.hpp"
 #include "PointLight.hpp"
+#include "ShaderAttribLocation.hpp"
 #include "SpotLight.hpp"
 #include "m3d.hpp"
 #include "opengl.hpp"
-#include "ShaderAttribLocation.hpp"
-
-#include "MixShaderUniforms.hpp"
 
 namespace molphene {
-  
-class ColorLightShader
-: public BasicShader<
-    ColorLightShader,
-    MixShaderUniforms<
-      ColorLightShader,
-      ModelViewMatrixUniform,
-      NormalMatrixUniform,
-      ProjectionMatrixUniform,
-      LightSourceUniform,
-      MaterialUniform,
-      FogUniform,
-      Color2dSamplerUniform
-    >
-  >
-{
-public:
-  using AttribsLocationName =
-   std::array<std::pair<ShaderAttribLocation, const GLchar*>, 3>;
 
-  ColorLightShader() noexcept;
+class ColorLightShader
+: public BasicShader<ColorLightShader,
+                     MixShaderUniforms<ColorLightShader,
+                                       ModelViewMatrixUniform,
+                                       NormalMatrixUniform,
+                                       ProjectionMatrixUniform,
+                                       LightSourceUniform,
+                                       MaterialUniform,
+                                       FogUniform,
+                                       Color2dSamplerUniform>> {
+public:
+  using AttribLocations = ShaderAttribList<ShaderAttribLocation::vertex,
+                                           ShaderAttribLocation::normal,
+                                           ShaderAttribLocation::texcoordcolor>;
 
 protected:
-
-  const char*
+  const GLchar*
   vert_shader_source() const noexcept;
 
-  const char*
+  const GLchar*
   frag_shader_source() const noexcept;
-
-  AttribsLocationName
-  get_attribs_location() const noexcept;
 
   void
   setup_gl_attribs_val() const noexcept;

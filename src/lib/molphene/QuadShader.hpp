@@ -10,27 +10,17 @@
 
 namespace molphene {
 class QuadShader
-: public BasicShader<
-    QuadShader,
-    MixShaderUniforms<QuadShader, Color2dSamplerUniform>
-  >
-{
+: public BasicShader<QuadShader,
+                     MixShaderUniforms<QuadShader, Color2dSamplerUniform>> {
 public:
-  using AttribsLocationName =
-   std::array<std::pair<ShaderAttribLocation, const GLchar*>, 1>;
-
-  QuadShader() noexcept = default;
+  using AttribLocations = ShaderAttribList<ShaderAttribLocation::vertex>;
 
 protected:
-
-  const char*
+  const GLchar*
   vert_shader_source() const noexcept;
 
-  const char*
+  const GLchar*
   frag_shader_source() const noexcept;
-
-  AttribsLocationName
-  get_attribs_location() const noexcept;
 
   void
   setup_gl_attribs_val() const noexcept;

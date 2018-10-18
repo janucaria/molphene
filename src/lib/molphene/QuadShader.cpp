@@ -2,19 +2,14 @@
 
 namespace molphene {
 
-typename QuadShader::AttribsLocationName
-QuadShader::get_attribs_location() const noexcept
-{
-  return {{{ShaderAttribLocation::vertex, "a_Vertex"}}};
-}
-
 void
 QuadShader::setup_gl_attribs_val() const noexcept
 {
-  glVertexAttrib4f(static_cast<GLuint>(ShaderAttribLocation::vertex), 0, 0, 0, 1);
+  glVertexAttrib4f(
+   static_cast<GLuint>(ShaderAttribLocation::vertex), 0, 0, 0, 1);
 }
 
-const char*
+const GLchar*
 QuadShader::vert_shader_source() const noexcept
 {
   return R"VERTEX_SHADER(
@@ -29,7 +24,7 @@ QuadShader::vert_shader_source() const noexcept
   )VERTEX_SHADER";
 }
 
-const char*
+const GLchar*
 QuadShader::frag_shader_source() const noexcept
 {
   return R"FRAGMENT_SHADER(
