@@ -40,9 +40,7 @@ public:
   {
     g_program = create_program();
 
-    if(!g_program) {
-      std::terminate();
-    }
+    assert(g_program);
 
     this->init_uniform_location(g_program);
 
