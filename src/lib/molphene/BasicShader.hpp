@@ -3,13 +3,35 @@
 
 #include "stdafx.hpp"
 
+#include "MixShaderUniforms.hpp"
+#include "ShaderAttribLocation.hpp"
 #include "m3d.hpp"
 #include "opengl.hpp"
 
 namespace molphene {
 
-template<typename TDerived>
-class BasicShader {
+template<typename TShader, typename TMixShaderUniform>
+class BasicShader : public TMixShaderUniform {
+  struct accessor : TShader {
+    static void
+    call_setup_gl_attribs_val(const TShader* shader) noexcept
+    {
+      std::invoke(&accessor::setup_gl_attribs_val, *shader);
+    }
+
+    static const char*
+    call_vert_shader_source(const TShader* shader) noexcept
+    {
+      return std::invoke(&accessor::vert_shader_source, *shader);
+    }
+
+    static const char*
+    call_frag_shader_source(const TShader* shader) noexcept
+    {
+      return std::invoke(&accessor::frag_shader_source, *shader);
+    }
+  };
+
 public:
   BasicShader() noexcept = default;
 
@@ -18,19 +40,11 @@ public:
   {
     g_program = create_program();
 
-    if(!g_program) {
-      std::terminate();
-    }
-    
-    as_derived()->setup_gl_uniforms_loc();
+    assert(g_program);
 
-    auto current_prog = GLint{0};
-    glGetIntegerv(GL_CURRENT_PROGRAM, &current_prog);
-    glUseProgram(g_program);
-    as_const_derived()->setup_gl_uniforms_val();
-    glUseProgram(current_prog);
+    this->init_uniform_location(g_program);
 
-    as_const_derived()->setup_gl_attribs_val();
+    accessor::call_setup_gl_attribs_val(cderived_ptr());
 
     return g_program;
   }
@@ -41,11 +55,11 @@ public:
   }
 
 protected:
-  GLuint g_program{0};
-
-  GLuint g_vert_shader{0};
-
-  GLuint g_frag_shader{0};
+  GLuint
+  gprogram() const noexcept
+  {
+    return g_program;
+  }
 
   GLuint
   create_shader(GLenum shader_type, const char* psource) noexcept
@@ -78,10 +92,10 @@ protected:
   GLuint
   create_program() noexcept
   {
-    const auto vert_sh = g_vert_shader =
-     create_shader(GL_VERTEX_SHADER, as_const_derived()->vert_shader_source());
+    const auto vert_sh = g_vert_shader = create_shader(
+     GL_VERTEX_SHADER, accessor::call_vert_shader_source(cderived_ptr()));
     const auto frag_sh = g_frag_shader = create_shader(
-     GL_FRAGMENT_SHADER, as_const_derived()->frag_shader_source());
+     GL_FRAGMENT_SHADER, accessor::call_frag_shader_source(cderived_ptr()));
 
     if(!vert_sh || !frag_sh) {
       return 0;
@@ -92,9 +106,7 @@ protected:
       glAttachShader(sh_program, vert_sh);
       glAttachShader(sh_program, frag_sh);
 
-      for(auto [index, name] : as_const_derived()->get_attribs_location()) {
-        glBindAttribLocation(sh_program, static_cast<GLuint>(index), name);
-      }
+      BasicShader::bind_attrib_locations(sh_program);
 
       auto link_status = GLint{GL_FALSE};
       glLinkProgram(sh_program);
@@ -135,16 +147,37 @@ protected:
   }
 
 private:
+  GLuint g_program{0};
+
+  GLuint g_vert_shader{0};
+
+  GLuint g_frag_shader{0};
+
   inline auto
-  as_const_derived() const noexcept
+  cderived_ptr() const noexcept
   {
-    return static_cast<const TDerived*>(this);
+    return static_cast<const TShader*>(this);
   }
 
   inline auto
-  as_derived() noexcept
+  derived_ptr() noexcept
   {
-    return static_cast<TDerived*>(this);
+    return static_cast<TShader*>(this);
+  }
+
+  static void
+  bind_attrib_locations(GLuint gprogram)
+  {
+    bind_attrib_locations(gprogram, typename TShader::AttribLocations());
+  }
+
+  template<ShaderAttribLocation... locations>
+  static void
+  bind_attrib_locations(GLuint gprogram, ShaderAttribList<locations...>)
+  {
+    (glBindAttribLocation(
+      gprogram, static_cast<GLuint>(locations), traits<locations>::name),
+     ...);
   }
 };
 } // namespace molphene

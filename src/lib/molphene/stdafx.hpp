@@ -2,10 +2,12 @@
 #define MOLPHENE_STDAFX_HPP
 
 #include <array>
+#include <cassert>
 #include <cmath>
 #include <cstddef>
 #include <cstdint>
 #include <fstream>
+#include <functional>
 #include <iostream>
 #include <istream>
 #include <limits>
