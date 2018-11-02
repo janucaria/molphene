@@ -12,7 +12,7 @@ public:
   using Color = TColor;
 
   float_t ambient_intensity {0.2};
-  Color diffuse_color {0xCCCCCC};
+  Color diffuse_color {0xCC, 0xCC, 0xCC};
   Color emissive_color {0};
   Color specular_color {0};
   float_t shininess {0.2};

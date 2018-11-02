@@ -13,7 +13,7 @@ public:
 
   float_t ambient_intensity {0};
 
-  Color color {0xFFFFFF};
+  Color color {0xFF, 0xFF, 0xFF};
 
   float_t intensity {1};
 

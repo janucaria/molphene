@@ -15,7 +15,7 @@ public:
 
   float_t visibility_range {0};
 
-  Color color {0xFFFFFF};
+  Color color {0xFF, 0xFF, 0xFF};
 
   Type fog_type {Type::linear};
 

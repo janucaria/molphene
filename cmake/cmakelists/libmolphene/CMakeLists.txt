@@ -1,6 +1,4 @@
 add_library(molphene
-"${PROJECT_SOURCE_DIR}/src/lib/molphene/m3d/Rgba8.cpp"
-"${PROJECT_SOURCE_DIR}/src/lib/molphene/m3d/Rgba32f.cpp"
 "${PROJECT_SOURCE_DIR}/src/lib/molphene/mol/Atom.cpp"
 "${PROJECT_SOURCE_DIR}/src/lib/molphene/mol/Bond.cpp"
 "${PROJECT_SOURCE_DIR}/src/lib/molphene/mol/Chain.cpp"
@@ -23,6 +21,7 @@ endif()
 target_include_directories(molphene
 PUBLIC
   "${PROJECT_SOURCE_DIR}/third_party/GSL/include"
+  "${PROJECT_SOURCE_DIR}/third_party/Gm3d/src"
 )
 
 target_compile_options(molphene PRIVATE ${MOLPHENE_WARNING_OPTIONS} "-stdlib=libc++")

@@ -9,7 +9,7 @@ namespace molphene {
 bool
 Scene::setup_graphics() noexcept
 {
-  material_.diffuse_color = 0xFFFFFF;
+  material_.diffuse_color = {0xFF, 0xFF, 0xFF};
 
   point_light_source_.location = {0, 0, -23};
   point_light_source_.radius = 5;
@@ -120,10 +120,9 @@ Scene::reset_mesh() noexcept
 void
 Scene::rotate(Scene::Vec3f rot) noexcept
 {
-  const auto [x, y, z] = rot;
-  model_matrix_.rotate(1.0f, 0.0f, 0.0f, x);
-  model_matrix_.rotate(0.0f, 1.0f, 0.0f, y);
-  model_matrix_.rotate(0.0f, 0.0f, 1.0f, z);
+  model_matrix_.rotate(rot.x(), {1.0f, 0.0f, 0.0f});
+  model_matrix_.rotate(rot.y(), {0.0f, 1.0f, 0.0f});
+  model_matrix_.rotate(rot.z(), {0.0f, 0.0f, 1.0f});
 }
 
 void

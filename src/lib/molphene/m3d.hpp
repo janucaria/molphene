@@ -1,11 +1,24 @@
 #ifndef MOLPHENE_M3D_HPP
 #define MOLPHENE_M3D_HPP
 
-#include "m3d/Mat3.hpp"
-#include "m3d/Mat4.hpp"
-#include "m3d/Rgba32f.hpp"
-#include "m3d/Rgba8.hpp"
-#include "m3d/Vec2.hpp"
-#include "m3d/Vec3.hpp"
+#include <gm3d/all.hpp>
+
+#include "stdafx.hpp"
+
+namespace molphene
+{
+  using namespace gm3d;
+
+  using gm3d::Mat3;
+  using gm3d::Mat4;
+
+  using gm3d::Vec2;
+  using gm3d::Vec3;
+
+  using Rgba8 = gm3d::Rgba<std::uint8_t>;
+  using Rgba32f = gm3d::Rgba<float>;
+
+} // molphene
+
 
 #endif

@@ -114,7 +114,7 @@ public:
   Mat4f
   view_matrix() const noexcept
   {
-    return Mat4f {1}.set_translate(position_);
+    return Mat4f {1}.translate(position_);
   }
 
   template<typename... Ts,

@@ -364,7 +364,7 @@ public:
   light_source_direction(Ts&&... args) const noexcept
   {
     const auto v = Vec3f {std::forward<Ts>(args)...};
-    glUniform3f(light_source_direction_location_, v.x, v.y, v.z);
+    glUniform3f(light_source_direction_location_, v.x(), v.y(), v.z());
   }
 
   template<typename T>
@@ -379,7 +379,7 @@ public:
   light_source_attenuation(Ts&&... args) const noexcept
   {
     const auto v = Vec3f {std::forward<Ts>(args)...};
-    glUniform3f(light_source_attenuation_location_, v.x, v.y, v.z);
+    glUniform3f(light_source_attenuation_location_, v.x(), v.y(), v.z());
   }
 
   template<typename... Ts>
@@ -387,7 +387,7 @@ public:
   light_source_position(Ts&&... args) const noexcept
   {
     const auto v = Vec3f {std::forward<Ts>(args)...};
-    glUniform3f(light_source_position_location_, v.x, v.y, v.z);
+    glUniform3f(light_source_position_location_, v.x(), v.y(), v.z());
   }
 
   template<typename T>
