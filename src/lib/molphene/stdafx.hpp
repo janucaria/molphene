@@ -1,6 +1,7 @@
 #ifndef MOLPHENE_STDAFX_HPP
 #define MOLPHENE_STDAFX_HPP
 
+#include <algorithm>
 #include <array>
 #include <cassert>
 #include <cmath>
@@ -10,6 +11,7 @@
 #include <functional>
 #include <iostream>
 #include <istream>
+#include <iterator>
 #include <limits>
 #include <memory>
 #include <string>
@@ -23,6 +25,8 @@
 
 #include <boost/fusion/adapted/std_tuple.hpp>
 #include <boost/fusion/algorithm.hpp>
+#include <boost/range.hpp>
+#include <boost/range/algorithm.hpp>
 
 #include "type_configs.hpp"
 
