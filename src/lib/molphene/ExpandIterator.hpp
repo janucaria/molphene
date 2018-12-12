@@ -64,7 +64,7 @@ struct ExpandIterator {
     return *this;
   }
 
-  constexpr ExpandIterator&
+  constexpr const ExpandIterator
   operator++(int)
   {
     return *this;
