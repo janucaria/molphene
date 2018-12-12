@@ -16,7 +16,7 @@ public:
 
   using Mat4f = Mat4<float_t>;
 
-  float_t top {0};
+  float_t top{0};
 
   Camera() noexcept = default;
 
@@ -47,7 +47,7 @@ public:
     const auto zoom = zoom_;
     const auto top = std::tan(fov / 2) * ((far - near) / 2 + near) * zoom;
     const auto right = aspect_ratio() * top;
-    return Mat4f {1}.orthogonal(-right, right, -top, top, near, far);
+    return Mat4f{1}.orthogonal(-right, right, -top, top, near, far);
   }
 
   Mat4f
@@ -59,7 +59,7 @@ public:
     const auto zoom = zoom_;
     const auto top = std::tan(fov / 2) * near * zoom;
     const auto right = aspect_ratio() * top;
-    return Mat4f {1}.frustum(-right, right, -top, top, near, far);
+    return Mat4f{1}.frustum(-right, right, -top, top, near, far);
   }
 
   Mat4f
@@ -114,7 +114,7 @@ public:
   Mat4f
   view_matrix() const noexcept
   {
-    return Mat4f {1}.translate(position_);
+    return Mat4f{1}.translate(position_);
   }
 
   template<typename... Ts,
@@ -153,19 +153,19 @@ public:
   }
 
 private:
-  float_t field_of_view_ {M_PI_4};
+  float_t field_of_view_{M_PI_4};
 
-  float_t zfar_ {0};
+  float_t zfar_{0};
 
-  float_t znear_ {0};
+  float_t znear_{0};
 
-  float_t zoom_ {1};
+  float_t zoom_{1};
 
-  float_t aspect_ratio_ {1};
+  float_t aspect_ratio_{1};
 
-  Vec3f position_ {0};
+  Vec3f position_{0};
 
-  bool projection_mode_ {false};
+  bool projection_mode_{false};
 };
 } // namespace molphene
 

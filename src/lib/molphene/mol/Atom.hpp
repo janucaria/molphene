@@ -41,7 +41,7 @@ public:
   position(float x, float y, float z);
 
 private:
-  char altloc_ {0};
+  char altloc_{0};
 
   Compound* compound_ptr_;
 
@@ -49,7 +49,7 @@ private:
 
   std::string name_;
 
-  Position position_ {0};
+  Position position_{0};
 
   unsigned int serial_;
 };

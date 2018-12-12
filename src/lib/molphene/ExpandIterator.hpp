@@ -12,9 +12,10 @@ struct is_bounding : std::false_type {
 };
 
 template<typename T>
- struct is_bounding <T,
- std::void_t<decltype(std::declval<T>().expand(
-  std::declval<typename T::center_type>()))>> : std::true_type {
+struct is_bounding<T,
+                   std::void_t<decltype(std::declval<T>().expand(
+                    std::declval<typename T::center_type>()))>>
+: std::true_type {
 };
 
 template<typename T>
@@ -25,7 +26,7 @@ inline constexpr auto is_bounding_v = is_bounding<T>::value;
 template<typename Bounding>
 struct ExpandIterator {
   static_assert(detail::is_bounding_v<Bounding>,
-              "Bounding type requirement not satisfied");
+                "Bounding type requirement not satisfied");
 
   using value_type = void;
   using difference_type = void;
@@ -34,7 +35,7 @@ struct ExpandIterator {
   using iterator_category = std::output_iterator_tag;
 
   constexpr explicit ExpandIterator(Bounding& bounding)
-  : bounding {bounding}
+  : bounding{bounding}
   {
   }
 

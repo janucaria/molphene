@@ -13,7 +13,7 @@ class AttribsBufferArray {
 public:
   AttribsBufferArray(GLsizei verts_per_instance,
                      GLsizeiptr total_instances) noexcept
-  : verts_per_instance_ {verts_per_instance}
+  : verts_per_instance_{verts_per_instance}
   {
     constexpr auto max_bytes_per_chunk = std::numeric_limits<GLsizei>::max();
     constexpr auto bytes_per_vert = (sizeof(typename Ts::DataType) + ... + 0);
@@ -35,10 +35,10 @@ public:
       attribbuf = std::make_unique<AttribBuffer[]>(size_);
     });
 
-    for(auto i = GLsizei {0}; i < size_; ++i) {
+    for(auto i = GLsizei{0}; i < size_; ++i) {
       const auto meshes =
        i == (size_ - 1) ? remain_instances_ : instances_per_block_;
-      const auto verts_count = GLsizeiptr {meshes * verts_per_instance_};
+      const auto verts_count = GLsizeiptr{meshes * verts_per_instance_};
 
       boost::fusion::for_each(
        attrib_buffers_, [=](const auto& attribbuf) noexcept {
@@ -80,13 +80,13 @@ public:
     static_assert(sizeof...(Ts) == sizeof...(idx) &&
                   sizeof...(Ts) == sizeof...(Args));
 
-    auto data_offset = GLsizeiptr {0};
+    auto data_offset = GLsizeiptr{0};
     while(size > 0) {
-      const auto chunk = GLsizeiptr {offset / instances_per_block_};
-      const auto index = GLsizeiptr {offset % instances_per_block_};
+      const auto chunk = GLsizeiptr{offset / instances_per_block_};
+      const auto index = GLsizeiptr{offset % instances_per_block_};
 
       const auto elems_fill = instances_per_block_ - index;
-      const auto fill_size = GLsizeiptr {size < elems_fill ? size : elems_fill};
+      const auto fill_size = GLsizeiptr{size < elems_fill ? size : elems_fill};
 
       (std::get<idx>(attrib_buffers_)[chunk].data(
         index * verts_per_instance_,
@@ -105,9 +105,9 @@ public:
   setup_attrib_pointer(TCallback fn) const
    noexcept(std::is_nothrow_invocable_v<decltype(fn), GLsizei>)
   {
-    for(auto i = GLsizei {0}; i < size_; ++i) {
+    for(auto i = GLsizei{0}; i < size_; ++i) {
       const auto verts_count =
-       GLsizei {i == (size_ - 1) ? remain_instances_ : instances_per_block_};
+       GLsizei{i == (size_ - 1) ? remain_instances_ : instances_per_block_};
 
       boost::fusion::for_each(
        attrib_buffers_, [=](const auto& attribbuf) noexcept {
@@ -119,9 +119,9 @@ public:
   }
 
 private:
-  GLsizei verts_per_instance_ {0};
-  GLsizei instances_per_block_ {0};
-  GLsizei remain_instances_ {0};
+  GLsizei verts_per_instance_{0};
+  GLsizei instances_per_block_{0};
+  GLsizei remain_instances_{0};
 
   GLsizei size_;
 

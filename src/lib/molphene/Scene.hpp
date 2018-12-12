@@ -106,7 +106,7 @@ private:
 
   Viewport viewport_;
 
-  Mat4f model_matrix_ {1};
+  Mat4f model_matrix_{1};
 
   BoundingSphere bounding_sphere_;
 

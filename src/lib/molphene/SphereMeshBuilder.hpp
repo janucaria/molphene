@@ -16,8 +16,8 @@ public:
 
 public:
   SphereMeshBuilder(size_t lat_div, size_t long_div) noexcept
-  : lat_div_ {lat_div}
-  , long_div_ {long_div}
+  : lat_div_{lat_div}
+  , long_div_{long_div}
   {
   }
 
@@ -25,7 +25,7 @@ public:
   void
   build(TNormIter normalit) const noexcept
   {
-    const auto dir = Vec3<float_t> {0, 0, 1};
+    const auto dir = Vec3<float_t>{0, 0, 1};
     const auto top = [&dir]() noexcept
     {
       auto top = dir.cross({0, 1, 0});
@@ -37,8 +37,8 @@ public:
     ();
     const auto right = top.cross(dir);
 
-    for(auto i = size_t {0}; i < lat_div_; ++i) {
-      constexpr auto pi = float {M_PI};
+    for(auto i = size_t{0}; i < lat_div_; ++i) {
+      constexpr auto pi = float{M_PI};
 
       const auto theta = pi / lat_div_ * i;
       const auto sin_theta = std::sin(theta);
@@ -48,7 +48,7 @@ public:
       const auto next_sint = std::sin(next_theta);
       const auto next_cost = std::cos(next_theta);
 
-      for(auto j = size_t {0}; j <= long_div_; ++j) {
+      for(auto j = size_t{0}; j <= long_div_; ++j) {
         const auto phi = pi * 2 * j / long_div_;
         const auto sin_phi = std::sin(phi);
         const auto cos_phi = std::cos(phi);

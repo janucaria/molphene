@@ -30,13 +30,13 @@ public:
   render_frame();
 
 private:
-  ClickState click_state {false, 0, 0};
+  ClickState click_state{false, 0, 0};
 
-  EMSCRIPTEN_WEBGL_CONTEXT_HANDLE glctx {0};
+  EMSCRIPTEN_WEBGL_CONTEXT_HANDLE glctx{0};
 
-  const char* canvas_target {"canvas"};
+  const char* canvas_target{"canvas"};
 
-  molphene::Scene scene {};
+  molphene::Scene scene{};
 
   molphene::GlRenderer renderer;
 

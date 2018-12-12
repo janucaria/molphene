@@ -22,11 +22,11 @@ public:
   parse(Molecule* molptr, std::istream& stream);
 
 private:
-  Chain* current_chain_ptr_ {nullptr};
+  Chain* current_chain_ptr_{nullptr};
 
-  Compound* current_compound_ptr_ {nullptr};
+  Compound* current_compound_ptr_{nullptr};
 
-  Model* current_model_ptr_ {nullptr};
+  Model* current_model_ptr_{nullptr};
 
   std::string line_;
 

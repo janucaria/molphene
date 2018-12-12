@@ -65,7 +65,7 @@ Chain::terminate()
 }
 
 Chain::ResidueIterator::ResidueIterator(Chain& chain)
-: chain_ {chain}
+: chain_{chain}
 {
 }
 
@@ -84,7 +84,7 @@ Chain::ResidueIterator::end()
 }
 
 Chain::CompoundIterator::CompoundIterator(Chain& chain)
-: chain_ {chain}
+: chain_{chain}
 {
 }
 
@@ -101,7 +101,7 @@ Chain::CompoundIterator::end()
 }
 
 Chain::LiganIterator::LiganIterator(Chain& chain)
-: chain_ {chain}
+: chain_{chain}
 {
 }
 

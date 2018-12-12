@@ -41,7 +41,7 @@ void
 Application::init_context()
 {
   const auto attrs = []() {
-    auto attrs = EmscriptenWebGLContextAttributes {};
+    auto attrs = EmscriptenWebGLContextAttributes{};
     emscripten_webgl_init_context_attributes(&attrs);
     attrs.stencil = true;
     return attrs;

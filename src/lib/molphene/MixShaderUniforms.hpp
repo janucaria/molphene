@@ -50,7 +50,7 @@ public:
   }
 
 private:
-  GLint modelview_matrix_location_ {-1};
+  GLint modelview_matrix_location_{-1};
 };
 
 template<typename TShader>
@@ -80,7 +80,7 @@ public:
   }
 
 private:
-  GLint projection_matrix_location_ {-1};
+  GLint projection_matrix_location_{-1};
 };
 
 template<typename TShader>
@@ -111,7 +111,7 @@ public:
   }
 
 private:
-  GLint normal_matrix_location_ {-1};
+  GLint normal_matrix_location_{-1};
 };
 
 template<typename TShader>
@@ -137,7 +137,7 @@ public:
   }
 
   template<typename TColor, typename TScalar>
-  std::void_t<decltype(Rgba32f {std::declval<TColor>()},
+  std::void_t<decltype(Rgba32f{std::declval<TColor>()},
                        std::is_constructible_v<TScalar, GLfloat>)>
   material(const Material<TColor, TScalar>& mater) const noexcept
   {
@@ -156,30 +156,30 @@ public:
   }
 
   template<typename... Ts>
-  std::void_t<decltype(Rgba32f {std::declval<Ts>()...})>
+  std::void_t<decltype(Rgba32f{std::declval<Ts>()...})>
   material_emissive_color(Ts&&... args) const noexcept
   {
-    const auto col = Rgba32f {std::forward<Ts>(args)...};
+    const auto col = Rgba32f{std::forward<Ts>(args)...};
     glUniform4fv(material_emissive_color_location_,
                  1,
                  reinterpret_cast<const GLfloat*>(&col));
   }
 
   template<typename... Ts>
-  std::void_t<decltype(Rgba32f {std::declval<Ts>()...})>
+  std::void_t<decltype(Rgba32f{std::declval<Ts>()...})>
   material_diffuse_color(Ts&&... args) const noexcept
   {
-    const auto col = Rgba32f {std::forward<Ts>(args)...};
+    const auto col = Rgba32f{std::forward<Ts>(args)...};
     glUniform4fv(material_diffuse_color_location_,
                  1,
                  reinterpret_cast<const GLfloat*>(&col));
   }
 
   template<typename... Ts>
-  std::void_t<decltype(Rgba32f {std::declval<Ts>()...})>
+  std::void_t<decltype(Rgba32f{std::declval<Ts>()...})>
   material_specular_color(Ts&&... args) const noexcept
   {
-    const auto col = Rgba32f {std::forward<Ts>(args)...};
+    const auto col = Rgba32f{std::forward<Ts>(args)...};
     glUniform4fv(material_specular_color_location_,
                  1,
                  reinterpret_cast<const GLfloat*>(&col));
@@ -193,11 +193,11 @@ public:
   }
 
 private:
-  GLint material_ambient_intensity_location_ {-1};
-  GLint material_emissive_color_location_ {-1};
-  GLint material_diffuse_color_location_ {-1};
-  GLint material_specular_color_location_ {-1};
-  GLint material_shininess_location_ {-1};
+  GLint material_ambient_intensity_location_{-1};
+  GLint material_emissive_color_location_{-1};
+  GLint material_diffuse_color_location_{-1};
+  GLint material_specular_color_location_{-1};
+  GLint material_shininess_location_{-1};
 };
 
 template<typename TShader>
@@ -216,7 +216,7 @@ public:
   }
 
   template<typename TColor, typename TScalar>
-  std::void_t<decltype(Rgba32f {std::declval<TColor>()},
+  std::void_t<decltype(Rgba32f{std::declval<TColor>()},
                        std::is_convertible_v<TScalar, GLfloat>)>
   fog(const Fog<TColor, TScalar>& fog) const noexcept
   {
@@ -226,10 +226,10 @@ public:
   }
 
   template<typename... Ts>
-  std::void_t<decltype(Rgba32f {std::declval<Ts>()...})>
+  std::void_t<decltype(Rgba32f{std::declval<Ts>()...})>
   fog_color(Ts&&... args) const noexcept
   {
-    const auto col = Rgba32f {std::forward<Ts>(args)...};
+    const auto col = Rgba32f{std::forward<Ts>(args)...};
     glUniform4fv(
      fog_color_location_, 1, reinterpret_cast<const GLfloat*>(&col));
   }
@@ -249,9 +249,9 @@ public:
   }
 
 private:
-  GLint fog_color_location_ {-1};
-  GLint fog_fog_type_location_ {-1};
-  GLint fog_visibility_range_location_ {-1};
+  GLint fog_color_location_{-1};
+  GLint fog_fog_type_location_{-1};
+  GLint fog_visibility_range_location_{-1};
 };
 
 template<typename TShader>
@@ -286,8 +286,8 @@ public:
 
   template<typename TColor, typename TConfig>
   std::void_t<decltype(
-   Rgba32f {std::declval<TColor>()},
-   Vec3f {std::declval<typename DirectionalLight<TColor, TConfig>::Vec3f>()})>
+   Rgba32f{std::declval<TColor>()},
+   Vec3f{std::declval<typename DirectionalLight<TColor, TConfig>::Vec3f>()})>
   light_source(const DirectionalLight<TColor, TConfig>& light) const noexcept
   {
     light_source_ambient_intensity(light.ambient_intensity);
@@ -298,9 +298,9 @@ public:
   }
 
   template<typename TColor, typename TConfig>
-  std::void_t<decltype(
-   Rgba32f {std::declval<TColor>()},
-   Vec3f {std::declval<typename PointLight<TColor, TConfig>::Vec3f>()})>
+  std::void_t<
+   decltype(Rgba32f{std::declval<TColor>()},
+            Vec3f{std::declval<typename PointLight<TColor, TConfig>::Vec3f>()})>
   light_source(const PointLight<TColor, TConfig>& light) const noexcept
   {
     light_source_ambient_intensity(light.ambient_intensity);
@@ -314,8 +314,8 @@ public:
 
   template<typename TColor, typename TConfig>
   std::void_t<
-   decltype(Rgba32f {std::declval<TColor>()},
-            Vec3f {std::declval<typename SpotLight<TColor, TConfig>::Vec3f>()})>
+   decltype(Rgba32f{std::declval<TColor>()},
+            Vec3f{std::declval<typename SpotLight<TColor, TConfig>::Vec3f>()})>
   light_source(const SpotLight<TColor, TConfig>& light) const noexcept
   {
     light_source_ambient_intensity(light.ambient_intensity);
@@ -344,10 +344,10 @@ public:
   }
 
   template<typename... Ts>
-  std::void_t<decltype(Rgba32f {std::declval<Ts>()...})>
+  std::void_t<decltype(Rgba32f{std::declval<Ts>()...})>
   light_source_color(Ts&&... args) const noexcept
   {
-    const auto col = Rgba32f {std::forward<Ts>(args)...};
+    const auto col = Rgba32f{std::forward<Ts>(args)...};
     glUniform4fv(
      light_source_color_location_, 1, reinterpret_cast<const GLfloat*>(&col));
   }
@@ -360,10 +360,10 @@ public:
   }
 
   template<typename... Ts>
-  std::void_t<decltype(Vec3f {std::declval<Ts>()...})>
+  std::void_t<decltype(Vec3f{std::declval<Ts>()...})>
   light_source_direction(Ts&&... args) const noexcept
   {
-    const auto v = Vec3f {std::forward<Ts>(args)...};
+    const auto v = Vec3f{std::forward<Ts>(args)...};
     glUniform3f(light_source_direction_location_, v.x(), v.y(), v.z());
   }
 
@@ -375,18 +375,18 @@ public:
   }
 
   template<typename... Ts>
-  std::void_t<decltype(Vec3f {std::declval<Ts>()...})>
+  std::void_t<decltype(Vec3f{std::declval<Ts>()...})>
   light_source_attenuation(Ts&&... args) const noexcept
   {
-    const auto v = Vec3f {std::forward<Ts>(args)...};
+    const auto v = Vec3f{std::forward<Ts>(args)...};
     glUniform3f(light_source_attenuation_location_, v.x(), v.y(), v.z());
   }
 
   template<typename... Ts>
-  std::void_t<decltype(Vec3f {std::declval<Ts>()...})>
+  std::void_t<decltype(Vec3f{std::declval<Ts>()...})>
   light_source_position(Ts&&... args) const noexcept
   {
-    const auto v = Vec3f {std::forward<Ts>(args)...};
+    const auto v = Vec3f{std::forward<Ts>(args)...};
     glUniform3f(light_source_position_location_, v.x(), v.y(), v.z());
   }
 
@@ -398,15 +398,15 @@ public:
   }
 
 private:
-  GLint light_source_ambient_intensity_location_ {-1};
-  GLint light_source_attenuation_location_ {-1};
-  GLint light_source_beam_width_location_ {-1};
-  GLint light_source_intensity_location_ {-1};
-  GLint light_source_color_location_ {-1};
-  GLint light_source_cut_off_angle_location_ {-1};
-  GLint light_source_direction_location_ {-1};
-  GLint light_source_position_location_ {-1};
-  GLint light_source_radius_location_ {-1};
+  GLint light_source_ambient_intensity_location_{-1};
+  GLint light_source_attenuation_location_{-1};
+  GLint light_source_beam_width_location_{-1};
+  GLint light_source_intensity_location_{-1};
+  GLint light_source_color_location_{-1};
+  GLint light_source_cut_off_angle_location_{-1};
+  GLint light_source_direction_location_{-1};
+  GLint light_source_position_location_{-1};
+  GLint light_source_radius_location_{-1};
 };
 
 template<typename TShader>
@@ -428,7 +428,7 @@ public:
   }
 
 private:
-  GLint color_2d_sampler_uniform_location_ {-1};
+  GLint color_2d_sampler_uniform_location_{-1};
 };
 
 template<typename TShader, template<typename> class... TShaderUniform>

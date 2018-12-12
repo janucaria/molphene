@@ -9,10 +9,10 @@ Atom::Atom(Compound& compound,
            std::string elsym,
            std::string name,
            unsigned int serial)
-: compound_ptr_ {&compound}
-, element_ {std::move(elsym)}
-, name_ {std::move(name)}
-, serial_ {serial}
+: compound_ptr_{&compound}
+, element_{std::move(elsym)}
+, name_{std::move(name)}
+, serial_{serial}
 {
 }
 
@@ -25,124 +25,124 @@ Atom::altloc() const
 const Atom::Element&
 Atom::element() const
 {
-  static const Atom::Element hydrogen {"Hydrogen", "H", 1, 1.2, 0.31};
-  static const Atom::Element helium {"Helium", "He", 2, 1.4, 0.28};
-  static const Atom::Element lithium {"Lithium", "Li", 3, 1.82, 1.28};
-  static const Atom::Element beryllium {"Beryllium", "Be", 4, 0, 0.96};
-  static const Atom::Element boron {"Boron", "B", 5, 0, 0.84};
-  static const Atom::Element carbon {"Carbon", "C", 6, 1.7, 0.76};
-  static const Atom::Element nitrogen {"Nitrogen", "N", 7, 1.55, 0.71};
-  static const Atom::Element oxygen {"Oxygen", "O", 8, 1.52, 0.66};
-  static const Atom::Element fluorine {"Fluorine", "F", 9, 1.47, 0.57};
-  static const Atom::Element neon {"Neon", "Ne", 10, 1.54, 0.58};
-  static const Atom::Element sodium {"Sodium", "Na", 11, 2.27, 1.66};
-  static const Atom::Element magnesium {"Magnesium", "Mg", 12, 1.73, 1.41};
-  static const Atom::Element aluminum {"Aluminum", "Al", 13, 0, 1.21};
-  static const Atom::Element silicon {"Silicon", "Si", 14, 2.1, 1.11};
-  static const Atom::Element phosphorus {"Phosphorus", "P", 15, 1.8, 1.07};
-  static const Atom::Element sulfur {"Sulfur", "S", 16, 1.8, 1.05};
-  static const Atom::Element chlorine {"Chlorine", "Cl", 17, 1.75, 1.02};
-  static const Atom::Element argon {"Argon", "Ar", 18, 1.88, 1.06};
-  static const Atom::Element potassium {"Potassium", "K", 19, 2.75, 2.03};
-  static const Atom::Element calcium {"Calcium", "Ca", 20, 0, 1.76};
-  static const Atom::Element scandium {"Scandium", "Sc", 21, 0, 1.7};
-  static const Atom::Element titanium {"Titanium", "Ti", 22, 0, 1.6};
-  static const Atom::Element vanadium {"Vanadium", "V", 23, 0, 1.53};
-  static const Atom::Element chromium {"Chromium", "Cr", 24, 0, 1.39};
-  static const Atom::Element manganese {"Manganese", "Mn", 25, 0, 1.39};
-  static const Atom::Element iron {"Iron", "Fe", 26, 0, 1.32};
-  static const Atom::Element cobalt {"Cobalt", "Co", 27, 0, 1.26};
-  static const Atom::Element nickel {"Nickel", "Ni", 28, 1.63, 1.24};
-  static const Atom::Element copper {"Copper", "Cu", 29, 1.4, 1.32};
-  static const Atom::Element zinc {"Zinc", "Zn", 30, 1.39, 1.22};
-  static const Atom::Element gallium {"Gallium", "Ga", 31, 1.87, 1.22};
-  static const Atom::Element germanium {"Germanium", "Ge", 32, 0, 1.2};
-  static const Atom::Element arsenic {"Arsenic", "As", 33, 1.85, 1.19};
-  static const Atom::Element selenium {"Selenium", "Se", 34, 1.9, 1.2};
-  static const Atom::Element bromine {"Bromine", "Br", 35, 1.85, 1.2};
-  static const Atom::Element krypton {"Krypton", "Kr", 36, 2.02, 1.16};
-  static const Atom::Element rubidium {"Rubidium", "Rb", 37, 0, 2.2};
-  static const Atom::Element strontium {"Strontium", "Sr", 38, 0, 1.95};
-  static const Atom::Element yttrium {"Yttrium", "Y", 39, 0, 1.9};
-  static const Atom::Element zirconium {"Zirconium", "Zr", 40, 0, 1.75};
-  static const Atom::Element niobium {"Niobium", "Nb", 41, 0, 1.64};
-  static const Atom::Element molybdenum {"Molybdenum", "Mo", 42, 0, 1.54};
-  static const Atom::Element technetium {"Technetium", "Tc", 43, 0, 1.47};
-  static const Atom::Element ruthenium {"Ruthenium", "Ru", 44, 0, 1.46};
-  static const Atom::Element rhodium {"Rhodium", "Rh", 45, 0, 1.42};
-  static const Atom::Element palladium {"Palladium", "Pd", 46, 1.63, 1.39};
-  static const Atom::Element silver {"Silver", "Ag", 47, 1.72, 1.45};
-  static const Atom::Element cadmium {"Cadmium", "Cd", 48, 1.58, 1.44};
-  static const Atom::Element indium {"Indium", "In", 49, 1.93, 1.42};
-  static const Atom::Element tin {"Tin", "Sn", 50, 2.17, 1.39};
-  static const Atom::Element antimony {"Antimony", "Sb", 51, 0, 1.39};
-  static const Atom::Element tellurium {"Tellurium", "Te", 52, 2.06, 1.38};
-  static const Atom::Element iodine {"Iodine", "I", 53, 1.98, 1.39};
-  static const Atom::Element xenon {"Xenon", "Xe", 54, 2.16, 1.4};
-  static const Atom::Element cesium {"Cesium", "Cs", 55, 0, 2.44};
-  static const Atom::Element barium {"Barium", "Ba", 56, 0, 2.15};
-  static const Atom::Element lanthanum {"Lanthanum", "La", 57, 0, 2.07};
-  static const Atom::Element cerium {"Cerium", "Ce", 58, 0, 2.04};
-  static const Atom::Element praseodymium {"Praseodymium", "Pr", 59, 0, 2.03};
-  static const Atom::Element neodymium {"Neodymium", "Nd", 60, 0, 2.01};
-  static const Atom::Element promethium {"Promethium", "Pm", 61, 0, 1.99};
-  static const Atom::Element samarium {"Samarium", "Sm", 62, 0, 1.98};
-  static const Atom::Element europium {"Europium", "Eu", 63, 0, 1.98};
-  static const Atom::Element gadolinium {"Gadolinium", "Gd", 64, 0, 1.96};
-  static const Atom::Element terbium {"Terbium", "Tb", 65, 0, 1.94};
-  static const Atom::Element dysprosium {"Dysprosium", "Dy", 66, 0, 1.92};
-  static const Atom::Element holmium {"Holmium", "Ho", 67, 0, 1.92};
-  static const Atom::Element erbium {"Erbium", "Er", 68, 0, 1.89};
-  static const Atom::Element thulium {"Thulium", "Tm", 69, 0, 1.9};
-  static const Atom::Element ytterbium {"Ytterbium", "Yb", 70, 0, 1.87};
-  static const Atom::Element lutetium {"Lutetium", "Lu", 71, 0, 1.87};
-  static const Atom::Element hafnium {"Hafnium", "Hf", 72, 0, 1.75};
-  static const Atom::Element tantalum {"Tantalum", "Ta", 73, 0, 1.7};
-  static const Atom::Element tungsten {"Tungsten", "W", 74, 0, 1.62};
-  static const Atom::Element rhenium {"Rhenium", "Re", 75, 0, 1.51};
-  static const Atom::Element osmium {"Osmium", "Os", 76, 0, 1.44};
-  static const Atom::Element iridium {"Iridium", "Ir", 77, 0, 1.41};
-  static const Atom::Element platinum {"Platinum", "Pt", 78, 1.75, 1.36};
-  static const Atom::Element gold {"Gold", "Au", 79, 1.66, 1.36};
-  static const Atom::Element mercury {"Mercury", "Hg", 80, 1.55, 1.32};
-  static const Atom::Element thallium {"Thallium", "Tl", 81, 1.96, 1.45};
-  static const Atom::Element lead {"Lead", "Pb", 82, 2.02, 1.46};
-  static const Atom::Element bismuth {"Bismuth", "Bi", 83, 0, 1.48};
-  static const Atom::Element polonium {"Polonium", "Po", 84, 0, 1.4};
-  static const Atom::Element astatine {"Astatine", "At", 85, 0, 1.5};
-  static const Atom::Element radon {"Radon", "Rn", 86, 0, 1.5};
-  static const Atom::Element francium {"Francium", "Fr", 87, 0, 2.6};
-  static const Atom::Element radium {"Radium", "Ra", 88, 0, 2.21};
-  static const Atom::Element actinium {"Actinium", "Ac", 89, 0, 2.15};
-  static const Atom::Element thorium {"Thorium", "Th", 90, 0, 2.06};
-  static const Atom::Element protactinium {"Protactinium", "Pa", 91, 0, 2};
-  static const Atom::Element uranium {"Uranium", "U", 92, 1.86, 1.96};
-  static const Atom::Element neptunium {"Neptunium", "Np", 93, 0, 1.9};
-  static const Atom::Element plutonium {"Plutonium", "Pu", 94, 0, 1.87};
-  static const Atom::Element americium {"Americium", "Am", 95, 0, 1.8};
-  static const Atom::Element curium {"Curium", "Cm", 96, 0, 1.69};
-  static const Atom::Element berkelium {"Berkelium", "Bk", 97, 0, 0};
-  static const Atom::Element californium {"Californium", "Cf", 98, 0, 0};
-  static const Atom::Element einsteinium {"Einsteinium", "Es", 99, 0, 0};
-  static const Atom::Element fermium {"Fermium", "Fm", 100, 0, 0};
-  static const Atom::Element mendelevium {"Mendelevium", "Md", 101, 0, 0};
-  static const Atom::Element nobelium {"Nobelium", "No", 102, 0, 0};
-  static const Atom::Element lawrencium {"Lawrencium", "Lr", 103, 0, 0};
-  static const Atom::Element rutherfordium {"Rutherfordium", "Rf", 104, 0, 0};
-  static const Atom::Element dubnium {"Dubnium", "Db", 105, 0, 0};
-  static const Atom::Element seaborgium {"Seaborgium", "Sg", 106, 0, 0};
-  static const Atom::Element bohrium {"Bohrium", "Bh", 107, 0, 0};
-  static const Atom::Element hassium {"Hassium", "Hs", 108, 0, 0};
-  static const Atom::Element meitnerium {"Meitnerium", "Mt", 109, 0, 0};
-  static const Atom::Element darmstadtium {"Darmstadtium", "Ds", 110, 0, 0};
-  static const Atom::Element roentgenium {"Roentgenium", "Rg", 111, 0, 0};
-  static const Atom::Element copernicium {"Copernicium", "Cn", 112, 0, 0};
-  static const Atom::Element ununtrium {"Ununtrium", "Uut", 113, 0, 0};
-  static const Atom::Element ununquadium {"Ununquadium", "Uuq", 114, 0, 0};
-  static const Atom::Element ununpentium {"Ununpentium", "Uup", 115, 0, 0};
-  static const Atom::Element ununhexium {"Ununhexium", "Uuh", 116, 0, 0};
-  static const Atom::Element ununseptium {"Ununseptium", "Uus", 117, 0, 0};
-  static const Atom::Element ununoctium {"Ununoctium", "Uuo", 118, 0, 0};
+  static const Atom::Element hydrogen{"Hydrogen", "H", 1, 1.2, 0.31};
+  static const Atom::Element helium{"Helium", "He", 2, 1.4, 0.28};
+  static const Atom::Element lithium{"Lithium", "Li", 3, 1.82, 1.28};
+  static const Atom::Element beryllium{"Beryllium", "Be", 4, 0, 0.96};
+  static const Atom::Element boron{"Boron", "B", 5, 0, 0.84};
+  static const Atom::Element carbon{"Carbon", "C", 6, 1.7, 0.76};
+  static const Atom::Element nitrogen{"Nitrogen", "N", 7, 1.55, 0.71};
+  static const Atom::Element oxygen{"Oxygen", "O", 8, 1.52, 0.66};
+  static const Atom::Element fluorine{"Fluorine", "F", 9, 1.47, 0.57};
+  static const Atom::Element neon{"Neon", "Ne", 10, 1.54, 0.58};
+  static const Atom::Element sodium{"Sodium", "Na", 11, 2.27, 1.66};
+  static const Atom::Element magnesium{"Magnesium", "Mg", 12, 1.73, 1.41};
+  static const Atom::Element aluminum{"Aluminum", "Al", 13, 0, 1.21};
+  static const Atom::Element silicon{"Silicon", "Si", 14, 2.1, 1.11};
+  static const Atom::Element phosphorus{"Phosphorus", "P", 15, 1.8, 1.07};
+  static const Atom::Element sulfur{"Sulfur", "S", 16, 1.8, 1.05};
+  static const Atom::Element chlorine{"Chlorine", "Cl", 17, 1.75, 1.02};
+  static const Atom::Element argon{"Argon", "Ar", 18, 1.88, 1.06};
+  static const Atom::Element potassium{"Potassium", "K", 19, 2.75, 2.03};
+  static const Atom::Element calcium{"Calcium", "Ca", 20, 0, 1.76};
+  static const Atom::Element scandium{"Scandium", "Sc", 21, 0, 1.7};
+  static const Atom::Element titanium{"Titanium", "Ti", 22, 0, 1.6};
+  static const Atom::Element vanadium{"Vanadium", "V", 23, 0, 1.53};
+  static const Atom::Element chromium{"Chromium", "Cr", 24, 0, 1.39};
+  static const Atom::Element manganese{"Manganese", "Mn", 25, 0, 1.39};
+  static const Atom::Element iron{"Iron", "Fe", 26, 0, 1.32};
+  static const Atom::Element cobalt{"Cobalt", "Co", 27, 0, 1.26};
+  static const Atom::Element nickel{"Nickel", "Ni", 28, 1.63, 1.24};
+  static const Atom::Element copper{"Copper", "Cu", 29, 1.4, 1.32};
+  static const Atom::Element zinc{"Zinc", "Zn", 30, 1.39, 1.22};
+  static const Atom::Element gallium{"Gallium", "Ga", 31, 1.87, 1.22};
+  static const Atom::Element germanium{"Germanium", "Ge", 32, 0, 1.2};
+  static const Atom::Element arsenic{"Arsenic", "As", 33, 1.85, 1.19};
+  static const Atom::Element selenium{"Selenium", "Se", 34, 1.9, 1.2};
+  static const Atom::Element bromine{"Bromine", "Br", 35, 1.85, 1.2};
+  static const Atom::Element krypton{"Krypton", "Kr", 36, 2.02, 1.16};
+  static const Atom::Element rubidium{"Rubidium", "Rb", 37, 0, 2.2};
+  static const Atom::Element strontium{"Strontium", "Sr", 38, 0, 1.95};
+  static const Atom::Element yttrium{"Yttrium", "Y", 39, 0, 1.9};
+  static const Atom::Element zirconium{"Zirconium", "Zr", 40, 0, 1.75};
+  static const Atom::Element niobium{"Niobium", "Nb", 41, 0, 1.64};
+  static const Atom::Element molybdenum{"Molybdenum", "Mo", 42, 0, 1.54};
+  static const Atom::Element technetium{"Technetium", "Tc", 43, 0, 1.47};
+  static const Atom::Element ruthenium{"Ruthenium", "Ru", 44, 0, 1.46};
+  static const Atom::Element rhodium{"Rhodium", "Rh", 45, 0, 1.42};
+  static const Atom::Element palladium{"Palladium", "Pd", 46, 1.63, 1.39};
+  static const Atom::Element silver{"Silver", "Ag", 47, 1.72, 1.45};
+  static const Atom::Element cadmium{"Cadmium", "Cd", 48, 1.58, 1.44};
+  static const Atom::Element indium{"Indium", "In", 49, 1.93, 1.42};
+  static const Atom::Element tin{"Tin", "Sn", 50, 2.17, 1.39};
+  static const Atom::Element antimony{"Antimony", "Sb", 51, 0, 1.39};
+  static const Atom::Element tellurium{"Tellurium", "Te", 52, 2.06, 1.38};
+  static const Atom::Element iodine{"Iodine", "I", 53, 1.98, 1.39};
+  static const Atom::Element xenon{"Xenon", "Xe", 54, 2.16, 1.4};
+  static const Atom::Element cesium{"Cesium", "Cs", 55, 0, 2.44};
+  static const Atom::Element barium{"Barium", "Ba", 56, 0, 2.15};
+  static const Atom::Element lanthanum{"Lanthanum", "La", 57, 0, 2.07};
+  static const Atom::Element cerium{"Cerium", "Ce", 58, 0, 2.04};
+  static const Atom::Element praseodymium{"Praseodymium", "Pr", 59, 0, 2.03};
+  static const Atom::Element neodymium{"Neodymium", "Nd", 60, 0, 2.01};
+  static const Atom::Element promethium{"Promethium", "Pm", 61, 0, 1.99};
+  static const Atom::Element samarium{"Samarium", "Sm", 62, 0, 1.98};
+  static const Atom::Element europium{"Europium", "Eu", 63, 0, 1.98};
+  static const Atom::Element gadolinium{"Gadolinium", "Gd", 64, 0, 1.96};
+  static const Atom::Element terbium{"Terbium", "Tb", 65, 0, 1.94};
+  static const Atom::Element dysprosium{"Dysprosium", "Dy", 66, 0, 1.92};
+  static const Atom::Element holmium{"Holmium", "Ho", 67, 0, 1.92};
+  static const Atom::Element erbium{"Erbium", "Er", 68, 0, 1.89};
+  static const Atom::Element thulium{"Thulium", "Tm", 69, 0, 1.9};
+  static const Atom::Element ytterbium{"Ytterbium", "Yb", 70, 0, 1.87};
+  static const Atom::Element lutetium{"Lutetium", "Lu", 71, 0, 1.87};
+  static const Atom::Element hafnium{"Hafnium", "Hf", 72, 0, 1.75};
+  static const Atom::Element tantalum{"Tantalum", "Ta", 73, 0, 1.7};
+  static const Atom::Element tungsten{"Tungsten", "W", 74, 0, 1.62};
+  static const Atom::Element rhenium{"Rhenium", "Re", 75, 0, 1.51};
+  static const Atom::Element osmium{"Osmium", "Os", 76, 0, 1.44};
+  static const Atom::Element iridium{"Iridium", "Ir", 77, 0, 1.41};
+  static const Atom::Element platinum{"Platinum", "Pt", 78, 1.75, 1.36};
+  static const Atom::Element gold{"Gold", "Au", 79, 1.66, 1.36};
+  static const Atom::Element mercury{"Mercury", "Hg", 80, 1.55, 1.32};
+  static const Atom::Element thallium{"Thallium", "Tl", 81, 1.96, 1.45};
+  static const Atom::Element lead{"Lead", "Pb", 82, 2.02, 1.46};
+  static const Atom::Element bismuth{"Bismuth", "Bi", 83, 0, 1.48};
+  static const Atom::Element polonium{"Polonium", "Po", 84, 0, 1.4};
+  static const Atom::Element astatine{"Astatine", "At", 85, 0, 1.5};
+  static const Atom::Element radon{"Radon", "Rn", 86, 0, 1.5};
+  static const Atom::Element francium{"Francium", "Fr", 87, 0, 2.6};
+  static const Atom::Element radium{"Radium", "Ra", 88, 0, 2.21};
+  static const Atom::Element actinium{"Actinium", "Ac", 89, 0, 2.15};
+  static const Atom::Element thorium{"Thorium", "Th", 90, 0, 2.06};
+  static const Atom::Element protactinium{"Protactinium", "Pa", 91, 0, 2};
+  static const Atom::Element uranium{"Uranium", "U", 92, 1.86, 1.96};
+  static const Atom::Element neptunium{"Neptunium", "Np", 93, 0, 1.9};
+  static const Atom::Element plutonium{"Plutonium", "Pu", 94, 0, 1.87};
+  static const Atom::Element americium{"Americium", "Am", 95, 0, 1.8};
+  static const Atom::Element curium{"Curium", "Cm", 96, 0, 1.69};
+  static const Atom::Element berkelium{"Berkelium", "Bk", 97, 0, 0};
+  static const Atom::Element californium{"Californium", "Cf", 98, 0, 0};
+  static const Atom::Element einsteinium{"Einsteinium", "Es", 99, 0, 0};
+  static const Atom::Element fermium{"Fermium", "Fm", 100, 0, 0};
+  static const Atom::Element mendelevium{"Mendelevium", "Md", 101, 0, 0};
+  static const Atom::Element nobelium{"Nobelium", "No", 102, 0, 0};
+  static const Atom::Element lawrencium{"Lawrencium", "Lr", 103, 0, 0};
+  static const Atom::Element rutherfordium{"Rutherfordium", "Rf", 104, 0, 0};
+  static const Atom::Element dubnium{"Dubnium", "Db", 105, 0, 0};
+  static const Atom::Element seaborgium{"Seaborgium", "Sg", 106, 0, 0};
+  static const Atom::Element bohrium{"Bohrium", "Bh", 107, 0, 0};
+  static const Atom::Element hassium{"Hassium", "Hs", 108, 0, 0};
+  static const Atom::Element meitnerium{"Meitnerium", "Mt", 109, 0, 0};
+  static const Atom::Element darmstadtium{"Darmstadtium", "Ds", 110, 0, 0};
+  static const Atom::Element roentgenium{"Roentgenium", "Rg", 111, 0, 0};
+  static const Atom::Element copernicium{"Copernicium", "Cn", 112, 0, 0};
+  static const Atom::Element ununtrium{"Ununtrium", "Uut", 113, 0, 0};
+  static const Atom::Element ununquadium{"Ununquadium", "Uuq", 114, 0, 0};
+  static const Atom::Element ununpentium{"Ununpentium", "Uup", 115, 0, 0};
+  static const Atom::Element ununhexium{"Ununhexium", "Uuh", 116, 0, 0};
+  static const Atom::Element ununseptium{"Ununseptium", "Uus", 117, 0, 0};
+  static const Atom::Element ununoctium{"Ununoctium", "Uuo", 118, 0, 0};
 
   if(element_ == "H") {
     return hydrogen;
@@ -538,11 +538,11 @@ Atom::Element::Element(std::string name,
                        unsigned char number,
                        float rVdW,
                        float rcov) noexcept
-: name {std::move(name)}
-, number {number}
-, rcov {rcov}
-, rvdw {rVdW}
-, symbol {std::move(symbol)}
+: name{std::move(name)}
+, number{number}
+, rcov{rcov}
+, rvdw{rVdW}
+, symbol{std::move(symbol)}
 {
 }
 

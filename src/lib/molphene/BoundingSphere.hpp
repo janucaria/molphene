@@ -15,7 +15,7 @@ public:
   using center_type = SphereCenter;
 
 private:
-  Sphere sphere_ {-1};
+  Sphere sphere_{-1};
 
 public:
   BoundingSphere() noexcept = default;

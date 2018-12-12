@@ -85,7 +85,7 @@ Molecule::ChainsIterator::pointer Molecule::ChainsIterator::operator->()
 }
 
 Molecule::ModelsIterable::ModelsIterable(Molecule& molecule)
-: molecule_ {molecule}
+: molecule_{molecule}
 {
 }
 

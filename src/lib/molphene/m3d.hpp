@@ -5,20 +5,18 @@
 
 #include "stdafx.hpp"
 
-namespace molphene
-{
-  using namespace gm3d;
+namespace molphene {
+using namespace gm3d;
 
-  using gm3d::Mat3;
-  using gm3d::Mat4;
+using gm3d::Mat3;
+using gm3d::Mat4;
 
-  using gm3d::Vec2;
-  using gm3d::Vec3;
+using gm3d::Vec2;
+using gm3d::Vec3;
 
-  using Rgba8 = gm3d::Rgba<std::uint8_t>;
-  using Rgba32f = gm3d::Rgba<float>;
+using Rgba8 = gm3d::Rgba<std::uint8_t>;
+using Rgba32f = gm3d::Rgba<float>;
 
-} // molphene
-
+} // namespace molphene
 
 #endif

@@ -71,7 +71,7 @@ Model::molecule() const
 }
 
 Model::ChainsIterable::ChainsIterable(Model& model)
-: model_ {model}
+: model_{model}
 {
 }
 

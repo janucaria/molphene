@@ -28,25 +28,25 @@ Scene::reset_mesh() noexcept
   std::vector<Atom*> atoms;
   std::vector<Bond*> bonds;
 
-  for(auto& model : Molecule::ModelsIterable {*molecule_}) {
-    for(auto& chain : Model::ChainsIterable {model}) {
-      for(auto& residue : Chain::ResidueIterator {chain}) {
-        for(auto& atom : Compound::AtomsIterable {residue}) {
+  for(auto& model : Molecule::ModelsIterable{*molecule_}) {
+    for(auto& chain : Model::ChainsIterable{model}) {
+      for(auto& residue : Chain::ResidueIterator{chain}) {
+        for(auto& atom : Compound::AtomsIterable{residue}) {
           const auto atm = std::addressof(atom);
           atoms.push_back(atm);
         }
       }
 
-      for(auto& ligan : Chain::LiganIterator {chain}) {
+      for(auto& ligan : Chain::LiganIterator{chain}) {
         const auto compname = ligan.name();
-        for(auto& atom : Compound::AtomsIterable {ligan}) {
+        for(auto& atom : Compound::AtomsIterable{ligan}) {
           const auto atm = std::addressof(atom);
           atoms.push_back(atm);
         }
       }
     }
 
-    for(auto& bond : Model::BondsIterable {model}) {
+    for(auto& bond : Model::BondsIterable{model}) {
       bonds.push_back(&bond);
     }
   }
@@ -54,22 +54,21 @@ Scene::reset_mesh() noexcept
   // calculate bounding sphere
   bounding_sphere_.reset();
 
-  range::transform(atoms, ExpandIterator {bounding_sphere_}, [](auto atom) noexcept {
-    return atom->position();
-  });
+  range::transform(atoms, ExpandIterator{bounding_sphere_}, [
+  ](auto atom) noexcept { return atom->position(); });
 
   model_matrix_.identity().translate(-bounding_sphere_.center());
 
   const auto total_instances = atoms.size();
 
-  constexpr auto max_chunk_bytes = size_t {1024 * 1024 * 128};
+  constexpr auto max_chunk_bytes = size_t{1024 * 1024 * 128};
 
   {
-    auto normals = std::vector<Vec3<GLfloat>> {};
-    auto positions = std::vector<Vec3<GLfloat>> {};
-    auto texcoords = std::vector<Vec2<GLfloat>> {};
+    auto normals = std::vector<Vec3<GLfloat>>{};
+    auto positions = std::vector<Vec3<GLfloat>>{};
+    auto texcoords = std::vector<Vec2<GLfloat>>{};
 
-    auto mesh_builder = SphereMeshBuilder {10, 20};
+    auto mesh_builder = SphereMeshBuilder{10, 20};
 
     constexpr auto bytes_per_vertex =
      sizeof(typename std::decay_t<decltype(positions)>::value_type) +
@@ -94,18 +93,18 @@ Scene::reset_mesh() noexcept
     const auto tex_size = sphere_buff_atoms_->color_texture_size();
     auto colors = std::vector<Rgba8>(tex_size * tex_size);
 
-    auto chunk_count = size_t {0};
-    for(auto i = size_t {0}; i < total_instances; ++i) {
+    auto chunk_count = size_t{0};
+    for(auto i = size_t{0}; i < total_instances; ++i) {
       const auto& atm = *atoms.at(i);
       const auto& element = atm.element();
       const auto apos = atm.position();
       const auto arad = element.rvdw;
       const auto acol = colour_manager_.get_element_color(element.symbol);
-      const auto atex = Vec2f {float_t(i % tex_size) / tex_size,
-                               std::floorf(float_t(i) / tex_size) / tex_size};
+      const auto atex = Vec2f{float_t(i % tex_size) / tex_size,
+                              std::floorf(float_t(i) / tex_size) / tex_size};
       colors[i] = acol;
 
-      auto spherenorms = std::vector<Vec3f> {};
+      auto spherenorms = std::vector<Vec3f>{};
       spherenorms.reserve(vertices_per_instance);
 
       mesh_builder.build(std::back_inserter(spherenorms));

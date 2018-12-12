@@ -16,11 +16,11 @@ public:
   using typename PointLight<TColor, TConfig>::Color;
   using Vec3f = Vec3<float_t>;
 
-  float_t beam_width {M_PI / 4};
+  float_t beam_width{M_PI / 4};
 
-  float_t cut_off_angle {M_PI / 2};
+  float_t cut_off_angle{M_PI / 2};
 
-  Vec3f direction {0, 0, -1};
+  Vec3f direction{0, 0, -1};
 
   using PointLight<TColor, TConfig>::PointLight;
 

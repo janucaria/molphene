@@ -172,7 +172,7 @@ PdbParser::handle_conect_record_(Molecule* molptr)
   Molecule& mol = *molptr;
   const auto aser1 = get_int_(7, 11);
 
-  for(auto& model : Molecule::ModelsIterable {mol}) {
+  for(auto& model : Molecule::ModelsIterable{mol}) {
     const auto atm1 = model.get_atom(aser1);
 
     for(auto i = 12u; i <= 27; i += 5) {
@@ -574,7 +574,7 @@ PdbParser::handle_ter_record_(Molecule* molptr)
   }
 
   auto prevr = static_cast<Compound*>(nullptr);
-  for(auto& compnd : Chain::CompoundIterator {*current_chain_ptr_}) {
+  for(auto& compnd : Chain::CompoundIterator{*current_chain_ptr_}) {
     const auto rname = compnd.name();
     const auto rbpit = res_bond_pairs.find(rname);
 

@@ -30,8 +30,8 @@ public:
   color_texture_size() const noexcept;
 
 private:
-  GLuint color_tex_ {0};
-  GLsizei color_tex_size_ {0};
+  GLuint color_tex_{0};
+  GLsizei color_tex_size_{0};
 };
 
 } // namespace molphene

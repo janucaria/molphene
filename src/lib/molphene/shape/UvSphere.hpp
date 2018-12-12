@@ -13,15 +13,15 @@ public:
   using typename Sphere<TRadii>::Center;
   using Axis = Center;
 
-  Axis axis {0, 1, 0};
+  Axis axis{0, 1, 0};
 
   using Sphere<TRadii>::Sphere;
 
   UvSphere() noexcept = default;
 
   UvSphere(Radius radii, Center center, Axis axis) noexcept
-  : Sphere<TRadii> {radii, center}
-  , axis {axis}
+  : Sphere<TRadii>{radii, center}
+  , axis{axis}
   {
   }
 

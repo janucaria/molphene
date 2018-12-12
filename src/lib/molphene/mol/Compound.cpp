@@ -80,7 +80,7 @@ Compound::AtomsIterator::operator++()
 const Compound::AtomsIterator
 Compound::AtomsIterator::operator++(int)
 {
-  Compound::AtomsIterator tmp {*this};
+  Compound::AtomsIterator tmp{*this};
   operator++();
   return tmp;
 }
@@ -108,7 +108,7 @@ Compound::AtomsIterator::pointer Compound::AtomsIterator::operator->()
 }
 
 Compound::AtomsIterable::AtomsIterable(Compound& compound)
-: compound_ {compound}
+: compound_{compound}
 {
 }
 

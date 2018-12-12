@@ -13,11 +13,11 @@ public:
   using typename BasicLight<TColor, TConfig>::Color;
   using Vec3f = Vec3<float_t>;
 
-  float_t radius {100};
+  float_t radius{100};
 
-  Vec3f attenuation {1, 0, 0};
+  Vec3f attenuation{1, 0, 0};
 
-  Vec3f location {0, 0, 0};
+  Vec3f location{0, 0, 0};
 
   using BasicLight<TColor, TConfig>::BasicLight;
 
