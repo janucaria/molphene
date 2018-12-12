@@ -53,7 +53,7 @@ public:
 
   using SphereMeshBuilder = SphereMeshBuilder<ConfigType>;
 
-  using Viewport = Viewport<size_t, float_t>;
+  using Viewport = Viewport<size_t>;
 
   bool
   setup_graphics() noexcept;
