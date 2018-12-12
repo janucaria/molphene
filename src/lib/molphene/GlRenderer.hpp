@@ -28,11 +28,11 @@ public:
   render(const Scene& scene, const Camera& camera) noexcept;
 
 private:
-  GLuint color_light_fbo_;
+  GLuint color_light_fbo_{0};
 
-  GLuint color_light_depth_rbo_;
+  GLuint color_light_depth_rbo_{0};
 
-  GLuint color_light_color_tex_;
+  GLuint color_light_color_tex_{0};
 
   std::unique_ptr<VertexAttribsBuffer> quad_verts_buffer_;
 
