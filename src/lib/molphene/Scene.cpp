@@ -1,5 +1,6 @@
 #include "stdafx.hpp"
 
+#include "ExpandIterator.hpp"
 #include "Scene.hpp"
 #include "m3d.hpp"
 #include "shape/UvSphere.hpp"
@@ -52,12 +53,12 @@ Scene::reset_mesh() noexcept
 
   // calculate bounding sphere
   bounding_sphere_.reset();
-  auto& bs = bounding_sphere_;
 
-  range::for_each(
-   atoms, [&bs](auto atom) noexcept { bs.expand(atom->position()); });
+  range::transform(atoms, ExpandIterator {bounding_sphere_}, [](auto atom) noexcept {
+    return atom->position();
+  });
 
-  model_matrix_.identity().translate(-bs.center());
+  model_matrix_.identity().translate(-bounding_sphere_.center());
 
   const auto total_instances = atoms.size();
 

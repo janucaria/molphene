@@ -12,6 +12,7 @@ public:
   using Sphere = Sphere<TRadii>;
   using SphereRadius = typename Sphere::Radius;
   using SphereCenter = typename Sphere::Center;
+  using center_type = SphereCenter;
 
 private:
   Sphere sphere_ {-1};
