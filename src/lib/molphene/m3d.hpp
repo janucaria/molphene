@@ -6,7 +6,6 @@
 #include "stdafx.hpp"
 
 namespace molphene {
-using namespace gm3d;
 
 using gm3d::Mat3;
 using gm3d::Mat4;
