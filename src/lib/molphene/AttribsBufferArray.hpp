@@ -53,6 +53,8 @@ public:
 
   AttribsBufferArray(AttribsBufferArray&&) = delete;
 
+  ~AttribsBufferArray() noexcept = default;
+
   AttribsBufferArray&
   operator=(const AttribsBufferArray&) = delete;
 
