@@ -29,7 +29,7 @@ public:
       ++size_;
     }
 
-    boost::fusion::for_each(attrib_buffers_, [=](auto& attribbuf) noexcept {
+    boost::mp11::tuple_for_each(attrib_buffers_, [=](auto& attribbuf) noexcept {
       using AttribBuffer =
        typename std::remove_reference_t<decltype(attribbuf)>::element_type;
       attribbuf = std::make_unique<AttribBuffer[]>(size_);
@@ -40,7 +40,7 @@ public:
        i == (size_ - 1) ? remain_instances_ : instances_per_block_;
       const auto verts_count = GLsizeiptr{meshes * verts_per_instance_};
 
-      boost::fusion::for_each(
+      boost::mp11::tuple_for_each(
        attrib_buffers_, [=](const auto& attribbuf) noexcept {
          attribbuf[i].size(verts_count);
        });
@@ -111,7 +111,7 @@ public:
       const auto verts_count =
        GLsizei{i == (size_ - 1) ? remain_instances_ : instances_per_block_};
 
-      boost::fusion::for_each(
+      boost::mp11::tuple_for_each(
        attrib_buffers_, [=](const auto& attribbuf) noexcept {
          attribbuf[i].attrib_pointer();
        });

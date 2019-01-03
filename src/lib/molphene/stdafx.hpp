@@ -23,8 +23,7 @@
 
 #include <gsl/gsl>
 
-#include <boost/fusion/adapted/std_tuple.hpp>
-#include <boost/fusion/algorithm.hpp>
+#include <boost/mp11.hpp>
 #include <boost/range.hpp>
 #include <boost/range/algorithm.hpp>
 
