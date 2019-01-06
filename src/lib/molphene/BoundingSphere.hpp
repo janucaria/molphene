@@ -20,8 +20,7 @@ private:
 public:
   BoundingSphere() noexcept = default;
 
-  void
-  expand(SphereCenter position) noexcept
+  void expand(SphereCenter position) noexcept
   {
     if(sphere_.radius < 0.0) {
       sphere_.center = position;
@@ -40,20 +39,17 @@ public:
     }
   }
 
-  SphereCenter
-  center() const noexcept
+  auto center() const noexcept -> SphereCenter
   {
     return sphere_.center;
   }
 
-  SphereRadius
-  radius() const noexcept
+  auto radius() const noexcept -> SphereRadius
   {
     return sphere_.radius;
   }
 
-  void
-  reset() noexcept
+  void reset() noexcept
   {
     sphere_.radius = -1;
   }

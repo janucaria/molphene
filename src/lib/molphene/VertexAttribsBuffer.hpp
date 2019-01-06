@@ -29,41 +29,38 @@ public:
     glDeleteBuffers(1, &buffer_);
   }
 
-  VertexAttribsBuffer&
-  operator=(const VertexAttribsBuffer& rsh) = delete;
+  auto operator=(const VertexAttribsBuffer& rsh)
+   -> VertexAttribsBuffer& = delete;
 
-  VertexAttribsBuffer&
-  operator=(VertexAttribsBuffer&& rsh) = delete;
+  auto operator=(VertexAttribsBuffer&& rsh) -> VertexAttribsBuffer& = delete;
 
-  template<typename TContainer>
-  std::void_t<
-   std::enable_if_t<
-    std::is_same_v<DataType*, decltype(std::declval<TContainer>().data())>>,
-   decltype(std::declval<TContainer>().size())>
-  init(TContainer&& arr) const noexcept
+  template<
+   typename TContainer,
+   typename = std::void_t<
+    std::enable_if_t<
+     std::is_same_v<DataType*, decltype(std::declval<TContainer>().data())>>,
+    decltype(std::declval<TContainer>().size())>>
+  void init(TContainer&& arr) const noexcept
   {
     glBindBuffer(GL_ARRAY_BUFFER, buffer_);
     glBufferData(
      GL_ARRAY_BUFFER, arr.size() * sizeof(DataType), arr.data(), usage);
   }
 
-  void
-  size(GLsizeiptr size) const noexcept
+  void size(GLsizeiptr size) const noexcept
   {
     glBindBuffer(GL_ARRAY_BUFFER, buffer_);
     glBufferData(GL_ARRAY_BUFFER, size * sizeof(DataType), nullptr, usage);
   }
 
-  void
-  data(GLintptr offset, GLsizeiptr size, const GLvoid* data) const noexcept
+  void data(GLintptr offset, GLsizeiptr size, const GLvoid* data) const noexcept
   {
     glBindBuffer(GL_ARRAY_BUFFER, buffer_);
     glBufferSubData(
      GL_ARRAY_BUFFER, offset * sizeof(DataType), size * sizeof(DataType), data);
   }
 
-  void
-  attrib_pointer() const noexcept
+  void attrib_pointer() const noexcept
   {
     glBindBuffer(GL_ARRAY_BUFFER, buffer_);
     glVertexAttribPointer(static_cast<GLuint>(attrib_index),

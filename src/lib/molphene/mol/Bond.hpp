@@ -8,11 +8,9 @@ class Bond {
 public:
   Bond(Atom& a1, Atom& a2);
 
-  Atom&
-  atom1();
+  auto atom1() -> Atom&;
 
-  Atom&
-  atom2();
+  auto atom2() -> Atom&;
 
 private:
   Atom* a1_;

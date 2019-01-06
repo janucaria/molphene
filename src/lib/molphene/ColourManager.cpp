@@ -62,8 +62,8 @@ ColourManager::ColourManager()
 {
 }
 
-Rgba8
-ColourManager::get_element_color(const std::string& esymbol) const noexcept
+auto ColourManager::get_element_color(const std::string& esymbol) const noexcept
+ -> Rgba8
 {
   return element_colors_.at(esymbol);
 }

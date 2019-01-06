@@ -39,33 +39,31 @@ struct ExpandIterator {
   {
   }
 
-  constexpr ExpandIterator&
-  operator=(const typename Bounding::center_type& value)
+  constexpr auto operator=(const typename Bounding::center_type& value)
+   -> ExpandIterator&
   {
     bounding.expand(value);
     return *this;
   }
 
-  constexpr ExpandIterator&
-  operator=(const typename Bounding::center_type&& value)
+  constexpr auto operator=(const typename Bounding::center_type&& value)
+   -> ExpandIterator&
   {
     bounding.expand(std::move(value));
     return *this;
   }
 
-  constexpr ExpandIterator& operator*()
+  constexpr auto operator*() -> ExpandIterator&
   {
     return *this;
   }
 
-  constexpr ExpandIterator&
-  operator++()
+  constexpr auto operator++() -> ExpandIterator&
   {
     return *this;
   }
 
-  constexpr const ExpandIterator
-  operator++(int)
+  constexpr auto operator++(int) -> const ExpandIterator
   {
     return *this;
   }

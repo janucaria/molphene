@@ -13,20 +13,19 @@ namespace molphene {
 template<typename TShader, typename TMixShaderUniform>
 class BasicShader : public TMixShaderUniform {
   struct accessor : TShader {
-    static void
-    call_setup_gl_attribs_val(const TShader* shader) noexcept
+    static void call_setup_gl_attribs_val(const TShader* shader) noexcept
     {
       std::invoke(&accessor::setup_gl_attribs_val, *shader);
     }
 
-    static const char*
-    call_vert_shader_source(const TShader* shader) noexcept
+    static auto call_vert_shader_source(const TShader* shader) noexcept -> const
+     char*
     {
       return std::invoke(&accessor::vert_shader_source, *shader);
     }
 
-    static const char*
-    call_frag_shader_source(const TShader* shader) noexcept
+    static auto call_frag_shader_source(const TShader* shader) noexcept -> const
+     char*
     {
       return std::invoke(&accessor::frag_shader_source, *shader);
     }
@@ -35,8 +34,7 @@ class BasicShader : public TMixShaderUniform {
 public:
   BasicShader() noexcept = default;
 
-  bool
-  init_program() noexcept
+  auto init_program() noexcept -> bool
   {
     g_program = create_program();
 
@@ -48,21 +46,19 @@ public:
 
     return g_program;
   }
-  void
-  use_program() const noexcept
+
+  void use_program() const noexcept
   {
     glUseProgram(g_program);
   }
 
 protected:
-  GLuint
-  gprogram() const noexcept
+  auto gprogram() const noexcept -> GLuint
   {
     return g_program;
   }
 
-  GLuint
-  create_shader(GLenum shader_type, const char* psource) noexcept
+  auto create_shader(GLenum shader_type, const char* psource) noexcept -> GLuint
   {
     auto shader = glCreateShader(shader_type);
     if(shader) {
@@ -89,8 +85,7 @@ protected:
     return shader;
   }
 
-  GLuint
-  create_program() noexcept
+  auto create_program() noexcept -> GLuint
   {
     const auto vert_sh = g_vert_shader = create_shader(
      GL_VERTEX_SHADER, accessor::call_vert_shader_source(cderived_ptr()));
@@ -153,27 +148,24 @@ private:
 
   GLuint g_frag_shader{0};
 
-  inline auto
-  cderived_ptr() const noexcept
+  inline auto cderived_ptr() const noexcept
   {
     return static_cast<const TShader*>(this);
   }
 
-  inline auto
-  derived_ptr() noexcept
+  inline auto derived_ptr() noexcept
   {
     return static_cast<TShader*>(this);
   }
 
-  static void
-  bind_attrib_locations(GLuint gprogram)
+  static void bind_attrib_locations(GLuint gprogram)
   {
     bind_attrib_locations(gprogram, typename TShader::AttribLocations());
   }
 
   template<ShaderAttribLocation... locations>
-  static void
-  bind_attrib_locations(GLuint gprogram, ShaderAttribList<locations...>)
+  static void bind_attrib_locations(GLuint gprogram,
+                                    ShaderAttribList<locations...>)
   {
     (glBindAttribLocation(
       gprogram, static_cast<GLuint>(locations), traits<locations>::name),

@@ -7,8 +7,7 @@
 
 namespace molphene {
 
-bool
-Scene::setup_graphics() noexcept
+auto Scene::setup_graphics() noexcept -> bool
 {
   material_.diffuse_color = {0xFF, 0xFF, 0xFF};
 
@@ -20,8 +19,7 @@ Scene::setup_graphics() noexcept
   return true;
 }
 
-void
-Scene::reset_mesh() noexcept
+void Scene::reset_mesh() noexcept
 {
   namespace range = boost::range;
 
@@ -142,67 +140,57 @@ Scene::reset_mesh() noexcept
   }
 }
 
-void
-Scene::rotate(Scene::Vec3f rot) noexcept
+void Scene::rotate(Scene::Vec3f rot) noexcept
 {
   model_matrix_.rotate(rot.x(), {1.0f, 0.0f, 0.0f});
   model_matrix_.rotate(rot.y(), {0.0f, 1.0f, 0.0f});
   model_matrix_.rotate(rot.z(), {0.0f, 0.0f, 1.0f});
 }
 
-void
-Scene::open_stream(std::istream& is)
+void Scene::open_stream(std::istream& is)
 {
   molecule_ = std::make_unique<Molecule>();
   PdbParser parser;
   parser.parse(molecule_.get(), is);
 }
 
-typename Scene::Mat4f
-Scene::model_matrix() const noexcept
+auto Scene::model_matrix() const noexcept -> Mat4f
 {
   return model_matrix_;
 }
 
-typename Scene::LightSource
-Scene::light_source() const noexcept
+auto Scene::light_source() const noexcept -> LightSource
 {
   return light_source_;
 }
 
-typename Scene::Material
-Scene::material() const noexcept
+auto Scene::material() const noexcept -> Material
 {
   return material_;
 }
 
-typename Scene::Fog
-Scene::fog() const noexcept
+auto Scene::fog() const noexcept -> Fog
 {
   return fog_;
 }
 
-const ColorLightBuffer*
-Scene::mesh_buffers() const noexcept
+auto Scene::mesh_buffers() const noexcept -> const ColorLightBuffer*
 {
   return sphere_buff_atoms_.get();
 }
 
-void
-Scene::change_dimension(size_t width, size_t height) noexcept
+void Scene::change_dimension(size_t width, size_t height) noexcept
 {
   viewport_.width = width;
   viewport_.height = height;
 }
 
-auto
-Scene::viewport() const noexcept -> Viewport
+auto Scene::viewport() const noexcept -> Viewport
 {
   return viewport_;
 }
 
-auto
-Scene::bounding_sphere() const noexcept -> BoundingSphere
+auto Scene::bounding_sphere() const noexcept -> BoundingSphere
 {
   return bounding_sphere_;
 }

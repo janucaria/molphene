@@ -22,29 +22,23 @@ public:
 
   Compound(Chain& chain, unsigned int seqres, std::string resname, char icode);
 
-  Atom&
-  add_atom(const std::string& element, std::string name, unsigned int serial);
+  auto add_atom(const std::string& element,
+                std::string name,
+                unsigned int serial) -> Atom&;
 
-  AtomsIterator
-  atoms_begin(const std::string& name);
+  auto atoms_begin(const std::string& name) -> AtomsIterator;
 
-  AtomsIterator
-  atoms_end(const std::string& name);
+  auto atoms_end(const std::string& name) -> AtomsIterator;
 
-  Chain&
-  chain() const;
+  auto chain() const -> Chain&;
 
-  char
-  icode() const;
+  auto icode() const -> char;
 
-  std::string
-  name() const;
+  auto name() const -> std::string;
 
-  ResidueNumber
-  resnum() const;
+  auto resnum() const -> ResidueNumber;
 
-  unsigned int
-  sequence() const;
+  auto sequence() const -> unsigned int;
 
 private:
   AtomsContainer atoms_;
@@ -63,21 +57,17 @@ class Compound::AtomsIterator
 public:
   explicit AtomsIterator(value_type it);
 
-  AtomsIterator&
-  operator++();
+  auto operator++() -> AtomsIterator&;
 
-  const AtomsIterator
-  operator++(int);
+  auto operator++(int) -> const AtomsIterator;
 
-  bool
-  operator==(const AtomsIterator& rhs);
+  auto operator==(const AtomsIterator& rhs) -> bool;
 
-  bool
-  operator!=(const AtomsIterator& rhs);
+  auto operator!=(const AtomsIterator& rhs) -> bool;
 
-  reference operator*();
+  auto operator*() -> reference;
 
-  pointer operator->();
+  auto operator-> () -> pointer;
 
 private:
   value_type it_;
@@ -87,11 +77,9 @@ class Compound::AtomsIterable {
 public:
   explicit AtomsIterable(Compound& compound);
 
-  Compound::AtomsIterator
-  begin();
+  auto begin() -> AtomsIterator;
 
-  Compound::AtomsIterator
-  end();
+  auto end() -> AtomsIterator;
 
 private:
   Compound& compound_;

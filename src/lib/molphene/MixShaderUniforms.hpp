@@ -18,7 +18,7 @@ namespace molphene {
 template<typename TShader>
 class ModelViewMatrixUniform {
   struct accessor : TShader {
-    GLuint static call_gprogram(const TShader* shader) noexcept
+    static auto call_gprogram(const TShader* shader) noexcept -> GLuint
     {
       return std::invoke(&accessor::gprogram, shader);
     }
@@ -27,24 +27,22 @@ class ModelViewMatrixUniform {
 public:
   using Mat4f = Mat4<GLfloat>;
 
-  void
-  init_uniform_location(GLuint gprogram) noexcept
+  void init_uniform_location(GLuint gprogram) noexcept
   {
     auto program = accessor::call_gprogram(static_cast<const TShader*>(this));
     modelview_matrix_location_ =
      glGetUniformLocation(program, "u_ModelViewMatrix");
   }
 
-  void
-  modelview_matrix(const Mat4f& m4) const noexcept
+  void modelview_matrix(const Mat4f& m4) const noexcept
   {
     glUniformMatrix4fv(
      modelview_matrix_location_, 1, GL_FALSE, static_cast<const float*>(m4.m));
   }
 
-  template<typename U>
-  std::enable_if_t<std::is_constructible_v<Mat4f, U>>
-  modelview_matrix(const U& m) const noexcept
+  template<typename U,
+           typename = std::enable_if_t<std::is_constructible_v<Mat4f, U>>>
+  void modelview_matrix(const U& m) const noexcept
   {
     modelview_matrix(Mat4f(m));
   }
@@ -58,15 +56,13 @@ class ProjectionMatrixUniform {
 public:
   using Mat4f = Mat4<GLfloat>;
 
-  void
-  init_uniform_location(GLuint gprogram) noexcept
+  void init_uniform_location(GLuint gprogram) noexcept
   {
     projection_matrix_location_ =
      glGetUniformLocation(gprogram, "u_ProjectionMatrix");
   }
 
-  void
-  projection_matrix(const Mat4f& m4) const noexcept
+  void projection_matrix(const Mat4f& m4) const noexcept
   {
     glUniformMatrix4fv(
      projection_matrix_location_, 1, GL_FALSE, static_cast<const float*>(m4.m));
@@ -90,14 +86,12 @@ public:
 
   static inline const char* varname = "u_NormalMatrix";
 
-  void
-  init_uniform_location(GLuint gprogram) noexcept
+  void init_uniform_location(GLuint gprogram) noexcept
   {
     normal_matrix_location_ = glGetUniformLocation(gprogram, varname);
   }
 
-  void
-  normal_matrix(const Mat3f& m) const noexcept
+  void normal_matrix(const Mat3f& m) const noexcept
   {
     glUniformMatrix3fv(
      normal_matrix_location_, 1, GL_FALSE, static_cast<const float*>(m.m));
@@ -121,8 +115,7 @@ public:
   using Mat3f = Mat3<float>;
   using Vec3f = Vec3<float>;
 
-  void
-  init_uniform_location(GLuint gprogram) noexcept
+  void init_uniform_location(GLuint gprogram) noexcept
   {
     material_ambient_intensity_location_ =
      glGetUniformLocation(gprogram, "u_Material_ambientIntensity");
@@ -205,8 +198,7 @@ class FogUniform {
 public:
   using Mat4f = Mat4<GLfloat>;
 
-  void
-  init_uniform_location(GLuint gprogram) noexcept
+  void init_uniform_location(GLuint gprogram) noexcept
   {
     fog_color_location_ = glGetUniformLocation(gprogram, "u_Fog_color");
     fog_fog_type_location_ =
@@ -235,8 +227,8 @@ public:
   }
 
   template<typename T>
-  std::enable_if_t<std::is_convertible_v<T, GLint>>
-  fog_fog_type(T&& val) const noexcept
+  std::enable_if_t<std::is_convertible_v<T, GLint>> fog_fog_type(T&& val) const
+   noexcept
   {
     glUniform1i(fog_fog_type_location_, val);
   }
@@ -261,8 +253,7 @@ public:
   using Mat3f = Mat3<GLfloat>;
   using Vec3f = Vec3<GLfloat>;
 
-  void
-  init_uniform_location(GLuint gprogram) noexcept
+  void init_uniform_location(GLuint gprogram) noexcept
   {
     light_source_ambient_intensity_location_ =
      glGetUniformLocation(gprogram, "u_LightSource_ambientIntensity");
@@ -412,15 +403,13 @@ private:
 template<typename TShader>
 class Color2dSamplerUniform {
 public:
-  void
-  init_uniform_location(GLuint gprogram) noexcept
+  void init_uniform_location(GLuint gprogram) noexcept
   {
     color_2d_sampler_uniform_location_ =
      glGetUniformLocation(gprogram, "u_TexColorImage");
   }
 
-  void
-  color_texture_image(GLuint texture) const noexcept
+  void color_texture_image(GLuint texture) const noexcept
   {
     glUniform1i(color_2d_sampler_uniform_location_, 0);
     glActiveTexture(GL_TEXTURE0 + 0);
@@ -434,8 +423,7 @@ private:
 template<typename TShader, template<typename> class... TShaderUniform>
 class MixShaderUniforms : public TShaderUniform<TShader>... {
 public:
-  void
-  init_uniform_location(GLuint gprogram) noexcept
+  void init_uniform_location(GLuint gprogram) noexcept
   {
     (TShaderUniform<TShader>::init_uniform_location(gprogram), ...);
   }

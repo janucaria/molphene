@@ -3,8 +3,7 @@
 
 namespace molphene {
 
-void
-GlRenderer::init() noexcept
+void GlRenderer::init() noexcept
 {
   glClearColor(0.5, 0.5, 0.5, 1.0);
   glEnable(GL_DEPTH_TEST);
@@ -44,9 +43,8 @@ GlRenderer::init() noexcept
    Vec2f{-1, 1}, Vec2f{-1, -1}, Vec2f{1, 1}, Vec2f{1, -1}});
 }
 
-void
-GlRenderer::render(const Scene& scene,
-                   const GlRenderer::Camera& camera) noexcept
+void GlRenderer::render(const Scene& scene,
+                        const GlRenderer::Camera& camera) noexcept
 {
   using Mat3f = typename Scene::Mat3f;
   using Mat4f = typename Scene::Mat4f;

@@ -22,8 +22,7 @@ public:
   }
 
   template<typename TNormIter>
-  void
-  build(TNormIter normalit) const noexcept
+  void build(TNormIter normalit) const noexcept
   {
     const auto dir = Vec3<float_t>{0, 0, 1};
     const auto top = [&dir]() noexcept
@@ -84,8 +83,7 @@ public:
     }
   }
 
-  size_t
-  vertices_size() const noexcept
+  auto vertices_size() const noexcept -> size_t
   {
     return lat_div_ * (long_div_ + 1) * 2 + lat_div_ * 2;
   }

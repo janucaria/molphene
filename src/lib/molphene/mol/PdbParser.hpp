@@ -18,8 +18,7 @@ class PdbParser {
   using ResidueBondPairsMap = std::unordered_map<std::string, BondPairs>;
 
 public:
-  void
-  parse(Molecule* molptr, std::istream& stream);
+  void parse(Molecule* molptr, std::istream& stream);
 
 private:
   Chain* current_chain_ptr_{nullptr};
@@ -30,35 +29,26 @@ private:
 
   std::string line_;
 
-  bool
-  build_bond_(Compound& comp1,
-              const std::string& atomName1,
-              Compound& comp2,
-              const std::string& atomName2);
+  auto build_bond_(Compound& comp1,
+                   const std::string& atomName1,
+                   Compound& comp2,
+                   const std::string& atomName2) -> bool;
 
-  inline std::string
-  column_(unsigned int start, unsigned int end);
+  inline auto column_(unsigned int start, unsigned int end) -> std::string;
 
-  inline char
-  get_char_(unsigned int start);
+  inline auto get_char_(unsigned int start) -> char;
 
-  unsigned int
-  get_int_(unsigned int start, unsigned int end);
+  auto get_int_(unsigned int start, unsigned int end) -> unsigned int;
 
-  float
-  get_real_(unsigned int start, unsigned int end);
+  auto get_real_(unsigned int start, unsigned int end) -> float;
 
-  void
-  handle_atom_record_(Molecule* molptr);
+  void handle_atom_record_(Molecule* molptr);
 
-  void
-  handle_conect_record_(Molecule* molptr);
+  void handle_conect_record_(Molecule* molptr);
 
-  void
-  handle_model_record_(Molecule* molptr);
+  void handle_model_record_(Molecule* molptr);
 
-  void
-  handle_ter_record_(Molecule* molptr);
+  void handle_ter_record_(Molecule* molptr);
 };
 } // namespace molphene
 

@@ -13,54 +13,46 @@ Compound::Compound(Chain& chain,
 {
 }
 
-Atom&
-Compound::add_atom(const std::string& element,
-                   std::string name,
-                   unsigned int serial)
+auto Compound::add_atom(const std::string& element,
+                        std::string name,
+                        unsigned int serial) -> Atom&
 {
   Atom& atm = atoms_.emplace(name, Atom(*this, element, name, serial))->second;
   chain().model().add_atom(atm);
   return atm;
 }
 
-Compound::AtomsIterator
-Compound::atoms_begin(const std::string& name)
+auto Compound::atoms_begin(const std::string& name) -> AtomsIterator
 {
   return Compound::AtomsIterator(atoms_.lower_bound(name));
 }
 
-Compound::AtomsIterator
-Compound::atoms_end(const std::string& name)
+auto Compound::atoms_end(const std::string& name) -> AtomsIterator
 {
   return Compound::AtomsIterator(atoms_.upper_bound(name));
 }
 
-Chain&
-Compound::chain() const
+auto Compound::chain() const -> Chain&
 {
   return *chain_ptr_;
 }
 
-char
-Compound::icode() const
+auto Compound::icode() const -> char
 {
   return std::get<2>(resnum_);
 }
 
-std::string
-Compound::name() const
+auto Compound::name() const -> std::string
 {
   return std::get<1>(resnum_);
 }
 
-Compound::ResidueNumber
-Compound::resnum() const
+auto Compound::resnum() const -> ResidueNumber
 {
   return resnum_;
 }
 
-unsigned int
-Compound::sequence() const
+auto Compound::sequence() const -> unsigned int
 {
   return std::get<0>(resnum_);
 }
@@ -70,39 +62,37 @@ Compound::AtomsIterator::AtomsIterator(Compound::AtomsIterator::value_type it)
 {
 }
 
-Compound::AtomsIterator&
-Compound::AtomsIterator::operator++()
+auto Compound::AtomsIterator::operator++() -> AtomsIterator&
 {
   ++it_;
   return *this;
 }
 
-const Compound::AtomsIterator
-Compound::AtomsIterator::operator++(int)
+auto Compound::AtomsIterator::operator++(int) -> const AtomsIterator
 {
   Compound::AtomsIterator tmp{*this};
   operator++();
   return tmp;
 }
 
-bool
-Compound::AtomsIterator::operator==(const Compound::AtomsIterator& rhs)
+auto Compound::AtomsIterator::operator==(const Compound::AtomsIterator& rhs)
+ -> bool
 {
   return it_ == rhs.it_;
 }
 
-bool
-Compound::AtomsIterator::operator!=(const Compound::AtomsIterator& rhs)
+auto Compound::AtomsIterator::operator!=(const Compound::AtomsIterator& rhs)
+ -> bool
 {
   return it_ != rhs.it_;
 }
 
-Compound::AtomsIterator::reference Compound::AtomsIterator::operator*()
+auto Compound::AtomsIterator::operator*() -> reference
 {
   return it_->second;
 }
 
-Compound::AtomsIterator::pointer Compound::AtomsIterator::operator->()
+auto Compound::AtomsIterator::operator-> () -> pointer
 {
   return &it_->second;
 }
@@ -112,14 +102,12 @@ Compound::AtomsIterable::AtomsIterable(Compound& compound)
 {
 }
 
-Compound::AtomsIterator
-Compound::AtomsIterable::begin()
+auto Compound::AtomsIterable::begin() -> AtomsIterator
 {
   return Compound::AtomsIterator(compound_.atoms_.begin());
 }
 
-Compound::AtomsIterator
-Compound::AtomsIterable::end()
+auto Compound::AtomsIterable::end() -> AtomsIterator
 {
   return Compound::AtomsIterator(compound_.atoms_.end());
 }

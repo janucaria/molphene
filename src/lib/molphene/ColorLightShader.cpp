@@ -2,15 +2,13 @@
 
 namespace molphene {
 
-void
-ColorLightShader::setup_gl_attribs_val() const noexcept
+void ColorLightShader::setup_gl_attribs_val() const noexcept
 {
   glVertexAttrib4f(
    static_cast<GLuint>(ShaderAttribLocation::vertex), 0, 0, 0, 1);
 }
 
-const GLchar*
-ColorLightShader::vert_shader_source() const noexcept
+auto ColorLightShader::vert_shader_source() const noexcept -> const GLchar*
 {
   return R"(
     attribute vec4 a_Vertex;
@@ -35,8 +33,7 @@ ColorLightShader::vert_shader_source() const noexcept
     )";
 }
 
-const GLchar*
-ColorLightShader::frag_shader_source() const noexcept
+auto ColorLightShader::frag_shader_source() const noexcept -> const GLchar*
 {
   return R"(
 #ifdef GL_ES

@@ -16,20 +16,15 @@ public:
 
   using ModelsIterator = Models::iterator;
 
-  Model&
-  add_model();
+  auto add_model() -> Model&;
 
-  ChainsIterator
-  chains_begin();
+  auto chains_begin() -> ChainsIterator;
 
-  ChainsIterator
-  chains_end();
+  auto chains_end() -> ChainsIterator;
 
-  ModelsIterator
-  models_begin();
+  auto models_begin() -> ModelsIterator;
 
-  ModelsIterator
-  models_end();
+  auto models_end() -> ModelsIterator;
 
 private:
   Models models_;
@@ -44,21 +39,17 @@ class Molecule::ChainsIterator
 public:
   explicit ChainsIterator(value_type it);
 
-  ChainsIterator&
-  operator++();
+  auto operator++() -> ChainsIterator&;
 
-  const ChainsIterator
-  operator++(int);
+  auto operator++(int) -> const ChainsIterator;
 
-  bool
-  operator==(const ChainsIterator& rhs);
+  auto operator==(const ChainsIterator& rhs) -> bool;
 
-  bool
-  operator!=(const ChainsIterator& rhs);
+  auto operator!=(const ChainsIterator& rhs) -> bool;
 
-  reference operator*();
+  auto operator*() -> reference;
 
-  pointer operator->();
+  auto operator-> () -> pointer;
 
 private:
   value_type it_;
@@ -70,11 +61,9 @@ class Molecule::ModelsIterable {
 public:
   explicit ModelsIterable(Molecule& molecule);
 
-  Molecule::ModelsIterator
-  begin();
+  auto begin() -> ModelsIterator;
 
-  Molecule::ModelsIterator
-  end();
+  auto end() -> ModelsIterator;
 
 private:
   Molecule& molecule_;

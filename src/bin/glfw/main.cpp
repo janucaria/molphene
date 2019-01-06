@@ -265,8 +265,7 @@ static double delt_y = 0;
 static double last_x = 0;
 static double last_y = 0;
 
-static void
-error_callback(int error, const char* description)
+static void error_callback(int error, const char* description)
 {
   fputs(description, stderr);
 }
@@ -303,8 +302,7 @@ key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
   }
 }
 
-static void
-window_size_callback(GLFWwindow* window, int width, int height)
+static void window_size_callback(GLFWwindow* window, int width, int height)
 {
   scene.change_dimension(width, height);
   camera.aspect_ratio(width, height);
@@ -322,8 +320,7 @@ mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
   mouse_button = button;
 }
 
-static void
-cursor_pos_callback(GLFWwindow* window, double xpos, double ypos)
+static void cursor_pos_callback(GLFWwindow* window, double xpos, double ypos)
 {
   if(mouse_press) {
     delt_x = xpos - last_x;
@@ -348,14 +345,12 @@ cursor_pos_callback(GLFWwindow* window, double xpos, double ypos)
   }
 }
 
-void
-scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
+void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
   yoffset > 0 ? camera.zoom_in() : camera.zoom_out();
 }
 
-void
-framebuffer_size_callback(GLFWwindow* window, int width, int height)
+void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
   scene.setup_graphics();
   scene.change_dimension(width, height);
@@ -363,8 +358,7 @@ framebuffer_size_callback(GLFWwindow* window, int width, int height)
   camera.update_view_matrix();
 }
 
-bool
-init_window(int width, int height)
+auto init_window(int width, int height) -> bool
 {
   glfwSetErrorCallback(error_callback);
   if(!glfwInit()) {
@@ -389,8 +383,7 @@ init_window(int width, int height)
   return true;
 }
 
-void
-render()
+void render()
 {
   renderer.render(scene, camera);
 
@@ -398,8 +391,7 @@ render()
   glfwPollEvents();
 }
 
-void
-main_loop()
+void main_loop()
 {
 #ifdef __EMSCRIPTEN__
   emscripten_set_main_loop(render, 0, 1);
@@ -410,8 +402,7 @@ main_loop()
 #endif
 }
 
-int
-main(int argc, char* argv[])
+auto main(int argc, char* argv[]) -> int
 {
   if(!init_window(640, 480)) {
     return EXIT_FAILURE;

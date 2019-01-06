@@ -2,33 +2,28 @@
 
 namespace molphene {
 
-Model&
-Molecule::add_model()
+auto Molecule::add_model() -> Model&
 {
   models_.emplace_back(*this);
   return models_.at(models_.size() - 1);
 }
 
-Molecule::ChainsIterator
-Molecule::chains_begin()
+auto Molecule::chains_begin() -> ChainsIterator
 {
   return Molecule::ChainsIterator(models_.begin());
 }
 
-Molecule::ChainsIterator
-Molecule::chains_end()
+auto Molecule::chains_end() -> ChainsIterator
 {
   return Molecule::ChainsIterator(models_.end());
 }
 
-Molecule::ModelsIterator
-Molecule::models_begin()
+auto Molecule::models_begin() -> ModelsIterator
 {
   return models_.begin();
 }
 
-Molecule::ModelsIterator
-Molecule::models_end()
+auto Molecule::models_end() -> ModelsIterator
 {
   return models_.end();
 }
@@ -41,8 +36,7 @@ Molecule::ChainsIterator::ChainsIterator(
 {
 }
 
-Molecule::ChainsIterator&
-Molecule::ChainsIterator::operator++()
+auto Molecule::ChainsIterator::operator++() -> ChainsIterator&
 {
   ++cit_;
   if(cit_ == cet_) {
@@ -54,32 +48,31 @@ Molecule::ChainsIterator::operator++()
   return *this;
 }
 
-const Molecule::ChainsIterator
-Molecule::ChainsIterator::operator++(int)
+auto Molecule::ChainsIterator::operator++(int) -> const ChainsIterator
 {
   Molecule::ChainsIterator tmp(*this);
   operator++();
   return tmp;
 }
 
-bool
-Molecule::ChainsIterator::operator==(const Molecule::ChainsIterator& rhs)
+auto Molecule::ChainsIterator::operator==(const Molecule::ChainsIterator& rhs)
+ -> bool
 {
   return it_ == rhs.it_;
 }
 
-bool
-Molecule::ChainsIterator::operator!=(const Molecule::ChainsIterator& rhs)
+auto Molecule::ChainsIterator::operator!=(const Molecule::ChainsIterator& rhs)
+ -> bool
 {
   return it_ != rhs.it_;
 }
 
-Molecule::ChainsIterator::reference Molecule::ChainsIterator::operator*()
+auto Molecule::ChainsIterator::operator*() -> reference
 {
   return cit_.operator*();
 }
 
-Molecule::ChainsIterator::pointer Molecule::ChainsIterator::operator->()
+auto Molecule::ChainsIterator::operator-> () -> pointer
 {
   return cit_.operator->();
 }
@@ -89,14 +82,12 @@ Molecule::ModelsIterable::ModelsIterable(Molecule& molecule)
 {
 }
 
-Molecule::ModelsIterator
-Molecule::ModelsIterable::begin()
+auto Molecule::ModelsIterable::begin() -> ModelsIterator
 {
   return {molecule_.models_.begin()};
 }
 
-Molecule::ModelsIterator
-Molecule::ModelsIterable::end()
+auto Molecule::ModelsIterable::end() -> ModelsIterator
 {
   return {molecule_.models_.end()};
 }

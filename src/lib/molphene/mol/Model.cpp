@@ -8,20 +8,17 @@ Model::Model(Molecule& molecule)
 {
 }
 
-void
-Model::add_atom(Atom& atom)
+void Model::add_atom(Atom& atom)
 {
   atoms_.emplace(atom.serial(), &atom);
 }
 
-void
-Model::add_bond(Atom& a1, Atom& a2)
+void Model::add_bond(Atom& a1, Atom& a2)
 {
   bonds_.emplace_back(a1, a2);
 }
 
-Chain&
-Model::add_chain(char cid)
+auto Model::add_chain(char cid) -> Chain&
 {
   std::pair<Chains::iterator, bool> emplaced =
    chains_.emplace(std::piecewise_construct,
@@ -30,32 +27,27 @@ Model::add_chain(char cid)
   return emplaced.first->second;
 }
 
-const Model::Chains&
-Model::chains() const
+auto Model::chains() const -> const Chains&
 {
   return chains_;
 }
 
-Model::ChainsIterator
-Model::chains_begin()
+auto Model::chains_begin() -> ChainsIterator
 {
   return Model::ChainsIterator(chains_.begin());
 }
 
-Model::ChainsIterator
-Model::chains_end()
+auto Model::chains_end() -> ChainsIterator
 {
   return Model::ChainsIterator(chains_.end());
 }
 
-Atom*
-Model::get_atom(unsigned int serial)
+auto Model::get_atom(unsigned int serial) -> Atom*
 {
   return atoms_.count(serial) ? atoms_.at(serial) : nullptr;
 }
 
-Chain*
-Model::get_chain(char cid)
+auto Model::get_chain(char cid) -> Chain*
 {
   auto chainit = chains_.find(cid);
   if(chainit == chains_.end()) {
@@ -64,8 +56,7 @@ Model::get_chain(char cid)
   return &chainit->second;
 }
 
-Molecule&
-Model::molecule() const
+auto Model::molecule() const -> Molecule&
 {
   return *molecule_ptr_;
 }
@@ -75,14 +66,12 @@ Model::ChainsIterable::ChainsIterable(Model& model)
 {
 }
 
-Model::ChainsIterator
-Model::ChainsIterable::begin()
+auto Model::ChainsIterable::begin() -> ChainsIterator
 {
   return Model::ChainsIterator(model_.chains_.begin());
 }
 
-Model::ChainsIterator
-Model::ChainsIterable::end()
+auto Model::ChainsIterable::end() -> ChainsIterator
 {
   return Model::ChainsIterator(model_.chains_.end());
 }
@@ -92,14 +81,12 @@ Model::BondsIterable::BondsIterable(Model& model)
 {
 }
 
-Model::BondsIterator
-Model::BondsIterable::begin()
+auto Model::BondsIterable::begin() -> BondsIterator
 {
   return {model_.bonds_.begin()};
 }
 
-Model::BondsIterator
-Model::BondsIterable::end()
+auto Model::BondsIterable::end() -> BondsIterator
 {
   return {model_.bonds_.end()};
 }
@@ -109,39 +96,35 @@ Model::ChainsIterator::ChainsIterator(Model::ChainsIterator::value_type it)
 {
 }
 
-Model::ChainsIterator&
-Model::ChainsIterator::operator++()
+auto Model::ChainsIterator::operator++() -> ChainsIterator&
 {
   ++it_;
   return *this;
 }
 
-const Model::ChainsIterator
-Model::ChainsIterator::operator++(int)
+auto Model::ChainsIterator::operator++(int) -> const ChainsIterator
 {
   Model::ChainsIterator tmp(*this);
   operator++();
   return tmp;
 }
 
-bool
-Model::ChainsIterator::operator==(const Model::ChainsIterator& rhs)
+auto Model::ChainsIterator::operator==(const Model::ChainsIterator& rhs) -> bool
 {
   return it_ == rhs.it_;
 }
 
-bool
-Model::ChainsIterator::operator!=(const Model::ChainsIterator& rhs)
+auto Model::ChainsIterator::operator!=(const Model::ChainsIterator& rhs) -> bool
 {
   return it_ != rhs.it_;
 }
 
-Model::ChainsIterator::reference Model::ChainsIterator::operator*()
+auto Model::ChainsIterator::operator*() -> reference
 {
   return it_->second;
 }
 
-Model::ChainsIterator::pointer Model::ChainsIterator::operator->()
+auto Model::ChainsIterator::operator-> () -> pointer
 {
   return &it_->second;
 }

@@ -55,16 +55,13 @@ public:
 
   ~AttribsBufferArray() noexcept = default;
 
-  AttribsBufferArray&
-  operator=(const AttribsBufferArray&) = delete;
+  auto operator=(const AttribsBufferArray&) -> AttribsBufferArray& = delete;
 
-  AttribsBufferArray&
-  operator=(AttribsBufferArray&&) = delete;
+  auto operator=(AttribsBufferArray &&) -> AttribsBufferArray& = delete;
 
-  void
-  set_data(GLintptr offset,
-           GLsizeiptr size,
-           gsl::span<const typename Ts::DataType>... data) const noexcept
+  void set_data(GLintptr offset,
+                GLsizeiptr size,
+                gsl::span<const typename Ts::DataType>... data) const noexcept
   {
     set_data(std::make_index_sequence<sizeof...(Ts)>(),
              offset,
@@ -73,11 +70,10 @@ public:
   }
 
   template<typename... Args, std::size_t... idx>
-  void
-  set_data(std::index_sequence<idx...>,
-           GLintptr offset,
-           GLsizeiptr size,
-           std::tuple<Args...> data) const noexcept
+  void set_data(std::index_sequence<idx...>,
+                GLintptr offset,
+                GLsizeiptr size,
+                std::tuple<Args...> data) const noexcept
   {
     static_assert(sizeof...(Ts) == sizeof...(idx) &&
                   sizeof...(Ts) == sizeof...(Args));
@@ -103,8 +99,7 @@ public:
   }
 
   template<typename TCallback>
-  void
-  setup_attrib_pointer(TCallback fn) const
+  void setup_attrib_pointer(TCallback fn) const
    noexcept(std::is_nothrow_invocable_v<decltype(fn), GLsizei>)
   {
     for(auto i = GLsizei{0}; i < size_; ++i) {

@@ -11,8 +11,7 @@ class ColourManager {
 public:
   ColourManager();
 
-  Rgba8
-  get_element_color(const std::string& esymbol) const noexcept;
+  auto get_element_color(const std::string& esymbol) const noexcept -> Rgba8;
 
 private:
   std::unordered_map<std::string, Rgba8> element_colors_;

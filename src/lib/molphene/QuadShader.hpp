@@ -16,14 +16,11 @@ public:
   using AttribLocations = ShaderAttribList<ShaderAttribLocation::vertex>;
 
 protected:
-  const GLchar*
-  vert_shader_source() const noexcept;
+  auto vert_shader_source() const noexcept -> const GLchar*;
 
-  const GLchar*
-  frag_shader_source() const noexcept;
+  auto frag_shader_source() const noexcept -> const GLchar*;
 
-  void
-  setup_gl_attribs_val() const noexcept;
+  void setup_gl_attribs_val() const noexcept;
 };
 } // namespace molphene
 #endif

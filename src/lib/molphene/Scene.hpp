@@ -55,41 +55,29 @@ public:
 
   using Viewport = Viewport<size_t>;
 
-  bool
-  setup_graphics() noexcept;
+  auto setup_graphics() noexcept -> bool;
 
-  void
-  reset_mesh() noexcept;
+  void reset_mesh() noexcept;
 
-  void
-  change_dimension(size_t width, size_t height) noexcept;
+  void change_dimension(size_t width, size_t height) noexcept;
 
-  void
-  rotate(Vec3f rot) noexcept;
+  void rotate(Vec3f rot) noexcept;
 
-  void
-  open_stream(std::istream& is);
+  void open_stream(std::istream& is);
 
-  Mat4f
-  model_matrix() const noexcept;
+  auto model_matrix() const noexcept -> Mat4f;
 
-  LightSource
-  light_source() const noexcept;
+  auto light_source() const noexcept -> LightSource;
 
-  Material
-  material() const noexcept;
+  auto material() const noexcept -> Material;
 
-  Fog
-  fog() const noexcept;
+  auto fog() const noexcept -> Fog;
 
-  Viewport
-  viewport() const noexcept;
+  auto viewport() const noexcept -> Viewport;
 
-  const ColorLightBuffer*
-  mesh_buffers() const noexcept;
+  auto mesh_buffers() const noexcept -> const ColorLightBuffer*;
 
-  BoundingSphere
-  bounding_sphere() const noexcept;
+  auto bounding_sphere() const noexcept -> BoundingSphere;
 
 private:
   std::unique_ptr<ColorLightBuffer> sphere_buff_atoms_;

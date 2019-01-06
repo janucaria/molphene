@@ -11,8 +11,7 @@
 
 namespace molphene {
 
-void
-PdbParser::parse(Molecule* molptr, std::istream& stream)
+void PdbParser::parse(Molecule* molptr, std::istream& stream)
 {
   current_model_ptr_ = nullptr;
   current_chain_ptr_ = nullptr;
@@ -39,11 +38,10 @@ PdbParser::parse(Molecule* molptr, std::istream& stream)
   current_compound_ptr_ = nullptr;
 }
 
-bool
-PdbParser::build_bond_(Compound& comp1,
-                       const std::string& atomName1,
-                       Compound& comp2,
-                       const std::string& atomName2)
+auto PdbParser::build_bond_(Compound& comp1,
+                            const std::string& atomName1,
+                            Compound& comp2,
+                            const std::string& atomName2) -> bool
 {
   auto a1it = comp1.atoms_begin(atomName1);
   auto a1et = comp1.atoms_end(atomName1);
@@ -73,27 +71,23 @@ PdbParser::build_bond_(Compound& comp1,
   return true;
 }
 
-std::string
-PdbParser::column_(unsigned int start, unsigned int end)
+auto PdbParser::column_(unsigned int start, unsigned int end) -> std::string
 {
   return line_.substr(start - 1, end - start + 1);
 }
 
-char
-PdbParser::get_char_(unsigned int start)
+auto PdbParser::get_char_(unsigned int start) -> char
 {
   return column_(start, start).at(0);
 }
 
-unsigned int
-PdbParser::get_int_(unsigned int start, unsigned int end)
+auto PdbParser::get_int_(unsigned int start, unsigned int end) -> unsigned int
 {
   return static_cast<unsigned int>(
    strtol(column_(start, end).c_str(), nullptr, 0));
 }
 
-float
-PdbParser::get_real_(unsigned int start, unsigned int end)
+auto PdbParser::get_real_(unsigned int start, unsigned int end) -> float
 {
   return static_cast<float>(strtod(column_(start, end).c_str(), nullptr));
 }
@@ -115,8 +109,7 @@ PdbParser::get_real_(unsigned int start, unsigned int end)
 // Occupancy. 61 - 66        Real(6.2)     tempFactor   Temperature  factor.
 // 77 - 78        LString(2)    element      Element symbol, right-justified.
 // 79 - 80        LString(2)    charge       Charge  on the atom.
-void
-PdbParser::handle_atom_record_(Molecule* molptr)
+void PdbParser::handle_atom_record_(Molecule* molptr)
 {
   auto& mol = *molptr;
   const auto aserial = get_int_(7, 11);
@@ -166,8 +159,7 @@ PdbParser::handle_atom_record_(Molecule* molptr)
 // 17 - 21        Integer        serial       Serial  number of bonded atom
 // 22 - 26        Integer        serial       Serial number of bonded atom
 // 27 - 31        Integer        serial       Serial number of bonded atom
-void
-PdbParser::handle_conect_record_(Molecule* molptr)
+void PdbParser::handle_conect_record_(Molecule* molptr)
 {
   Molecule& mol = *molptr;
   const auto aser1 = get_int_(7, 11);
@@ -192,8 +184,7 @@ PdbParser::handle_conect_record_(Molecule* molptr)
 // ---------------------------------------------------------------------------------------
 // 1 -  6        Record name   "MODEL "
 // 11 - 14        Integer       serial         Model serial number.
-void
-PdbParser::handle_model_record_(Molecule* molptr)
+void PdbParser::handle_model_record_(Molecule* molptr)
 {
   Molecule& mol = *molptr;
   current_model_ptr_ = &mol.add_model();
@@ -208,8 +199,7 @@ PdbParser::handle_model_record_(Molecule* molptr)
 // 22             Character     chainID         Chain identifier.
 // 23 - 26        Integer       resSeq          Residue sequence number.
 // 27             AChar         iCode           Insertion code.
-void
-PdbParser::handle_ter_record_(Molecule* molptr)
+void PdbParser::handle_ter_record_(Molecule* molptr)
 {
   const PdbParser::ResidueBondPairsMap res_bond_pairs(
    {{"ALA",

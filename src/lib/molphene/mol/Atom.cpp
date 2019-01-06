@@ -16,14 +16,12 @@ Atom::Atom(Compound& compound,
 {
 }
 
-char
-Atom::altloc() const
+auto Atom::altloc() const -> char
 {
   return altloc_;
 }
 
-const Atom::Element&
-Atom::element() const
+auto Atom::element() const -> const Atom::Element&
 {
   static const Atom::Element hydrogen{"Hydrogen", "H", 1, 1.2, 0.31};
   static const Atom::Element helium{"Helium", "He", 2, 1.4, 0.28};
@@ -503,32 +501,27 @@ Atom::element() const
   return hydrogen;
 }
 
-std::string
-Atom::name() const
+auto Atom::name() const -> std::string
 {
   return name_;
 }
 
-const Atom::Position&
-Atom::position() const
+auto Atom::position() const -> const Atom::Position&
 {
   return position_;
 }
 
-unsigned int
-Atom::serial() const
+auto Atom::serial() const -> unsigned int
 {
   return serial_;
 }
 
-void
-Atom::altloc(char altloc)
+void Atom::altloc(char altloc)
 {
   altloc_ = altloc == ' ' ? 0 : altloc;
 }
 
-const Atom::Position&
-Atom::position(float x, float y, float z)
+auto Atom::position(float x, float y, float z) -> const Position&
 {
   return position_ = {x, y, z};
 }

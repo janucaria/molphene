@@ -19,26 +19,19 @@ public:
        std::string name,
        unsigned int serial);
 
-  char
-  altloc() const;
+  auto altloc() const -> char;
 
-  const Element&
-  element() const;
+  auto element() const -> const Element&;
 
-  std::string
-  name() const;
+  auto name() const -> std::string;
 
-  const Position&
-  position() const;
+  auto position() const -> const Position&;
 
-  unsigned int
-  serial() const;
+  auto serial() const -> unsigned int;
 
-  void
-  altloc(char altloc);
+  void altloc(char altloc);
 
-  const Position&
-  position(float x, float y, float z);
+  auto position(float x, float y, float z) -> const Position&;
 
 private:
   char altloc_{0};

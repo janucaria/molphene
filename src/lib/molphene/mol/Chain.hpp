@@ -24,26 +24,20 @@ public:
 
   Chain(Model* model, char chainId);
 
-  Compound&
-  add_compound(const Compound::ResidueNumber& resnum);
+  auto add_compound(const Compound::ResidueNumber& resnum) -> Compound&;
 
-  Compound*
-  get_compound(const Compound::ResidueNumber& resnum);
+  auto get_compound(const Compound::ResidueNumber& resnum) -> Compound*;
 
-  Compound*
-  get_compound(unsigned int reseq, std::string resname, char icode);
+  auto get_compound(unsigned int reseq, std::string resname, char icode)
+   -> Compound*;
 
-  const Compounds&
-  compounds() const noexcept;
+  auto compounds() const noexcept -> const Compounds&;
 
-  char
-  id() const;
+  auto id() const -> char;
 
-  Model&
-  model() const;
+  auto model() const -> Model&;
 
-  void
-  terminate();
+  void terminate();
 
 private:
   char chain_id_;
@@ -61,11 +55,9 @@ class Chain::ResidueIterator {
 public:
   explicit ResidueIterator(Chain& chain);
 
-  Chain::CompoundsIterator
-  begin();
+  auto begin() -> CompoundsIterator;
 
-  Chain::CompoundsIterator
-  end();
+  auto end() -> CompoundsIterator;
 
 private:
   Chain& chain_;
@@ -75,11 +67,9 @@ class Chain::CompoundIterator {
 public:
   explicit CompoundIterator(Chain& chain);
 
-  Chain::CompoundsIterator
-  begin();
+  auto begin() -> CompoundsIterator;
 
-  Chain::CompoundsIterator
-  end();
+  auto end() -> CompoundsIterator;
 
 private:
   Chain& chain_;
@@ -89,11 +79,9 @@ class Chain::LiganIterator {
 public:
   explicit LiganIterator(Chain& chain);
 
-  Chain::CompoundsIterator
-  begin();
+  auto begin() -> CompoundsIterator;
 
-  Chain::CompoundsIterator
-  end();
+  auto end() -> CompoundsIterator;
 
 private:
   Chain& chain_;

@@ -28,32 +28,23 @@ public:
 
   explicit Model(Molecule& molecule);
 
-  void
-  add_atom(Atom& atom);
+  void add_atom(Atom& atom);
 
-  void
-  add_bond(Atom& a1, Atom& a2);
+  void add_bond(Atom& a1, Atom& a2);
 
-  const Chains&
-  chains() const;
+  auto chains() const -> const Chains&;
 
-  Chain&
-  add_chain(char cid);
+  auto add_chain(char cid) -> Chain&;
 
-  ChainsIterator
-  chains_begin();
+  auto chains_begin() -> ChainsIterator;
 
-  ChainsIterator
-  chains_end();
+  auto chains_end() -> ChainsIterator;
 
-  Atom*
-  get_atom(unsigned int serial);
+  auto get_atom(unsigned int serial) -> Atom*;
 
-  Chain*
-  get_chain(char cid);
+  auto get_chain(char cid) -> Chain*;
 
-  Molecule&
-  molecule() const;
+  auto molecule() const -> Molecule&;
 
 private:
   Atoms atoms_;
@@ -69,11 +60,9 @@ class Model::ChainsIterable {
 public:
   explicit ChainsIterable(Model& model);
 
-  Model::ChainsIterator
-  begin();
+  auto begin() -> Model::ChainsIterator;
 
-  Model::ChainsIterator
-  end();
+  auto end() -> ChainsIterator;
 
 private:
   Model& model_;
@@ -83,11 +72,9 @@ class Model::BondsIterable {
 public:
   explicit BondsIterable(Model& model);
 
-  Model::BondsIterator
-  begin();
+  auto begin() -> BondsIterator;
 
-  Model::BondsIterator
-  end();
+  auto end() -> BondsIterator;
 
 private:
   Model model_;
@@ -102,21 +89,17 @@ class Model::ChainsIterator
 public:
   explicit ChainsIterator(value_type it);
 
-  ChainsIterator&
-  operator++();
+  auto operator++() -> ChainsIterator&;
 
-  const ChainsIterator
-  operator++(int);
+  auto operator++(int) -> const ChainsIterator;
 
-  bool
-  operator==(const ChainsIterator& rhs);
+  auto operator==(const ChainsIterator& rhs) -> bool;
 
-  bool
-  operator!=(const ChainsIterator& rhs);
+  auto operator!=(const ChainsIterator& rhs) -> bool;
 
-  reference operator*();
+  auto operator*() -> reference;
 
-  pointer operator->();
+  auto operator-> () -> pointer;
 
 private:
   value_type it_;

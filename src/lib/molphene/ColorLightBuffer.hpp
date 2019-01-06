@@ -20,14 +20,11 @@ public:
   ColorLightBuffer(GLsizei verts_per_instance,
                    GLsizeiptr total_instances) noexcept;
 
-  void
-  color_texture_image_data(const GLvoid* data) const noexcept;
+  void color_texture_image_data(const GLvoid* data) const noexcept;
 
-  GLuint
-  color_texture_image() const noexcept;
+  auto color_texture_image() const noexcept -> GLuint;
 
-  GLsizei
-  color_texture_size() const noexcept;
+  auto color_texture_size() const noexcept -> GLsizei;
 
 private:
   GLuint color_tex_{0};

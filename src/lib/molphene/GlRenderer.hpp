@@ -21,11 +21,9 @@ public:
   using VertexAttribsBuffer =
    VertexAttribsBuffer<Vec2f, ShaderAttribLocation::vertex>;
 
-  void
-  init() noexcept;
+  void init() noexcept;
 
-  void
-  render(const Scene& scene, const Camera& camera) noexcept;
+  void render(const Scene& scene, const Camera& camera) noexcept;
 
 private:
   GLuint color_light_fbo_{0};

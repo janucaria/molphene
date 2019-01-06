@@ -14,20 +14,15 @@ namespace molphene {
 
 class Application {
 public:
-  void
-  init_context();
+  void init_context();
 
-  void
-  run();
+  void run();
 
-  void
-  open_pdb_data(std::string pdbdata);
+  void open_pdb_data(std::string pdbdata);
 
-  void
-  canvas_size_change_callback(int width, int height);
+  void canvas_size_change_callback(int width, int height);
 
-  void
-  render_frame();
+  void render_frame();
 
 private:
   ClickState click_state{false, 0, 0};
@@ -43,8 +38,7 @@ private:
   molphene::Scene::Camera camera;
 
   template<typename T>
-  static auto
-  mouse_event(const T* event)
+  static auto mouse_event(const T* event)
   {
     if constexpr(std::is_same_v<T, EmscriptenTouchEvent>) {
       if(event->numTouches < 1) {
@@ -58,8 +52,8 @@ private:
   }
 
   template<typename T>
-  static EM_BOOL
-  enable_drag_handler(int eventType, T* inEevent, void* userData)
+  static auto enable_drag_handler(int eventType, T* inEevent, void* userData)
+   -> EM_BOOL
   {
     auto event = mouse_event(inEevent);
     auto app = static_cast<Application*>(userData);
@@ -74,8 +68,8 @@ private:
   }
 
   template<typename T>
-  static EM_BOOL
-  disable_drag_handler(int eventType, T* inEvent, void* userData)
+  static auto disable_drag_handler(int eventType, T* inEvent, void* userData)
+   -> EM_BOOL
   {
     auto app = static_cast<Application*>(userData);
 
@@ -87,8 +81,8 @@ private:
   }
 
   template<typename T>
-  static EM_BOOL
-  mouse_move_handler(int eventType, T* inEvent, void* userData)
+  static auto mouse_move_handler(int eventType, T* inEvent, void* userData)
+   -> EM_BOOL
   {
     auto event = mouse_event(inEvent);
     auto app = static_cast<Application*>(userData);

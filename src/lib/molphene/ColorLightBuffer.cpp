@@ -15,8 +15,8 @@ ColorLightBuffer::ColorLightBuffer(GLsizei verts_per_instance,
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 }
 
-void
-ColorLightBuffer::color_texture_image_data(const GLvoid* data) const noexcept
+void ColorLightBuffer::color_texture_image_data(const GLvoid* data) const
+ noexcept
 {
   glBindTexture(GL_TEXTURE_2D, color_tex_);
   glTexImage2D(GL_TEXTURE_2D,
@@ -30,14 +30,12 @@ ColorLightBuffer::color_texture_image_data(const GLvoid* data) const noexcept
                data);
 }
 
-GLuint
-ColorLightBuffer::color_texture_image() const noexcept
+auto ColorLightBuffer::color_texture_image() const noexcept -> GLuint
 {
   return color_tex_;
 }
 
-GLsizei
-ColorLightBuffer::color_texture_size() const noexcept
+auto ColorLightBuffer::color_texture_size() const noexcept -> GLsizei
 {
   return color_tex_size_;
 }

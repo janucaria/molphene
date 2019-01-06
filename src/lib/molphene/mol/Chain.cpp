@@ -9,8 +9,7 @@ Chain::Chain(Model* model, char chainId)
 {
 }
 
-Compound&
-Chain::add_compound(const Compound::ResidueNumber& resnum)
+auto Chain::add_compound(const Compound::ResidueNumber& resnum) -> Compound&
 {
   compounds_.emplace_back(
    *this, std::get<0>(resnum), std::get<1>(resnum), std::get<2>(resnum));
@@ -22,8 +21,7 @@ Chain::add_compound(const Compound::ResidueNumber& resnum)
   return compounds_.at(emplaced.first->second);
 }
 
-Compound*
-Chain::get_compound(const Compound::ResidueNumber& resnum)
+auto Chain::get_compound(const Compound::ResidueNumber& resnum) -> Compound*
 {
   auto comptypeit = res_lookup_.find(resnum);
   if(comptypeit == res_lookup_.end()) {
@@ -34,32 +32,28 @@ Chain::get_compound(const Compound::ResidueNumber& resnum)
   return compn < compounds_.size() ? &compounds_.at(compn) : nullptr;
 }
 
-Compound*
-Chain::get_compound(unsigned int reseq, std::string resname, char icode)
+auto Chain::get_compound(unsigned int reseq, std::string resname, char icode)
+ -> Compound*
 {
   return get_compound(Compound::ResidueNumber(reseq, resname, icode));
 }
 
-const Chain::Compounds&
-Chain::compounds() const noexcept
+auto Chain::compounds() const noexcept -> const Compounds&
 {
   return compounds_;
 }
 
-char
-Chain::id() const
+auto Chain::id() const -> char
 {
   return chain_id_;
 }
 
-Model&
-Chain::model() const
+auto Chain::model() const -> Model&
 {
   return *model_ptr_;
 }
 
-void
-Chain::terminate()
+void Chain::terminate()
 {
   ter_ = compounds_.size();
 }
@@ -69,14 +63,12 @@ Chain::ResidueIterator::ResidueIterator(Chain& chain)
 {
 }
 
-Chain::CompoundsIterator
-Chain::ResidueIterator::begin()
+auto Chain::ResidueIterator::begin() -> CompoundsIterator
 {
   return chain_.compounds_.begin();
 }
 
-Chain::CompoundsIterator
-Chain::ResidueIterator::end()
+auto Chain::ResidueIterator::end() -> CompoundsIterator
 {
   auto it = begin();
   std::advance(it, chain_.ter_);
@@ -88,14 +80,12 @@ Chain::CompoundIterator::CompoundIterator(Chain& chain)
 {
 }
 
-Chain::CompoundsIterator
-Chain::CompoundIterator::begin()
+auto Chain::CompoundIterator::begin() -> CompoundsIterator
 {
   return chain_.compounds_.begin();
 }
 
-Chain::CompoundsIterator
-Chain::CompoundIterator::end()
+auto Chain::CompoundIterator::end() -> CompoundsIterator
 {
   return chain_.compounds_.end();
 }
@@ -105,16 +95,14 @@ Chain::LiganIterator::LiganIterator(Chain& chain)
 {
 }
 
-Chain::CompoundsIterator
-Chain::LiganIterator::begin()
+auto Chain::LiganIterator::begin() -> CompoundsIterator
 {
   auto it = std::begin(chain_.compounds_);
   std::advance(it, chain_.ter_);
   return it;
 }
 
-Chain::CompoundsIterator
-Chain::LiganIterator::end()
+auto Chain::LiganIterator::end() -> CompoundsIterator
 {
   return chain_.compounds_.end();
 }

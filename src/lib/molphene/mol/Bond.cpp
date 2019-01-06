@@ -8,14 +8,12 @@ Bond::Bond(Atom& a1, Atom& a2)
 {
 }
 
-Atom&
-Bond::atom1()
+auto Bond::atom1() -> Atom&
 {
   return *a1_;
 }
 
-Atom&
-Bond::atom2()
+auto Bond::atom2() -> Atom&
 {
   return *a2_;
 }

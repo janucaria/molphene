@@ -9,8 +9,7 @@
 
 namespace molphene {
 
-void
-Application::open_pdb_data(std::string pdbdata)
+void Application::open_pdb_data(std::string pdbdata)
 {
   std::stringstream pdbstm;
   pdbstm.str(pdbdata);
@@ -22,8 +21,7 @@ Application::open_pdb_data(std::string pdbdata)
   render_frame();
 }
 
-void
-Application::canvas_size_change_callback(int width, int height)
+void Application::canvas_size_change_callback(int width, int height)
 {
   scene.change_dimension(width, height);
   camera.aspect_ratio(width, height);
@@ -31,14 +29,12 @@ Application::canvas_size_change_callback(int width, int height)
   render_frame();
 }
 
-void
-Application::render_frame()
+void Application::render_frame()
 {
   renderer.render(scene, camera);
 }
 
-void
-Application::init_context()
+void Application::init_context()
 {
   const auto attrs = []() {
     auto attrs = EmscriptenWebGLContextAttributes{};
@@ -75,8 +71,7 @@ Application::init_context()
    canvas_target, this, false, &mouse_move_handler);
 };
 
-void
-Application::run()
+void Application::run()
 {
   const char* pdbhem = R"(
 ATOM      1  CHA HEM A   1      -2.161  -0.125   0.490  1.00 10.00           C
