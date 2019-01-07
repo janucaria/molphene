@@ -75,10 +75,10 @@ void Scene::reset_mesh() noexcept
 
     const auto vertices_per_instance = mesh_builder.vertices_size();
     const auto bytes_per_instance = bytes_per_vertex * vertices_per_instance;
-    const auto max_models = max_chunk_bytes / bytes_per_instance;
+    const auto max_models = bytes_per_instance ? max_chunk_bytes / bytes_per_instance : 0;
     const auto instances_per_chunk = std::min(total_instances, max_models);
     const auto vertices_per_chunk = instances_per_chunk * vertices_per_instance;
-    const auto remain_instances = total_instances % instances_per_chunk;
+    const auto remain_instances = instances_per_chunk ? total_instances % instances_per_chunk : 0;
 
     positions.reserve(vertices_per_chunk);
     normals.reserve(vertices_per_chunk);
