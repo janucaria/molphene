@@ -27,6 +27,8 @@
 #include <boost/range.hpp>
 #include <boost/range/algorithm.hpp>
 
+#include <nlohmann/json.hpp>
+
 #include "type_configs.hpp"
 
 #endif

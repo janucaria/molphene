@@ -16,6 +16,16 @@ Atom::Atom(Compound& compound,
 {
 }
 
+Atom::Atom(std::string elsym,
+           std::string name,
+           unsigned int serial)
+: compound_ptr_{nullptr}
+, element_{std::move(elsym)}
+, name_{std::move(name)}
+, serial_{serial}
+{
+}
+
 auto Atom::altloc() const -> char
 {
   return altloc_;
