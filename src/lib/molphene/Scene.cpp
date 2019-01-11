@@ -24,10 +24,10 @@ void Scene::reset_mesh() noexcept
   namespace range = boost::range;
 
   std::vector<Atom*> atoms;
-  atoms.reserve(atoms_.size());
+  atoms.reserve(molecule_->atoms().size());
 
-  std::transform(std::begin(atoms_),
-                 std::end(atoms_),
+  std::transform(std::begin(molecule_->atoms()),
+                 std::end(molecule_->atoms()),
                  std::back_inserter(atoms),
                  [](auto& atom) { return std::addressof(atom); });
 
@@ -135,8 +135,7 @@ void Scene::rotate(Scene::Vec3f rot) noexcept
 
 void Scene::open_chemdoodle_json_stream(std::istream& is)
 {
-  atoms_.clear();
-  bonds_.clear();
+  molecule_ = std::make_unique<Molecule>();
 
   const auto strjson = std::string{std::istreambuf_iterator<char>{is}, {}};
 
@@ -149,8 +148,8 @@ void Scene::open_chemdoodle_json_stream(std::istream& is)
 
 void Scene::parse_chemdoodle_json(const std::string& strjson)
 {
-  auto out_atoms = std::back_inserter(atoms_);
-  auto out_bonds = std::back_inserter(bonds_);
+  auto out_atoms = std::back_inserter(molecule_->atoms());
+  auto out_bonds = std::back_inserter(molecule_->bonds());
 
   const auto jsonmol = nlohmann::json::parse(strjson);
 
