@@ -34,8 +34,10 @@ void Scene::reset_mesh() noexcept
   // calculate bounding sphere
   bounding_sphere_.reset();
 
-  range::transform(atoms, ExpandIterator{bounding_sphere_}, [
-  ](auto atom) noexcept { return atom->position(); });
+  range::transform(
+   atoms, ExpandIterator{bounding_sphere_}, [](auto atom) noexcept {
+     return atom->position();
+   });
 
   model_matrix_.identity().translate(-bounding_sphere_.center());
 
@@ -134,46 +136,82 @@ void Scene::rotate(Scene::Vec3f rot) noexcept
 void Scene::open_chemdoodle_json_stream(std::istream& is)
 {
   atoms_.clear();
+  bonds_.clear();
 
-  parse_chemdoodle_json(std::string{std::istreambuf_iterator<char>{is}, {}});
-}
-
-void Scene::parse_chemdoodle_json(const std::string& strjson)
-{
-  auto out_atoms = std::back_inserter(atoms_);
+  const auto strjson = std::string{std::istreambuf_iterator<char>{is}, {}};
 
   if(strjson.empty()) {
     return;
   }
 
+  parse_chemdoodle_json(strjson);
+}
+
+void Scene::parse_chemdoodle_json(const std::string& strjson)
+{
+  auto out_atoms = std::back_inserter(atoms_);
+  auto out_bonds = std::back_inserter(bonds_);
+
   const auto jsonmol = nlohmann::json::parse(strjson);
 
-  const auto find_atoms = jsonmol.find("a");
-  if(find_atoms == jsonmol.end()) {
-    return;
-  }
+  auto find_array_json_by_key =
+   [](const auto& jsonmol,
+      const std::string& key) -> std::optional<nlohmann::json::array_t> {
+    const auto find_array = jsonmol.find(key);
+    if(find_array == jsonmol.end()) {
+      return std::nullopt;
+    }
 
-  const auto json_atoms = *find_atoms;
+    const auto json_array = *find_array;
 
-  if(!json_atoms.is_array()) {
-    return;
-  }
+    if(!json_array.is_array()) {
+      return std::nullopt;
+    }
 
-  std::transform(std::begin(json_atoms),
-                 std::end(json_atoms),
-                 out_atoms,
-                 [](auto const json_atom) {
-                   auto const aelement =
-                    json_atom.template value<std::string>("l", "C");
-                   auto const ax = json_atom.template value<double>("x", 0);
-                   auto const ay = json_atom.template value<double>("y", 0);
-                   auto const az = json_atom.template value<double>("z", 0);
+    return json_array;
+  };
 
-                   auto atom = Atom{aelement, "", 0};
-                   atom.position(ax, ay, az);
+  [find_array_json_by_key](const auto& jsonmol, auto outiter) {
+    const auto json_atoms = find_array_json_by_key(jsonmol, "a");
+    if(!json_atoms) {
+      return;
+    }
 
-                   return atom;
-                 });
+    std::transform(std::begin(*json_atoms),
+                   std::end(*json_atoms),
+                   outiter,
+                   [](auto const json_atom) {
+                     auto const aelement =
+                      json_atom.template value<std::string>("l", "C");
+                     auto const ax = json_atom.template value<double>("x", 0);
+                     auto const ay = json_atom.template value<double>("y", 0);
+                     auto const az = json_atom.template value<double>("z", 0);
+
+                     auto atom = Atom{aelement, "", 0};
+                     atom.position(ax, ay, az);
+
+                     return atom;
+                   });
+  }(jsonmol, out_atoms);
+
+  [find_array_json_by_key](const auto& jsonmol, auto outiter) {
+    const auto json_bonds = find_array_json_by_key(jsonmol, "b");
+    if(!json_bonds) {
+      return;
+    }
+
+    std::transform(std::begin(*json_bonds),
+                   std::end(*json_bonds),
+                   outiter,
+                   [](auto const json_bond) {
+                     auto const ibegin = static_cast<int>(json_bond.at("b"));
+                     auto const iend = static_cast<int>(json_bond.at("e"));
+
+                     auto bond = Bond{ibegin, iend};
+
+                     return bond;
+                   });
+  }(jsonmol, out_bonds);
 }
 
 auto Scene::model_matrix() const noexcept -> Mat4f

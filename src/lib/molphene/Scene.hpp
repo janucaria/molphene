@@ -16,6 +16,7 @@
 #include "Viewport.hpp"
 #include "m3d.hpp"
 #include "mol/Atom.hpp"
+#include "mol/Bond.hpp"
 
 namespace molphene {
 
@@ -99,6 +100,8 @@ private:
   ColourManager colour_manager_;
 
   std::vector<Atom> atoms_{};
+
+  std::vector<Bond> bonds_{};
 };
 
 } // namespace molphene

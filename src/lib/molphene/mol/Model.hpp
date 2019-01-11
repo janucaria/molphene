@@ -20,8 +20,6 @@ class Model {
 public:
   class ChainsIterable;
 
-  class BondsIterable;
-
   class ChainsIterator;
 
   using BondsIterator = Bonds::iterator;
@@ -66,18 +64,6 @@ public:
 
 private:
   Model& model_;
-};
-
-class Model::BondsIterable {
-public:
-  explicit BondsIterable(Model& model);
-
-  auto begin() -> BondsIterator;
-
-  auto end() -> BondsIterator;
-
-private:
-  Model model_;
 };
 
 class Model::ChainsIterator

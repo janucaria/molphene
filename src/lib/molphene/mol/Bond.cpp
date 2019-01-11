@@ -2,20 +2,20 @@
 
 namespace molphene {
 
-Bond::Bond(Atom& a1, Atom& a2)
-: a1_(&a1)
-, a2_(&a2)
+Bond::Bond(int a1, int a2)
+: a1_(a1)
+, a2_(a2)
 {
 }
 
-auto Bond::atom1() -> Atom&
+auto Bond::atom1() -> int
 {
-  return *a1_;
+  return a1_;
 }
 
-auto Bond::atom2() -> Atom&
+auto Bond::atom2() -> int
 {
-  return *a2_;
+  return a2_;
 }
 
 } // namespace molphene
