@@ -3,6 +3,7 @@
 #include "ExpandIterator.hpp"
 #include "Scene.hpp"
 #include "m3d.hpp"
+#include "mol/AtomInserterIterator.hpp"
 #include "shape/UvSphere.hpp"
 
 namespace molphene {
@@ -148,7 +149,7 @@ void Scene::open_chemdoodle_json_stream(std::istream& is)
 
 void Scene::parse_chemdoodle_json(const std::string& strjson)
 {
-  auto out_atoms = std::back_inserter(molecule_->atoms());
+  auto out_atoms = AtomInserterIterator{*molecule_.get()};
   auto out_bonds = std::back_inserter(molecule_->bonds());
 
   const auto jsonmol = nlohmann::json::parse(strjson);

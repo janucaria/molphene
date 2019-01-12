@@ -16,9 +16,9 @@ public:
 
   auto bonds() noexcept -> bonds_type&;
 
-  void atoms(atoms_type&& atoms);
+  void add_atom(const Atom& atom);
 
-  void bonds(bonds_type&& bonds);
+  void add_bond(const Bond& bond);
 
 private:
   std::vector<Atom> atoms_;
