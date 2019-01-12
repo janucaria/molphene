@@ -9,11 +9,11 @@ namespace molphene {
 template<typename TColor, typename TConfig>
 class PointLight : public BasicLight<TColor, TConfig> {
 public:
-  using typename BasicLight<TColor, TConfig>::float_t;
+  using typename BasicLight<TColor, TConfig>::float_type;
   using typename BasicLight<TColor, TConfig>::Color;
-  using Vec3f = Vec3<float_t>;
+  using Vec3f = Vec3<float_type>;
 
-  float_t radius{100};
+  float_type radius{100};
 
   Vec3f attenuation{1, 0, 0};
 

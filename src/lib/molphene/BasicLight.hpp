@@ -8,14 +8,14 @@ namespace molphene {
 template<typename TColor, typename TConfig>
 class BasicLight {
 public:
-  using float_t = typename type_configs<TConfig>::float_type;
+  using float_type = typename type_configs<TConfig>::float_type;
   using Color = TColor;
 
-  float_t ambient_intensity{0};
+  float_type ambient_intensity{0};
 
   Color color{0xFF, 0xFF, 0xFF};
 
-  float_t intensity{1};
+  float_type intensity{1};
 
   BasicLight() noexcept = default;
 };

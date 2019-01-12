@@ -12,13 +12,13 @@ namespace molphene {
 template<typename TColor, typename TConfig>
 class SpotLight : public PointLight<TColor, TConfig> {
 public:
-  using typename PointLight<TColor, TConfig>::float_t;
+  using typename PointLight<TColor, TConfig>::float_type;
   using typename PointLight<TColor, TConfig>::Color;
-  using Vec3f = Vec3<float_t>;
+  using Vec3f = Vec3<float_type>;
 
-  float_t beam_width{M_PI / 4};
+  float_type beam_width{M_PI / 4};
 
-  float_t cut_off_angle{M_PI / 2};
+  float_type cut_off_angle{M_PI / 2};
 
   Vec3f direction{0, 0, -1};
 

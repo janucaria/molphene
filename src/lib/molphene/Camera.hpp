@@ -8,31 +8,31 @@ namespace molphene {
 template<typename TConfig>
 class Camera {
 public:
-  using size_t = typename type_configs<TConfig>::size_type;
+  using size_type = typename type_configs<TConfig>::size_type;
 
-  using float_t = typename type_configs<TConfig>::float_type;
+  using float_type = typename type_configs<TConfig>::float_type;
 
-  using Vec3f = Vec3<float_t>;
+  using Vec3f = Vec3<float_type>;
 
-  using Mat4f = Mat4<float_t>;
+  using Mat4f = Mat4<float_type>;
 
-  float_t top{0};
+  float_type top{0};
 
   Camera() noexcept = default;
 
-  auto aspect_ratio() const noexcept -> float_t
+  auto aspect_ratio() const noexcept -> float_type
   {
     return aspect_ratio_;
   }
 
-  void aspect_ratio(float_t aspect) noexcept
+  void aspect_ratio(float_type aspect) noexcept
   {
     aspect_ratio_ = aspect;
   }
 
-  void aspect_ratio(size_t width, size_t height) noexcept
+  void aspect_ratio(size_type width, size_type height) noexcept
   {
-    aspect_ratio(float_t(width) / height);
+    aspect_ratio(float_type(width) / height);
   }
 
   auto orthogonal_proj_matrix() const noexcept -> Mat4f
@@ -68,7 +68,7 @@ public:
     return projection_mode_ = mode;
   }
 
-  auto field_of_view() const noexcept -> float_t
+  auto field_of_view() const noexcept -> float_type
   {
     return field_of_view_;
   }
@@ -88,12 +88,12 @@ public:
     zoom_ = std::max(zoom_ / 1.1, 1 / 1.1 / 200);
   }
 
-  auto zfar() const noexcept -> float_t
+  auto zfar() const noexcept -> float_type
   {
     return zfar_;
   }
 
-  auto znear() const noexcept -> float_t
+  auto znear() const noexcept -> float_type
   {
     return znear_;
   }
@@ -136,15 +136,15 @@ public:
   }
 
 private:
-  float_t field_of_view_{M_PI_4};
+  float_type field_of_view_{M_PI_4};
 
-  float_t zfar_{0};
+  float_type zfar_{0};
 
-  float_t znear_{0};
+  float_type znear_{0};
 
-  float_t zoom_{1};
+  float_type zoom_{1};
 
-  float_t aspect_ratio_{1};
+  float_type aspect_ratio_{1};
 
   Vec3f position_{0};
 

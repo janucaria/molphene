@@ -9,9 +9,9 @@ namespace molphene {
 template<typename TColor, typename TConfig>
 class DirectionalLight : public BasicLight<TColor, TConfig> {
 public:
-  using typename BasicLight<TColor, TConfig>::float_t;
+  using typename BasicLight<TColor, TConfig>::float_type;
   using typename BasicLight<TColor, TConfig>::Color;
-  using Vec3f = Vec3<float_t>;
+  using Vec3f = Vec3<float_type>;
 
   Vec3f direction{0, 0, -1};
 

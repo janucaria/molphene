@@ -9,11 +9,11 @@ template<typename TColor, typename TConfig>
 class Fog {
 public:
   using Color = TColor;
-  using float_t = typename type_configs<TConfig>::float_type;
+  using float_type = typename type_configs<TConfig>::float_type;
 
   enum class Type { linear, exponential };
 
-  float_t visibility_range{0};
+  float_type visibility_range{0};
 
   Color color{0xFF, 0xFF, 0xFF};
 

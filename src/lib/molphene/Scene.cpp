@@ -84,8 +84,8 @@ void Scene::reset_mesh() noexcept
       const auto apos = atm.position();
       const auto arad = element.rvdw;
       const auto acol = colour_manager_.get_element_color(element.symbol);
-      const auto atex = Vec2f{float_t(i % tex_size) / tex_size,
-                              std::floorf(float_t(i) / tex_size) / tex_size};
+      const auto atex = Vec2f{float_type(i % tex_size) / tex_size,
+                              std::floorf(float_type(i) / tex_size) / tex_size};
       colors[i] = acol;
 
       auto spherenorms = std::vector<Vec3f>{};
@@ -238,7 +238,7 @@ auto Scene::mesh_buffers() const noexcept -> const ColorLightBuffer*
   return sphere_buff_atoms_.get();
 }
 
-void Scene::change_dimension(size_t width, size_t height) noexcept
+void Scene::change_dimension(size_type width, size_type height) noexcept
 {
   viewport_.width = width;
   viewport_.height = height;

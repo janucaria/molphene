@@ -27,15 +27,15 @@ public:
     using float_type = double;
   };
 
-  using float_t = typename type_configs<ConfigType>::float_type;
-  using size_t = typename type_configs<ConfigType>::size_type;
+  using float_type = typename type_configs<ConfigType>::float_type;
+  using size_type = typename type_configs<ConfigType>::size_type;
 
-  using Vec3f = Vec3<float_t>;
-  using Vec2f = Vec2<float_t>;
-  using Mat4f = Mat4<float_t>;
-  using Mat3f = Mat3<float_t>;
+  using Vec3f = Vec3<float_type>;
+  using Vec2f = Vec2<float_type>;
+  using Mat4f = Mat4<float_type>;
+  using Mat3f = Mat3<float_type>;
 
-  using BoundingSphere = BoundingSphere<float_t>;
+  using BoundingSphere = BoundingSphere<float_type>;
 
   using Camera = Camera<ConfigType>;
 
@@ -51,13 +51,13 @@ public:
 
   using SphereMeshBuilder = SphereMeshBuilder<ConfigType>;
 
-  using Viewport = Viewport<size_t>;
+  using Viewport = Viewport<size_type>;
 
   auto setup_graphics() noexcept -> bool;
 
   void reset_mesh() noexcept;
 
-  void change_dimension(size_t width, size_t height) noexcept;
+  void change_dimension(size_type width, size_type height) noexcept;
 
   void rotate(Vec3f rot) noexcept;
 
