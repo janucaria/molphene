@@ -17,9 +17,7 @@
 #include "m3d.hpp"
 #include "mol/Atom.hpp"
 #include "mol/Bond.hpp"
-#include "mol/Model.hpp"
 #include "mol/Molecule.hpp"
-#include "mol/PdbParser.hpp"
 
 namespace molphene {
 
@@ -63,7 +61,9 @@ public:
 
   void rotate(Vec3f rot) noexcept;
 
-  void open_stream(std::istream& is);
+  void open_chemdoodle_json_stream(std::istream& is);
+  
+  void parse_chemdoodle_json(const std::string& json);
 
   auto model_matrix() const noexcept -> Mat4f;
 
@@ -98,9 +98,9 @@ private:
 
   BoundingSphere bounding_sphere_;
 
-  std::unique_ptr<Molecule> molecule_;
-
   ColourManager colour_manager_;
+
+  std::unique_ptr<Molecule> molecule_;
 };
 
 } // namespace molphene

@@ -15,7 +15,7 @@ void Model::add_atom(Atom& atom)
 
 void Model::add_bond(Atom& a1, Atom& a2)
 {
-  bonds_.emplace_back(a1, a2);
+  bonds_.emplace_back(a1.serial(), a2.serial());
 }
 
 auto Model::add_chain(char cid) -> Chain&
@@ -74,21 +74,6 @@ auto Model::ChainsIterable::begin() -> ChainsIterator
 auto Model::ChainsIterable::end() -> ChainsIterator
 {
   return Model::ChainsIterator(model_.chains_.end());
-}
-
-Model::BondsIterable::BondsIterable(Model& model)
-: model_(model)
-{
-}
-
-auto Model::BondsIterable::begin() -> BondsIterator
-{
-  return {model_.bonds_.begin()};
-}
-
-auto Model::BondsIterable::end() -> BondsIterator
-{
-  return {model_.bonds_.end()};
 }
 
 Model::ChainsIterator::ChainsIterator(Model::ChainsIterator::value_type it)

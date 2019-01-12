@@ -14,6 +14,7 @@
 #include <iterator>
 #include <limits>
 #include <memory>
+#include <optional>
 #include <string>
 #include <tuple>
 #include <type_traits>
@@ -26,6 +27,8 @@
 #include <boost/mp11.hpp>
 #include <boost/range.hpp>
 #include <boost/range/algorithm.hpp>
+
+#include <nlohmann/json.hpp>
 
 #include "type_configs.hpp"
 

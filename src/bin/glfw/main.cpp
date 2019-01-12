@@ -165,7 +165,7 @@ auto main(int argc, char* argv[]) -> int
     if(pdbfile.is_open()) {
       std::cout << "openfile success!" << std::endl;
 
-      scene.open_stream(pdbfile);
+      scene.open_chemdoodle_json_stream(pdbfile);
       scene.reset_mesh();
       camera.top = scene.bounding_sphere().radius() + 2;
       camera.update_view_matrix();
@@ -178,7 +178,7 @@ auto main(int argc, char* argv[]) -> int
   } else {
     auto pdbstm = std::stringstream{};
 
-    scene.open_stream(pdbstm);
+    scene.open_chemdoodle_json_stream(pdbstm);
     scene.reset_mesh();
     camera.update_view_matrix();
     main_loop();

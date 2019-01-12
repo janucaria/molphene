@@ -19,6 +19,10 @@ public:
        std::string name,
        unsigned int serial);
 
+  Atom(std::string elsym,
+       std::string name,
+       unsigned int serial);
+
   auto altloc() const -> char;
 
   auto element() const -> const Element&;

@@ -24,36 +24,20 @@ void Scene::reset_mesh() noexcept
   namespace range = boost::range;
 
   std::vector<Atom*> atoms;
-  std::vector<Bond*> bonds;
+  atoms.reserve(molecule_->atoms().size());
 
-  for(auto& model : Molecule::ModelsIterable{*molecule_}) {
-    for(auto& chain : Model::ChainsIterable{model}) {
-      for(auto& residue : Chain::ResidueIterator{chain}) {
-        for(auto& atom : Compound::AtomsIterable{residue}) {
-          const auto atm = std::addressof(atom);
-          atoms.push_back(atm);
-        }
-      }
-
-      for(auto& ligan : Chain::LiganIterator{chain}) {
-        const auto compname = ligan.name();
-        for(auto& atom : Compound::AtomsIterable{ligan}) {
-          const auto atm = std::addressof(atom);
-          atoms.push_back(atm);
-        }
-      }
-    }
-
-    for(auto& bond : Model::BondsIterable{model}) {
-      bonds.push_back(&bond);
-    }
-  }
+  std::transform(std::begin(molecule_->atoms()),
+                 std::end(molecule_->atoms()),
+                 std::back_inserter(atoms),
+                 [](auto& atom) { return std::addressof(atom); });
 
   // calculate bounding sphere
   bounding_sphere_.reset();
 
-  range::transform(atoms, ExpandIterator{bounding_sphere_}, [
-  ](auto atom) noexcept { return atom->position(); });
+  range::transform(
+   atoms, ExpandIterator{bounding_sphere_}, [](auto atom) noexcept {
+     return atom->position();
+   });
 
   model_matrix_.identity().translate(-bounding_sphere_.center());
 
@@ -75,10 +59,12 @@ void Scene::reset_mesh() noexcept
 
     const auto vertices_per_instance = mesh_builder.vertices_size();
     const auto bytes_per_instance = bytes_per_vertex * vertices_per_instance;
-    const auto max_models = bytes_per_instance ? max_chunk_bytes / bytes_per_instance : 0;
+    const auto max_models =
+     bytes_per_instance ? max_chunk_bytes / bytes_per_instance : 0;
     const auto instances_per_chunk = std::min(total_instances, max_models);
     const auto vertices_per_chunk = instances_per_chunk * vertices_per_instance;
-    const auto remain_instances = instances_per_chunk ? total_instances % instances_per_chunk : 0;
+    const auto remain_instances =
+     instances_per_chunk ? total_instances % instances_per_chunk : 0;
 
     positions.reserve(vertices_per_chunk);
     normals.reserve(vertices_per_chunk);
@@ -147,11 +133,84 @@ void Scene::rotate(Scene::Vec3f rot) noexcept
   model_matrix_.rotate(rot.z(), {0.0f, 0.0f, 1.0f});
 }
 
-void Scene::open_stream(std::istream& is)
+void Scene::open_chemdoodle_json_stream(std::istream& is)
 {
   molecule_ = std::make_unique<Molecule>();
-  PdbParser parser;
-  parser.parse(molecule_.get(), is);
+
+  const auto strjson = std::string{std::istreambuf_iterator<char>{is}, {}};
+
+  if(strjson.empty()) {
+    return;
+  }
+
+  parse_chemdoodle_json(strjson);
+}
+
+void Scene::parse_chemdoodle_json(const std::string& strjson)
+{
+  auto out_atoms = std::back_inserter(molecule_->atoms());
+  auto out_bonds = std::back_inserter(molecule_->bonds());
+
+  const auto jsonmol = nlohmann::json::parse(strjson);
+
+  auto find_array_json_by_key =
+   [](const auto& jsonmol,
+      const std::string& key) -> std::optional<nlohmann::json::array_t> {
+    const auto find_array = jsonmol.find(key);
+    if(find_array == jsonmol.end()) {
+      return std::nullopt;
+    }
+
+    const auto json_array = *find_array;
+
+    if(!json_array.is_array()) {
+      return std::nullopt;
+    }
+
+    return json_array;
+  };
+
+  [find_array_json_by_key](const auto& jsonmol, auto outiter) {
+    const auto json_atoms = find_array_json_by_key(jsonmol, "a");
+    if(!json_atoms) {
+      return;
+    }
+
+    std::transform(std::begin(*json_atoms),
+                   std::end(*json_atoms),
+                   outiter,
+                   [](auto const json_atom) {
+                     auto const aelement =
+                      json_atom.template value<std::string>("l", "C");
+                     auto const ax = json_atom.template value<double>("x", 0);
+                     auto const ay = json_atom.template value<double>("y", 0);
+                     auto const az = json_atom.template value<double>("z", 0);
+
+                     auto atom = Atom{aelement, "", 0};
+                     atom.position(ax, ay, az);
+
+                     return atom;
+                   });
+  }(jsonmol, out_atoms);
+
+  [find_array_json_by_key](const auto& jsonmol, auto outiter) {
+    const auto json_bonds = find_array_json_by_key(jsonmol, "b");
+    if(!json_bonds) {
+      return;
+    }
+
+    std::transform(std::begin(*json_bonds),
+                   std::end(*json_bonds),
+                   outiter,
+                   [](auto const json_bond) {
+                     auto const ibegin = static_cast<int>(json_bond.at("b"));
+                     auto const iend = static_cast<int>(json_bond.at("e"));
+
+                     auto bond = Bond{ibegin, iend};
+
+                     return bond;
+                   });
+  }(jsonmol, out_bonds);
 }
 
 auto Scene::model_matrix() const noexcept -> Mat4f

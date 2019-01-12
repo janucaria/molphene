@@ -14,7 +14,7 @@ void Application::open_pdb_data(std::string pdbdata)
   std::stringstream pdbstm;
   pdbstm.str(pdbdata);
 
-  scene.open_stream(pdbstm);
+  scene.open_chemdoodle_json_stream(pdbstm);
   scene.reset_mesh();
   camera.top = scene.bounding_sphere().radius() + 2;
   camera.update_view_matrix();
@@ -93,7 +93,7 @@ void Application::run()
 
   auto pdbstm = std::stringstream{};
 
-  scene.open_stream(pdbstm);
+  scene.open_chemdoodle_json_stream(pdbstm);
   scene.reset_mesh();
   camera.top = scene.bounding_sphere().radius() + 2;
   camera.update_view_matrix();

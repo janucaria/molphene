@@ -5,7 +5,6 @@ add_library(molphene
 "${PROJECT_SOURCE_DIR}/src/lib/molphene/mol/Compound.cpp"
 "${PROJECT_SOURCE_DIR}/src/lib/molphene/mol/Model.cpp"
 "${PROJECT_SOURCE_DIR}/src/lib/molphene/mol/Molecule.cpp"
-"${PROJECT_SOURCE_DIR}/src/lib/molphene/mol/PdbParser.cpp"
 "${PROJECT_SOURCE_DIR}/src/lib/molphene/ColorLightBuffer.cpp"
 "${PROJECT_SOURCE_DIR}/src/lib/molphene/ColorLightShader.cpp"
 "${PROJECT_SOURCE_DIR}/src/lib/molphene/ColourManager.cpp"
@@ -22,6 +21,7 @@ target_include_directories(molphene
 PUBLIC
   "${PROJECT_SOURCE_DIR}/third_party/GSL/include"
   "${PROJECT_SOURCE_DIR}/third_party/Gm3d/src"
+  "${PROJECT_SOURCE_DIR}/third_party/json/include"
 )
 
 target_compile_options(molphene PRIVATE ${MOLPHENE_WARNING_OPTIONS} "-stdlib=libc++")
