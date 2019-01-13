@@ -1,12 +1,14 @@
-#ifndef MOLPHENE_BOND_INSERTER_ITERATOR_HPP
-#define MOLPHENE_BOND_INSERTER_ITERATOR_HPP
+#ifndef MOLPHENE_BOND_INSERT_ITERATOR_HPP
+#define MOLPHENE_BOND_INSERT_ITERATOR_HPP
 
 #include "../stdafx.hpp"
+
+#include "Bond.hpp"
 
 namespace molphene {
 
 template<typename Container>
-struct BondInserterIterator {
+struct BondInsertIterator {
   using container_type = Container;
 
   using value_type = void;
@@ -15,28 +17,28 @@ struct BondInserterIterator {
   using reference = void;
   using iterator_category = std::output_iterator_tag;
 
-  explicit BondInserterIterator(container_type& container) noexcept
+  explicit BondInsertIterator(container_type& container) noexcept
   : container_{container}
   {
   }
 
-  auto operator=(const Bond& atom) -> BondInserterIterator&
+  auto operator=(const Bond& atom) -> BondInsertIterator&
   {
     container_.add_bond(atom);
     return *this;
   }
 
-  auto operator*() -> BondInserterIterator&
+  auto operator*() -> BondInsertIterator&
   {
     return *this;
   }
 
-  auto operator++() -> BondInserterIterator&
+  auto operator++() -> BondInsertIterator&
   {
     return *this;
   }
 
-  auto operator++(int) -> BondInserterIterator&
+  auto operator++(int) -> BondInsertIterator&
   {
     return *this;
   }
