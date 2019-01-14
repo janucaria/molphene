@@ -63,7 +63,7 @@ public:
 
   void open_chemdoodle_json_stream(std::istream& is);
   
-  void parse_chemdoodle_json(const std::string& json);
+  auto parse_chemdoodle_json(const std::string& json) -> Molecule;
 
   auto model_matrix() const noexcept -> Mat4f;
 
@@ -100,7 +100,7 @@ private:
 
   ColourManager colour_manager_;
 
-  std::unique_ptr<Molecule> molecule_;
+  Molecule molecule_;
 };
 
 } // namespace molphene

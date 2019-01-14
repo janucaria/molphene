@@ -26,10 +26,10 @@ void Scene::reset_mesh() noexcept
   namespace range = boost::range;
 
   std::vector<Atom*> atoms;
-  atoms.reserve(molecule_->atoms().size());
+  atoms.reserve(molecule_.atoms().size());
 
-  std::transform(std::begin(molecule_->atoms()),
-                 std::end(molecule_->atoms()),
+  std::transform(std::begin(molecule_.atoms()),
+                 std::end(molecule_.atoms()),
                  std::back_inserter(atoms),
                  [](auto& atom) { return std::addressof(atom); });
 
@@ -137,21 +137,19 @@ void Scene::rotate(Scene::Vec3f rot) noexcept
 
 void Scene::open_chemdoodle_json_stream(std::istream& is)
 {
-  molecule_ = std::make_unique<Molecule>();
-
   const auto strjson = std::string{std::istreambuf_iterator<char>{is}, {}};
-
-  if(strjson.empty()) {
-    return;
-  }
-
-  parse_chemdoodle_json(strjson);
+  molecule_ = parse_chemdoodle_json(strjson);
 }
 
-void Scene::parse_chemdoodle_json(const std::string& strjson)
+auto Scene::parse_chemdoodle_json(const std::string& strjson) -> Molecule
 {
-  auto out_atoms = AtomInsertIterator{*molecule_.get()};
-  auto out_bonds = BondInsertIterator{*molecule_.get()};
+  auto molecule = Molecule{};
+  if(strjson.empty()) {
+    return molecule;
+  }
+
+  auto out_atoms = AtomInsertIterator{molecule};
+  auto out_bonds = BondInsertIterator{molecule};
 
   const auto jsonmol = nlohmann::json::parse(strjson);
 
@@ -213,6 +211,8 @@ void Scene::parse_chemdoodle_json(const std::string& strjson)
                      return bond;
                    });
   }(jsonmol, out_bonds);
+
+  return molecule;
 }
 
 auto Scene::model_matrix() const noexcept -> Mat4f
