@@ -2,6 +2,7 @@
 
 #include "ExpandIterator.hpp"
 #include "Scene.hpp"
+#include "algorithm.hpp"
 #include "m3d.hpp"
 #include "mol/AtomInsertIterator.hpp"
 #include "mol/BondInsertIterator.hpp"
@@ -48,16 +49,10 @@ void Scene::reset_mesh() noexcept
   constexpr auto max_chunk_bytes = size_t{1024 * 1024 * 128};
 
   {
-    auto normals = std::vector<Vec3<GLfloat>>{};
-    auto positions = std::vector<Vec3<GLfloat>>{};
-    auto texcoords = std::vector<Vec2<GLfloat>>{};
-
     auto mesh_builder = SphereMeshBuilder{10, 20};
 
     constexpr auto bytes_per_vertex =
-     sizeof(typename std::decay_t<decltype(positions)>::value_type) +
-     sizeof(typename std::decay_t<decltype(normals)>::value_type) +
-     sizeof(typename std::decay_t<decltype(texcoords)>::value_type);
+     sizeof(Vec3<GLfloat>) + sizeof(Vec3<GLfloat>) + sizeof(Vec2<GLfloat>);
 
     const auto vertices_per_instance = mesh_builder.vertices_size();
     const auto bytes_per_instance = bytes_per_vertex * vertices_per_instance;
@@ -65,12 +60,6 @@ void Scene::reset_mesh() noexcept
      bytes_per_instance ? max_chunk_bytes / bytes_per_instance : 0;
     const auto instances_per_chunk = std::min(total_instances, max_models);
     const auto vertices_per_chunk = instances_per_chunk * vertices_per_instance;
-    const auto remain_instances =
-     instances_per_chunk ? total_instances % instances_per_chunk : 0;
-
-    positions.reserve(vertices_per_chunk);
-    normals.reserve(vertices_per_chunk);
-    texcoords.reserve(vertices_per_chunk);
 
     sphere_buff_atoms_ =
      std::make_unique<typename decltype(sphere_buff_atoms_)::element_type>(
@@ -80,49 +69,48 @@ void Scene::reset_mesh() noexcept
     auto colors = std::vector<Rgba8>(tex_size * tex_size);
 
     auto chunk_count = size_t{0};
-    for(auto i = size_t{0}; i < total_instances; ++i) {
-      const auto& atm = *atoms.at(i);
-      const auto& element = atm.element();
-      const auto apos = atm.position();
-      const auto arad = element.rvdw;
-      const auto acol = colour_manager_.get_element_color(element.symbol);
-      const auto atex = Vec2f{float_type(i % tex_size) / tex_size,
-                              std::floorf(float_type(i) / tex_size) / tex_size};
-      colors[i] = acol;
+    auto instance_i = size_t{0};
+    for_each_slice(
+     std::begin(atoms),
+     std::end(atoms),
+     instances_per_chunk,
+     [&](auto atoms_begin, auto atoms_end) {
+       const auto instances_size = std::distance(atoms_begin, atoms_end);
 
-      auto spherenorms = std::vector<Vec3f>{};
-      spherenorms.reserve(vertices_per_instance);
+       auto normals = std::vector<Vec3<GLfloat>>{};
+       auto positions = std::vector<Vec3<GLfloat>>{};
+       auto texcoords = std::vector<Vec2<GLfloat>>{};
 
-      mesh_builder.build(std::back_inserter(spherenorms));
+       positions.reserve(vertices_per_chunk);
+       normals.reserve(vertices_per_chunk);
+       texcoords.reserve(vertices_per_chunk);
+       for(; atoms_begin != atoms_end; ++atoms_begin) {
+         const auto& atom = **atoms_begin;
+         const auto element = atom.element();
+         const auto apos = atom.position();
+         const auto arad = element.rvdw;
+         const auto acol = colour_manager_.get_element_color(element.symbol);
+         const auto atex =
+          Vec2f{float_type(instance_i % tex_size) / tex_size,
+                std::floorf(float_type(instance_i) / tex_size) / tex_size};
 
-      range::copy(spherenorms, std::back_inserter(normals));
-      range::transform(
-       spherenorms, std::back_inserter(positions), [=](auto norm) noexcept {
-         return apos + norm * arad;
-       });
-      std::fill_n(std::back_inserter(texcoords), spherenorms.size(), atex);
+         colors[instance_i] = acol;
 
-      if(positions.size() == vertices_per_chunk) {
-        sphere_buff_atoms_->set_data(chunk_count * instances_per_chunk,
-                                     instances_per_chunk,
-                                     positions,
-                                     normals,
-                                     texcoords);
-        ++chunk_count;
+         mesh_builder.build_positions(
+          apos, arad, std::back_inserter(positions));
+         mesh_builder.build_normals(std::back_inserter(normals));
+         mesh_builder.build_texcoords(atex, std::back_inserter(texcoords));
 
-        positions.clear();
-        normals.clear();
-        texcoords.clear();
-      }
-    }
+         ++instance_i;
+       }
 
-    if(remain_instances > 0) {
-      sphere_buff_atoms_->set_data(chunk_count * instances_per_chunk,
-                                   remain_instances,
-                                   positions,
-                                   normals,
-                                   texcoords);
-    }
+       sphere_buff_atoms_->set_data(chunk_count * instances_per_chunk,
+                                    instances_size,
+                                    positions,
+                                    normals,
+                                    texcoords);
+       ++chunk_count;
+     });
 
     sphere_buff_atoms_->color_texture_image_data(colors.data());
   }
