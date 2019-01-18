@@ -66,10 +66,10 @@ void Scene::reset_mesh() noexcept
       vertices_per_instance, total_instances);
 
     const auto tex_size = sphere_buff_atoms_->color_texture_size();
-    auto colors = std::vector<Rgba8>(tex_size * tex_size);
+    auto colors = std::vector<Rgba8>{};
+    colors.reserve(tex_size * tex_size);
 
     auto chunk_count = size_t{0};
-    auto instance_i = size_t{0};
     for_each_slice(
      std::begin(atoms),
      std::end(atoms),
@@ -90,18 +90,18 @@ void Scene::reset_mesh() noexcept
          const auto apos = atom.position();
          const auto arad = element.rvdw;
          const auto acol = colour_manager_.get_element_color(element.symbol);
-         const auto atex =
-          Vec2f{float_type(instance_i % tex_size) / tex_size,
-                std::floorf(float_type(instance_i) / tex_size) / tex_size};
 
-         colors[instance_i] = acol;
+         const auto aindex = colors.size();
+         const auto atex = Vec2f{float_type(aindex % tex_size),
+                                 std::floor(float_type(aindex) / tex_size)} /
+                           tex_size;
+
+         colors.push_back(acol);
 
          mesh_builder.build_positions(
           apos, arad, std::back_inserter(positions));
          mesh_builder.build_normals(std::back_inserter(normals));
          mesh_builder.build_texcoords(atex, std::back_inserter(texcoords));
-
-         ++instance_i;
        }
 
        sphere_buff_atoms_->set_data(chunk_count * instances_per_chunk,
@@ -112,6 +112,7 @@ void Scene::reset_mesh() noexcept
        ++chunk_count;
      });
 
+    colors.resize(colors.capacity());
     sphere_buff_atoms_->color_texture_image_data(colors.data());
   }
 }
