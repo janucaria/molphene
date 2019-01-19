@@ -137,10 +137,32 @@ auto Scene::parse_chemdoodle_json(const std::string& strjson) -> Molecule
     return molecule;
   }
 
+  auto jsonmol = nlohmann::json::parse(strjson);
+
+  auto find_object_json_by_key =
+   [](const auto& jsonmol,
+      const std::string& key) -> std::optional<nlohmann::json::object_t> {
+    const auto find_key = jsonmol.find(key);
+    if(find_key == jsonmol.end()) {
+      return std::nullopt;
+    }
+
+    const auto json_value = *find_key;
+
+    if(!json_value.is_object()) {
+      return std::nullopt;
+    }
+
+    return json_value;
+  };
+
+  auto pdb_json = find_object_json_by_key(jsonmol, "mol");
+  if(pdb_json) {
+    jsonmol = *pdb_json;
+  }
+
   auto out_atoms = AtomInsertIterator{molecule};
   auto out_bonds = BondInsertIterator{molecule};
-
-  const auto jsonmol = nlohmann::json::parse(strjson);
 
   auto find_array_json_by_key =
    [](const auto& jsonmol,
