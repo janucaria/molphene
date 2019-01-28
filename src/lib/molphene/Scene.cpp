@@ -6,7 +6,7 @@
 #include "m3d.hpp"
 #include "mol/AtomInsertIterator.hpp"
 #include "mol/BondInsertIterator.hpp"
-#include "shape/UvSphere.hpp"
+#include "shape/Sphere.hpp"
 
 namespace molphene {
 
@@ -98,8 +98,10 @@ void Scene::reset_mesh() noexcept
 
          colors.push_back(acol);
 
+         const auto sph = Sphere<float_type>{arad, apos};
+
          mesh_builder.build_positions(
-          apos, arad, std::back_inserter(positions));
+          sph, std::back_inserter(positions));
          mesh_builder.build_normals(std::back_inserter(normals));
          mesh_builder.build_texcoords(atex, std::back_inserter(texcoords));
        }

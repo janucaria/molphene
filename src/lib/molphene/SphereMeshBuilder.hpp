@@ -4,7 +4,6 @@
 #include "stdafx.hpp"
 
 #include "m3d.hpp"
-#include "shape/UvSphere.hpp"
 
 namespace molphene {
 
@@ -37,7 +36,7 @@ public:
     const auto right = top.cross(dir);
 
     for(auto i = size_type{0}; i < lat_div_; ++i) {
-      constexpr auto pi = float{M_PI};
+      constexpr auto pi = M_PI;
 
       const auto theta = pi / lat_div_ * i;
       const auto sin_theta = std::sin(theta);
@@ -99,7 +98,7 @@ public:
     const auto right = top.cross(dir);
 
     for(auto i = size_type{0}; i < lat_div_; ++i) {
-      constexpr auto pi = float{M_PI};
+      constexpr auto pi = M_PI;
 
       const auto theta = pi / lat_div_ * i;
       const auto sin_theta = std::sin(theta);
@@ -141,11 +140,13 @@ public:
     }
   }
 
-  template<typename Position, typename Radius, typename OutputIt>
-  void build_positions(Position pos, Radius rad, OutputIt output) const noexcept
+  template<typename Sph, typename OutputIt>
+  void build_positions(Sph sphere, OutputIt output) const noexcept
   {
     build_vertices(
-     output, [=](auto norm) noexcept { return pos + norm * rad; });
+     output, [=](auto norm) noexcept {
+       return sphere.center + norm * sphere.radius;
+     });
   }
 
   template<typename OutputIt>

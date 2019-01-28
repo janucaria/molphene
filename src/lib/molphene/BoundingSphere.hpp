@@ -10,8 +10,8 @@ template<typename TRadii>
 class BoundingSphere {
 public:
   using Sphere = Sphere<TRadii>;
-  using SphereRadius = typename Sphere::Radius;
-  using SphereCenter = typename Sphere::Center;
+  using SphereRadius = typename Sphere::float_type;
+  using SphereCenter = typename Sphere::vec3_type;
   using center_type = SphereCenter;
 
 private:

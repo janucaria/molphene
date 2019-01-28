@@ -5,30 +5,30 @@
 
 namespace molphene {
 
-template<typename TRadii>
+template<typename FloatP>
 class Sphere {
 public:
-  using Radius = TRadii;
-  using Center = Vec3<TRadii>;
+  using float_type = FloatP;
+  using vec3_type = Vec3<float_type>;
 
-  Radius radius{0};
-  Center center{0, 0, 0};
+  float_type radius{0};
+  vec3_type center{0, 0, 0};
 
   Sphere() noexcept = default;
 
-  explicit Sphere(Radius radii) noexcept
+  explicit Sphere(float_type radii) noexcept
   : radius{radii}
   {
   }
 
-  Sphere(Radius radii, Center center) noexcept
+  Sphere(float_type radii, vec3_type center) noexcept
   : radius{radii}
   , center{center}
   {
   }
 
   template<typename U,
-           typename = std::enable_if_t<std::is_constructible_v<Center, U>>>
+           typename = std::enable_if_t<std::is_constructible_v<vec3_type, U>>>
   explicit Sphere(const Sphere<U>& sphere) noexcept
   : radius(sphere.radius)
   , center(sphere.center)
@@ -36,7 +36,7 @@ public:
   }
 
   template<typename U,
-           typename = std::enable_if_t<std::is_constructible_v<Center, U>>>
+           typename = std::enable_if_t<std::is_constructible_v<vec3_type, U>>>
   Sphere(U radii, Vec3<U> center) noexcept
   : radius(radii)
   , center(center)
