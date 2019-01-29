@@ -29,14 +29,24 @@ auto for_each_slice(
   while(--chunks_n) {
     std::advance(chunk_end, chunked_size);
 
-    func(chunk_begin, chunk_end);
+    func(boost::make_iterator_range(chunk_begin, chunk_end));
 
     chunk_begin = chunk_end;
   }
 
-  func(chunk_begin, last);
+  func(boost::make_iterator_range(chunk_begin, last));
 
   return func;
+}
+
+template<typename InRange, typename Function>
+auto for_each_slice(
+ InRange container,
+ typename boost::range_difference<InRange>::type chunk_length,
+ Function func) -> Function
+{
+  return for_each_slice(
+   std::begin(container), std::end(container), chunk_length, func);
 }
 
 } // namespace molphene

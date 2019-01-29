@@ -27,6 +27,7 @@
 #include <boost/mp11.hpp>
 #include <boost/range.hpp>
 #include <boost/range/algorithm.hpp>
+#include <boost/range/iterator_range.hpp>
 
 #include <nlohmann/json.hpp>
 

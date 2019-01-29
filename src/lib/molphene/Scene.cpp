@@ -26,13 +26,13 @@ void Scene::reset_mesh() noexcept
 {
   namespace range = boost::range;
 
-  std::vector<Atom*> atoms;
+  std::vector<const Atom*> atoms;
   atoms.reserve(molecule_.atoms().size());
 
-  std::transform(std::begin(molecule_.atoms()),
-                 std::end(molecule_.atoms()),
-                 std::back_inserter(atoms),
-                 [](auto& atom) { return std::addressof(atom); });
+  range::transform(
+   molecule_.atoms(), std::back_inserter(atoms), [](auto& atom) noexcept {
+     return &atom;
+   });
 
   // calculate bounding sphere
   bounding_sphere_.reset();
@@ -45,74 +45,66 @@ void Scene::reset_mesh() noexcept
   model_matrix_.identity().translate(-bounding_sphere_.center());
 
   const auto total_instances = atoms.size();
-
-  constexpr auto max_chunk_bytes = size_t{1024 * 1024 * 128};
-
   {
     auto mesh_builder = SphereMeshBuilder{10, 20};
+    const auto vertices_per_instance = mesh_builder.vertices_size();
 
+    sphere_buff_atoms_ =
+     std::make_unique<typename decltype(sphere_buff_atoms_)::element_type>(
+      vertices_per_instance, total_instances);
+
+    constexpr auto max_chunk_bytes = size_t{1024 * 1024 * 128};
     constexpr auto bytes_per_vertex =
      sizeof(Vec3<GLfloat>) + sizeof(Vec3<GLfloat>) + sizeof(Vec2<GLfloat>);
-
-    const auto vertices_per_instance = mesh_builder.vertices_size();
     const auto bytes_per_instance = bytes_per_vertex * vertices_per_instance;
     const auto max_models =
      bytes_per_instance ? max_chunk_bytes / bytes_per_instance : 0;
     const auto instances_per_chunk = std::min(total_instances, max_models);
     const auto vertices_per_chunk = instances_per_chunk * vertices_per_instance;
 
-    sphere_buff_atoms_ =
-     std::make_unique<typename decltype(sphere_buff_atoms_)::element_type>(
-      vertices_per_instance, total_instances);
-
     const auto tex_size = sphere_buff_atoms_->color_texture_size();
     auto colors = std::vector<Rgba8>{};
     colors.reserve(tex_size * tex_size);
 
     auto chunk_count = size_t{0};
-    for_each_slice(
-     std::begin(atoms),
-     std::end(atoms),
-     instances_per_chunk,
-     [&](auto atoms_begin, auto atoms_end) {
-       const auto instances_size = std::distance(atoms_begin, atoms_end);
+    for_each_slice(atoms, instances_per_chunk, [&](auto atoms_range) {
+      const auto instances_size = boost::distance(atoms_range);
 
-       auto normals = std::vector<Vec3<GLfloat>>{};
-       auto positions = std::vector<Vec3<GLfloat>>{};
-       auto texcoords = std::vector<Vec2<GLfloat>>{};
+      auto normals = std::vector<Vec3<GLfloat>>{};
+      auto positions = std::vector<Vec3<GLfloat>>{};
+      auto texcoords = std::vector<Vec2<GLfloat>>{};
 
-       positions.reserve(vertices_per_chunk);
-       normals.reserve(vertices_per_chunk);
-       texcoords.reserve(vertices_per_chunk);
-       for(; atoms_begin != atoms_end; ++atoms_begin) {
-         const auto& atom = **atoms_begin;
-         const auto element = atom.element();
-         const auto apos = atom.position();
-         const auto arad = element.rvdw;
-         const auto acol = colour_manager_.get_element_color(element.symbol);
+      positions.reserve(vertices_per_chunk);
+      normals.reserve(vertices_per_chunk);
+      texcoords.reserve(vertices_per_chunk);
+      for(const auto atomptr : atoms_range) {
+        const auto& atom = *atomptr;
+        const auto element = atom.element();
+        const auto apos = atom.position();
+        const auto arad = element.rvdw;
+        const auto acol = colour_manager_.get_element_color(element.symbol);
 
-         const auto aindex = colors.size();
-         const auto atex = Vec2f{float_type(aindex % tex_size),
-                                 std::floor(float_type(aindex) / tex_size)} /
-                           tex_size;
+        const auto aindex = colors.size();
+        const auto atex = Vec2f{float_type(aindex % tex_size),
+                                std::floor(float_type(aindex) / tex_size)} /
+                          tex_size;
 
-         colors.push_back(acol);
+        colors.push_back(acol);
 
-         const auto sph = Sphere<float_type>{arad, apos};
+        const auto sph = Sphere<float_type>{arad, apos};
 
-         mesh_builder.build_positions(
-          sph, std::back_inserter(positions));
-         mesh_builder.build_normals(std::back_inserter(normals));
-         mesh_builder.build_texcoords(atex, std::back_inserter(texcoords));
-       }
+        mesh_builder.build_positions(sph, std::back_inserter(positions));
+        mesh_builder.build_normals(std::back_inserter(normals));
+        mesh_builder.build_texcoords(atex, std::back_inserter(texcoords));
+      }
 
-       sphere_buff_atoms_->set_data(chunk_count * instances_per_chunk,
-                                    instances_size,
-                                    positions,
-                                    normals,
-                                    texcoords);
-       ++chunk_count;
-     });
+      sphere_buff_atoms_->set_data(chunk_count * instances_per_chunk,
+                                   instances_size,
+                                   positions,
+                                   normals,
+                                   texcoords);
+      ++chunk_count;
+    });
 
     colors.resize(colors.capacity());
     sphere_buff_atoms_->color_texture_image_data(colors.data());
@@ -189,21 +181,17 @@ auto Scene::parse_chemdoodle_json(const std::string& strjson) -> Molecule
       return;
     }
 
-    std::transform(std::begin(*json_atoms),
-                   std::end(*json_atoms),
-                   outiter,
-                   [](auto const json_atom) {
-                     auto const aelement =
-                      json_atom.template value<std::string>("l", "C");
-                     auto const ax = json_atom.template value<double>("x", 0);
-                     auto const ay = json_atom.template value<double>("y", 0);
-                     auto const az = json_atom.template value<double>("z", 0);
+    boost::range::transform(*json_atoms, outiter, [](auto const json_atom) {
+      auto const aelement = json_atom.template value<std::string>("l", "C");
+      auto const ax = json_atom.template value<double>("x", 0);
+      auto const ay = json_atom.template value<double>("y", 0);
+      auto const az = json_atom.template value<double>("z", 0);
 
-                     auto atom = Atom{aelement, "", 0};
-                     atom.position(ax, ay, az);
+      auto atom = Atom{aelement, "", 0};
+      atom.position(ax, ay, az);
 
-                     return atom;
-                   });
+      return atom;
+    });
   }(jsonmol, out_atoms);
 
   [find_array_json_by_key](const auto& jsonmol, auto outiter) {
@@ -212,17 +200,14 @@ auto Scene::parse_chemdoodle_json(const std::string& strjson) -> Molecule
       return;
     }
 
-    std::transform(std::begin(*json_bonds),
-                   std::end(*json_bonds),
-                   outiter,
-                   [](auto const json_bond) {
-                     auto const ibegin = static_cast<int>(json_bond.at("b"));
-                     auto const iend = static_cast<int>(json_bond.at("e"));
+    boost::range::transform(*json_bonds, outiter, [](auto const json_bond) {
+      auto const ibegin = static_cast<int>(json_bond.at("b"));
+      auto const iend = static_cast<int>(json_bond.at("e"));
 
-                     auto bond = Bond{ibegin, iend};
+      auto bond = Bond{ibegin, iend};
 
-                     return bond;
-                   });
+      return bond;
+    });
   }(jsonmol, out_bonds);
 
   return molecule;
