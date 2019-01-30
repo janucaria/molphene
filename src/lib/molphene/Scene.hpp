@@ -18,6 +18,7 @@
 #include "mol/Atom.hpp"
 #include "mol/Bond.hpp"
 #include "mol/Molecule.hpp"
+#include "SpacefillRepresentation.hpp"
 
 namespace molphene {
 
@@ -25,6 +26,13 @@ class Scene {
 public:
   struct ConfigType {
     using float_type = double;
+  };
+
+  struct SphereMeshAttr {
+    Rgba8 color;
+    std::size_t index;
+    Vec2<double> texcoord;
+    Sphere<double> sphere;
   };
 
   using float_type = typename type_configs<ConfigType>::float_type;
@@ -78,9 +86,14 @@ public:
   auto mesh_buffers() const noexcept -> const ColorLightBuffer*;
 
   auto bounding_sphere() const noexcept -> BoundingSphere;
+  
+  auto build_sphere_mesh(const std::vector<SphereMeshAttr>& atoms)
+   -> std::unique_ptr<ColorLightBuffer>;
 
 private:
   std::unique_ptr<ColorLightBuffer> sphere_buff_atoms_;
+
+  SpacefillRepresentation spacefill_representation_;
 
   LightSource light_source_;
 
