@@ -44,37 +44,16 @@ void Scene::reset_mesh() noexcept
 
   model_matrix_.identity().translate(-bounding_sphere_.center());
 
-  auto sphere_mesh_attrs = std::vector<SphereMeshAttr>{};
-  sphere_mesh_attrs.reserve(atoms.size());
+  {
+    auto sphere_mesh_attrs = std::vector<SphereMeshAttr>{};
+    sphere_mesh_attrs.reserve(atoms.size());
 
-  const auto tex_size =
-   static_cast<std::size_t>(std::ceil(std::sqrt(atoms.size())));
-  range::transform(atoms,
-                   std::back_inserter(sphere_mesh_attrs),
-                   [this, aindex = 0, tex_size](const auto* atomptr) mutable {
-                     const auto& atom = *atomptr;
-                     const auto element = atom.element();
-                     const auto apos = atom.position();
-                     const auto arad = element.rvdw;
-                     const auto acol =
-                      colour_manager_.get_element_color(element.symbol);
+    transform_sphere_attrs(
+     spacefill_representation_, atoms, std::back_inserter(sphere_mesh_attrs));
 
-                     const auto atex =
-                      Vec2f{float_type(aindex % tex_size),
-                            std::floor(float_type(aindex) / tex_size)} /
-                      tex_size;
-
-                     auto sphere_mesh_attr = SphereMeshAttr{};
-                     sphere_mesh_attr.sphere = {arad, apos};
-                     sphere_mesh_attr.index = aindex++;
-                     sphere_mesh_attr.texcoord = atex;
-                     sphere_mesh_attr.color = acol;
-
-                     return sphere_mesh_attr;
-                   });
-
-  spacefill_representation_.atom_sphere_buffer =
-   build_sphere_mesh(sphere_mesh_attrs);
+    spacefill_representation_.atom_sphere_buffer =
+     build_sphere_mesh(sphere_mesh_attrs);
+  }
 }
 
 auto Scene::build_sphere_mesh(const std::vector<SphereMeshAttr>& sph_attrs)

@@ -11,6 +11,7 @@
 #include "Fog.hpp"
 #include "Material.hpp"
 #include "PointLight.hpp"
+#include "SpacefillRepresentation.hpp"
 #include "SphereMeshBuilder.hpp"
 #include "SpotLight.hpp"
 #include "Viewport.hpp"
@@ -18,7 +19,6 @@
 #include "mol/Atom.hpp"
 #include "mol/Bond.hpp"
 #include "mol/Molecule.hpp"
-#include "SpacefillRepresentation.hpp"
 
 namespace molphene {
 
@@ -86,13 +86,40 @@ public:
   auto mesh_buffers() const noexcept -> const ColorLightBuffer*;
 
   auto bounding_sphere() const noexcept -> BoundingSphere;
-  
+
   auto build_sphere_mesh(const std::vector<SphereMeshAttr>& atoms)
    -> std::unique_ptr<ColorLightBuffer>;
 
-private:
-  std::unique_ptr<ColorLightBuffer> sphere_buff_atoms_;
+  template<typename Represent, typename InRange, typename OutIter>
+  void transform_sphere_attrs(const Represent& representation,
+                              const InRange& atoms,
+                              OutIter output)
+  {
+    const auto tex_size =
+     static_cast<std::size_t>(std::ceil(std::sqrt(atoms.size())));
+    auto aindex = std::size_t{0};
+    for(auto atomptr : atoms) {
+      const auto& atom = *atomptr;
+      const auto element = atom.element();
+      const auto apos = atom.position();
+      const auto arad = representation.atom_radius(element);
+      const auto acol = colour_manager_.get_element_color(element.symbol);
 
+      const auto atex = Vec2f{float_type(aindex % tex_size),
+                              std::floor(float_type(aindex) / tex_size)} /
+                        tex_size;
+
+      auto sphere_mesh_attr = SphereMeshAttr{};
+      sphere_mesh_attr.sphere = {arad, apos};
+      sphere_mesh_attr.index = aindex++;
+      sphere_mesh_attr.texcoord = atex;
+      sphere_mesh_attr.color = acol;
+
+      *output++ = sphere_mesh_attr;
+    }
+  }
+
+private:
   SpacefillRepresentation spacefill_representation_;
 
   LightSource light_source_;
