@@ -44,71 +44,76 @@ void Scene::reset_mesh() noexcept
 
   model_matrix_.identity().translate(-bounding_sphere_.center());
 
-  const auto total_instances = atoms.size();
   {
-    auto mesh_builder = SphereMeshBuilder{10, 20};
-    const auto vertices_per_instance = mesh_builder.vertices_size();
+    auto sphere_mesh_attrs = std::vector<SphereMeshAttr>{};
+    sphere_mesh_attrs.reserve(atoms.size());
 
-    sphere_buff_atoms_ =
-     std::make_unique<typename decltype(sphere_buff_atoms_)::element_type>(
-      vertices_per_instance, total_instances);
+    transform_sphere_attrs(
+     spacefill_representation_, atoms, std::back_inserter(sphere_mesh_attrs));
 
-    constexpr auto max_chunk_bytes = size_t{1024 * 1024 * 128};
-    constexpr auto bytes_per_vertex =
-     sizeof(Vec3<GLfloat>) + sizeof(Vec3<GLfloat>) + sizeof(Vec2<GLfloat>);
-    const auto bytes_per_instance = bytes_per_vertex * vertices_per_instance;
-    const auto max_models =
-     bytes_per_instance ? max_chunk_bytes / bytes_per_instance : 0;
-    const auto instances_per_chunk = std::min(total_instances, max_models);
-    const auto vertices_per_chunk = instances_per_chunk * vertices_per_instance;
-
-    const auto tex_size = sphere_buff_atoms_->color_texture_size();
-    auto colors = std::vector<Rgba8>{};
-    colors.reserve(tex_size * tex_size);
-
-    auto chunk_count = size_t{0};
-    for_each_slice(atoms, instances_per_chunk, [&](auto atoms_range) {
-      const auto instances_size = boost::distance(atoms_range);
-
-      auto normals = std::vector<Vec3<GLfloat>>{};
-      auto positions = std::vector<Vec3<GLfloat>>{};
-      auto texcoords = std::vector<Vec2<GLfloat>>{};
-
-      positions.reserve(vertices_per_chunk);
-      normals.reserve(vertices_per_chunk);
-      texcoords.reserve(vertices_per_chunk);
-      for(const auto atomptr : atoms_range) {
-        const auto& atom = *atomptr;
-        const auto element = atom.element();
-        const auto apos = atom.position();
-        const auto arad = element.rvdw;
-        const auto acol = colour_manager_.get_element_color(element.symbol);
-
-        const auto aindex = colors.size();
-        const auto atex = Vec2f{float_type(aindex % tex_size),
-                                std::floor(float_type(aindex) / tex_size)} /
-                          tex_size;
-
-        colors.push_back(acol);
-
-        const auto sph = Sphere<float_type>{arad, apos};
-
-        mesh_builder.build_positions(sph, std::back_inserter(positions));
-        mesh_builder.build_normals(std::back_inserter(normals));
-        mesh_builder.build_texcoords(atex, std::back_inserter(texcoords));
-      }
-
-      sphere_buff_atoms_->set_data(chunk_count * instances_per_chunk,
-                                   instances_size,
-                                   positions,
-                                   normals,
-                                   texcoords);
-      ++chunk_count;
-    });
-
-    colors.resize(colors.capacity());
-    sphere_buff_atoms_->color_texture_image_data(colors.data());
+    spacefill_representation_.atom_sphere_buffer =
+     build_sphere_mesh(sphere_mesh_attrs);
   }
+}
+
+auto Scene::build_sphere_mesh(const std::vector<SphereMeshAttr>& sph_attrs)
+ -> std::unique_ptr<ColorLightBuffer>
+{
+  const auto total_instances = sph_attrs.size();
+  auto mesh_builder = SphereMeshBuilder{10, 20};
+  const auto vertices_per_instance = mesh_builder.vertices_size();
+
+  auto sphere_buff_atoms =
+   new ColorLightBuffer(vertices_per_instance, total_instances);
+
+  constexpr auto max_chunk_bytes = size_t{1024 * 1024 * 128};
+  constexpr auto bytes_per_vertex =
+   sizeof(Vec3<GLfloat>) + sizeof(Vec3<GLfloat>) + sizeof(Vec2<GLfloat>);
+  const auto bytes_per_instance = bytes_per_vertex * vertices_per_instance;
+  const auto max_models =
+   bytes_per_instance ? max_chunk_bytes / bytes_per_instance : 0;
+  const auto instances_per_chunk = std::min(total_instances, max_models);
+  const auto vertices_per_chunk = instances_per_chunk * vertices_per_instance;
+
+  const auto tex_size = sphere_buff_atoms->color_texture_size();
+  auto colors = std::vector<Rgba8>{};
+  colors.reserve(tex_size * tex_size);
+
+  auto chunk_count = size_t{0};
+  for_each_slice(sph_attrs, instances_per_chunk, [&](auto sph_attrs_range) {
+    const auto instances_size = boost::distance(sph_attrs_range);
+
+    auto normals = std::vector<Vec3<GLfloat>>{};
+    auto positions = std::vector<Vec3<GLfloat>>{};
+    auto texcoords = std::vector<Vec2<GLfloat>>{};
+
+    positions.reserve(vertices_per_chunk);
+    normals.reserve(vertices_per_chunk);
+    texcoords.reserve(vertices_per_chunk);
+    for(const auto& sph_attr : sph_attrs_range) {
+      const auto acol = sph_attr.color;
+      const auto atex = sph_attr.texcoord;
+      const auto sph = sph_attr.sphere;
+
+      colors.push_back(acol);
+
+      mesh_builder.build_positions(sph, std::back_inserter(positions));
+      mesh_builder.build_normals(std::back_inserter(normals));
+      mesh_builder.build_texcoords(atex, std::back_inserter(texcoords));
+    }
+
+    sphere_buff_atoms->set_data(chunk_count * instances_per_chunk,
+                                instances_size,
+                                positions,
+                                normals,
+                                texcoords);
+    ++chunk_count;
+  });
+
+  colors.resize(colors.capacity());
+  sphere_buff_atoms->color_texture_image_data(colors.data());
+
+  return std::unique_ptr<ColorLightBuffer>{sphere_buff_atoms};
 }
 
 void Scene::rotate(Scene::Vec3f rot) noexcept
@@ -235,7 +240,7 @@ auto Scene::fog() const noexcept -> Fog
 
 auto Scene::mesh_buffers() const noexcept -> const ColorLightBuffer*
 {
-  return sphere_buff_atoms_.get();
+  return spacefill_representation_.atom_sphere_buffer.get();
 }
 
 void Scene::change_dimension(size_type width, size_type height) noexcept

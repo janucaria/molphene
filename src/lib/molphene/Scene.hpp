@@ -6,11 +6,11 @@
 #include "BoundingSphere.hpp"
 #include "Camera.hpp"
 #include "ColorLightBuffer.hpp"
-#include "ColourManager.hpp"
 #include "DirectionalLight.hpp"
 #include "Fog.hpp"
 #include "Material.hpp"
 #include "PointLight.hpp"
+#include "SpacefillRepresentation.hpp"
 #include "SphereMeshBuilder.hpp"
 #include "SpotLight.hpp"
 #include "Viewport.hpp"
@@ -25,6 +25,13 @@ class Scene {
 public:
   struct ConfigType {
     using float_type = double;
+  };
+
+  struct SphereMeshAttr {
+    Rgba8 color;
+    std::size_t index;
+    Vec2<double> texcoord;
+    Sphere<double> sphere;
   };
 
   using float_type = typename type_configs<ConfigType>::float_type;
@@ -79,8 +86,40 @@ public:
 
   auto bounding_sphere() const noexcept -> BoundingSphere;
 
+  auto build_sphere_mesh(const std::vector<SphereMeshAttr>& atoms)
+   -> std::unique_ptr<ColorLightBuffer>;
+
+  template<typename Represent, typename InRange, typename OutIter>
+  void transform_sphere_attrs(const Represent& representation,
+                              const InRange& atoms,
+                              OutIter output)
+  {
+    const auto tex_size =
+     static_cast<std::size_t>(std::ceil(std::sqrt(atoms.size())));
+    auto aindex = std::size_t{0};
+    for(auto atomptr : atoms) {
+      const auto& atom = *atomptr;
+      const auto element = atom.element();
+      const auto apos = atom.position();
+      const auto arad = representation.atom_radius(element);
+      const auto acol = representation.atom_color(atom);
+
+      const auto atex = Vec2f{float_type(aindex % tex_size),
+                              std::floor(float_type(aindex) / tex_size)} /
+                        tex_size;
+
+      auto sphere_mesh_attr = SphereMeshAttr{};
+      sphere_mesh_attr.sphere = {arad, apos};
+      sphere_mesh_attr.index = aindex++;
+      sphere_mesh_attr.texcoord = atex;
+      sphere_mesh_attr.color = acol;
+
+      *output++ = sphere_mesh_attr;
+    }
+  }
+
 private:
-  std::unique_ptr<ColorLightBuffer> sphere_buff_atoms_;
+  SpacefillRepresentation spacefill_representation_;
 
   LightSource light_source_;
 
@@ -97,8 +136,6 @@ private:
   Mat4f model_matrix_{1};
 
   BoundingSphere bounding_sphere_;
-
-  ColourManager colour_manager_;
 
   Molecule molecule_;
 };

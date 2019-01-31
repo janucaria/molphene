@@ -11,6 +11,7 @@ add_library(molphene
 "${PROJECT_SOURCE_DIR}/src/lib/molphene/GlRenderer.cpp"
 "${PROJECT_SOURCE_DIR}/src/lib/molphene/QuadShader.cpp"
 "${PROJECT_SOURCE_DIR}/src/lib/molphene/Scene.cpp"
+"${PROJECT_SOURCE_DIR}/src/lib/molphene/SpacefillRepresentation.cpp"
 )
 
 if(APPLE)
