@@ -6,7 +6,6 @@
 #include "BoundingSphere.hpp"
 #include "Camera.hpp"
 #include "ColorLightBuffer.hpp"
-#include "ColourManager.hpp"
 #include "DirectionalLight.hpp"
 #include "Fog.hpp"
 #include "Material.hpp"
@@ -103,7 +102,7 @@ public:
       const auto element = atom.element();
       const auto apos = atom.position();
       const auto arad = representation.atom_radius(element);
-      const auto acol = colour_manager_.get_element_color(element.symbol);
+      const auto acol = representation.atom_color(atom);
 
       const auto atex = Vec2f{float_type(aindex % tex_size),
                               std::floor(float_type(aindex) / tex_size)} /
@@ -137,8 +136,6 @@ private:
   Mat4f model_matrix_{1};
 
   BoundingSphere bounding_sphere_;
-
-  ColourManager colour_manager_;
 
   Molecule molecule_;
 };

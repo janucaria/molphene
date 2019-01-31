@@ -2,8 +2,8 @@
 
 namespace molphene {
 
-auto SpacefillRepresentation::atom_radius(
- typename Atom::Element element) const noexcept -> double
+auto SpacefillRepresentation::atom_radius(typename Atom::Element element) const
+ noexcept -> double
 {
   switch(radius_type) {
   case AtomRadiusType::van_der_waals:
@@ -15,4 +15,10 @@ auto SpacefillRepresentation::atom_radius(
   }
 }
 
+auto SpacefillRepresentation::atom_color(const Atom& atom) const noexcept
+ -> Rgba8
+{
+  return color_manager.get_element_color(atom.element().symbol);
 }
+
+} // namespace molphene
