@@ -4,11 +4,6 @@ add_executable(molphene-web
   "${PROJECT_SOURCE_DIR}/src/bin/web/embind-MainApp.cpp"
 )
 
-target_include_directories(molphene-web
-PRIVATE
-"${PROJECT_SOURCE_DIR}/src/lib"
-)
-
 target_link_libraries(molphene-web PRIVATE molphene)
 
 target_compile_options(molphene-web PRIVATE ${MOLPHENE_WARNING_OPTIONS} "-stdlib=libc++")

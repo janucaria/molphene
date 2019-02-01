@@ -19,11 +19,12 @@ if(APPLE)
   target_link_libraries(molphene PRIVATE "-framework OpenGL")
 endif()
 
+
 target_include_directories(molphene
-PUBLIC
-  "${PROJECT_SOURCE_DIR}/third_party/GSL/include"
-  "${PROJECT_SOURCE_DIR}/third_party/Gm3d/src"
-  "${PROJECT_SOURCE_DIR}/third_party/json/include"
+INTERFACE
+"${PROJECT_SOURCE_DIR}/src/lib"
 )
+
+target_link_libraries(molphene PUBLIC GSL nlohmann_json::nlohmann_json gm3d)
 
 target_compile_options(molphene PRIVATE ${MOLPHENE_WARNING_OPTIONS} "-stdlib=libc++")

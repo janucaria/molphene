@@ -2,10 +2,7 @@
 add_executable(molphene-glfw
 "${PROJECT_SOURCE_DIR}/src/bin/glfw/main.cpp"
 )
-target_include_directories(molphene-glfw
-PRIVATE
-"${PROJECT_SOURCE_DIR}/src/lib"
-)
+
 target_link_libraries(molphene-glfw PRIVATE molphene)
 target_compile_options(molphene-glfw PRIVATE ${MOLPHENE_WARNING_OPTIONS} "-stdlib=libc++")
 

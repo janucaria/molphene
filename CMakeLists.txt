@@ -30,6 +30,12 @@ endif()
 
 set(MOLPHENE_WARNING_OPTIONS "-Wall" "-Wpedantic")
 
+set(JSON_BuildTests OFF CACHE INTERNAL "")
+
+add_subdirectory("${PROJECT_SOURCE_DIR}/third_party/GSL")
+add_subdirectory("${PROJECT_SOURCE_DIR}/third_party/json")
+add_subdirectory("${PROJECT_SOURCE_DIR}/third_party/Gm3d")
+
 add_subdirectory("${PROJECT_SOURCE_DIR}/cmake/cmakelists/libmolphene")
 add_subdirectory("${PROJECT_SOURCE_DIR}/cmake/cmakelists/molphene-glfw")
 
