@@ -6,9 +6,9 @@ class Bond {
 public:
   Bond(int a1, int a2);
 
-  auto atom1() -> int;
+  auto atom1() const noexcept -> int;
 
-  auto atom2() -> int;
+  auto atom2() const noexcept -> int;
 
 private:
   int a1_;

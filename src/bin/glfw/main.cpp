@@ -9,6 +9,7 @@
 #include <molphene/Camera.hpp>
 #include <molphene/GlRenderer.hpp>
 #include <molphene/Scene.hpp>
+#include <molphene/MoleculeRepresentation.hpp>
 
 static molphene::Scene scene;
 static molphene::GlRenderer renderer;
@@ -39,6 +40,12 @@ key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
       break;
     case GLFW_KEY_O:
       camera.projection_mode(false);
+      break;
+    case GLFW_KEY_K:
+      scene.representation = molphene::MoleculeRepresentation::spacefill;
+      break;
+    case GLFW_KEY_L:
+      scene.representation = molphene::MoleculeRepresentation::ball_and_stick;
       break;
     }
   }
@@ -164,14 +171,19 @@ auto main(int argc, char* argv[]) -> int
     std::ifstream pdbfile(argv[1]);
     if(pdbfile.is_open()) {
       std::cout << "openfile success!" << std::endl;
+      struct close_guard {
+        void operator()(std::ifstream* ptr) const
+        {
+          ptr->close();
+        }
+      };
+      const auto close = std::unique_ptr<std::ifstream, close_guard>{&pdbfile};
 
       scene.open_chemdoodle_json_stream(pdbfile);
       scene.reset_mesh();
       camera.top = scene.bounding_sphere().radius() + 2;
       camera.update_view_matrix();
       main_loop();
-
-      pdbfile.close();
     } else {
       std::cout << "openfile failure!" << std::endl;
     }

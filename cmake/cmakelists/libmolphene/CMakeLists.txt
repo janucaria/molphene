@@ -5,6 +5,7 @@ add_library(molphene
 "${PROJECT_SOURCE_DIR}/src/lib/molphene/mol/Compound.cpp"
 "${PROJECT_SOURCE_DIR}/src/lib/molphene/mol/Model.cpp"
 "${PROJECT_SOURCE_DIR}/src/lib/molphene/mol/Molecule.cpp"
+"${PROJECT_SOURCE_DIR}/src/lib/molphene/BallStickRepresentation.cpp"
 "${PROJECT_SOURCE_DIR}/src/lib/molphene/ColorLightBuffer.cpp"
 "${PROJECT_SOURCE_DIR}/src/lib/molphene/ColorLightShader.cpp"
 "${PROJECT_SOURCE_DIR}/src/lib/molphene/ColourManager.cpp"

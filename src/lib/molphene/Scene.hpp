@@ -3,12 +3,15 @@
 
 #include "stdafx.hpp"
 
+#include "BallStickRepresentation.hpp"
 #include "BoundingSphere.hpp"
 #include "Camera.hpp"
 #include "ColorLightBuffer.hpp"
+#include "CylinderMeshBuilder.hpp"
 #include "DirectionalLight.hpp"
 #include "Fog.hpp"
 #include "Material.hpp"
+#include "MoleculeRepresentation.hpp"
 #include "PointLight.hpp"
 #include "SpacefillRepresentation.hpp"
 #include "SphereMeshBuilder.hpp"
@@ -18,6 +21,8 @@
 #include "mol/Atom.hpp"
 #include "mol/Bond.hpp"
 #include "mol/Molecule.hpp"
+#include "shape/Cylinder.hpp"
+#include "shape/Sphere.hpp"
 
 namespace molphene {
 
@@ -33,6 +38,15 @@ public:
     Vec2<double> texcoord;
     Sphere<double> sphere;
   };
+
+  struct CylinderMeshAttr {
+    Rgba8 color;
+    std::size_t index;
+    Vec2<double> texcoord;
+    Cylinder<double> cylinder;
+  };
+
+  MoleculeRepresentation representation{MoleculeRepresentation::spacefill};
 
   using float_type = typename type_configs<ConfigType>::float_type;
   using size_type = typename type_configs<ConfigType>::size_type;
@@ -57,6 +71,8 @@ public:
   using SpotLight = SpotLight<Rgba8, ConfigType>;
 
   using SphereMeshBuilder = SphereMeshBuilder<ConfigType>;
+
+  using CylinderMeshBuilder = CylinderMeshBuilder<ConfigType>;
 
   using Viewport = Viewport<size_type>;
 
@@ -84,10 +100,70 @@ public:
 
   auto mesh_buffers() const noexcept -> const ColorLightBuffer*;
 
+  auto cyl_bond1_mesh_buffers() const noexcept -> const ColorLightBuffer*;
+
+  auto cyl_bond2_mesh_buffers() const noexcept -> const ColorLightBuffer*;
+
+  auto ballnstick_sphere_atom_buffers() const noexcept
+   -> const ColorLightBuffer*;
+
   auto bounding_sphere() const noexcept -> BoundingSphere;
 
   auto build_sphere_mesh(const std::vector<SphereMeshAttr>& atoms)
    -> std::unique_ptr<ColorLightBuffer>;
+
+  auto build_cylinder_mesh(const std::vector<CylinderMeshAttr>& cyl_attrs)
+   -> std::unique_ptr<ColorLightBuffer>;
+
+  template<typename Represent, typename InRange, typename OutIter>
+  void transform_clylinder_attrs(bool is_first,
+                                 const Represent& representation,
+                                 const InRange& bond_atoms,
+                                 OutIter output)
+
+  {
+    auto color_manager = ColourManager{};
+    const auto tex_size =
+     static_cast<std::size_t>(std::ceil(std::sqrt(bond_atoms.size())));
+    auto aindex = std::size_t{0};
+    for(auto&& atom_pair : bond_atoms) {
+      const auto& atom1 = *atom_pair.first;
+      const auto& atom2 = *atom_pair.second;
+      const auto element1 = atom1.element();
+      const auto element2 = atom2.element();
+      const auto apos1 = atom1.position();
+      const auto apos2 = atom2.position();
+      const auto acol1 = representation.atom_color(atom1);
+      const auto acol2 = representation.atom_color(atom2);
+
+      const auto atex = Vec2f{float_type(aindex % tex_size),
+                              std::floor(float_type(aindex) / tex_size)} /
+                        tex_size;
+
+      const auto rad = representation.radius_size;
+      const auto midpos = (apos1 + apos2) * 0.5;
+
+      auto cyl = Cylinder<float_type>{rad};
+      auto color = Rgba8{};
+      if(is_first) {
+        cyl.top = apos1;
+        cyl.bottom = midpos;
+        color = acol1;
+      } else {
+        cyl.top = midpos;
+        cyl.bottom = apos2;
+        color = acol2;
+      }
+
+      auto cyl_mesh_attr = CylinderMeshAttr{};
+      cyl_mesh_attr.cylinder = cyl;
+      cyl_mesh_attr.index = aindex++;
+      cyl_mesh_attr.texcoord = atex;
+      cyl_mesh_attr.color = color;
+
+      *output++ = cyl_mesh_attr;
+    }
+  }
 
   template<typename Represent, typename InRange, typename OutIter>
   void transform_sphere_attrs(const Represent& representation,
@@ -120,6 +196,8 @@ public:
 
 private:
   SpacefillRepresentation spacefill_representation_;
+
+  BallStickRepresentation ballnstick_representation_;
 
   LightSource light_source_;
 

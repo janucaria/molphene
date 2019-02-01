@@ -24,6 +24,7 @@
 
 #include <gsl/gsl>
 
+#include <boost/algorithm/cxx11/copy_if.hpp>
 #include <boost/mp11.hpp>
 #include <boost/range.hpp>
 #include <boost/range/algorithm.hpp>

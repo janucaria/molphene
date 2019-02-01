@@ -8,12 +8,12 @@ Bond::Bond(int a1, int a2)
 {
 }
 
-auto Bond::atom1() -> int
+auto Bond::atom1() const noexcept -> int
 {
   return a1_;
 }
 
-auto Bond::atom2() -> int
+auto Bond::atom2() const noexcept -> int
 {
   return a2_;
 }
