@@ -128,7 +128,7 @@ auto Scene::build_sphere_mesh(const std::vector<SphereMeshAttr>& sph_attrs)
   const auto vertices_per_instance = mesh_builder.vertices_size();
 
   auto sphere_buff_atoms =
-   new ColorLightBuffer(vertices_per_instance, total_instances);
+   std::make_unique<ColorLightBuffer>(vertices_per_instance, total_instances);
 
   constexpr auto max_chunk_bytes = size_t{1024 * 1024 * 128};
   constexpr auto bytes_per_vertex =
@@ -177,7 +177,7 @@ auto Scene::build_sphere_mesh(const std::vector<SphereMeshAttr>& sph_attrs)
   colors.resize(colors.capacity());
   sphere_buff_atoms->color_texture_image_data(colors.data());
 
-  return std::unique_ptr<ColorLightBuffer>{sphere_buff_atoms};
+  return sphere_buff_atoms;
 }
 
 auto Scene::build_cylinder_mesh(const std::vector<CylinderMeshAttr>& cyl_attrs)
@@ -188,7 +188,7 @@ auto Scene::build_cylinder_mesh(const std::vector<CylinderMeshAttr>& cyl_attrs)
   const auto vertices_per_instance = mesh_builder.vertices_size();
 
   auto cyl_buff_bonds =
-   new ColorLightBuffer(vertices_per_instance, total_instances);
+   std::make_unique<ColorLightBuffer>(vertices_per_instance, total_instances);
 
   constexpr auto max_chunk_bytes = size_t{1024 * 1024 * 128};
   constexpr auto bytes_per_vertex =
@@ -238,7 +238,7 @@ auto Scene::build_cylinder_mesh(const std::vector<CylinderMeshAttr>& cyl_attrs)
   colors.resize(colors.capacity());
   cyl_buff_bonds->color_texture_image_data(colors.data());
 
-  return std::unique_ptr<ColorLightBuffer>{cyl_buff_bonds};
+  return cyl_buff_bonds;
 }
 
 void Scene::rotate(Scene::Vec3f rot) noexcept
@@ -252,6 +252,9 @@ void Scene::open_chemdoodle_json_stream(std::istream& is)
 {
   const auto strjson = std::string{std::istreambuf_iterator<char>{is}, {}};
   molecule_ = parse_chemdoodle_json(strjson);
+
+  spacefill_representation().clear_buffers();
+  ballnstick_representation().clear_buffers();
 }
 
 auto Scene::parse_chemdoodle_json(const std::string& strjson) -> Molecule

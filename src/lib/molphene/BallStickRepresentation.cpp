@@ -21,4 +21,13 @@ auto BallStickRepresentation::atom_color(const Atom& atom) const noexcept
   return color_manager.get_element_color(atom.element().symbol);
 }
 
+void BallStickRepresentation::clear_buffers() noexcept
+{
+  atom_sphere_buffer.reset(nullptr);
+
+  bond1_cylinder_buffer.reset(nullptr);
+
+  bond2_cylinder_buffer.reset(nullptr);
+}
+
 } // namespace molphene

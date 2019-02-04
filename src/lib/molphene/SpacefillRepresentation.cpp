@@ -21,4 +21,9 @@ auto SpacefillRepresentation::atom_color(const Atom& atom) const noexcept
   return color_manager.get_element_color(atom.element().symbol);
 }
 
+void SpacefillRepresentation::clear_buffers() noexcept
+{
+  atom_sphere_buffer.reset(nullptr);
+}
+
 } // namespace molphene

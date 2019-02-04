@@ -24,6 +24,8 @@ public:
   auto atom_radius(typename Atom::Element element) const noexcept -> double;
 
   auto atom_color(const Atom& atom) const noexcept -> Rgba8;
+
+  void clear_buffers() noexcept;
 };
 
 } // namespace molphene
