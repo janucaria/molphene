@@ -42,10 +42,10 @@ key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
       camera.projection_mode(false);
       break;
     case GLFW_KEY_K:
-      scene.representation = molphene::MoleculeRepresentation::spacefill;
+      scene.representation(molphene::MoleculeRepresentation::spacefill);
       break;
     case GLFW_KEY_L:
-      scene.representation = molphene::MoleculeRepresentation::ball_and_stick;
+      scene.representation(molphene::MoleculeRepresentation::ball_and_stick);
       break;
     }
   }

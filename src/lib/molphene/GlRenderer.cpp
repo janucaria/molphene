@@ -89,30 +89,9 @@ void GlRenderer::render(const Scene& scene,
     color_light_shader_.fog(scene.fog());
     color_light_shader_.material(scene.material());
 
-    switch(scene.representation) {
-    case MoleculeRepresentation::spacefill: {
-      const auto mbuffers = scene.mesh_buffers();
-      color_light_shader_.color_texture_image(mbuffers->color_texture_image());
-      mbuffers->setup_attrib_pointer(
-       [](auto count) noexcept { glDrawArrays(GL_TRIANGLE_STRIP, 0, count); });
-    } break;
-    default: {
-      auto mbuffers = scene.cyl_bond1_mesh_buffers();
-      color_light_shader_.color_texture_image(mbuffers->color_texture_image());
-      mbuffers->setup_attrib_pointer(
-       [](auto count) noexcept { glDrawArrays(GL_TRIANGLE_STRIP, 0, count); });
-
-      mbuffers = scene.cyl_bond2_mesh_buffers();
-      color_light_shader_.color_texture_image(mbuffers->color_texture_image());
-      mbuffers->setup_attrib_pointer(
-       [](auto count) noexcept { glDrawArrays(GL_TRIANGLE_STRIP, 0, count); });
-
-      mbuffers = scene.ballnstick_sphere_atom_buffers();
-      color_light_shader_.color_texture_image(mbuffers->color_texture_image());
-      mbuffers->setup_attrib_pointer(
-       [](auto count) noexcept { glDrawArrays(GL_TRIANGLE_STRIP, 0, count); });
-    } break;
-    }
+    std::visit([this](const auto& representation) {
+      render_representation_(representation);
+    }, scene.representation());
   }
 
   glFlush();
@@ -133,6 +112,40 @@ void GlRenderer::render(const Scene& scene,
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
   }
   glFlush();
+}
+
+void GlRenderer::render_representation_(
+ const SpacefillRepresentation& representation) const
+{
+  const auto mbuffers = representation.atom_sphere_buffer.get();
+  color_light_shader_.color_texture_image(mbuffers->color_texture_image());
+  mbuffers->setup_attrib_pointer(
+   [](auto count) noexcept { glDrawArrays(GL_TRIANGLE_STRIP, 0, count); });
+}
+
+void GlRenderer::render_representation_(
+ const BallStickRepresentation& representation) const
+{
+  {
+    const auto mbuffers = representation.bond1_cylinder_buffer.get();
+    color_light_shader_.color_texture_image(mbuffers->color_texture_image());
+    mbuffers->setup_attrib_pointer(
+     [](auto count) noexcept { glDrawArrays(GL_TRIANGLE_STRIP, 0, count); });
+  }
+
+  {
+    const auto mbuffers = representation.bond2_cylinder_buffer.get();
+    color_light_shader_.color_texture_image(mbuffers->color_texture_image());
+    mbuffers->setup_attrib_pointer(
+     [](auto count) noexcept { glDrawArrays(GL_TRIANGLE_STRIP, 0, count); });
+  }
+
+  {
+    const auto mbuffers = representation.atom_sphere_buffer.get();
+    color_light_shader_.color_texture_image(mbuffers->color_texture_image());
+    mbuffers->setup_attrib_pointer(
+     [](auto count) noexcept { glDrawArrays(GL_TRIANGLE_STRIP, 0, count); });
+  }
 }
 
 } // namespace molphene

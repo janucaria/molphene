@@ -9,6 +9,7 @@
 #include "mol/BondInsertIterator.hpp"
 #include "shape/Cylinder.hpp"
 #include "shape/Sphere.hpp"
+#include "utility.hpp"
 
 namespace molphene {
 
@@ -79,9 +80,9 @@ void Scene::reset_mesh() noexcept
     sphere_mesh_attrs.reserve(atoms.size());
 
     transform_sphere_attrs(
-     spacefill_representation_, atoms, std::back_inserter(sphere_mesh_attrs));
+     spacefill_representation(), atoms, std::back_inserter(sphere_mesh_attrs));
 
-    spacefill_representation_.atom_sphere_buffer =
+    spacefill_representation().atom_sphere_buffer =
      build_sphere_mesh(sphere_mesh_attrs);
   }
 
@@ -90,11 +91,11 @@ void Scene::reset_mesh() noexcept
       auto sphere_mesh_attrs = std::vector<SphereMeshAttr>{};
       sphere_mesh_attrs.reserve(atoms_in_bond.size());
 
-      transform_sphere_attrs(ballnstick_representation_,
+      transform_sphere_attrs(ballnstick_representation(),
                              atoms_in_bond,
                              std::back_inserter(sphere_mesh_attrs));
 
-      ballnstick_representation_.atom_sphere_buffer =
+      ballnstick_representation().atom_sphere_buffer =
        build_sphere_mesh(sphere_mesh_attrs);
     }
 
@@ -102,19 +103,19 @@ void Scene::reset_mesh() noexcept
     cylinder_mesh_attrs.reserve(bond_atoms.size());
 
     transform_clylinder_attrs(true,
-                              ballnstick_representation_,
+                              ballnstick_representation(),
                               bond_atoms,
                               std::back_insert_iterator(cylinder_mesh_attrs));
-    ballnstick_representation_.bond1_cylinder_buffer =
+    ballnstick_representation().bond1_cylinder_buffer =
      build_cylinder_mesh(cylinder_mesh_attrs);
 
     cylinder_mesh_attrs.clear();
 
     transform_clylinder_attrs(false,
-                              ballnstick_representation_,
+                              ballnstick_representation(),
                               bond_atoms,
                               std::back_insert_iterator(cylinder_mesh_attrs));
-    ballnstick_representation_.bond2_cylinder_buffer =
+    ballnstick_representation().bond2_cylinder_buffer =
      build_cylinder_mesh(cylinder_mesh_attrs);
   }
 }
@@ -362,27 +363,6 @@ auto Scene::fog() const noexcept -> Fog
   return fog_;
 }
 
-auto Scene::mesh_buffers() const noexcept -> const ColorLightBuffer*
-{
-  return spacefill_representation_.atom_sphere_buffer.get();
-}
-
-auto Scene::cyl_bond1_mesh_buffers() const noexcept -> const ColorLightBuffer*
-{
-  return ballnstick_representation_.bond1_cylinder_buffer.get();
-}
-
-auto Scene::cyl_bond2_mesh_buffers() const noexcept -> const ColorLightBuffer*
-{
-  return ballnstick_representation_.bond2_cylinder_buffer.get();
-}
-
-auto Scene::ballnstick_sphere_atom_buffers() const noexcept
- -> const ColorLightBuffer*
-{
-  return ballnstick_representation_.atom_sphere_buffer.get();
-}
-
 void Scene::change_dimension(size_type width, size_type height) noexcept
 {
   viewport_.width = width;
@@ -397,6 +377,31 @@ auto Scene::viewport() const noexcept -> Viewport
 auto Scene::bounding_sphere() const noexcept -> BoundingSphere
 {
   return bounding_sphere_;
+}
+
+auto Scene::spacefill_representation() noexcept -> SpacefillRepresentation&
+{
+  return *detail::attain<SpacefillRepresentation>(&spacefill_representation_);
+}
+
+auto Scene::ballnstick_representation() noexcept -> BallStickRepresentation&
+{
+  return *detail::attain<BallStickRepresentation>(&ballnstick_representation_);
+}
+
+void Scene::representation(MoleculeRepresentation value)
+{
+  representation_ = value;
+}
+
+auto Scene::representation() const noexcept -> const representation_variant&
+{
+  switch(representation_) {
+  case MoleculeRepresentation::spacefill:
+    return spacefill_representation_;
+  case MoleculeRepresentation::ball_and_stick:
+    return ballnstick_representation_;
+  }
 }
 
 } // namespace molphene

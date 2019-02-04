@@ -46,8 +46,6 @@ public:
     Cylinder<double> cylinder;
   };
 
-  MoleculeRepresentation representation{MoleculeRepresentation::spacefill};
-
   using float_type = typename type_configs<ConfigType>::float_type;
   using size_type = typename type_configs<ConfigType>::size_type;
 
@@ -76,6 +74,9 @@ public:
 
   using Viewport = Viewport<size_type>;
 
+  using representation_variant =
+   std::variant<SpacefillRepresentation, BallStickRepresentation>;
+
   auto setup_graphics() noexcept -> bool;
 
   void reset_mesh() noexcept;
@@ -98,16 +99,15 @@ public:
 
   auto viewport() const noexcept -> Viewport;
 
-  auto mesh_buffers() const noexcept -> const ColorLightBuffer*;
+  void representation(MoleculeRepresentation value);
 
-  auto cyl_bond1_mesh_buffers() const noexcept -> const ColorLightBuffer*;
-
-  auto cyl_bond2_mesh_buffers() const noexcept -> const ColorLightBuffer*;
-
-  auto ballnstick_sphere_atom_buffers() const noexcept
-   -> const ColorLightBuffer*;
+  auto representation() const noexcept -> const representation_variant&;
 
   auto bounding_sphere() const noexcept -> BoundingSphere;
+
+  auto spacefill_representation() noexcept -> SpacefillRepresentation&;
+
+  auto ballnstick_representation() noexcept -> BallStickRepresentation&;
 
   auto build_sphere_mesh(const std::vector<SphereMeshAttr>& atoms)
    -> std::unique_ptr<ColorLightBuffer>;
@@ -195,9 +195,11 @@ public:
   }
 
 private:
-  SpacefillRepresentation spacefill_representation_;
+  representation_variant spacefill_representation_{SpacefillRepresentation{}};
 
-  BallStickRepresentation ballnstick_representation_;
+  representation_variant ballnstick_representation_{BallStickRepresentation{}};
+
+  MoleculeRepresentation representation_{MoleculeRepresentation::spacefill};
 
   LightSource light_source_;
 

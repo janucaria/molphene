@@ -3,10 +3,12 @@
 
 #include "stdafx.hpp"
 
+#include "BallStickRepresentation.hpp"
 #include "Camera.hpp"
 #include "ColorLightShader.hpp"
 #include "QuadShader.hpp"
 #include "Scene.hpp"
+#include "SpacefillRepresentation.hpp"
 #include "VertexAttribsBuffer.hpp"
 #include "m3d.hpp"
 
@@ -37,6 +39,12 @@ private:
   ColorLightShader color_light_shader_;
 
   QuadShader quad_shader_;
+
+  void
+  render_representation_(const SpacefillRepresentation& representation) const;
+
+  void
+  render_representation_(const BallStickRepresentation& representation) const;
 };
 
 } // namespace molphene
