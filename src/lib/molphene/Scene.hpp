@@ -77,6 +77,8 @@ public:
   using representation_variant =
    std::variant<SpacefillRepresentation, BallStickRepresentation>;
 
+   using representations_container = std::list<representation_variant>;
+
   auto setup_graphics() noexcept -> bool;
 
   void reset_mesh() noexcept;
@@ -101,7 +103,7 @@ public:
 
   void representation(MoleculeRepresentation value);
 
-  auto representation() const noexcept -> const representation_variant&;
+  auto representations() const noexcept -> const representations_container&;
 
   auto bounding_sphere() const noexcept -> BoundingSphere;
 
@@ -195,11 +197,10 @@ public:
   }
 
 private:
-  representation_variant spacefill_representation_{SpacefillRepresentation{}};
-
-  representation_variant ballnstick_representation_{BallStickRepresentation{}};
 
   MoleculeRepresentation representation_{MoleculeRepresentation::spacefill};
+
+  representations_container representations_;
 
   LightSource light_source_;
 

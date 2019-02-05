@@ -22,6 +22,9 @@ auto Scene::setup_graphics() noexcept -> bool
 
   spot_light_source_.location = {0, 0, -20};
 
+  representations_.emplace_back(SpacefillRepresentation{});
+  representations_.emplace_back(BallStickRepresentation{});
+
   return true;
 }
 
@@ -384,12 +387,12 @@ auto Scene::bounding_sphere() const noexcept -> BoundingSphere
 
 auto Scene::spacefill_representation() noexcept -> SpacefillRepresentation&
 {
-  return *detail::attain<SpacefillRepresentation>(&spacefill_representation_);
+  return *detail::attain<SpacefillRepresentation>(&representations_.front());
 }
 
 auto Scene::ballnstick_representation() noexcept -> BallStickRepresentation&
 {
-  return *detail::attain<BallStickRepresentation>(&ballnstick_representation_);
+  return *detail::attain<BallStickRepresentation>(&representations_.back());
 }
 
 void Scene::representation(MoleculeRepresentation value)
@@ -397,14 +400,10 @@ void Scene::representation(MoleculeRepresentation value)
   representation_ = value;
 }
 
-auto Scene::representation() const noexcept -> const representation_variant&
+auto Scene::representations() const noexcept
+ -> const representations_container&
 {
-  switch(representation_) {
-  case MoleculeRepresentation::spacefill:
-    return spacefill_representation_;
-  case MoleculeRepresentation::ball_and_stick:
-    return ballnstick_representation_;
-  }
+  return representations_;
 }
 
 } // namespace molphene

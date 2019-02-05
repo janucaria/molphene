@@ -89,9 +89,11 @@ void GlRenderer::render(const Scene& scene,
     color_light_shader_.fog(scene.fog());
     color_light_shader_.material(scene.material());
 
-    std::visit([this](const auto& representation) {
-      render_representation_(representation);
-    }, scene.representation());
+    for(auto&& representation_var: scene.representations()) {
+      std::visit([this](const auto& representation) {
+        render_representation_(representation);
+      }, representation_var);
+    }
   }
 
   glFlush();
