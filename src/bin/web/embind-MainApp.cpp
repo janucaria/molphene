@@ -9,5 +9,7 @@ EMSCRIPTEN_BINDINGS(main)
    .function("run", &molphene::Application::run)
    .function("openPDBData", &molphene::Application::open_pdb_data)
    .function("onCanvasSizeChange",
-             &molphene::Application::canvas_size_change_callback);
+             &molphene::Application::canvas_size_change_callback)
+   .function("changeRepresentation",
+             &molphene::Application::change_representation);
 }

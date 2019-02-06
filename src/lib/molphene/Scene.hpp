@@ -83,6 +83,8 @@ public:
 
   void reset_mesh() noexcept;
 
+  void reset_representation() noexcept;
+
   void change_dimension(size_type width, size_type height) noexcept;
 
   void rotate(Vec3f rot) noexcept;

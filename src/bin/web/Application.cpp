@@ -29,6 +29,19 @@ void Application::canvas_size_change_callback(int width, int height)
   render_frame();
 }
 
+void Application::change_representation(int representation_type)
+{
+  switch(representation_type) {
+    case static_cast<int>(molphene::MoleculeRepresentation::spacefill):{
+      scene.representation(molphene::MoleculeRepresentation::spacefill);
+    } break;
+    case static_cast<int>(molphene::MoleculeRepresentation::ball_and_stick):{
+      scene.representation(molphene::MoleculeRepresentation::ball_and_stick);
+    } break;
+  }
+  render_frame();
+}
+
 void Application::render_frame()
 {
   renderer.render(scene, camera);

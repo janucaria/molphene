@@ -22,6 +22,8 @@ public:
 
   void canvas_size_change_callback(int width, int height);
 
+  void change_representation(int representation_type);
+
   void render_frame();
 
 private:

@@ -32,95 +32,17 @@ void Scene::reset_mesh() noexcept
 {
   namespace range = boost::range;
 
-  auto atoms = std::vector<const Atom*>{};
-  auto bonds = std::vector<const Bond*>{};
-  using pair_atoms_t = std::pair<const Atom*, const Atom*>;
-  auto bond_atoms = std::vector<pair_atoms_t>{};
-  auto atoms_in_bond = std::vector<const Atom*>{};
-
-  bonds.reserve(molecule_.bonds().size());
-  range::transform(
-   molecule_.bonds(), std::back_inserter(bonds), [](auto& bond) noexcept {
-     return std::addressof(bond);
-   });
-
-  bond_atoms.reserve(bonds.size());
-  range::transform(
-   bonds,
-   std::back_inserter(bond_atoms),
-   [& atoms = molecule_.atoms()](auto bond_ptr) noexcept {
-     return std::make_pair(&atoms.at(bond_ptr->atom1()),
-                           &atoms.at(bond_ptr->atom2()));
-   });
-
-  atoms.reserve(molecule_.atoms().size());
-  range::transform(
-   molecule_.atoms(), std::back_inserter(atoms), [](auto& atom) noexcept {
-     return &atom;
-   });
-
-  atoms_in_bond.reserve(atoms.size());
-  boost::algorithm::copy_if(
-   atoms, std::back_inserter(atoms_in_bond), [&](auto* atom) {
-     return boost::find_if(bond_atoms, [&](auto atom_pair) {
-              return atom == atom_pair.first || atom == atom_pair.second;
-            }) != std::end(bond_atoms);
-   });
-  atoms_in_bond.shrink_to_fit();
-
   // calculate bounding sphere
   bounding_sphere_.reset();
 
   range::transform(
-   atoms, ExpandIterator{bounding_sphere_}, [](auto atom) noexcept {
-     return atom->position();
+   molecule_.atoms(), ExpandIterator{bounding_sphere_}, [](auto atom) noexcept {
+     return atom.position();
    });
 
   model_matrix_.identity().translate(-bounding_sphere_.center());
-
-  {
-    auto sphere_mesh_attrs = std::vector<SphereMeshAttr>{};
-    sphere_mesh_attrs.reserve(atoms.size());
-
-    transform_sphere_attrs(
-     spacefill_representation(), atoms, std::back_inserter(sphere_mesh_attrs));
-
-    spacefill_representation().atom_sphere_buffer =
-     build_sphere_mesh(sphere_mesh_attrs);
-  }
-
-  {
-    {
-      auto sphere_mesh_attrs = std::vector<SphereMeshAttr>{};
-      sphere_mesh_attrs.reserve(atoms_in_bond.size());
-
-      transform_sphere_attrs(ballnstick_representation(),
-                             atoms_in_bond,
-                             std::back_inserter(sphere_mesh_attrs));
-
-      ballnstick_representation().atom_sphere_buffer =
-       build_sphere_mesh(sphere_mesh_attrs);
-    }
-
-    auto cylinder_mesh_attrs = std::vector<CylinderMeshAttr>{};
-    cylinder_mesh_attrs.reserve(bond_atoms.size());
-
-    transform_clylinder_attrs(true,
-                              ballnstick_representation(),
-                              bond_atoms,
-                              std::back_insert_iterator(cylinder_mesh_attrs));
-    ballnstick_representation().bond1_cylinder_buffer =
-     build_cylinder_mesh(cylinder_mesh_attrs);
-
-    cylinder_mesh_attrs.clear();
-
-    transform_clylinder_attrs(false,
-                              ballnstick_representation(),
-                              bond_atoms,
-                              std::back_insert_iterator(cylinder_mesh_attrs));
-    ballnstick_representation().bond2_cylinder_buffer =
-     build_cylinder_mesh(cylinder_mesh_attrs);
-  }
+  
+  reset_representation();
 }
 
 auto Scene::build_sphere_mesh(const std::vector<SphereMeshAttr>& sph_attrs)
@@ -255,9 +177,6 @@ void Scene::open_chemdoodle_json_stream(std::istream& is)
 {
   const auto strjson = std::string{std::istreambuf_iterator<char>{is}, {}};
   molecule_ = parse_chemdoodle_json(strjson);
-
-  spacefill_representation().clear_buffers();
-  ballnstick_representation().clear_buffers();
 }
 
 auto Scene::parse_chemdoodle_json(const std::string& strjson) -> Molecule
@@ -397,11 +316,114 @@ auto Scene::ballnstick_representation() noexcept -> BallStickRepresentation&
 
 void Scene::representation(MoleculeRepresentation value)
 {
+  if(representation_ == value) {
+    return;
+  }
+
   representation_ = value;
+  reset_representation();
 }
 
-auto Scene::representations() const noexcept
- -> const representations_container&
+void Scene::reset_representation() noexcept
+{
+  namespace range = boost::range;
+
+  representations_.clear();
+  switch(representation_) {
+  case MoleculeRepresentation::spacefill: {
+    using representation_t = SpacefillRepresentation;
+
+    auto atoms = std::vector<const Atom*>{};
+    atoms.reserve(molecule_.atoms().size());
+    range::transform(
+     molecule_.atoms(), std::back_inserter(atoms), [](auto& atom) noexcept {
+       return &atom;
+     });
+
+    auto& rep_var = representations_.emplace_back(representation_t{});
+    auto& spacefill = *detail::attain<representation_t>(&rep_var);
+
+    auto sphere_mesh_attrs = std::vector<SphereMeshAttr>{};
+    sphere_mesh_attrs.reserve(atoms.size());
+
+    transform_sphere_attrs(
+     spacefill, atoms, std::back_inserter(sphere_mesh_attrs));
+
+    spacefill.atom_sphere_buffer = build_sphere_mesh(sphere_mesh_attrs);
+  } break;
+  case MoleculeRepresentation::ball_and_stick: {
+    using representation_t = BallStickRepresentation;
+
+    auto atoms = std::vector<const Atom*>{};
+    auto bonds = std::vector<const Bond*>{};
+    using pair_atoms_t = std::pair<const Atom*, const Atom*>;
+    auto bond_atoms = std::vector<pair_atoms_t>{};
+    auto atoms_in_bond = std::vector<const Atom*>{};
+
+    bonds.reserve(molecule_.bonds().size());
+    range::transform(
+     molecule_.bonds(), std::back_inserter(bonds), [](auto& bond) noexcept {
+       return std::addressof(bond);
+     });
+
+    bond_atoms.reserve(bonds.size());
+    range::transform(
+     bonds,
+     std::back_inserter(bond_atoms),
+     [& atoms = molecule_.atoms()](auto bond) noexcept {
+       return std::make_pair(&atoms.at(bond->atom1()),
+                             &atoms.at(bond->atom2()));
+     });
+
+    atoms.reserve(molecule_.atoms().size());
+    range::transform(
+     molecule_.atoms(), std::back_inserter(atoms), [](auto& atom) noexcept {
+       return &atom;
+     });
+
+    atoms_in_bond.reserve(atoms.size());
+    boost::algorithm::copy_if(
+     atoms, std::back_inserter(atoms_in_bond), [&](auto* atom) {
+       return boost::find_if(bond_atoms, [&](auto atom_pair) {
+                return atom == atom_pair.first || atom == atom_pair.second;
+              }) != std::end(bond_atoms);
+     });
+    atoms_in_bond.shrink_to_fit();
+
+    auto& rep_var = representations_.emplace_back(representation_t{});
+    auto& ballnstick = *detail::attain<representation_t>(&rep_var);
+    {
+      auto sphere_mesh_attrs = std::vector<SphereMeshAttr>{};
+      sphere_mesh_attrs.reserve(atoms_in_bond.size());
+
+      transform_sphere_attrs(
+       ballnstick, atoms_in_bond, std::back_inserter(sphere_mesh_attrs));
+
+      ballnstick.atom_sphere_buffer = build_sphere_mesh(sphere_mesh_attrs);
+    }
+
+    auto cylinder_mesh_attrs = std::vector<CylinderMeshAttr>{};
+    cylinder_mesh_attrs.reserve(bond_atoms.size());
+
+    transform_clylinder_attrs(true,
+                              ballnstick,
+                              bond_atoms,
+                              std::back_insert_iterator(cylinder_mesh_attrs));
+    ballnstick_representation().bond1_cylinder_buffer =
+     build_cylinder_mesh(cylinder_mesh_attrs);
+
+    cylinder_mesh_attrs.clear();
+
+    transform_clylinder_attrs(false,
+                              ballnstick,
+                              bond_atoms,
+                              std::back_insert_iterator(cylinder_mesh_attrs));
+    ballnstick.bond2_cylinder_buffer = build_cylinder_mesh(cylinder_mesh_attrs);
+  } break;
+  }
+}
+
+auto Scene::representations() const noexcept -> const representations_container&
 {
   return representations_;
 }
