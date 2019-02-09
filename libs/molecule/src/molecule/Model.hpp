@@ -1,5 +1,5 @@
-#ifndef MOLPHENE_MOL_MODEL_HPP
-#define MOLPHENE_MOL_MODEL_HPP
+#ifndef MOLPHENE_MOLECULE_MODEL_HPP
+#define MOLPHENE_MOLECULE_MODEL_HPP
 
 #include "Atom.hpp"
 #include "Bond.hpp"

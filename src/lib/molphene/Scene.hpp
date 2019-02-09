@@ -18,11 +18,11 @@
 #include "SpotLight.hpp"
 #include "Viewport.hpp"
 #include "m3d.hpp"
-#include "mol/Atom.hpp"
-#include "mol/Bond.hpp"
-#include "mol/Molecule.hpp"
 #include "shape/Cylinder.hpp"
 #include "shape/Sphere.hpp"
+#include <molecule/Atom.hpp>
+#include <molecule/Bond.hpp>
+#include <molecule/Molecule.hpp>
 
 namespace molphene {
 
@@ -77,7 +77,7 @@ public:
   using representation_variant =
    std::variant<SpacefillRepresentation, BallStickRepresentation>;
 
-   using representations_container = std::list<representation_variant>;
+  using representations_container = std::list<representation_variant>;
 
   auto setup_graphics() noexcept -> bool;
 
@@ -199,7 +199,6 @@ public:
   }
 
 private:
-
   MoleculeRepresentation representation_{MoleculeRepresentation::spacefill};
 
   representations_container representations_;

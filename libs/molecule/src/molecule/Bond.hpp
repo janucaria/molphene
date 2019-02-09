@@ -1,5 +1,5 @@
-#ifndef MOLPHENE_MOL_BOND_HPP
-#define MOLPHENE_MOL_BOND_HPP
+#ifndef MOLPHENE_MOLECULE_BOND_HPP
+#define MOLPHENE_MOLECULE_BOND_HPP
 
 namespace molphene {
 class Bond {

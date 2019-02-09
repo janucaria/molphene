@@ -34,6 +34,7 @@ endif()
 
 add_compile_options(-Wall -Wpedantic -pedantic-errors)
 
+add_subdirectory("libs/molecule")
 add_subdirectory("${PROJECT_SOURCE_DIR}/cmake/cmakelists/libmolphene")
 add_subdirectory("${PROJECT_SOURCE_DIR}/cmake/cmakelists/molphene-glfw")
 

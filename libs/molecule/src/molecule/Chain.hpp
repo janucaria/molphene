@@ -1,5 +1,5 @@
-#ifndef MOLPHENE_MOL_CHAIN_HPP
-#define MOLPHENE_MOL_CHAIN_HPP
+#ifndef MOLPHENE_MOLECULE_CHAIN_HPP
+#define MOLPHENE_MOLECULE_CHAIN_HPP
 
 #include "Compound.hpp"
 #include <map>

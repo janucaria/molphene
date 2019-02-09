@@ -6,8 +6,9 @@
 #include "ColorLightBuffer.hpp"
 #include "ColourManager.hpp"
 #include "m3d.hpp"
-#include "mol/Atom.hpp"
-#include "mol/AtomRadiusType.hpp"
+
+#include <molecule/Atom.hpp>
+#include <molecule/AtomRadiusType.hpp>
 
 namespace molphene {
 

@@ -1,7 +1,7 @@
-#ifndef MOLPHENE_BOND_INSERT_ITERATOR_HPP
-#define MOLPHENE_BOND_INSERT_ITERATOR_HPP
+#ifndef MOLPHENE_MOLECULE_BOND_INSERT_ITERATOR_HPP
+#define MOLPHENE_MOLECULE_BOND_INSERT_ITERATOR_HPP
 
-#include "../stdafx.hpp"
+#include "stdafx.hpp"
 
 #include "Bond.hpp"
 

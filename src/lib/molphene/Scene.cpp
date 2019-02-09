@@ -5,8 +5,8 @@
 #include "Scene.hpp"
 #include "algorithm.hpp"
 #include "m3d.hpp"
-#include "mol/AtomInsertIterator.hpp"
-#include "mol/BondInsertIterator.hpp"
+#include <molecule/AtomInsertIterator.hpp>
+#include <molecule/BondInsertIterator.hpp>
 #include "shape/Cylinder.hpp"
 #include "shape/Sphere.hpp"
 #include "utility.hpp"
