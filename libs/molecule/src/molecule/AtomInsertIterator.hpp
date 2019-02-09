@@ -1,7 +1,7 @@
 #ifndef MOLPHENE_MOLECULE_ATOM_INSERT_ITERATOR_HPP
 #define MOLPHENE_MOLECULE_ATOM_INSERT_ITERATOR_HPP
 
-#include "stdafx.hpp"
+#include "Atom.hpp"
 
 namespace molphene {
 

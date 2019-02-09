@@ -32,8 +32,6 @@
 #include <boost/range/algorithm.hpp>
 #include <boost/range/iterator_range.hpp>
 
-#include <nlohmann/json.hpp>
-
 #include "type_configs.hpp"
 
 #endif

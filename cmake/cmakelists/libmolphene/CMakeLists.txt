@@ -14,7 +14,7 @@ target_include_directories(molphene
     "${PROJECT_SOURCE_DIR}/src/lib"
 )
 
-target_link_libraries(molphene PUBLIC molphene-molecule GSL nlohmann_json::nlohmann_json gm3d)
+target_link_libraries(molphene PUBLIC molphene-molecule GSL gm3d)
 target_compile_features(molphene PUBLIC cxx_std_17)
 
 if(APPLE)

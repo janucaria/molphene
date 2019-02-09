@@ -3,6 +3,8 @@
 
 #include "stdafx.hpp"
 
+#include <molecule/Molecule.hpp>
+
 #include "BallStickRepresentation.hpp"
 #include "BoundingSphere.hpp"
 #include "Camera.hpp"
@@ -90,8 +92,6 @@ public:
   void rotate(Vec3f rot) noexcept;
 
   void open_chemdoodle_json_stream(std::istream& is);
-
-  auto parse_chemdoodle_json(const std::string& json) -> Molecule;
 
   auto model_matrix() const noexcept -> Mat4f;
 
