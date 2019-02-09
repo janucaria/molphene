@@ -6,7 +6,7 @@
 
 namespace molphene::detail {
 
-template<class T, class... Types>
+template<typename T, typename... Types>
 constexpr std::add_pointer_t<T> attain(std::variant<Types...>* pv) noexcept
 {
   auto* ptr = std::get_if<T>(pv);
@@ -14,7 +14,7 @@ constexpr std::add_pointer_t<T> attain(std::variant<Types...>* pv) noexcept
   return ptr;
 }
 
-template<class T, class... Types>
+template<typename T, typename... Types>
 constexpr std::add_pointer_t<const T>
 attain(const std::variant<Types...>* pv) noexcept
 {

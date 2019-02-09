@@ -1,6 +1,6 @@
 add_executable(molphene-web
-  "${PROJECT_SOURCE_DIR}/src/bin/web/Application.cpp"
-  "${PROJECT_SOURCE_DIR}/src/bin/web/ClickState.cpp"
+  "${PROJECT_SOURCE_DIR}/src/bin/web/application.cpp"
+  "${PROJECT_SOURCE_DIR}/src/bin/web/click_state.cpp"
   "${PROJECT_SOURCE_DIR}/src/bin/web/embind-MainApp.cpp"
 )
 

@@ -1,15 +1,15 @@
 #include <emscripten/bind.h>
 
-#include "Application.hpp"
+#include "application.hpp"
 
 EMSCRIPTEN_BINDINGS(main)
 {
-  emscripten::class_<molphene::Application>("MainApp")
+  emscripten::class_<molphene::application>("MainApp")
    .constructor<>()
-   .function("run", &molphene::Application::run)
-   .function("openPDBData", &molphene::Application::open_pdb_data)
+   .function("run", &molphene::application::run)
+   .function("openPDBData", &molphene::application::open_pdb_data)
    .function("onCanvasSizeChange",
-             &molphene::Application::canvas_size_change_callback)
+             &molphene::application::canvas_size_change_callback)
    .function("changeRepresentation",
-             &molphene::Application::change_representation);
+             &molphene::application::change_representation);
 }

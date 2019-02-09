@@ -72,12 +72,12 @@ struct gl_vertex_attrib : gl_attrib_pointer_type<T> {
 };
 
 template<typename T>
-struct gl_vertex_attrib<Vec2<T>> : gl_attrib_pointer_type<T> {
+struct gl_vertex_attrib<vec2<T>> : gl_attrib_pointer_type<T> {
   static constexpr GLint size = 2;
 };
 
 template<typename T>
-struct gl_vertex_attrib<Vec3<T>> : gl_attrib_pointer_type<T> {
+struct gl_vertex_attrib<vec3<T>> : gl_attrib_pointer_type<T> {
   static constexpr GLint size = 3;
 };
 

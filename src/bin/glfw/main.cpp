@@ -6,14 +6,14 @@
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
 
-#include <molphene/Camera.hpp>
-#include <molphene/GlRenderer.hpp>
-#include <molphene/MoleculeRepresentation.hpp>
-#include <molphene/Scene.hpp>
+#include <molphene/camera.hpp>
+#include <molphene/gl_renderer.hpp>
+#include <molphene/molecule_display.hpp>
+#include <molphene/scene.hpp>
 
-static molphene::Scene scene;
-static molphene::GlRenderer renderer;
-static molphene::Scene::Camera camera;
+static molphene::scene scene;
+static molphene::gl_renderer renderer;
+static molphene::scene::camera camera;
 static GLFWwindow* window;
 static bool mouse_press = false;
 static int mouse_button = -1;
@@ -42,10 +42,10 @@ key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
       camera.projection_mode(false);
       break;
     case GLFW_KEY_K:
-      scene.representation(molphene::MoleculeRepresentation::spacefill);
+      scene.representation(molphene::molecule_display::spacefill);
       break;
     case GLFW_KEY_L:
-      scene.representation(molphene::MoleculeRepresentation::ball_and_stick);
+      scene.representation(molphene::molecule_display::ball_and_stick);
       break;
     }
   }
