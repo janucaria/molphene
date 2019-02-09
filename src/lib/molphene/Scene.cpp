@@ -199,17 +199,6 @@ auto Scene::fog() const noexcept -> Fog
   return fog_;
 }
 
-void Scene::change_dimension(size_type width, size_type height) noexcept
-{
-  viewport_.width = width;
-  viewport_.height = height;
-}
-
-auto Scene::viewport() const noexcept -> Viewport
-{
-  return viewport_;
-}
-
 auto Scene::bounding_sphere() const noexcept -> BoundingSphere
 {
   return bounding_sphere_;

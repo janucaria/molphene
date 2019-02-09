@@ -8,8 +8,8 @@
 
 #include <molphene/Camera.hpp>
 #include <molphene/GlRenderer.hpp>
-#include <molphene/Scene.hpp>
 #include <molphene/MoleculeRepresentation.hpp>
+#include <molphene/Scene.hpp>
 
 static molphene::Scene scene;
 static molphene::GlRenderer renderer;
@@ -53,7 +53,7 @@ key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 
 static void window_size_callback(GLFWwindow* window, int width, int height)
 {
-  scene.change_dimension(width, height);
+  renderer.change_dimension(width, height);
   camera.aspect_ratio(width, height);
   camera.update_view_matrix();
 }
@@ -102,7 +102,7 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
   scene.setup_graphics();
-  scene.change_dimension(width, height);
+  renderer.change_dimension(width, height);
   camera.aspect_ratio(width, height);
   camera.update_view_matrix();
 }
@@ -161,11 +161,11 @@ auto main(int argc, char* argv[]) -> int
 
   glfwGetFramebufferSize(window, &width, &height);
   scene.setup_graphics();
-  scene.change_dimension(width, height);
+  renderer.init();
+
+  renderer.change_dimension(width, height);
   camera.aspect_ratio(width, height);
   camera.projection_mode(true);
-
-  renderer.init();
 
   if(argc > 1) {
     std::ifstream pdbfile(argv[1]);

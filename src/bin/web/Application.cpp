@@ -23,7 +23,7 @@ void Application::open_pdb_data(std::string pdbdata)
 
 void Application::canvas_size_change_callback(int width, int height)
 {
-  scene.change_dimension(width, height);
+  renderer.change_dimension(width, height);
   camera.aspect_ratio(width, height);
   camera.update_view_matrix();
   render_frame();
@@ -100,7 +100,7 @@ void Application::run()
   }
   (glctx);
 
-  scene.change_dimension(width, height);
+  renderer.change_dimension(width, height);
   camera.aspect_ratio(width, height);
   camera.update_view_matrix();
 

@@ -54,25 +54,9 @@ void GlRenderer::render(const Scene& scene,
   const auto mv_matrix = scene.model_matrix() * camera.view_matrix();
   const auto norm_matrix = Mat3f{Mat4f{mv_matrix}.inverse().transpose()};
   const auto proj_matrix = camera.projection_matrix();
-  const auto viewport = scene.viewport();
-
-  glBindTexture(GL_TEXTURE_2D, color_light_color_tex_);
-  glTexImage2D(GL_TEXTURE_2D,
-               0,
-               GL_RGBA,
-               viewport.width,
-               viewport.height,
-               0,
-               GL_RGBA,
-               GL_UNSIGNED_BYTE,
-               nullptr);
-
-  glBindRenderbuffer(GL_RENDERBUFFER, color_light_depth_rbo_);
-  glRenderbufferStorage(
-   GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, viewport.width, viewport.height);
 
   glBindFramebuffer(GL_FRAMEBUFFER, color_light_fbo_);
-  glViewport(viewport.x, viewport.y, viewport.width, viewport.height);
+  glViewport(viewport_.x, viewport_.y, viewport_.width, viewport_.height);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
   {
@@ -89,17 +73,19 @@ void GlRenderer::render(const Scene& scene,
     color_light_shader_.fog(scene.fog());
     color_light_shader_.material(scene.material());
 
-    for(auto&& representation_var: scene.representations()) {
-      std::visit([this](const auto& representation) {
-        render_representation_(representation);
-      }, representation_var);
+    for(auto&& representation_var : scene.representations()) {
+      std::visit(
+       [this](const auto& representation) {
+         render_representation_(representation);
+       },
+       representation_var);
     }
   }
 
   glFlush();
 
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
-  glViewport(viewport.x, viewport.y, viewport.width, viewport.height);
+  glViewport(viewport_.x, viewport_.y, viewport_.width, viewport_.height);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
   {
@@ -148,6 +134,28 @@ void GlRenderer::render_representation_(
     mbuffers->setup_attrib_pointer(
      [](auto count) noexcept { glDrawArrays(GL_TRIANGLE_STRIP, 0, count); });
   }
+}
+
+void GlRenderer::change_dimension(std::size_t width,
+                                  std::size_t height) noexcept
+{
+  viewport_.width = width;
+  viewport_.height = height;
+
+  glBindTexture(GL_TEXTURE_2D, color_light_color_tex_);
+  glTexImage2D(GL_TEXTURE_2D,
+               0,
+               GL_RGBA,
+               viewport_.width,
+               viewport_.height,
+               0,
+               GL_RGBA,
+               GL_UNSIGNED_BYTE,
+               nullptr);
+
+  glBindRenderbuffer(GL_RENDERBUFFER, color_light_depth_rbo_);
+  glRenderbufferStorage(
+   GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, viewport_.width, viewport_.height);
 }
 
 } // namespace molphene

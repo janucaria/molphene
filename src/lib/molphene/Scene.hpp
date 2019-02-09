@@ -18,7 +18,6 @@
 #include "SpacefillRepresentation.hpp"
 #include "SphereMeshBuilder.hpp"
 #include "SpotLight.hpp"
-#include "Viewport.hpp"
 #include "m3d.hpp"
 #include "shape/Cylinder.hpp"
 #include "shape/Sphere.hpp"
@@ -74,8 +73,6 @@ public:
 
   using CylinderMeshBuilder = CylinderMeshBuilder<ConfigType>;
 
-  using Viewport = Viewport<size_type>;
-
   using representation_variant =
    std::variant<SpacefillRepresentation, BallStickRepresentation>;
 
@@ -86,8 +83,6 @@ public:
   void reset_mesh() noexcept;
 
   void reset_representation() noexcept;
-
-  void change_dimension(size_type width, size_type height) noexcept;
 
   void rotate(Vec3f rot) noexcept;
 
@@ -100,8 +95,6 @@ public:
   auto material() const noexcept -> Material;
 
   auto fog() const noexcept -> Fog;
-
-  auto viewport() const noexcept -> Viewport;
 
   void representation(MoleculeRepresentation value);
 
@@ -212,8 +205,6 @@ private:
   Fog fog_;
 
   Material material_;
-
-  Viewport viewport_;
 
   Mat4f model_matrix_{1};
 

@@ -10,6 +10,7 @@
 #include "Scene.hpp"
 #include "SpacefillRepresentation.hpp"
 #include "VertexAttribsBuffer.hpp"
+#include "Viewport.hpp"
 #include "m3d.hpp"
 
 namespace molphene {
@@ -23,9 +24,13 @@ public:
   using VertexAttribsBuffer =
    VertexAttribsBuffer<Vec2f, ShaderAttribLocation::vertex>;
 
+  using viewport_type = Viewport<std::size_t>;
+
   void init() noexcept;
 
   void render(const Scene& scene, const Camera& camera) noexcept;
+
+  void change_dimension(std::size_t width, std::size_t height) noexcept;
 
 private:
   GLuint color_light_fbo_{0};
@@ -39,6 +44,8 @@ private:
   ColorLightShader color_light_shader_;
 
   QuadShader quad_shader_;
+
+  viewport_type viewport_;
 
   void
   render_representation_(const SpacefillRepresentation& representation) const;
