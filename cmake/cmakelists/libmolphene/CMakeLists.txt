@@ -15,16 +15,14 @@ add_library(molphene
 "${PROJECT_SOURCE_DIR}/src/lib/molphene/SpacefillRepresentation.cpp"
 )
 
-if(APPLE)
-  target_link_libraries(molphene PRIVATE "-framework OpenGL")
-endif()
-
-
 target_include_directories(molphene
-INTERFACE
-"${PROJECT_SOURCE_DIR}/src/lib"
+  INTERFACE
+    "${PROJECT_SOURCE_DIR}/src/lib"
 )
 
 target_link_libraries(molphene PUBLIC GSL nlohmann_json::nlohmann_json gm3d)
+target_compile_features(molphene PUBLIC cxx_std_17)
 
-target_compile_options(molphene PRIVATE ${MOLPHENE_WARNING_OPTIONS} "-stdlib=libc++")
+if(APPLE)
+  target_link_libraries(molphene PRIVATE "-framework OpenGL")
+endif()

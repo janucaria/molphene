@@ -1,16 +1,20 @@
 cmake_minimum_required(VERSION 3.11)
 project(Molphene)
 
+set(JSON_BuildTests OFF CACHE INTERNAL "")
+
+add_subdirectory("${PROJECT_SOURCE_DIR}/third_party/GSL")
+add_subdirectory("${PROJECT_SOURCE_DIR}/third_party/json")
+add_subdirectory("${PROJECT_SOURCE_DIR}/third_party/Gm3d")
+
 enable_testing()
 
 if(EMSCRIPTEN)
   set(CMAKE_CXX_COMPILER ${CMAKE_CXX_COMPILER} CACHE FILEPATH "Compiler")
   set(CMAKE_C_COMPILER ${CMAKE_C_COMPILER} CACHE FILEPATH "Compiler")
+  
+  set(CMAKE_CXX_STANDARD 17)
 endif()
-
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_EXTENSIONS OFF)
 
 if(APPLE)
   add_compile_definitions(GL_SILENCE_DEPRECATION)
@@ -28,13 +32,7 @@ else()
   message(SEND_ERROR "Unable to find the Boost header files. Please set BOOST_ROOT to the root directory containing Boost or BOOST_INCLUDEDIR to the directory containing Boost's headers.")
 endif()
 
-set(MOLPHENE_WARNING_OPTIONS "-Wall" "-Wpedantic")
-
-set(JSON_BuildTests OFF CACHE INTERNAL "")
-
-add_subdirectory("${PROJECT_SOURCE_DIR}/third_party/GSL")
-add_subdirectory("${PROJECT_SOURCE_DIR}/third_party/json")
-add_subdirectory("${PROJECT_SOURCE_DIR}/third_party/Gm3d")
+add_compile_options(-Wall -Wpedantic -pedantic-errors)
 
 add_subdirectory("${PROJECT_SOURCE_DIR}/cmake/cmakelists/libmolphene")
 add_subdirectory("${PROJECT_SOURCE_DIR}/cmake/cmakelists/molphene-glfw")
