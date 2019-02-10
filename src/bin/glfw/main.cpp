@@ -101,7 +101,6 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
-  scene.setup_graphics();
   renderer.change_dimension(width, height);
   camera.aspect_ratio(width, height);
   camera.update_view_matrix();
