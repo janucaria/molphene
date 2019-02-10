@@ -12,15 +12,15 @@
 #include "cylinder_mesh_builder.hpp"
 #include "directional_light.hpp"
 #include "fog.hpp"
+#include "m3d.hpp"
 #include "material.hpp"
 #include "molecule_display.hpp"
 #include "point_light.hpp"
+#include "shape/cylinder.hpp"
+#include "shape/sphere.hpp"
 #include "spacefill_representation.hpp"
 #include "sphere_mesh_builder.hpp"
 #include "spot_light.hpp"
-#include "m3d.hpp"
-#include "shape/cylinder.hpp"
-#include "shape/sphere.hpp"
 
 namespace molphene {
 
@@ -106,7 +106,8 @@ public:
   auto build_sphere_mesh(const std::vector<sphere_mesh_attribute>& atoms)
    -> std::unique_ptr<color_light_buffer>;
 
-  auto build_cylinder_mesh(const std::vector<cylinder_mesh_attribute>& cyl_attrs)
+  auto
+  build_cylinder_mesh(const std::vector<cylinder_mesh_attribute>& cyl_attrs)
    -> std::unique_ptr<color_light_buffer>;
 
   template<typename Represent, typename InRange, typename OutIter>

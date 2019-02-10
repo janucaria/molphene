@@ -6,12 +6,12 @@
 #include "ballstick_representation.hpp"
 #include "camera.hpp"
 #include "color_light_shader.hpp"
+#include "m3d.hpp"
 #include "quad_shader.hpp"
 #include "scene.hpp"
 #include "spacefill_representation.hpp"
 #include "vertex_attribs_buffer.hpp"
 #include "viewport.hpp"
-#include "m3d.hpp"
 
 namespace molphene {
 

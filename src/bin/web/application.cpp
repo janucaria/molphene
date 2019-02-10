@@ -32,12 +32,12 @@ void application::canvas_size_change_callback(int width, int height)
 void application::change_representation(int representation_type)
 {
   switch(representation_type) {
-    case static_cast<int>(molphene::molecule_display::spacefill):{
-      scene.representation(molphene::molecule_display::spacefill);
-    } break;
-    case static_cast<int>(molphene::molecule_display::ball_and_stick):{
-      scene.representation(molphene::molecule_display::ball_and_stick);
-    } break;
+  case static_cast<int>(molphene::molecule_display::spacefill): {
+    scene.representation(molphene::molecule_display::spacefill);
+  } break;
+  case static_cast<int>(molphene::molecule_display::ball_and_stick): {
+    scene.representation(molphene::molecule_display::ball_and_stick);
+  } break;
   }
   render_frame();
 }

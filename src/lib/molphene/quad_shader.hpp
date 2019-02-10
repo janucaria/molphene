@@ -5,13 +5,14 @@
 
 #include "basic_shader.hpp"
 #include "mix_shader_uniforms.hpp"
-#include "shader_attrib_location.hpp"
 #include "opengl.hpp"
+#include "shader_attrib_location.hpp"
 
 namespace molphene {
 class quad_shader
-: public basic_shader<quad_shader,
-                     mix_shader_uniforms<quad_shader, color2d_sampler_uniform>> {
+: public basic_shader<
+   quad_shader,
+   mix_shader_uniforms<quad_shader, color2d_sampler_uniform>> {
 public:
   using attrib_locations = shader_attrib_list<shader_attrib_location::vertex>;
 

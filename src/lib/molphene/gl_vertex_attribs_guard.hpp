@@ -1,8 +1,8 @@
 #ifndef MOLPHENE_GL_VERTEX_ATTRIBS_GUARD_HPP
 #define MOLPHENE_GL_VERTEX_ATTRIBS_GUARD_HPP
 
-#include "shader_attrib_location.hpp"
 #include "opengl.hpp"
+#include "shader_attrib_location.hpp"
 
 namespace molphene {
 

@@ -1,8 +1,8 @@
 #ifndef MOLPHENE_VERTEX_ATTRIBS_BUFFER_HPP
 #define MOLPHENE_VERTEX_ATTRIBS_BUFFER_HPP
 
-#include "shader_attrib_location.hpp"
 #include "opengl.hpp"
+#include "shader_attrib_location.hpp"
 #include "stdafx.hpp"
 
 namespace molphene {
@@ -32,7 +32,8 @@ public:
   auto operator=(const vertex_attribs_buffer& rsh)
    -> vertex_attribs_buffer& = delete;
 
-  auto operator=(vertex_attribs_buffer&& rsh) -> vertex_attribs_buffer& = delete;
+  auto operator=(vertex_attribs_buffer&& rsh)
+   -> vertex_attribs_buffer& = delete;
 
   template<
    typename TContainer,
@@ -56,8 +57,10 @@ public:
   void data(GLintptr offset, GLsizeiptr size, const GLvoid* data) const noexcept
   {
     glBindBuffer(GL_ARRAY_BUFFER, buffer_);
-    glBufferSubData(
-     GL_ARRAY_BUFFER, offset * sizeof(data_type), size * sizeof(data_type), data);
+    glBufferSubData(GL_ARRAY_BUFFER,
+                    offset * sizeof(data_type),
+                    size * sizeof(data_type),
+                    data);
   }
 
   void attrib_pointer() const noexcept

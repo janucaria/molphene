@@ -2,11 +2,11 @@
 
 #include <molecule/chemdoodle_json_parser.hpp>
 
+#include "algorithm.hpp"
 #include "color_manager.hpp"
 #include "expand_iterator.hpp"
-#include "scene.hpp"
-#include "algorithm.hpp"
 #include "m3d.hpp"
+#include "scene.hpp"
 #include "shape/cylinder.hpp"
 #include "shape/sphere.hpp"
 #include "utility.hpp"
@@ -36,16 +36,16 @@ void scene::reset_mesh() noexcept
   bounding_sphere_.reset();
 
   range::transform(
-   molecule_.atoms(), expand_iterator{bounding_sphere_}, [](auto atom) noexcept {
-     return atom.position();
-   });
+   molecule_.atoms(), expand_iterator{bounding_sphere_}, [
+   ](auto atom) noexcept { return atom.position(); });
 
   model_matrix_.identity().translate(-bounding_sphere_.center());
 
   reset_representation();
 }
 
-auto scene::build_sphere_mesh(const std::vector<sphere_mesh_attribute>& sph_attrs)
+auto scene::build_sphere_mesh(
+ const std::vector<sphere_mesh_attribute>& sph_attrs)
  -> std::unique_ptr<color_light_buffer>
 {
   const auto total_instances = sph_attrs.size();
@@ -105,7 +105,8 @@ auto scene::build_sphere_mesh(const std::vector<sphere_mesh_attribute>& sph_attr
   return sphere_buff_atoms;
 }
 
-auto scene::build_cylinder_mesh(const std::vector<cylinder_mesh_attribute>& cyl_attrs)
+auto scene::build_cylinder_mesh(
+ const std::vector<cylinder_mesh_attribute>& cyl_attrs)
  -> std::unique_ptr<color_light_buffer>
 {
   const auto total_instances = cyl_attrs.size();
@@ -309,8 +310,7 @@ void scene::reset_representation() noexcept
                               ballnstick,
                               bond_atoms,
                               std::back_insert_iterator(cylinder_mesh_attrs));
-    ballnstick.bond1_cylinder_buffer =
-     build_cylinder_mesh(cylinder_mesh_attrs);
+    ballnstick.bond1_cylinder_buffer = build_cylinder_mesh(cylinder_mesh_attrs);
 
     cylinder_mesh_attrs.clear();
 

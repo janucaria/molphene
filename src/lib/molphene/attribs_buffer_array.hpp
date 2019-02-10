@@ -12,7 +12,7 @@ template<typename... Ts>
 class attrib_buffer_array {
 public:
   attrib_buffer_array(GLsizei verts_per_instance,
-                     GLsizeiptr total_instances) noexcept
+                      GLsizeiptr total_instances) noexcept
   : verts_per_instance_{verts_per_instance}
   {
     constexpr auto max_bytes_per_chunk = std::numeric_limits<GLsizei>::max();
@@ -29,11 +29,12 @@ public:
       ++size_;
     }
 
-    boost::mp11::tuple_for_each(attrib_buffers_, [=](auto& attribbuf) noexcept {
-      using attrib_buff_t =
-       typename std::remove_reference_t<decltype(attribbuf)>::element_type;
-      attribbuf = std::make_unique<attrib_buff_t[]>(size_);
-    });
+    boost::mp11::tuple_for_each(
+     attrib_buffers_, [=](auto& attribbuf) noexcept {
+       using attrib_buff_t =
+        typename std::remove_reference_t<decltype(attribbuf)>::element_type;
+       attribbuf = std::make_unique<attrib_buff_t[]>(size_);
+     });
 
     for(auto i = GLsizei{0}; i < size_; ++i) {
       const auto meshes =

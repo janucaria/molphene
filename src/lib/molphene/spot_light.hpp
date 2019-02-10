@@ -4,8 +4,8 @@
 #include "stdafx.hpp"
 
 #include "directional_light.hpp"
-#include "point_light.hpp"
 #include "m3d.hpp"
+#include "point_light.hpp"
 
 namespace molphene {
 

@@ -3,10 +3,10 @@
 
 #include "stdafx.hpp"
 
-#include "mix_shader_uniforms.hpp"
-#include "shader_attrib_location.hpp"
 #include "m3d.hpp"
+#include "mix_shader_uniforms.hpp"
 #include "opengl.hpp"
+#include "shader_attrib_location.hpp"
 
 namespace molphene {
 

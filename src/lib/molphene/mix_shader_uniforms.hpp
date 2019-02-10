@@ -289,9 +289,9 @@ public:
   }
 
   template<typename TColor, typename TConfig>
-  std::void_t<
-   decltype(rgba32f{std::declval<TColor>()},
-            vec3f{std::declval<typename point_light<TColor, TConfig>::vec3f>()})>
+  std::void_t<decltype(
+   rgba32f{std::declval<TColor>()},
+   vec3f{std::declval<typename point_light<TColor, TConfig>::vec3f>()})>
   light_source(const point_light<TColor, TConfig>& light) const noexcept
   {
     light_source_ambient_intensity(light.ambient_intensity);

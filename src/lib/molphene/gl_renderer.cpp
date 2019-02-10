@@ -46,7 +46,7 @@ void gl_renderer::init() noexcept
 }
 
 void gl_renderer::render(const scene& scene,
-                        const gl_renderer::camera& camera) noexcept
+                         const gl_renderer::camera& camera) noexcept
 {
   using mat3f = typename scene::mat3f;
   using mat4f = typename scene::mat4f;
@@ -62,8 +62,8 @@ void gl_renderer::render(const scene& scene,
   {
     const auto verts_guard =
      gl_vertex_attribs_guard<shader_attrib_location::vertex,
-                          shader_attrib_location::normal,
-                          shader_attrib_location::texcoordcolor>{};
+                             shader_attrib_location::normal,
+                             shader_attrib_location::texcoordcolor>{};
 
     color_light_shader_.use_program();
     color_light_shader_.projection_matrix(proj_matrix);
@@ -137,7 +137,7 @@ void gl_renderer::render_representation_(
 }
 
 void gl_renderer::change_dimension(std::size_t width,
-                                  std::size_t height) noexcept
+                                   std::size_t height) noexcept
 {
   viewport_.width = width;
   viewport_.height = height;

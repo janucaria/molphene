@@ -3,7 +3,7 @@
 namespace molphene {
 
 color_light_buffer::color_light_buffer(GLsizei verts_per_instance,
-                                   GLsizeiptr total_instances) noexcept
+                                       GLsizeiptr total_instances) noexcept
 : attrib_buffer_array{verts_per_instance, total_instances}
 , color_tex_size_(static_cast<GLsizei>(std::ceil(std::sqrt(total_instances))))
 {
