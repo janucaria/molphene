@@ -1,11 +1,11 @@
-cmake_minimum_required(VERSION 3.11)
+cmake_minimum_required(VERSION 3.13)
 project(Molphene)
 
 set(JSON_BuildTests OFF CACHE INTERNAL "")
 
-add_subdirectory("${PROJECT_SOURCE_DIR}/third_party/GSL")
-add_subdirectory("${PROJECT_SOURCE_DIR}/third_party/json")
-add_subdirectory("${PROJECT_SOURCE_DIR}/third_party/Gm3d")
+add_subdirectory("third_party/GSL")
+add_subdirectory("third_party/json")
+add_subdirectory("third_party/Gm3d")
 
 enable_testing()
 
@@ -32,13 +32,13 @@ else()
   message(SEND_ERROR "Unable to find the Boost header files. Please set BOOST_ROOT to the root directory containing Boost or BOOST_INCLUDEDIR to the directory containing Boost's headers.")
 endif()
 
-add_compile_options(-Wall -Wpedantic -pedantic-errors)
+add_compile_options(-Wall -Wpedantic -pedantic-errors -fno-rtti)
 
 add_subdirectory("libs/molecule")
-add_subdirectory("${PROJECT_SOURCE_DIR}/cmake/cmakelists/libmolphene")
-add_subdirectory("${PROJECT_SOURCE_DIR}/cmake/cmakelists/molphene-glfw")
+add_subdirectory("cmake/cmakelists/libmolphene")
+add_subdirectory("cmake/cmakelists/molphene-glfw")
 
 if(EMSCRIPTEN)
-  add_subdirectory("${PROJECT_SOURCE_DIR}/cmake/cmakelists/molphene-web")
+  add_subdirectory("cmake/cmakelists/molphene-web")
 endif()
 

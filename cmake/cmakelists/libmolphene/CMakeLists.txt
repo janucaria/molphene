@@ -15,7 +15,15 @@ target_include_directories(molphene
 )
 
 target_link_libraries(molphene PUBLIC molphene-molecule GSL gm3d)
+
 target_compile_features(molphene PUBLIC cxx_std_17)
+
+target_compile_options(molphene
+  PUBLIC
+    $<$<CONFIG:Release>:
+      -O3
+    >
+)
 
 if(APPLE)
   target_link_libraries(molphene PRIVATE "-framework OpenGL")

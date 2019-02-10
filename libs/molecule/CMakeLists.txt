@@ -24,3 +24,10 @@ target_compile_features(molphene-molecule
   PRIVATE
     cxx_std_17
 )
+
+target_compile_options(molphene-molecule
+  PRIVATE
+    $<$<CONFIG:Release>:
+      -O3
+    >
+)
