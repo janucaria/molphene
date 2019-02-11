@@ -18,23 +18,17 @@ public:
        std::string name,
        unsigned int serial);
 
-  auto altloc() const -> char;
+  auto element() const noexcept -> const Element&;
 
-  auto element() const -> const Element&;
+  auto name() const noexcept -> std::string;
 
-  auto name() const -> std::string;
+  auto position() const noexcept -> Position;
 
-  auto position() const -> const Position&;
+  auto serial() const noexcept -> unsigned int;
 
-  auto serial() const -> unsigned int;
-
-  void altloc(char altloc);
-
-  auto position(float x, float y, float z) -> const Position&;
+  auto position(float x, float y, float z) noexcept -> const Position&;
 
 private:
-  char altloc_{0};
-
   std::string element_;
 
   std::string name_;

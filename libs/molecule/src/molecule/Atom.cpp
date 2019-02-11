@@ -9,12 +9,7 @@ Atom::Atom(std::string elsym, std::string name, unsigned int serial)
 {
 }
 
-auto Atom::altloc() const -> char
-{
-  return altloc_;
-}
-
-auto Atom::element() const -> const Atom::Element&
+auto Atom::element() const noexcept -> const Atom::Element&
 {
   static const Atom::Element hydrogen{"Hydrogen", "H", 1, 1.2, 0.31};
   static const Atom::Element helium{"Helium", "He", 2, 1.4, 0.28};
@@ -494,27 +489,22 @@ auto Atom::element() const -> const Atom::Element&
   return hydrogen;
 }
 
-auto Atom::name() const -> std::string
+auto Atom::name() const noexcept -> std::string
 {
   return name_;
 }
 
-auto Atom::position() const -> const Atom::Position&
+auto Atom::position() const noexcept -> Position
 {
   return position_;
 }
 
-auto Atom::serial() const -> unsigned int
+auto Atom::serial() const noexcept -> unsigned int
 {
   return serial_;
 }
 
-void Atom::altloc(char altloc)
-{
-  altloc_ = altloc == ' ' ? 0 : altloc;
-}
-
-auto Atom::position(float x, float y, float z) -> const Position&
+auto Atom::position(float x, float y, float z) noexcept -> const Position&
 {
   return position_ = {x, y, z};
 }
