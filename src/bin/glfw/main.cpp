@@ -7,7 +7,7 @@
 #include <GLFW/glfw3.h>
 
 
-#include <molecule/Molecule.hpp>
+#include <molecule/molecule.hpp>
 #include <molecule/chemdoodle_json_parser.hpp>
 
 #include <molphene/camera.hpp>
@@ -18,7 +18,7 @@
 static molphene::scene scene;
 static molphene::gl_renderer renderer;
 static molphene::scene::camera camera;
-static molphene::Molecule molecule;
+static molphene::molecule molecule;
 static GLFWwindow* window;
 static bool mouse_press = false;
 static int mouse_button = -1;

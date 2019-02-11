@@ -3,15 +3,15 @@
 
 #include "stdafx.hpp"
 
-#include "Molecule.hpp"
+#include "molecule.hpp"
 
 namespace molphene {
 
 class chemdoodle_json_parser {
 public:
-  auto parse(std::istream& is) -> Molecule;
+  auto parse(std::istream& is) -> molecule;
 
-  auto parse(const std::string& strjson) -> Molecule;
+  auto parse(const std::string& strjson) -> molecule;
 };
 
 } // namespace molphene

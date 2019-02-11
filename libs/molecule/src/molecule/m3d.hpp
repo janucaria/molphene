@@ -7,14 +7,20 @@
 
 namespace molphene {
 
-using gm3d::Mat3;
-using gm3d::Mat4;
+template<typename T>
+using mat3 = gm3d::Mat3<T>;
 
-using gm3d::Vec2;
-using gm3d::Vec3;
+template<typename T>
+using mat4 = gm3d::Mat4<T>;
 
-using Rgba8 = gm3d::Rgba<std::uint8_t>;
-using Rgba32f = gm3d::Rgba<float>;
+template<typename T>
+using vec2 = gm3d::Vec2<T>;
+
+template<typename T>
+using vec3 = gm3d::Vec3<T>;
+
+using rgba8 = gm3d::Rgba<std::uint8_t>;
+using rgba32f = gm3d::Rgba<float>;
 
 } // namespace molphene
 

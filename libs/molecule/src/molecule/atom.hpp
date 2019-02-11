@@ -6,41 +6,38 @@
 #include <unordered_map>
 
 namespace molphene {
-class Compound;
 
-class Atom {
+class atom {
 public:
-  class Element;
+  class atom_element;
 
-  using Position = Vec3<float>;
+  using position_type = vec3<float>;
 
-  Atom(std::string elsym,
-       std::string name,
-       unsigned int serial);
+  atom(std::string elsym, std::string name, unsigned int serial);
 
-  auto element() const noexcept -> const Element&;
+  auto element() const noexcept -> const atom_element&;
 
   auto name() const noexcept -> std::string;
 
-  auto position() const noexcept -> Position;
+  auto position() const noexcept -> position_type;
 
   auto serial() const noexcept -> unsigned int;
 
-  auto position(float x, float y, float z) noexcept -> const Position&;
+  auto position(float x, float y, float z) noexcept -> const position_type&;
 
 private:
   std::string element_;
 
   std::string name_;
 
-  Position position_{0};
+  position_type position_{0};
 
   unsigned int serial_;
 };
 
-class Atom::Element {
+class atom::atom_element {
 public:
-  enum class ElementSymbol {
+  enum class element_symbol {
     h = 1,
     he = 2,
     li = 3,
@@ -171,11 +168,11 @@ public:
 
   const std::string symbol;
 
-  Element(std::string name,
-          std::string symbol,
-          unsigned char number,
-          float rVdW,
-          float rcov) noexcept;
+  atom_element(std::string name,
+               std::string symbol,
+               unsigned char number,
+               float rVdW,
+               float rcov) noexcept;
 };
 
 } // namespace molphene

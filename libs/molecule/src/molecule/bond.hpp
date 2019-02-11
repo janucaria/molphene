@@ -2,9 +2,9 @@
 #define MOLPHENE_MOLECULE_BOND_HPP
 
 namespace molphene {
-class Bond {
+class bond {
 public:
-  Bond(int a1, int a2);
+  bond(int a1, int a2);
 
   auto atom1() const noexcept -> int;
 

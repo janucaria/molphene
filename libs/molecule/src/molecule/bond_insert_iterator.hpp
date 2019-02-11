@@ -3,13 +3,13 @@
 
 #include "stdafx.hpp"
 
-#include "Bond.hpp"
+#include "bond.hpp"
 
 namespace molphene {
 
-template<typename Container>
-struct BondInsertIterator {
-  using container_type = Container;
+template<typename TContainer>
+struct bond_insert_iterator {
+  using container_type = TContainer;
 
   using value_type = void;
   using difference_type = void;
@@ -17,28 +17,28 @@ struct BondInsertIterator {
   using reference = void;
   using iterator_category = std::output_iterator_tag;
 
-  explicit BondInsertIterator(container_type& container) noexcept
+  explicit bond_insert_iterator(container_type& container) noexcept
   : container_{container}
   {
   }
 
-  auto operator=(const Bond& atom) -> BondInsertIterator&
+  auto operator=(const bond& atom) -> bond_insert_iterator&
   {
     container_.add_bond(atom);
     return *this;
   }
 
-  auto operator*() -> BondInsertIterator&
+  auto operator*() -> bond_insert_iterator&
   {
     return *this;
   }
 
-  auto operator++() -> BondInsertIterator&
+  auto operator++() -> bond_insert_iterator&
   {
     return *this;
   }
 
-  auto operator++(int) -> BondInsertIterator&
+  auto operator++(int) -> bond_insert_iterator&
   {
     return *this;
   }

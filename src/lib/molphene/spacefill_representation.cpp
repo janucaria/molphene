@@ -2,20 +2,20 @@
 
 namespace molphene {
 
-auto spacefill_representation::atom_radius(typename Atom::Element element) const
+auto spacefill_representation::atom_radius(typename atom::atom_element element) const
  noexcept -> double
 {
   switch(radius_type) {
-  case AtomRadiusType::van_der_waals:
+  case atom_radius_kind::van_der_waals:
     return element.rvdw;
-  case AtomRadiusType::covalent:
+  case atom_radius_kind::covalent:
     return element.rcov;
   default:
     return radius_size;
   }
 }
 
-auto spacefill_representation::atom_color(const Atom& atom) const noexcept
+auto spacefill_representation::atom_color(const atom& atom) const noexcept
  -> rgba8
 {
   return color_manager.get_element_color(atom.element().symbol);

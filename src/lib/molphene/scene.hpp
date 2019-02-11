@@ -3,7 +3,7 @@
 
 #include "stdafx.hpp"
 
-#include <molecule/Molecule.hpp>
+#include <molecule/molecule.hpp>
 
 #include "ballstick_representation.hpp"
 #include "bounding_sphere.hpp"
@@ -77,9 +77,9 @@ public:
 
   auto setup_graphics() noexcept -> bool;
 
-  void reset_mesh(const Molecule& mol) noexcept;
+  void reset_mesh(const molecule& mol) noexcept;
 
-  void reset_representation(const Molecule& mol) noexcept;
+  void reset_representation(const molecule& mol) noexcept;
 
   void rotate(vec3f rot) noexcept;
 
@@ -91,7 +91,7 @@ public:
 
   auto fog() const noexcept -> fog_type;
 
-  void representation(molecule_display value, const Molecule& mol);
+  void representation(molecule_display value, const molecule& mol);
 
   auto representations() const noexcept -> const representations_container&;
 

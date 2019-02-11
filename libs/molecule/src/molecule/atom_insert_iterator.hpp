@@ -1,13 +1,13 @@
 #ifndef MOLPHENE_MOLECULE_ATOM_INSERT_ITERATOR_HPP
 #define MOLPHENE_MOLECULE_ATOM_INSERT_ITERATOR_HPP
 
-#include "Atom.hpp"
+#include "atom.hpp"
 
 namespace molphene {
 
-template<typename Container>
-struct AtomInsertIterator {
-  using container_type = Container;
+template<typename TContainer>
+struct atom_insert_iterator {
+  using container_type = TContainer;
 
   using value_type = void;
   using difference_type = void;
@@ -15,28 +15,28 @@ struct AtomInsertIterator {
   using reference = void;
   using iterator_category = std::output_iterator_tag;
 
-  explicit AtomInsertIterator(container_type& container) noexcept
+  explicit atom_insert_iterator(container_type& container) noexcept
   : container_{container}
   {
   }
 
-  auto operator=(const Atom& atom) -> AtomInsertIterator&
+  auto operator=(const atom& atom) -> atom_insert_iterator&
   {
     container_.add_atom(atom);
     return *this;
   }
 
-  auto operator*() -> AtomInsertIterator&
+  auto operator*() -> atom_insert_iterator&
   {
     return *this;
   }
 
-  auto operator++() -> AtomInsertIterator&
+  auto operator++() -> atom_insert_iterator&
   {
     return *this;
   }
 
-  auto operator++(int) -> AtomInsertIterator&
+  auto operator++(int) -> atom_insert_iterator&
   {
     return *this;
   }

@@ -7,14 +7,14 @@
 #include "color_manager.hpp"
 #include "m3d.hpp"
 
-#include <molecule/Atom.hpp>
-#include <molecule/AtomRadiusType.hpp>
+#include <molecule/atom.hpp>
+#include <molecule/atom_radius_kind.hpp>
 
 namespace molphene {
 
 class ballstick_representation {
 public:
-  AtomRadiusType atom_radius_type{AtomRadiusType::fixed};
+  atom_radius_kind atom_radius_type{atom_radius_kind::fixed};
 
   double radius_size{0.25};
 
@@ -26,9 +26,9 @@ public:
 
   std::unique_ptr<color_light_buffer> bond2_cylinder_buffer;
 
-  auto atom_radius(typename Atom::Element element) const noexcept -> double;
+  auto atom_radius(typename atom::atom_element element) const noexcept -> double;
 
-  auto atom_color(const Atom& atom) const noexcept -> rgba8;
+  auto atom_color(const atom& atom) const noexcept -> rgba8;
 
   void clear_buffers() noexcept;
 };

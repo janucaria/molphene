@@ -4,7 +4,7 @@
 #include <emscripten/emscripten.h>
 #include <emscripten/html5.h>
 
-#include <molecule/Molecule.hpp>
+#include <molecule/molecule.hpp>
 #include <molecule/chemdoodle_json_parser.hpp>
 
 #include <molphene/gl_renderer.hpp>
@@ -42,7 +42,7 @@ private:
 
   molphene::scene::camera camera;
 
-  molphene::Molecule molecule;
+  molphene::molecule molecule;
 
   template<typename T>
   static auto mouse_event(const T* event)

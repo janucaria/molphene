@@ -28,7 +28,7 @@ auto scene::setup_graphics() noexcept -> bool
   return true;
 }
 
-void scene::reset_mesh(const Molecule& mol) noexcept
+void scene::reset_mesh(const molecule& mol) noexcept
 {
   namespace range = boost::range;
 
@@ -209,7 +209,7 @@ auto scene::ballnstick() noexcept -> ballstick_representation&
   return *detail::attain<ballstick_representation>(&representations_.back());
 }
 
-void scene::representation(molecule_display value, const Molecule& mol)
+void scene::representation(molecule_display value, const molecule& mol)
 {
   if(representation_ == value) {
     return;
@@ -219,7 +219,7 @@ void scene::representation(molecule_display value, const Molecule& mol)
   reset_representation(mol);
 }
 
-void scene::reset_representation(const Molecule& mol) noexcept
+void scene::reset_representation(const molecule& mol) noexcept
 {
   namespace range = boost::range;
 
@@ -228,7 +228,7 @@ void scene::reset_representation(const Molecule& mol) noexcept
   case molecule_display::spacefill: {
     using representation_t = spacefill_representation;
 
-    auto atoms = std::vector<const Atom*>{};
+    auto atoms = std::vector<const atom*>{};
     atoms.reserve(mol.atoms().size());
     range::transform(
      mol.atoms(), std::back_inserter(atoms), [](auto& atom) noexcept {
@@ -249,11 +249,11 @@ void scene::reset_representation(const Molecule& mol) noexcept
   case molecule_display::ball_and_stick: {
     using representation_t = ballstick_representation;
 
-    auto atoms = std::vector<const Atom*>{};
-    auto bonds = std::vector<const Bond*>{};
-    using pair_atoms_t = std::pair<const Atom*, const Atom*>;
+    auto atoms = std::vector<const atom*>{};
+    auto bonds = std::vector<const bond*>{};
+    using pair_atoms_t = std::pair<const atom*, const atom*>;
     auto bond_atoms = std::vector<pair_atoms_t>{};
-    auto atoms_in_bond = std::vector<const Atom*>{};
+    auto atoms_in_bond = std::vector<const atom*>{};
 
     bonds.reserve(mol.bonds().size());
     range::transform(

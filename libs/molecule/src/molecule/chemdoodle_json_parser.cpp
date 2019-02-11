@@ -2,23 +2,23 @@
 
 #include "chemdoodle_json_parser.hpp"
 
-#include "AtomInsertIterator.hpp"
-#include "BondInsertIterator.hpp"
+#include "atom_insert_iterator.hpp"
+#include "bond_insert_iterator.hpp"
 
 namespace molphene {
 
 
-auto chemdoodle_json_parser::parse(std::istream& is) -> Molecule
+auto chemdoodle_json_parser::parse(std::istream& is) -> molecule
 {
   const auto strjson = std::string{std::istreambuf_iterator<char>{is}, {}};
   return parse(strjson);
 }
 
-auto chemdoodle_json_parser::parse(const std::string& strjson) -> Molecule
+auto chemdoodle_json_parser::parse(const std::string& strjson) -> molecule
 {
-  auto molecule = Molecule{};
+  auto mol = molecule{};
   if(strjson.empty()) {
-    return molecule;
+    return mol;
   }
 
   auto jsonmol = nlohmann::json::parse(strjson);
@@ -45,8 +45,8 @@ auto chemdoodle_json_parser::parse(const std::string& strjson) -> Molecule
     jsonmol = *pdb_json;
   }
 
-  auto out_atoms = AtomInsertIterator{molecule};
-  auto out_bonds = BondInsertIterator{molecule};
+  auto out_atoms = atom_insert_iterator{mol};
+  auto out_bonds = bond_insert_iterator{mol};
 
   auto find_array_json_by_key =
    [](const auto& jsonmol,
@@ -77,10 +77,10 @@ auto chemdoodle_json_parser::parse(const std::string& strjson) -> Molecule
       auto const ay = json_atom.template value<double>("y", 0);
       auto const az = json_atom.template value<double>("z", 0);
 
-      auto atom = Atom{aelement, "", 0};
-      atom.position(ax, ay, az);
+      auto atm = atom{aelement, "", 0};
+      atm.position(ax, ay, az);
 
-      return atom;
+      return atm;
     });
   }(jsonmol, out_atoms);
 
@@ -94,13 +94,13 @@ auto chemdoodle_json_parser::parse(const std::string& strjson) -> Molecule
       auto const ibegin = static_cast<int>(json_bond.at("b"));
       auto const iend = static_cast<int>(json_bond.at("e"));
 
-      auto bond = Bond{ibegin, iend};
+      auto bnd = bond{ibegin, iend};
 
-      return bond;
+      return bnd;
     });
   }(jsonmol, out_bonds);
 
-  return molecule;
+  return mol;
 }
 
 } // namespace molphene
