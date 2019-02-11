@@ -1,10 +1,7 @@
 add_library(molphene-molecule
 "${CMAKE_CURRENT_SOURCE_DIR}/src/molecule/Atom.cpp"
 "${CMAKE_CURRENT_SOURCE_DIR}/src/molecule/Bond.cpp"
-"${CMAKE_CURRENT_SOURCE_DIR}/src/molecule/Chain.cpp"
 "${CMAKE_CURRENT_SOURCE_DIR}/src/molecule/chemdoodle_json_parser.cpp"
-"${CMAKE_CURRENT_SOURCE_DIR}/src/molecule/Compound.cpp"
-"${CMAKE_CURRENT_SOURCE_DIR}/src/molecule/Model.cpp"
 "${CMAKE_CURRENT_SOURCE_DIR}/src/molecule/Molecule.cpp"
 )
 

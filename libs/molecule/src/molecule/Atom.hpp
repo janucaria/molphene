@@ -14,11 +14,6 @@ public:
 
   using Position = Vec3<float>;
 
-  Atom(Compound& compound,
-       std::string elsym,
-       std::string name,
-       unsigned int serial);
-
   Atom(std::string elsym,
        std::string name,
        unsigned int serial);
@@ -39,8 +34,6 @@ public:
 
 private:
   char altloc_{0};
-
-  Compound* compound_ptr_;
 
   std::string element_;
 

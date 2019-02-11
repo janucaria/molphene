@@ -1,26 +1,9 @@
 #include "Atom.hpp"
-#include "Chain.hpp"
-#include "Compound.hpp"
-#include "Model.hpp"
 
 namespace molphene {
 
-Atom::Atom(Compound& compound,
-           std::string elsym,
-           std::string name,
-           unsigned int serial)
-: compound_ptr_{&compound}
-, element_{std::move(elsym)}
-, name_{std::move(name)}
-, serial_{serial}
-{
-}
-
-Atom::Atom(std::string elsym,
-           std::string name,
-           unsigned int serial)
-: compound_ptr_{nullptr}
-, element_{std::move(elsym)}
+Atom::Atom(std::string elsym, std::string name, unsigned int serial)
+: element_{std::move(elsym)}
 , name_{std::move(name)}
 , serial_{serial}
 {
