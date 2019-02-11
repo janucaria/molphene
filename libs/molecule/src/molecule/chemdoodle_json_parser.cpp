@@ -7,6 +7,13 @@
 
 namespace molphene {
 
+
+auto chemdoodle_json_parser::parse(std::istream& is) -> Molecule
+{
+  const auto strjson = std::string{std::istreambuf_iterator<char>{is}, {}};
+  return parse(strjson);
+}
+
 auto chemdoodle_json_parser::parse(const std::string& strjson) -> Molecule
 {
   auto molecule = Molecule{};

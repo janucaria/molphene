@@ -2,12 +2,12 @@
 
 namespace molphene {
 
-auto Molecule::atoms() noexcept -> atoms_type&
+auto Molecule::atoms() const noexcept -> const atoms_type&
 {
   return atoms_;
 }
 
-auto Molecule::bonds() noexcept -> bonds_type&
+auto Molecule::bonds() const noexcept -> const bonds_type&
 {
   return bonds_;
 }

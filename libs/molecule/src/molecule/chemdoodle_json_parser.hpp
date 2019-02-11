@@ -9,6 +9,8 @@ namespace molphene {
 
 class chemdoodle_json_parser {
 public:
+  auto parse(std::istream& is) -> Molecule;
+
   auto parse(const std::string& strjson) -> Molecule;
 };
 

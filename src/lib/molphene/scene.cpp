@@ -28,7 +28,7 @@ auto scene::setup_graphics() noexcept -> bool
   return true;
 }
 
-void scene::reset_mesh() noexcept
+void scene::reset_mesh(const Molecule& mol) noexcept
 {
   namespace range = boost::range;
 
@@ -36,12 +36,12 @@ void scene::reset_mesh() noexcept
   bounding_sphere_.reset();
 
   range::transform(
-   molecule_.atoms(), expand_iterator{bounding_sphere_}, [
+   mol.atoms(), expand_iterator{bounding_sphere_}, [
    ](auto atom) noexcept { return atom.position(); });
 
   model_matrix_.identity().translate(-bounding_sphere_.center());
 
-  reset_representation();
+  reset_representation(mol);
 }
 
 auto scene::build_sphere_mesh(
@@ -174,12 +174,6 @@ void scene::rotate(scene::vec3f rot) noexcept
   model_matrix_.rotate(rot.z(), {0.0f, 0.0f, 1.0f});
 }
 
-void scene::open_chemdoodle_json_stream(std::istream& is)
-{
-  const auto strjson = std::string{std::istreambuf_iterator<char>{is}, {}};
-  molecule_ = chemdoodle_json_parser{}.parse(strjson);
-}
-
 auto scene::model_matrix() const noexcept -> mat4f
 {
   return model_matrix_;
@@ -215,17 +209,17 @@ auto scene::ballnstick() noexcept -> ballstick_representation&
   return *detail::attain<ballstick_representation>(&representations_.back());
 }
 
-void scene::representation(molecule_display value)
+void scene::representation(molecule_display value, const Molecule& mol)
 {
   if(representation_ == value) {
     return;
   }
 
   representation_ = value;
-  reset_representation();
+  reset_representation(mol);
 }
 
-void scene::reset_representation() noexcept
+void scene::reset_representation(const Molecule& mol) noexcept
 {
   namespace range = boost::range;
 
@@ -235,9 +229,9 @@ void scene::reset_representation() noexcept
     using representation_t = spacefill_representation;
 
     auto atoms = std::vector<const Atom*>{};
-    atoms.reserve(molecule_.atoms().size());
+    atoms.reserve(mol.atoms().size());
     range::transform(
-     molecule_.atoms(), std::back_inserter(atoms), [](auto& atom) noexcept {
+     mol.atoms(), std::back_inserter(atoms), [](auto& atom) noexcept {
        return &atom;
      });
 
@@ -261,9 +255,9 @@ void scene::reset_representation() noexcept
     auto bond_atoms = std::vector<pair_atoms_t>{};
     auto atoms_in_bond = std::vector<const Atom*>{};
 
-    bonds.reserve(molecule_.bonds().size());
+    bonds.reserve(mol.bonds().size());
     range::transform(
-     molecule_.bonds(), std::back_inserter(bonds), [](auto& bond) noexcept {
+     mol.bonds(), std::back_inserter(bonds), [](auto& bond) noexcept {
        return std::addressof(bond);
      });
 
@@ -271,14 +265,14 @@ void scene::reset_representation() noexcept
     range::transform(
      bonds,
      std::back_inserter(bond_atoms),
-     [& atoms = molecule_.atoms()](auto bond) noexcept {
+     [& atoms = mol.atoms()](auto bond) noexcept {
        return std::make_pair(&atoms.at(bond->atom1()),
                              &atoms.at(bond->atom2()));
      });
 
-    atoms.reserve(molecule_.atoms().size());
+    atoms.reserve(mol.atoms().size());
     range::transform(
-     molecule_.atoms(), std::back_inserter(atoms), [](auto& atom) noexcept {
+     mol.atoms(), std::back_inserter(atoms), [](auto& atom) noexcept {
        return &atom;
      });
 

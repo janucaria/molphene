@@ -6,6 +6,10 @@
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
 
+
+#include <molecule/Molecule.hpp>
+#include <molecule/chemdoodle_json_parser.hpp>
+
 #include <molphene/camera.hpp>
 #include <molphene/gl_renderer.hpp>
 #include <molphene/molecule_display.hpp>
@@ -14,6 +18,7 @@
 static molphene::scene scene;
 static molphene::gl_renderer renderer;
 static molphene::scene::camera camera;
+static molphene::Molecule molecule;
 static GLFWwindow* window;
 static bool mouse_press = false;
 static int mouse_button = -1;
@@ -42,10 +47,10 @@ key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
       camera.projection_mode(false);
       break;
     case GLFW_KEY_K:
-      scene.representation(molphene::molecule_display::spacefill);
+      scene.representation(molphene::molecule_display::spacefill, molecule);
       break;
     case GLFW_KEY_L:
-      scene.representation(molphene::molecule_display::ball_and_stick);
+      scene.representation(molphene::molecule_display::ball_and_stick, molecule);
       break;
     }
   }
@@ -178,8 +183,9 @@ auto main(int argc, char* argv[]) -> int
       };
       const auto close = std::unique_ptr<std::ifstream, close_guard>{&pdbfile};
 
-      scene.open_chemdoodle_json_stream(pdbfile);
-      scene.reset_mesh();
+      molecule = molphene::chemdoodle_json_parser{}.parse(pdbfile);
+
+      scene.reset_mesh(molecule);
       camera.top = scene.bounding_sphere().radius() + 2;
       camera.update_view_matrix();
       main_loop();
@@ -188,9 +194,9 @@ auto main(int argc, char* argv[]) -> int
     }
   } else {
     auto pdbstm = std::stringstream{};
+    molecule = molphene::chemdoodle_json_parser{}.parse(pdbstm);
 
-    scene.open_chemdoodle_json_stream(pdbstm);
-    scene.reset_mesh();
+    scene.reset_mesh(molecule);
     camera.update_view_matrix();
     main_loop();
   }

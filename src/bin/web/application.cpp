@@ -13,9 +13,9 @@ void application::open_pdb_data(std::string pdbdata)
 {
   std::stringstream pdbstm;
   pdbstm.str(pdbdata);
+  molecule = molphene::chemdoodle_json_parser{}.parse(pdbstm);
 
-  scene.open_chemdoodle_json_stream(pdbstm);
-  scene.reset_mesh();
+  scene.reset_mesh(molecule);
   camera.top = scene.bounding_sphere().radius() + 2;
   camera.update_view_matrix();
   render_frame();
@@ -33,10 +33,10 @@ void application::change_representation(int representation_type)
 {
   switch(representation_type) {
   case static_cast<int>(molphene::molecule_display::spacefill): {
-    scene.representation(molphene::molecule_display::spacefill);
+    scene.representation(molphene::molecule_display::spacefill, molecule);
   } break;
   case static_cast<int>(molphene::molecule_display::ball_and_stick): {
-    scene.representation(molphene::molecule_display::ball_and_stick);
+    scene.representation(molphene::molecule_display::ball_and_stick, molecule);
   } break;
   }
   render_frame();
@@ -106,8 +106,8 @@ void application::run()
 
   auto pdbstm = std::stringstream{};
 
-  scene.open_chemdoodle_json_stream(pdbstm);
-  scene.reset_mesh();
+  molecule = molphene::chemdoodle_json_parser{}.parse(pdbstm);
+  scene.reset_mesh(molecule);
   camera.top = scene.bounding_sphere().radius() + 2;
   camera.update_view_matrix();
   render_frame();

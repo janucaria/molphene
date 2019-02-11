@@ -77,13 +77,11 @@ public:
 
   auto setup_graphics() noexcept -> bool;
 
-  void reset_mesh() noexcept;
+  void reset_mesh(const Molecule& mol) noexcept;
 
-  void reset_representation() noexcept;
+  void reset_representation(const Molecule& mol) noexcept;
 
   void rotate(vec3f rot) noexcept;
-
-  void open_chemdoodle_json_stream(std::istream& is);
 
   auto model_matrix() const noexcept -> mat4f;
 
@@ -93,7 +91,7 @@ public:
 
   auto fog() const noexcept -> fog_type;
 
-  void representation(molecule_display value);
+  void representation(molecule_display value, const Molecule& mol);
 
   auto representations() const noexcept -> const representations_container&;
 
@@ -206,8 +204,6 @@ private:
   mat4f model_matrix_{1};
 
   bounding_sphere_type bounding_sphere_;
-
-  Molecule molecule_;
 };
 
 } // namespace molphene
