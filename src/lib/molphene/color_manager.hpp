@@ -11,7 +11,7 @@ class color_manager {
 public:
   color_manager();
 
-  auto get_element_color(const std::string& esymbol) const noexcept -> rgba8;
+  auto get_element_color(std::string_view esymbol) const noexcept -> rgba8;
 
 private:
   std::unordered_map<std::string, rgba8> element_colors_;

@@ -62,9 +62,9 @@ color_manager::color_manager()
 {
 }
 
-auto color_manager::get_element_color(const std::string& esymbol) const noexcept
+auto color_manager::get_element_color(std::string_view esymbol) const noexcept
  -> rgba8
 {
-  return element_colors_.at(esymbol);
+  return element_colors_.at(std::string{esymbol});
 }
 } // namespace molphene
