@@ -21,6 +21,8 @@
 #include "spacefill_representation.hpp"
 #include "sphere_mesh_builder.hpp"
 #include "spot_light.hpp"
+#include "sphere_mesh_attribute.hpp"
+#include "cylinder_mesh_attribute.hpp"
 
 namespace molphene {
 
@@ -28,20 +30,6 @@ class scene {
 public:
   struct config_type {
     using float_type = double;
-  };
-
-  struct sphere_mesh_attribute {
-    rgba8 color;
-    std::size_t index;
-    vec2<double> texcoord;
-    sphere<double> sphere;
-  };
-
-  struct cylinder_mesh_attribute {
-    rgba8 color;
-    std::size_t index;
-    vec2<double> texcoord;
-    cylinder<double> cylinder;
   };
 
   using float_type = typename type_configs<config_type>::float_type;
