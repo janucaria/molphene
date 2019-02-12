@@ -5,7 +5,6 @@ set(JSON_BuildTests OFF CACHE INTERNAL "")
 
 add_subdirectory("third_party/GSL")
 add_subdirectory("third_party/json")
-add_subdirectory("third_party/Gm3d")
 
 enable_testing()
 
@@ -34,6 +33,7 @@ endif()
 
 add_compile_options(-Wall -Wpedantic -pedantic-errors -fno-rtti)
 
+add_subdirectory("libs/gfxm")
 add_subdirectory("libs/molecule")
 add_subdirectory("cmake/cmakelists/libmolphene")
 add_subdirectory("cmake/cmakelists/molphene-glfw")

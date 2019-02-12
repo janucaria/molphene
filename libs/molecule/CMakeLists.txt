@@ -12,7 +12,7 @@ target_include_directories(molphene-molecule
 
 target_link_libraries(molphene-molecule
   PUBLIC
-    GSL gm3d
+    GSL molphene-gfxm
   PRIVATE
     nlohmann_json::nlohmann_json 
 )
