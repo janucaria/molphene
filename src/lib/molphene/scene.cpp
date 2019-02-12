@@ -36,8 +36,9 @@ void scene::reset_mesh(const molecule& mol) noexcept
   bounding_sphere_.reset();
 
   range::transform(
-   mol.atoms(), expand_iterator{bounding_sphere_}, [
-   ](auto atom) noexcept { return atom.position(); });
+   mol.atoms(), expand_iterator{bounding_sphere_}, [](auto atom) noexcept {
+     return atom.position();
+   });
 
   model_matrix_.identity().translate(-bounding_sphere_.center());
 
@@ -65,20 +66,19 @@ auto scene::build_sphere_mesh(
   const auto vertices_per_chunk = instances_per_chunk * vertices_per_instance;
 
   const auto tex_size = sphere_buff_atoms->color_texture_size();
-  auto colors = std::vector<rgba8>{};
-  colors.reserve(tex_size * tex_size);
+  auto colors = detail::make_reserved_vector<rgba8>(tex_size * tex_size);
 
   auto chunk_count = size_t{0};
   for_each_slice(sph_attrs, instances_per_chunk, [&](auto sph_attrs_range) {
     const auto instances_size = boost::distance(sph_attrs_range);
 
-    auto normals = std::vector<vec3<GLfloat>>{};
-    auto positions = std::vector<vec3<GLfloat>>{};
-    auto texcoords = std::vector<vec2<GLfloat>>{};
+    auto normals =
+     detail::make_reserved_vector<vec3<GLfloat>>(vertices_per_chunk);
+    auto positions =
+     detail::make_reserved_vector<vec3<GLfloat>>(vertices_per_chunk);
+    auto texcoords =
+     detail::make_reserved_vector<vec2<GLfloat>>(vertices_per_chunk);
 
-    positions.reserve(vertices_per_chunk);
-    normals.reserve(vertices_per_chunk);
-    texcoords.reserve(vertices_per_chunk);
     for(const auto& sph_attr : sph_attrs_range) {
       const auto acol = sph_attr.color;
       const auto atex = sph_attr.texcoord;
@@ -126,20 +126,18 @@ auto scene::build_cylinder_mesh(
   const auto vertices_per_chunk = instances_per_chunk * vertices_per_instance;
 
   const auto tex_size = cyl_buff_bonds->color_texture_size();
-  auto colors = std::vector<rgba8>{};
-  colors.reserve(tex_size * tex_size);
+  auto colors = detail::make_reserved_vector<rgba8>(tex_size * tex_size);
 
   auto chunk_count = size_t{0};
   for_each_slice(cyl_attrs, instances_per_chunk, [&](auto cyl_attrs_range) {
     const auto instances_size = boost::distance(cyl_attrs_range);
 
-    auto normals = std::vector<vec3<GLfloat>>{};
-    auto positions = std::vector<vec3<GLfloat>>{};
-    auto texcoords = std::vector<vec2<GLfloat>>{};
-
-    positions.reserve(vertices_per_chunk);
-    normals.reserve(vertices_per_chunk);
-    texcoords.reserve(vertices_per_chunk);
+    auto normals =
+     detail::make_reserved_vector<vec3<GLfloat>>(vertices_per_chunk);
+    auto positions =
+     detail::make_reserved_vector<vec3<GLfloat>>(vertices_per_chunk);
+    auto texcoords =
+     detail::make_reserved_vector<vec2<GLfloat>>(vertices_per_chunk);
 
     for(const auto& cyl_attr : cyl_attrs_range) {
       const auto acol = cyl_attr.color;
@@ -228,8 +226,7 @@ void scene::reset_representation(const molecule& mol) noexcept
   case molecule_display::spacefill: {
     using representation_t = spacefill_representation;
 
-    auto atoms = std::vector<const atom*>{};
-    atoms.reserve(mol.atoms().size());
+    auto atoms = detail::make_reserved_vector<const atom*>(mol.atoms().size());
     range::transform(
      mol.atoms(), std::back_inserter(atoms), [](auto& atom) noexcept {
        return &atom;
@@ -238,8 +235,8 @@ void scene::reset_representation(const molecule& mol) noexcept
     auto& rep_var = representations_.emplace_back(representation_t{});
     auto& spacefill = *detail::attain<representation_t>(&rep_var);
 
-    auto sphere_mesh_attrs = std::vector<sphere_mesh_attribute>{};
-    sphere_mesh_attrs.reserve(atoms.size());
+    auto sphere_mesh_attrs =
+     detail::make_reserved_vector<sphere_mesh_attribute>(atoms.size());
 
     transform_sphere_attrs(
      spacefill, atoms, std::back_inserter(sphere_mesh_attrs));
@@ -249,19 +246,14 @@ void scene::reset_representation(const molecule& mol) noexcept
   case molecule_display::ball_and_stick: {
     using representation_t = ballstick_representation;
 
-    auto atoms = std::vector<const atom*>{};
-    auto bonds = std::vector<const bond*>{};
-    using pair_atoms_t = std::pair<const atom*, const atom*>;
-    auto bond_atoms = std::vector<pair_atoms_t>{};
-    auto atoms_in_bond = std::vector<const atom*>{};
-
-    bonds.reserve(mol.bonds().size());
+    auto bonds = detail::make_reserved_vector<const bond*>(mol.bonds().size());
     range::transform(
      mol.bonds(), std::back_inserter(bonds), [](auto& bond) noexcept {
        return std::addressof(bond);
      });
 
-    bond_atoms.reserve(bonds.size());
+    using pair_atoms_t = std::pair<const atom*, const atom*>;
+    auto bond_atoms = detail::make_reserved_vector<pair_atoms_t>(bonds.size());
     range::transform(
      bonds,
      std::back_inserter(bond_atoms),
@@ -270,13 +262,14 @@ void scene::reset_representation(const molecule& mol) noexcept
                              &atoms.at(bond->atom2()));
      });
 
-    atoms.reserve(mol.atoms().size());
+    auto atoms = detail::make_reserved_vector<const atom*>(mol.atoms().size());
     range::transform(
      mol.atoms(), std::back_inserter(atoms), [](auto& atom) noexcept {
        return &atom;
      });
 
-    atoms_in_bond.reserve(atoms.size());
+    auto atoms_in_bond =
+     detail::make_reserved_vector<const atom*>(atoms.size());
     boost::algorithm::copy_if(
      atoms, std::back_inserter(atoms_in_bond), [&](auto* atom) {
        return boost::find_if(bond_atoms, [&](auto atom_pair) {
@@ -288,8 +281,9 @@ void scene::reset_representation(const molecule& mol) noexcept
     auto& rep_var = representations_.emplace_back(representation_t{});
     auto& ballnstick = *detail::attain<representation_t>(&rep_var);
     {
-      auto sphere_mesh_attrs = std::vector<sphere_mesh_attribute>{};
-      sphere_mesh_attrs.reserve(atoms_in_bond.size());
+      auto sphere_mesh_attrs =
+       detail::make_reserved_vector<sphere_mesh_attribute>(
+        atoms_in_bond.size());
 
       transform_sphere_attrs(
        ballnstick, atoms_in_bond, std::back_inserter(sphere_mesh_attrs));
@@ -297,8 +291,8 @@ void scene::reset_representation(const molecule& mol) noexcept
       ballnstick.atom_sphere_buffer = build_sphere_mesh(sphere_mesh_attrs);
     }
 
-    auto cylinder_mesh_attrs = std::vector<cylinder_mesh_attribute>{};
-    cylinder_mesh_attrs.reserve(bond_atoms.size());
+    auto cylinder_mesh_attrs =
+     detail::make_reserved_vector<cylinder_mesh_attribute>(bond_atoms.size());
 
     transform_clylinder_attrs(true,
                               ballnstick,
