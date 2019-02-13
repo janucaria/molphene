@@ -76,7 +76,7 @@ void gl_renderer::render(const scene& scene,
     for(auto&& representation_var : scene.representations()) {
       std::visit(
        [this](const auto& representation) {
-         render_representation_(representation);
+         representation.render(color_light_shader_);
        },
        representation_var);
     }
@@ -100,40 +100,6 @@ void gl_renderer::render(const scene& scene,
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
   }
   glFlush();
-}
-
-void gl_renderer::render_representation_(
- const spacefill_representation& representation) const
-{
-  const auto mbuffers = representation.atom_sphere_buffer.get();
-  color_light_shader_.color_texture_image(mbuffers->color_texture_image());
-  mbuffers->setup_attrib_pointer(
-   [](auto count) noexcept { glDrawArrays(GL_TRIANGLE_STRIP, 0, count); });
-}
-
-void gl_renderer::render_representation_(
- const ballstick_representation& representation) const
-{
-  {
-    const auto mbuffers = representation.bond1_cylinder_buffer.get();
-    color_light_shader_.color_texture_image(mbuffers->color_texture_image());
-    mbuffers->setup_attrib_pointer(
-     [](auto count) noexcept { glDrawArrays(GL_TRIANGLE_STRIP, 0, count); });
-  }
-
-  {
-    const auto mbuffers = representation.bond2_cylinder_buffer.get();
-    color_light_shader_.color_texture_image(mbuffers->color_texture_image());
-    mbuffers->setup_attrib_pointer(
-     [](auto count) noexcept { glDrawArrays(GL_TRIANGLE_STRIP, 0, count); });
-  }
-
-  {
-    const auto mbuffers = representation.atom_sphere_buffer.get();
-    color_light_shader_.color_texture_image(mbuffers->color_texture_image());
-    mbuffers->setup_attrib_pointer(
-     [](auto count) noexcept { glDrawArrays(GL_TRIANGLE_STRIP, 0, count); });
-  }
 }
 
 void gl_renderer::change_dimension(std::size_t width,

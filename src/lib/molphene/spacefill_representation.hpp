@@ -4,8 +4,10 @@
 #include "stdafx.hpp"
 
 #include "color_light_buffer.hpp"
+#include "color_light_shader.hpp"
 #include "color_manager.hpp"
 #include "m3d.hpp"
+
 #include <molecule/atom.hpp>
 #include <molecule/atom_radius_kind.hpp>
 
@@ -21,11 +23,14 @@ public:
 
   std::unique_ptr<color_light_buffer> atom_sphere_buffer;
 
-  auto atom_radius(typename atom::atom_element element) const noexcept -> double;
+  auto atom_radius(typename atom::atom_element element) const noexcept
+   -> double;
 
   auto atom_color(const atom& atom) const noexcept -> rgba8;
 
   void clear_buffers() noexcept;
+
+  void render(const color_light_shader& shader) const noexcept;
 };
 
 } // namespace molphene

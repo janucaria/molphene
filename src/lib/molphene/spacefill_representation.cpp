@@ -2,8 +2,8 @@
 
 namespace molphene {
 
-auto spacefill_representation::atom_radius(typename atom::atom_element element) const
- noexcept -> double
+auto spacefill_representation::atom_radius(
+ typename atom::atom_element element) const noexcept -> double
 {
   switch(radius_type) {
   case atom_radius_kind::van_der_waals:
@@ -24,6 +24,14 @@ auto spacefill_representation::atom_color(const atom& atom) const noexcept
 void spacefill_representation::clear_buffers() noexcept
 {
   atom_sphere_buffer.reset(nullptr);
+}
+
+void spacefill_representation::render(const color_light_shader& shader) const
+ noexcept
+{
+  shader.color_texture_image(atom_sphere_buffer->color_texture_image());
+  atom_sphere_buffer->setup_attrib_pointer(
+   [](auto count) noexcept { glDrawArrays(GL_TRIANGLE_STRIP, 0, count); });
 }
 
 } // namespace molphene

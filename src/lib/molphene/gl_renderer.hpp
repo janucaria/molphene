@@ -3,13 +3,11 @@
 
 #include "stdafx.hpp"
 
-#include "ballstick_representation.hpp"
 #include "camera.hpp"
 #include "color_light_shader.hpp"
 #include "m3d.hpp"
 #include "quad_shader.hpp"
 #include "scene.hpp"
-#include "spacefill_representation.hpp"
 #include "vertex_attribs_buffer.hpp"
 #include "viewport.hpp"
 
@@ -46,12 +44,6 @@ private:
   quad_shader quad_shader_;
 
   viewport_type viewport_;
-
-  void
-  render_representation_(const spacefill_representation& representation) const;
-
-  void
-  render_representation_(const ballstick_representation& representation) const;
 };
 
 } // namespace molphene

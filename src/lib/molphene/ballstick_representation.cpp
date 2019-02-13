@@ -2,8 +2,8 @@
 
 namespace molphene {
 
-auto ballstick_representation::atom_radius(typename atom::atom_element element) const
- noexcept -> double
+auto ballstick_representation::atom_radius(
+ typename atom::atom_element element) const noexcept -> double
 {
   switch(atom_radius_type) {
   case atom_radius_kind::van_der_waals:
@@ -28,6 +28,22 @@ void ballstick_representation::clear_buffers() noexcept
   bond1_cylinder_buffer.reset(nullptr);
 
   bond2_cylinder_buffer.reset(nullptr);
+}
+
+void ballstick_representation::render(const color_light_shader& shader) const
+ noexcept
+{
+  shader.color_texture_image(bond1_cylinder_buffer->color_texture_image());
+  bond1_cylinder_buffer->setup_attrib_pointer(
+   [](auto count) noexcept { glDrawArrays(GL_TRIANGLE_STRIP, 0, count); });
+
+  shader.color_texture_image(bond2_cylinder_buffer->color_texture_image());
+  bond2_cylinder_buffer->setup_attrib_pointer(
+   [](auto count) noexcept { glDrawArrays(GL_TRIANGLE_STRIP, 0, count); });
+
+  shader.color_texture_image(atom_sphere_buffer->color_texture_image());
+  atom_sphere_buffer->setup_attrib_pointer(
+   [](auto count) noexcept { glDrawArrays(GL_TRIANGLE_STRIP, 0, count); });
 }
 
 } // namespace molphene
