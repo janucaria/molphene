@@ -5,6 +5,7 @@ set(JSON_BuildTests OFF CACHE INTERNAL "")
 
 add_subdirectory("third_party/GSL")
 add_subdirectory("third_party/json")
+add_subdirectory("third_party/Catch2")
 
 enable_testing()
 
