@@ -3,7 +3,7 @@ add_executable(molphene-glfw)
 
 target_sources(molphene-glfw
   PRIVATE
-    "${PROJECT_SOURCE_DIR}/src/bin/glfw/main.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/main.cpp"
 )
 
 target_link_libraries(molphene-glfw
