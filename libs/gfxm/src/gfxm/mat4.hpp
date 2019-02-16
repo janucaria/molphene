@@ -5,6 +5,8 @@
 #include <type_traits>
 #include <utility>
 
+#include <boost/qvm/all.hpp>
+
 #include "vec2.hpp"
 #include "vec3.hpp"
 
@@ -102,8 +104,7 @@ struct mat4 {
   {
   }
 
-  auto
-  operator*=(const mat4& m4) noexcept -> mat4&
+  auto operator*=(const mat4& m4) noexcept -> mat4&
   {
     const auto m00 = m[0], m01 = m[1], m02 = m[2], m03 = m[3], m10 = m[4],
                m11 = m[5], m12 = m[6], m13 = m[7], m20 = m[8], m21 = m[9],
@@ -140,8 +141,7 @@ struct mat4 {
     return mat4{*this} *= m4;
   }
 
-  auto
-  operator*=(T s) noexcept -> mat4&
+  auto operator*=(T s) noexcept -> mat4&
   {
     m[0] *= s;
     m[1] *= s;
@@ -168,212 +168,177 @@ struct mat4 {
     return mat4{*this} *= s;
   }
 
-  void
-  m00(T val) noexcept
+  void m00(T val) noexcept
   {
     m[0] = val;
   }
 
-  void
-  m01(T val) noexcept
+  void m01(T val) noexcept
   {
     m[1] = val;
   }
 
-  void
-  m02(T val) noexcept
+  void m02(T val) noexcept
   {
     m[2] = val;
   }
 
-  void
-  m03(T val) noexcept
+  void m03(T val) noexcept
   {
     m[3] = val;
   }
 
-  void
-  m10(T val) noexcept
+  void m10(T val) noexcept
   {
     m[4] = val;
   }
 
-  void
-  m11(T val) noexcept
+  void m11(T val) noexcept
   {
     m[5] = val;
   }
 
-  void
-  m12(T val) noexcept
+  void m12(T val) noexcept
   {
     m[6] = val;
   }
 
-  void
-  m13(T val) noexcept
+  void m13(T val) noexcept
   {
     m[7] = val;
   }
 
-  void
-  m20(T val) noexcept
+  void m20(T val) noexcept
   {
     m[8] = val;
   }
 
-  void
-  m21(T val) noexcept
+  void m21(T val) noexcept
   {
     m[9] = val;
   }
 
-  void
-  m22(T val) noexcept
+  void m22(T val) noexcept
   {
     m[10] = val;
   }
 
-  void
-  m23(T val) noexcept
+  void m23(T val) noexcept
   {
     m[11] = val;
   }
 
-  void
-  m30(T val) noexcept
+  void m30(T val) noexcept
   {
     m[12] = val;
   }
 
-  void
-  m31(T val) noexcept
+  void m31(T val) noexcept
   {
     m[13] = val;
   }
 
-  void
-  m32(T val) noexcept
+  void m32(T val) noexcept
   {
     m[14] = val;
   }
 
-  void
-  m33(T val) noexcept
+  void m33(T val) noexcept
   {
     m[15] = val;
   }
 
-  auto
-  m00() const noexcept -> T
+  auto m00() const noexcept -> T
   {
     return m[0];
   }
 
-  auto
-  m01() const noexcept -> T
+  auto m01() const noexcept -> T
   {
     return m[1];
   }
 
-  auto
-  m02() const noexcept -> T
+  auto m02() const noexcept -> T
   {
     return m[2];
   }
 
-  auto
-  m03() const noexcept -> T
+  auto m03() const noexcept -> T
   {
     return m[3];
   }
 
-  auto
-  m10() const noexcept -> T
+  auto m10() const noexcept -> T
   {
     return m[4];
   }
 
-  auto
-  m11() const noexcept -> T
+  auto m11() const noexcept -> T
   {
     return m[5];
   }
 
-  auto
-  m12() const noexcept -> T
+  auto m12() const noexcept -> T
   {
     return m[6];
   }
 
-  auto
-  m13() const noexcept -> T
+  auto m13() const noexcept -> T
   {
     return m[7];
   }
 
-  auto
-  m20() const noexcept -> T
+  auto m20() const noexcept -> T
   {
     return m[8];
   }
 
-  auto
-  m21() const noexcept -> T
+  auto m21() const noexcept -> T
   {
     return m[9];
   }
 
-  auto
-  m22() const noexcept -> T
+  auto m22() const noexcept -> T
   {
     return m[10];
   }
 
-  auto
-  m23() const noexcept -> T
+  auto m23() const noexcept -> T
   {
     return m[11];
   }
 
-  auto
-  m30() const noexcept -> T
+  auto m30() const noexcept -> T
   {
     return m[12];
   }
 
-  auto
-  m31() const noexcept -> T
+  auto m31() const noexcept -> T
   {
     return m[13];
   }
 
-  auto
-  m32() const noexcept -> T
+  auto m32() const noexcept -> T
   {
     return m[14];
   }
 
-  auto
-  m33() const noexcept -> T
+  auto m33() const noexcept -> T
   {
     return m[15];
   }
 
-  auto
-  scale(T s) noexcept -> mat4&
+  auto scale(T s) noexcept -> mat4&
   {
     return scale(s, s, s);
   }
 
-  auto
-  scale(const vec3<T>& v) noexcept -> mat4&
+  auto scale(const vec3<T>& v) noexcept -> mat4&
   {
     return scale(v.x(), v.y(), v.z());
   }
 
-  auto
-  scale(T x, T y, T z) noexcept -> mat4&
+  auto scale(T x, T y, T z) noexcept -> mat4&
   {
     m[0] *= x;
     m[5] *= y;
@@ -381,14 +346,12 @@ struct mat4 {
     return *this;
   }
 
-  auto
-  identity() noexcept -> mat4&
+  auto identity() noexcept -> mat4&
   {
     return *this = {1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1};
   }
 
-  auto
-  rotate(T a, const vec3<T>& origin) noexcept -> mat4&
+  auto rotate(T a, const vec3<T>& origin) noexcept -> mat4&
   {
     // zero rotation is nothing
     if(!a) {
@@ -446,8 +409,7 @@ struct mat4 {
     return *this;
   }
 
-  auto
-  translate(T x, T y, T z) noexcept -> mat4&
+  auto translate(T x, T y, T z) noexcept -> mat4&
   {
     const auto m03 = m[3];
     const auto m13 = m[7];
@@ -472,14 +434,12 @@ struct mat4 {
     return *this;
   }
 
-  auto
-  translate(const vec3<T>& v) noexcept -> mat4&
+  auto translate(const vec3<T>& v) noexcept -> mat4&
   {
     return translate(v.x(), v.y(), v.z());
   }
 
-  auto
-  frustum(T l, T r, T b, T t, T n, T f) noexcept -> mat4&
+  auto frustum(T l, T r, T b, T t, T n, T f) noexcept -> mat4&
   {
     m[0] = 2 * n / (r - l);
     m[5] = 2 * n / (t - b);
@@ -499,8 +459,7 @@ struct mat4 {
     return *this;
   }
 
-  auto
-  orthogonal(T l, T r, T b, T t, T n, T f) noexcept -> mat4&
+  auto orthogonal(T l, T r, T b, T t, T n, T f) noexcept -> mat4&
   {
     m[0] = 2 / (r - l);
     m[5] = 2 / (t - b);
@@ -515,8 +474,8 @@ struct mat4 {
     return *this;
   }
 
-  auto
-  lookat(T ex, T ey, T ez, T lx, T ly, T lz, T ux, T uy, T uz) noexcept -> mat4&
+  auto lookat(T ex, T ey, T ez, T lx, T ly, T lz, T ux, T uy, T uz) noexcept
+   -> mat4&
   {
     auto fx = ex - lx;
     auto fy = ey - ly;
@@ -561,15 +520,13 @@ struct mat4 {
     return *this;
   }
 
-  auto
-  lookat(vec3<T> e, vec3<T> l, vec3<T> u) noexcept -> mat4&
+  auto lookat(vec3<T> e, vec3<T> l, vec3<T> u) noexcept -> mat4&
   {
     return lookat(
      e.x(), e.y(), e.z(), l.x(), l.y(), l.z(), u.x(), u.y(), u.z());
   }
 
-  auto
-  perspective(T fov, T a, T n, T f) noexcept -> mat4&
+  auto perspective(T fov, T a, T n, T f) noexcept -> mat4&
   {
     const auto t = std::tan(fov / 2) * n;
     const auto r = a * t;
@@ -577,8 +534,7 @@ struct mat4 {
     return *this;
   }
 
-  auto
-  adjoint() noexcept -> mat4&
+  auto adjoint() noexcept -> mat4&
   {
     const auto m00 = m[0], m01 = m[1], m02 = m[2], m03 = m[3], m10 = m[4],
                m11 = m[5], m12 = m[6], m13 = m[7], m20 = m[8], m21 = m[9],
@@ -621,22 +577,19 @@ struct mat4 {
     return *this;
   }
 
-  auto
-  is_invertible() const noexcept -> bool
+  auto is_invertible() const noexcept -> bool
   {
     return determinant() != T{0};
   }
 
-  auto
-  inverse() noexcept -> mat4&
+  auto inverse() noexcept -> mat4&
   {
     const auto det = determinant();
     adjoint();
     return this->operator*=(det);
   }
 
-  auto
-  transpose() noexcept -> mat4&
+  auto transpose() noexcept -> mat4&
   {
     *this = {m[0],
              m[4],
@@ -658,8 +611,7 @@ struct mat4 {
     return *this;
   }
 
-  auto
-  determinant() const noexcept -> bool
+  auto determinant() const noexcept -> bool
   {
     const auto m00 = m[0], m01 = m[1], m02 = m[2], m03 = m[3], m10 = m[4],
                m11 = m[5], m12 = m[6], m13 = m[7], m20 = m[8], m21 = m[9],
@@ -679,5 +631,37 @@ struct mat4 {
 };
 
 } // namespace molphene
+
+namespace boost::qvm {
+template<class T>
+struct mat_traits<molphene::mat4<T>> {
+  using scalar_type = T;
+  static int const rows = 4;
+  static int const cols = 4;
+
+  template<int Row, int Col>
+  static scalar_type read_element(molphene::mat4<T> const& x)
+  {
+    return x.m[Row * 4 + Col];
+  }
+
+  template<int Row, int Col>
+  static scalar_type& write_element(molphene::mat4<T>& x)
+  {
+    return x.m[Row * 4 + Col];
+  }
+
+  static scalar_type
+  read_element_idx(int row, int col, molphene::mat4<T> const& x)
+  {
+    return x.m[row * 4 + col];
+  }
+
+  static scalar_type& write_element_idx(int row, int col, molphene::mat4<T>& x)
+  {
+    return x.m[row * 4 + col];
+  }
+};
+} // namespace boost::qvm
 
 #endif

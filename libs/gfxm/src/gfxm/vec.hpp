@@ -9,6 +9,8 @@
 #include <type_traits>
 #include <utility>
 
+#include <boost/qvm/all.hpp>
+
 #include "detail/type_traits.hpp"
 
 namespace molphene {
@@ -366,4 +368,37 @@ private:
 
 } // namespace molphene
 
+namespace boost::qvm {
+template<typename T, std::size_t N>
+struct vec_traits<molphene::vec<T, N>> {
+  static int const dim = N;
+
+  using scalar_type = T;
+
+  template<int I>
+  static inline auto write_element(molphene::vec<T, N>& v) -> scalar_type&
+  {
+    return v.elems[I];
+  }
+
+  template<int I>
+  static inline auto read_element(molphene::vec<T, N> const& v) -> scalar_type
+  {
+    return v.elems[I];
+  }
+
+  static inline auto write_element_idx(int i, molphene::vec<T, N>& v)
+   -> scalar_type&
+  {
+    return v.elems[i];
+  }
+
+  static inline auto read_element_idx(int i, molphene::vec<T, N> const& v)
+   -> scalar_type
+  {
+    return v.elems[i];
+  }
+};
+
+} // namespace boost::qvm
 #endif
