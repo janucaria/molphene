@@ -14,9 +14,18 @@ target_include_directories(molphene
     "${PROJECT_SOURCE_DIR}/src/lib"
 )
 
-target_link_libraries(molphene PUBLIC molphene-molecule GSL molphene-gfxm)
+target_link_libraries(molphene
+  PUBLIC
+    molphene-gfxm
+    molphene-molecule
+    GSL 
+    Boost::boost
+)
 
-target_compile_features(molphene PUBLIC cxx_std_17)
+target_compile_features(molphene
+  PUBLIC
+    cxx_std_17
+)
 
 target_compile_options(molphene
   PUBLIC

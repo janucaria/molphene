@@ -28,3 +28,5 @@ target_compile_options(molphene-molecule
       -O3
     >
 )
+
+target_link_libraries(molphene-molecule PRIVATE Boost::boost)

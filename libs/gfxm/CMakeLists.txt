@@ -17,6 +17,7 @@ target_compile_options(molphene-gfxm
     >
 )
 
+target_link_libraries(molphene-gfxm INTERFACE Boost::boost)
 
 set(Gfxm_TEST_SRC_FILES
 "${CMAKE_CURRENT_SOURCE_DIR}/test/matrix3.cpp"
