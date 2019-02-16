@@ -77,8 +77,8 @@ mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 static void cursor_pos_callback(GLFWwindow* window, double xpos, double ypos)
 {
   if(mouse_press) {
-    delt_x = xpos - last_x;
-    delt_y = ypos - last_y;
+    delt_x = last_x - xpos;
+    delt_y = last_y - ypos;
 
     last_x = xpos;
     last_y = ypos;

@@ -348,64 +348,13 @@ struct mat4 {
 
   auto identity() noexcept -> mat4&
   {
-    return *this = {1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1};
+    boost::qvm::set_identity(*this);
+    return *this;
   }
 
   auto rotate(T a, const vec3<T>& origin) noexcept -> mat4&
   {
-    // zero rotation is nothing
-    if(!a) {
-      return *this;
-    }
-
-    const auto m00 = m[0], m01 = m[1], m02 = m[2], m03 = m[3], m10 = m[4],
-               m11 = m[5], m12 = m[6], m13 = m[7], m20 = m[8], m21 = m[9],
-               m22 = m[10], m23 = m[11], m30 = m[12], m31 = m[13], m32 = m[14],
-               m33 = m[15];
-
-    const auto norm = origin.to_unit();
-    const auto x = norm.x();
-    const auto y = norm.y();
-    const auto z = norm.z();
-    const auto s = std::sin(a);
-    const auto c = std::cos(a);
-    const auto t = T{1} - c;
-    const auto xx = x * x;
-    const auto xy = x * y;
-    const auto yy = y * y;
-    const auto yz = y * z;
-    const auto zz = z * z;
-    const auto zx = z * x;
-
-    const auto n00 = c + t * xx;
-    const auto n01 = t * xy + s * z;
-    const auto n02 = t * zx - s * y;
-
-    const auto n10 = t * xy - s * z;
-    const auto n11 = c + t * yy;
-    const auto n12 = t * yz + s * x;
-
-    const auto n20 = t * zx + s * y;
-    const auto n21 = t * yz - s * x;
-    const auto n22 = c + t * zz;
-
-    m[0] = m00 * n00 + m01 * n10 + m02 * n20;
-    m[1] = m00 * n01 + m01 * n11 + m02 * n21;
-    m[2] = m00 * n02 + m01 * n12 + m02 * n22;
-    m[3] = m03;
-    m[4] = m10 * n00 + m11 * n10 + m12 * n20;
-    m[5] = m10 * n01 + m11 * n11 + m12 * n21;
-    m[6] = m10 * n02 + m11 * n12 + m12 * n22;
-    m[7] = m13;
-    m[8] = m20 * n00 + m21 * n10 + m22 * n20;
-    m[9] = m20 * n01 + m21 * n11 + m22 * n21;
-    m[10] = m20 * n02 + m21 * n12 + m22 * n22;
-    m[11] = m23;
-    m[12] = m30 * n00 + m31 * n10 + m32 * n20;
-    m[13] = m30 * n01 + m31 * n11 + m32 * n21;
-    m[14] = m30 * n02 + m31 * n12 + m32 * n22;
-    m[15] = m33;
-
+    boost::qvm::rotate(*this, origin, a);
     return *this;
   }
 
@@ -528,53 +477,7 @@ struct mat4 {
 
   auto perspective(T fov, T a, T n, T f) noexcept -> mat4&
   {
-    const auto t = std::tan(fov / 2) * n;
-    const auto r = a * t;
-    frustum(-r, r, -t, t, n, f);
-    return *this;
-  }
-
-  auto adjoint() noexcept -> mat4&
-  {
-    const auto m00 = m[0], m01 = m[1], m02 = m[2], m03 = m[3], m10 = m[4],
-               m11 = m[5], m12 = m[6], m13 = m[7], m20 = m[8], m21 = m[9],
-               m22 = m[10], m23 = m[11], m30 = m[12], m31 = m[13], m32 = m[14],
-               m33 = m[15];
-
-    m[0] = m12 * m23 * m31 - m13 * m22 * m31 + m13 * m21 * m32 -
-           m11 * m23 * m32 - m12 * m21 * m33 + m11 * m22 * m33;
-    m[1] = m03 * m22 * m31 - m02 * m23 * m31 - m03 * m21 * m32 +
-           m01 * m23 * m32 + m02 * m21 * m33 - m01 * m22 * m33;
-    m[2] = m02 * m13 * m31 - m03 * m12 * m31 + m03 * m11 * m32 -
-           m01 * m13 * m32 - m02 * m11 * m33 + m01 * m12 * m33;
-    m[3] = m03 * m12 * m21 - m02 * m13 * m21 - m03 * m11 * m22 +
-           m01 * m13 * m22 + m02 * m11 * m23 - m01 * m12 * m23;
-    m[4] = m13 * m22 * m30 - m12 * m23 * m30 - m13 * m20 * m32 +
-           m10 * m23 * m32 + m12 * m20 * m33 - m10 * m22 * m33;
-    m[5] = m02 * m23 * m30 - m03 * m22 * m30 + m03 * m20 * m32 -
-           m00 * m23 * m32 - m02 * m20 * m33 + m00 * m22 * m33;
-    m[6] = m03 * m12 * m30 - m02 * m13 * m30 - m03 * m10 * m32 +
-           m00 * m13 * m32 + m02 * m10 * m33 - m00 * m12 * m33;
-    m[7] = m02 * m13 * m20 - m03 * m12 * m20 + m03 * m10 * m22 -
-           m00 * m13 * m22 - m02 * m10 * m23 + m00 * m12 * m23;
-    m[8] = m11 * m23 * m30 - m13 * m21 * m30 + m13 * m20 * m31 -
-           m10 * m23 * m31 - m11 * m20 * m33 + m10 * m21 * m33;
-    m[9] = m03 * m21 * m30 - m01 * m23 * m30 - m03 * m20 * m31 +
-           m00 * m23 * m31 + m01 * m20 * m33 - m00 * m21 * m33;
-    m[10] = m01 * m13 * m30 - m03 * m11 * m30 + m03 * m10 * m31 -
-            m00 * m13 * m31 - m01 * m10 * m33 + m00 * m11 * m33;
-    m[11] = m03 * m11 * m20 - m01 * m13 * m20 - m03 * m10 * m21 +
-            m00 * m13 * m21 + m01 * m10 * m23 - m00 * m11 * m23;
-    m[12] = m12 * m21 * m30 - m11 * m22 * m30 - m12 * m20 * m31 +
-            m10 * m22 * m31 + m11 * m20 * m32 - m10 * m21 * m32;
-    m[13] = m01 * m22 * m30 - m02 * m21 * m30 + m02 * m20 * m31 -
-            m00 * m22 * m31 - m01 * m20 * m32 + m00 * m21 * m32;
-    m[14] = m02 * m11 * m30 - m01 * m12 * m30 - m02 * m10 * m31 +
-            m00 * m12 * m31 + m01 * m10 * m32 - m00 * m11 * m32;
-    m[15] = m01 * m12 * m20 - m02 * m11 * m20 + m02 * m10 * m21 -
-            m00 * m12 * m21 - m01 * m10 * m22 + m00 * m11 * m22;
-
-    return *this;
+    return *this = boost::qvm::perspective_rh(fov, a, n, f);
   }
 
   auto is_invertible() const noexcept -> bool
@@ -584,9 +487,7 @@ struct mat4 {
 
   auto inverse() noexcept -> mat4&
   {
-    const auto det = determinant();
-    adjoint();
-    return this->operator*=(det);
+    return *this = boost::qvm::inverse(*this);
   }
 
   auto transpose() noexcept -> mat4&
@@ -613,20 +514,7 @@ struct mat4 {
 
   auto determinant() const noexcept -> bool
   {
-    const auto m00 = m[0], m01 = m[1], m02 = m[2], m03 = m[3], m10 = m[4],
-               m11 = m[5], m12 = m[6], m13 = m[7], m20 = m[8], m21 = m[9],
-               m22 = m[10], m23 = m[11], m30 = m[12], m31 = m[13], m32 = m[14],
-               m33 = m[15];
-
-    return (
-     m30 * m21 * m12 * m03 - m20 * m31 * m12 * m03 - m30 * m11 * m22 * m03 +
-     m10 * m31 * m22 * m03 + m20 * m11 * m32 * m03 - m10 * m21 * m32 * m03 -
-     m30 * m21 * m02 * m13 + m20 * m31 * m02 * m13 + m30 * m01 * m22 * m13 -
-     m00 * m31 * m22 * m13 - m20 * m01 * m32 * m13 + m00 * m21 * m32 * m13 +
-     m30 * m11 * m02 * m23 - m10 * m31 * m02 * m23 - m30 * m01 * m12 * m23 +
-     m00 * m31 * m12 * m23 + m10 * m01 * m32 * m23 - m00 * m11 * m32 * m23 -
-     m20 * m11 * m02 * m33 + m10 * m21 * m02 * m33 + m20 * m01 * m12 * m33 -
-     m00 * m21 * m12 * m33 - m10 * m01 * m22 * m33 + m00 * m11 * m22 * m33);
+    return boost::qvm::determinant(*this);
   }
 };
 

@@ -213,9 +213,7 @@ struct vec {
   template<typename V = void, std::enable_if_t<N == 3, V>* = nullptr>
   auto cross(const vec& other) const noexcept -> vec
   {
-    return {elems[1] * other.elems[2] - elems[2] * other.elems[1],
-            elems[2] * other.elems[0] - elems[0] * other.elems[2],
-            elems[0] * other.elems[1] - elems[1] * other.elems[0]};
+    return boost::qvm::cross(*this, other);
   }
 
   friend auto operator+(const vec& val) noexcept -> vec

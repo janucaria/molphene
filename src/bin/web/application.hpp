@@ -95,14 +95,11 @@ private:
     auto app = static_cast<application*>(userData);
 
     if(event && app->click_state.is_down) {
-      const auto old_x = app->click_state.last_x;
-      const auto old_y = app->click_state.last_y;
+      const auto delta_x = static_cast<double>(app->click_state.last_x) - event->clientX;
+      const auto delta_y = static_cast<double>(app->click_state.last_y) - event->clientY;
 
       app->click_state.last_x = event->clientX;
       app->click_state.last_y = event->clientY;
-
-      const auto delta_x = static_cast<double>(app->click_state.last_x) - old_x;
-      const auto delta_y = static_cast<double>(app->click_state.last_y) - old_y;
 
       app->scene.rotate({M_PI * delta_y / 180, M_PI * delta_x / 180, 0});
       app->render_frame();
