@@ -37,7 +37,7 @@ add_compile_options(-Wall -Wpedantic -pedantic-errors -fno-rtti)
 
 add_subdirectory("libs/gfxm")
 add_subdirectory("libs/molecule")
-add_subdirectory("cmake/cmakelists/libmolphene")
+add_subdirectory("libs/core")
 add_subdirectory("cmake/cmakelists/molphene-glfw")
 
 if(EMSCRIPTEN)
