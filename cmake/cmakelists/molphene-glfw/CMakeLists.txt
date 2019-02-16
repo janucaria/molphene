@@ -1,9 +1,15 @@
 
-add_executable(molphene-glfw
-"${PROJECT_SOURCE_DIR}/src/bin/glfw/main.cpp"
+add_executable(molphene-glfw)
+
+target_sources(molphene-glfw
+  PRIVATE
+    "${PROJECT_SOURCE_DIR}/src/bin/glfw/main.cpp"
 )
 
-target_link_libraries(molphene-glfw PRIVATE molphene)
+target_link_libraries(molphene-glfw
+  PRIVATE
+    molphene
+)
 
 if(EMSCRIPTEN)
 

@@ -1,12 +1,15 @@
-add_library(molphene
-"${PROJECT_SOURCE_DIR}/src/lib/molphene/ballstick_representation.cpp"
-"${PROJECT_SOURCE_DIR}/src/lib/molphene/color_light_buffer.cpp"
-"${PROJECT_SOURCE_DIR}/src/lib/molphene/color_light_shader.cpp"
-"${PROJECT_SOURCE_DIR}/src/lib/molphene/color_manager.cpp"
-"${PROJECT_SOURCE_DIR}/src/lib/molphene/gl_renderer.cpp"
-"${PROJECT_SOURCE_DIR}/src/lib/molphene/quad_shader.cpp"
-"${PROJECT_SOURCE_DIR}/src/lib/molphene/scene.cpp"
-"${PROJECT_SOURCE_DIR}/src/lib/molphene/spacefill_representation.cpp"
+add_library(molphene)
+
+target_sources(molphene
+  PRIVATE
+    "${PROJECT_SOURCE_DIR}/src/lib/molphene/ballstick_representation.cpp"
+    "${PROJECT_SOURCE_DIR}/src/lib/molphene/color_light_buffer.cpp"
+    "${PROJECT_SOURCE_DIR}/src/lib/molphene/color_light_shader.cpp"
+    "${PROJECT_SOURCE_DIR}/src/lib/molphene/color_manager.cpp"
+    "${PROJECT_SOURCE_DIR}/src/lib/molphene/gl_renderer.cpp"
+    "${PROJECT_SOURCE_DIR}/src/lib/molphene/quad_shader.cpp"
+    "${PROJECT_SOURCE_DIR}/src/lib/molphene/scene.cpp"
+    "${PROJECT_SOURCE_DIR}/src/lib/molphene/spacefill_representation.cpp"
 )
 
 target_include_directories(molphene
