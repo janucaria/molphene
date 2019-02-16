@@ -28,9 +28,9 @@ string(PREPEND MOLPHENE_EM_SETTINGS "-s ")
 
 target_sources(molphene-web
   PRIVATE
-    "${PROJECT_SOURCE_DIR}/src/bin/web/application.cpp"
-    "${PROJECT_SOURCE_DIR}/src/bin/web/click_state.cpp"
-    "${PROJECT_SOURCE_DIR}/src/bin/web/embind-MainApp.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/application.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/click_state.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/embind-MainApp.cpp"
 )
 
 target_link_libraries(molphene-web

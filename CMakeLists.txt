@@ -41,6 +41,6 @@ add_subdirectory("libs/core")
 
 add_subdirectory("bins/glfw")
 if(EMSCRIPTEN)
-  add_subdirectory("cmake/cmakelists/molphene-web")
+  add_subdirectory("bins/web")
 endif()
 
