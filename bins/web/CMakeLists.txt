@@ -1,8 +1,4 @@
-add_executable(molphene-web
-  "${PROJECT_SOURCE_DIR}/src/bin/web/application.cpp"
-  "${PROJECT_SOURCE_DIR}/src/bin/web/click_state.cpp"
-  "${PROJECT_SOURCE_DIR}/src/bin/web/embind-MainApp.cpp"
-)
+add_executable(molphene-web)
 
 string(JOIN " -s " MOLPHENE_EM_SETTINGS
   ENVIRONMENT=web
@@ -30,10 +26,17 @@ elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
 endif()
 string(PREPEND MOLPHENE_EM_SETTINGS "-s ")
 
+target_sources(molphene-web
+  PRIVATE
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/application.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/click_state.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/embind-MainApp.cpp"
+)
+
 target_link_libraries(molphene-web
   PRIVATE
     GL
-    molphene
+    Molphene::molphene
 )
 
 target_compile_options(molphene-web

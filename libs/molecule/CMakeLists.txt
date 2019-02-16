@@ -1,8 +1,13 @@
-add_library(molphene-molecule
-"${CMAKE_CURRENT_SOURCE_DIR}/src/molecule/atom.cpp"
-"${CMAKE_CURRENT_SOURCE_DIR}/src/molecule/bond.cpp"
-"${CMAKE_CURRENT_SOURCE_DIR}/src/molecule/chemdoodle_json_parser.cpp"
-"${CMAKE_CURRENT_SOURCE_DIR}/src/molecule/molecule.cpp"
+add_library(molphene-molecule)
+
+add_library(Molphene::molecule ALIAS molphene-molecule)
+
+target_sources(molphene-molecule
+  PRIVATE
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/molecule/atom.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/molecule/bond.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/molecule/chemdoodle_json_parser.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/molecule/molecule.cpp"
 )
 
 target_include_directories(molphene-molecule
@@ -12,7 +17,7 @@ target_include_directories(molphene-molecule
 
 target_link_libraries(molphene-molecule
   PUBLIC
-    GSL molphene-gfxm
+    GSL Molphene::gfxm
   PRIVATE
     nlohmann_json::nlohmann_json 
 )
@@ -28,3 +33,5 @@ target_compile_options(molphene-molecule
       -O3
     >
 )
+
+target_link_libraries(molphene-molecule PRIVATE Boost::boost)
