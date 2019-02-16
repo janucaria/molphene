@@ -1,5 +1,7 @@
 add_library(molphene-gfxm INTERFACE)
 
+add_library(Molphene::gfxm ALIAS molphene-gfxm)
+
 target_include_directories(molphene-gfxm
 INTERFACE
   "${CMAKE_CURRENT_SOURCE_DIR}/src/"

@@ -1,5 +1,7 @@
 add_library(molphene)
 
+add_library(Molphene::molphene ALIAS molphene)
+
 target_sources(molphene
   PRIVATE
     "${CMAKE_CURRENT_SOURCE_DIR}/src/molphene/ballstick_representation.cpp"
@@ -19,8 +21,8 @@ target_include_directories(molphene
 
 target_link_libraries(molphene
   PUBLIC
-    molphene-gfxm
-    molphene-molecule
+    Molphene::gfxm
+    Molphene::molecule
     GSL 
     Boost::boost
 )

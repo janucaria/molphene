@@ -8,7 +8,7 @@ target_sources(molphene-glfw
 
 target_link_libraries(molphene-glfw
   PRIVATE
-    molphene
+    Molphene::molphene
 )
 
 if(EMSCRIPTEN)

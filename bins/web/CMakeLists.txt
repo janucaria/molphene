@@ -36,7 +36,7 @@ target_sources(molphene-web
 target_link_libraries(molphene-web
   PRIVATE
     GL
-    molphene
+    Molphene::molphene
 )
 
 target_compile_options(molphene-web

@@ -1,5 +1,7 @@
 add_library(molphene-molecule)
 
+add_library(Molphene::molecule ALIAS molphene-molecule)
+
 target_sources(molphene-molecule
   PRIVATE
     "${CMAKE_CURRENT_SOURCE_DIR}/src/molecule/atom.cpp"
@@ -15,7 +17,7 @@ target_include_directories(molphene-molecule
 
 target_link_libraries(molphene-molecule
   PUBLIC
-    GSL molphene-gfxm
+    GSL Molphene::gfxm
   PRIVATE
     nlohmann_json::nlohmann_json 
 )
