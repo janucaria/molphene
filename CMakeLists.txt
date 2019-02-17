@@ -3,9 +3,9 @@ project(Molphene)
 
 set(JSON_BuildTests OFF CACHE INTERNAL "")
 
-add_subdirectory("third_party/GSL")
-add_subdirectory("third_party/json")
-add_subdirectory("third_party/Catch2")
+add_subdirectory("third_party/GSL" EXCLUDE_FROM_ALL)
+add_subdirectory("third_party/json" EXCLUDE_FROM_ALL)
+add_subdirectory("third_party/Catch2" EXCLUDE_FROM_ALL)
 
 if(EMSCRIPTEN)
   set(CMAKE_CXX_COMPILER ${CMAKE_CXX_COMPILER} CACHE FILEPATH "Compiler")

@@ -61,3 +61,15 @@ set_target_properties(molphene-web
     SUFFIX ".js"
     LINK_FLAGS ${MOLPHENE_EM_SETTINGS}
 )
+
+install(
+  TARGETS
+    molphene-web
+  RUNTIME DESTINATION "./"
+)
+
+install(
+  FILES
+    "${CMAKE_CURRENT_BINARY_DIR}/molphene-web.wasm"
+  DESTINATION "./"
+)
