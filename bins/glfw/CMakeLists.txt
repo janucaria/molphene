@@ -3,6 +3,8 @@ add_executable(molphene-glfw)
 
 target_sources(molphene-glfw
   PRIVATE
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/application.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/click_state.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/main.cpp"
 )
 
