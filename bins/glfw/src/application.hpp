@@ -11,7 +11,7 @@
 #include <molphene/scene.hpp>
 #include <molphene/stdafx.hpp>
 
-#include "click_state.hpp"
+#include <molphene/io/click_state.hpp>
 
 namespace molphene {
 
@@ -43,7 +43,7 @@ public:
 
 private:
 
-  click_state click_state{false, 0, 0};
+  io::click_state click_state{false, 0, 0};
 
   glfw_window_pointer window_;
 

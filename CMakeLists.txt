@@ -36,6 +36,7 @@ add_compile_options(-Wall -Wpedantic -pedantic-errors -fno-rtti)
 add_subdirectory("libs/gfxm")
 add_subdirectory("libs/molecule")
 add_subdirectory("libs/core")
+add_subdirectory("libs/io")
 
 add_subdirectory("bins/glfw")
 if(EMSCRIPTEN)
