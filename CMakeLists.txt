@@ -38,6 +38,7 @@ add_subdirectory("libs/molecule")
 add_subdirectory("libs/core")
 add_subdirectory("libs/io")
 
+add_subdirectory("bins/app")
 add_subdirectory("bins/glfw")
 if(EMSCRIPTEN)
   add_subdirectory("bins/web")

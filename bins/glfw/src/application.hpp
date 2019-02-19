@@ -4,7 +4,7 @@
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
 
-#include "basic_application.hpp"
+#include <molphene/basic_application.hpp>
 
 namespace molphene {
 

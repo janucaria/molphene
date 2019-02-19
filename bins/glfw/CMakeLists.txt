@@ -11,6 +11,7 @@ target_link_libraries(molphene-glfw
   PRIVATE
     Molphene::molphene
     Molphene::io
+    Molphene::app
 )
 
 if(EMSCRIPTEN)
