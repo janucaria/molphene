@@ -27,7 +27,7 @@ class application {
   using glfw_window_pointer = std::unique_ptr<GLFWwindow, glfw_window_guard>;
 
 public:
-  bool init_context();
+  void init_context();
 
   void setup();
 
@@ -41,6 +41,19 @@ public:
 
   void render_frame();
 
+  void close_app();
+
+  void mouse_press_event(int button, int mods, int pos_x, int pos_y);
+
+  void mouse_release_event(int button, int mods, int pos_x, int pos_y);
+
+  void mouse_move_event(int pos_x, int pos_y);
+
+  void mouse_scroll_event(int pos_x, int pos_y);
+
+  void key_press_event(unsigned char charcode, int mods);
+
+  void framebuffer_size_change_event(int width, int height);
 private:
 
   io::click_state click_state{false, 0, 0};
