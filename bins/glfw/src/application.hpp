@@ -28,10 +28,6 @@ public:
 
   void run();
 
-  void canvas_size_change_callback(int width, int height);
-
-  void change_representation(int representation_type);
-
   void render_frame();
 
   auto framebuffer_size() const -> framebuffer_size_type;

@@ -85,25 +85,6 @@ void application::close_app()
   glfwSetWindowShouldClose(window_.get(), GL_TRUE);
 }
 
-void application::canvas_size_change_callback(int width, int height)
-{
-  renderer.change_dimension(width, height);
-  camera.aspect_ratio(width, height);
-  camera.update_view_matrix();
-}
-
-void application::change_representation(int representation_type)
-{
-  switch(representation_type) {
-  case static_cast<int>(molphene::molecule_display::spacefill): {
-    scene.representation(molphene::molecule_display::spacefill, molecule);
-  } break;
-  case static_cast<int>(molphene::molecule_display::ball_and_stick): {
-    scene.representation(molphene::molecule_display::ball_and_stick, molecule);
-  } break;
-  }
-}
-
 void application::render_frame()
 {
   base_application_type::render_frame();

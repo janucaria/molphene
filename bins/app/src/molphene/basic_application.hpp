@@ -50,6 +50,25 @@ public:
     renderer.render(scene, camera);
   }
 
+  void canvas_size_change_callback(int width, int height)
+  {
+    renderer.change_dimension(width, height);
+    camera.aspect_ratio(width, height);
+    camera.update_view_matrix();
+  }
+
+  void change_representation(int representation_type)
+  {
+    switch(representation_type) {
+    case static_cast<int>(molecule_display::spacefill): {
+      scene.representation(molecule_display::spacefill, molecule);
+    } break;
+    case static_cast<int>(molecule_display::ball_and_stick): {
+      scene.representation(molecule_display::ball_and_stick, molecule);
+    } break;
+    }
+  }
+
   void key_press_event(unsigned char charcode, int mods)
   {
     switch(charcode) {
