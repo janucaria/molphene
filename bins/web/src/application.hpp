@@ -1,6 +1,8 @@
 #ifndef MOLPHENE_APPLICATION_HPP
 #define MOLPHENE_APPLICATION_HPP
 
+#include <utility>
+
 #include <emscripten/emscripten.h>
 #include <emscripten/html5.h>
 
@@ -13,36 +15,25 @@
 
 #include <molphene/io/click_state.hpp>
 
+#include <molphene/basic_application.hpp>
+
 namespace molphene {
 
-class application {
+class application : public basic_application<application> {
 public:
+  using framebuffer_size_type = std::pair<std::size_t, std::size_t>;
+
   void init_context();
+  
+  auto framebuffer_size() const -> framebuffer_size_type;
 
-  void run();
-
-  void open_pdb_data(std::string pdbdata);
-
-  void canvas_size_change_callback(int width, int height);
-
-  void change_representation(int representation_type);
-
-  void render_frame();
+  void close_app();
 
 private:
-  io::click_state click_state{false, 0, 0};
 
   EMSCRIPTEN_WEBGL_CONTEXT_HANDLE glctx{0};
 
   const char* canvas_target{"canvas"};
-
-  molphene::scene scene{};
-
-  molphene::gl_renderer renderer;
-
-  molphene::scene::camera camera;
-
-  molphene::molecule molecule;
 
   template<typename T>
   static auto mouse_event(const T* event)

@@ -9,44 +9,6 @@
 
 namespace molphene {
 
-void application::open_pdb_data(std::string pdbdata)
-{
-  std::stringstream pdbstm;
-  pdbstm.str(pdbdata);
-  molecule = molphene::chemdoodle_json_parser{}.parse(pdbstm);
-
-  scene.reset_mesh(molecule);
-  camera.top = scene.bounding_sphere().radius() + 2;
-  camera.update_view_matrix();
-  render_frame();
-}
-
-void application::canvas_size_change_callback(int width, int height)
-{
-  renderer.change_dimension(width, height);
-  camera.aspect_ratio(width, height);
-  camera.update_view_matrix();
-  render_frame();
-}
-
-void application::change_representation(int representation_type)
-{
-  switch(representation_type) {
-  case static_cast<int>(molphene::molecule_display::spacefill): {
-    scene.representation(molphene::molecule_display::spacefill, molecule);
-  } break;
-  case static_cast<int>(molphene::molecule_display::ball_and_stick): {
-    scene.representation(molphene::molecule_display::ball_and_stick, molecule);
-  } break;
-  }
-  render_frame();
-}
-
-void application::render_frame()
-{
-  renderer.render(scene, camera);
-}
-
 void application::init_context()
 {
   const auto attrs = []() {
@@ -84,33 +46,16 @@ void application::init_context()
    canvas_target, this, false, &mouse_move_handler);
 };
 
-void application::run()
+auto application::framebuffer_size() const -> framebuffer_size_type
 {
-  init_context();
+  int width;
+  int height;
+  emscripten_webgl_get_drawing_buffer_size(glctx, &width, &height);
+  return std::make_pair(width, height);
+}
 
-  scene.setup_graphics();
-  renderer.init();
-
-  const auto [width, height] = [](auto glctx) noexcept
-  {
-    int width;
-    int height;
-    emscripten_webgl_get_drawing_buffer_size(glctx, &width, &height);
-    return std::make_tuple(width, height);
-  }
-  (glctx);
-
-  renderer.change_dimension(width, height);
-  camera.aspect_ratio(width, height);
-  camera.update_view_matrix();
-
-  auto pdbstm = std::stringstream{};
-
-  molecule = molphene::chemdoodle_json_parser{}.parse(pdbstm);
-  scene.reset_mesh(molecule);
-  camera.top = scene.bounding_sphere().radius() + 2;
-  camera.update_view_matrix();
-  render_frame();
+void application::close_app()
+{
 }
 
 } // namespace molphene

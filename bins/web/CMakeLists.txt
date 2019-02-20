@@ -37,6 +37,7 @@ target_link_libraries(molphene-web
     GL
     Molphene::molphene
     Molphene::io
+    Molphene::app
 )
 
 target_compile_options(molphene-web

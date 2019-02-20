@@ -4,12 +4,16 @@
 
 EMSCRIPTEN_BINDINGS(main)
 {
-  emscripten::class_<molphene::application>("MainApp")
-   .constructor<>()
-   .function("run", &molphene::application::run)
-   .function("openPDBData", &molphene::application::open_pdb_data)
+  using base_application_t = molphene::basic_application<molphene::application>;
+  emscripten::class_<base_application_t>("BaseApp")
+   .function("setup", &base_application_t::setup)
+   .function("openPDBData", &base_application_t::open_pdb_data)
    .function("onCanvasSizeChange",
-             &molphene::application::canvas_size_change_callback)
-   .function("changeRepresentation",
-             &molphene::application::change_representation);
+             &base_application_t::canvas_size_change_callback)
+   .function("changeRepresentation", &base_application_t::change_representation)
+   .function("renderFrame", &base_application_t::render_frame);
+
+  emscripten::class_<molphene::application,
+                     emscripten::base<base_application_t>>("MainApp")
+   .constructor<>();
 }
