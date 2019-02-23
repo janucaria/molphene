@@ -69,7 +69,11 @@ void gl_renderer::render(const scene& scene,
     color_light_shader_.projection_matrix(proj_matrix);
     color_light_shader_.modelview_matrix(mv_matrix);
     color_light_shader_.normal_matrix(norm_matrix);
-    color_light_shader_.light_source(scene.light_source());
+    std::visit(
+     [this](auto&& val) {
+       color_light_shader_.light_source(std::forward<decltype(val)>(val));
+     },
+     scene.light_source());
     color_light_shader_.fog(scene.fog());
     color_light_shader_.material(scene.material());
 

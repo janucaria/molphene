@@ -17,10 +17,7 @@ auto scene::setup_graphics() noexcept -> bool
 {
   material_.diffuse_color = {0xFF, 0xFF, 0xFF};
 
-  point_light_source_.location = {0, 0, -23};
-  point_light_source_.radius = 5;
-
-  spot_light_source_.location = {0, 0, -20};
+  light_source_.emplace<directional_light>();
 
   representations_.emplace_back(spacefill_representation{});
   representations_.emplace_back(ballstick_representation{});
@@ -177,7 +174,7 @@ auto scene::model_matrix() const noexcept -> mat4f
   return model_matrix_;
 }
 
-auto scene::light_source() const noexcept -> directional_light
+auto scene::light_source() const noexcept -> light_variant
 {
   return light_source_;
 }

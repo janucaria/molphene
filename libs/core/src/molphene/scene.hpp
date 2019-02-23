@@ -63,6 +63,9 @@ public:
 
   using representations_container = std::list<representation_variant>;
 
+  using light_variant =
+   std::variant<directional_light, point_light, spot_light>;
+
   auto setup_graphics() noexcept -> bool;
 
   void reset_mesh(const molecule& mol) noexcept;
@@ -73,7 +76,7 @@ public:
 
   auto model_matrix() const noexcept -> mat4f;
 
-  auto light_source() const noexcept -> directional_light;
+  auto light_source() const noexcept -> light_variant;
 
   auto material() const noexcept -> material_type;
 
@@ -179,11 +182,7 @@ private:
 
   representations_container representations_;
 
-  directional_light light_source_;
-
-  point_light point_light_source_;
-
-  spot_light spot_light_source_;
+  light_variant light_source_;
 
   fog_type fog_;
 
