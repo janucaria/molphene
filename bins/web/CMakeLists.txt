@@ -2,13 +2,17 @@ add_executable(molphene-web)
 
 string(JOIN " -s " MOLPHENE_EM_SETTINGS
   ENVIRONMENT=web
+  EXIT_RUNTIME
   EXPORT_NAME=Molphene
   MODULARIZE
   NO_DYNAMIC_EXECUTION
   NO_FILESYSTEM
+  NO_INVOKE_RUN
   NO_USE_SDL
-  TOTAL_MEMORY=512MB
+  RUNNING_JS_OPTS
   STRICT
+  TOTAL_MEMORY=512MB
+  "EXTRA_EXPORTED_RUNTIME_METHODS='[\"allocate\", \"intArrayFromString\", \"ALLOC_NORMAL\"]'"
 )
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
@@ -29,7 +33,7 @@ string(PREPEND MOLPHENE_EM_SETTINGS "-s ")
 target_sources(molphene-web
   PRIVATE
     "${CMAKE_CURRENT_SOURCE_DIR}/src/application.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/embind-MainApp.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/main.cpp"
 )
 
 target_link_libraries(molphene-web
@@ -40,14 +44,8 @@ target_link_libraries(molphene-web
     Molphene::app
 )
 
-target_compile_options(molphene-web
-  PRIVATE
-    -frtti
-)
-
 target_link_options(molphene-web
   PRIVATE
-    --bind
     $<$<CONFIG:Debug>:
       -O0 -g4
       --source-map-base ./
