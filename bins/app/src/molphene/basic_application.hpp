@@ -304,8 +304,7 @@ public:
       transform_to_cylinder_attrs(
        bond_atoms,
        std::back_insert_iterator(cylinder_mesh_attrs),
-       ballnstick,
-       true);
+       {true, ballnstick.radius_size});
       ballnstick.bond1_cylinder_buffer =
        build_cylinder_mesh(cylinder_mesh_attrs);
 
@@ -314,8 +313,7 @@ public:
       transform_to_cylinder_attrs(
        bond_atoms,
        std::back_insert_iterator(cylinder_mesh_attrs),
-       ballnstick,
-       false);
+       {false, ballnstick.radius_size});
       ballnstick.bond2_cylinder_buffer =
        build_cylinder_mesh(cylinder_mesh_attrs);
     } break;

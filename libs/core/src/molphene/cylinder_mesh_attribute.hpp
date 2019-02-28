@@ -3,6 +3,7 @@
 
 #include "m3d.hpp"
 #include "shape/cylinder.hpp"
+#include "color_manager.hpp"
 
 namespace molphene {
 
@@ -13,14 +14,20 @@ struct cylinder_mesh_attribute {
   cylinder<double> cylinder;
 };
 
-template<typename TRepresent, typename TSizeRange, typename TOutIter>
+struct bond_to_cylinder_attrs_options {
+  bool is_first{true};
+  double radius_size{1};
+};
+
+template<typename TSizeRange, typename TOutIter>
 void transform_to_cylinder_attrs(const TSizeRange& bond_atoms,
                                  TOutIter output,
-                                 const TRepresent& representation,
-                                 bool is_first)
+                                 bond_to_cylinder_attrs_options options)
 {
   using float_type = double;
   using vec2f = vec2<float_type>;
+
+  const auto col_manager = color_manager{};
 
   const auto tex_size =
    static_cast<std::size_t>(std::ceil(std::sqrt(bond_atoms.size())));
@@ -32,19 +39,19 @@ void transform_to_cylinder_attrs(const TSizeRange& bond_atoms,
     const auto element2 = atom2.element();
     const auto apos1 = atom1.position();
     const auto apos2 = atom2.position();
-    const auto acol1 = representation.atom_color(atom1);
-    const auto acol2 = representation.atom_color(atom2);
+    const auto acol1 = col_manager.get_element_color(element1.symbol);
+    const auto acol2 = col_manager.get_element_color(element2.symbol);
 
     const auto atex = vec2f{float_type(aindex % tex_size),
                             std::floor(float_type(aindex) / tex_size)} /
                       tex_size;
 
-    const auto rad = representation.radius_size;
+    const auto rad = options.radius_size;
     const auto midpos = (apos1 + apos2) * 0.5;
 
     auto cyl = cylinder<float_type>{rad};
     auto color = rgba8{};
-    if(is_first) {
+    if(options.is_first) {
       cyl.top = apos1;
       cyl.bottom = midpos;
       color = acol1;
