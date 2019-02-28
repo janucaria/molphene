@@ -239,8 +239,9 @@ public:
       auto sphere_mesh_attrs =
        detail::make_reserved_vector<sphere_mesh_attribute>(atoms.size());
 
-      transform_to_sphere_attrs(
-       atoms, std::back_inserter(sphere_mesh_attrs), spacefill);
+      transform_to_sphere_attrs(atoms,
+                                std::back_inserter(sphere_mesh_attrs),
+                                {spacefill.radius_type, spacefill.radius_size});
 
       spacefill.atom_sphere_buffer = build_sphere_mesh(sphere_mesh_attrs);
     } break;
@@ -290,7 +291,9 @@ public:
           atoms_in_bond.size());
 
         transform_to_sphere_attrs(
-         atoms_in_bond, std::back_inserter(sphere_mesh_attrs), ballnstick);
+         atoms_in_bond,
+         std::back_inserter(sphere_mesh_attrs),
+         {ballnstick.atom_radius_type, ballnstick.radius_size});
 
         ballnstick.atom_sphere_buffer = build_sphere_mesh(sphere_mesh_attrs);
       }
