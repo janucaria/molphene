@@ -15,6 +15,7 @@
 #include <molphene/ballstick_representation.hpp>
 #include <molphene/molecule_display.hpp>
 #include <molphene/spacefill_representation.hpp>
+#include <molphene/molecule_to_shape.hpp>
 
 #include <molphene/io/click_state.hpp>
 
