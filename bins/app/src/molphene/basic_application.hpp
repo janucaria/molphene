@@ -14,6 +14,7 @@
 
 #include <molphene/ballstick_representation.hpp>
 #include <molphene/molecule_display.hpp>
+#include <molphene/molecule_to_shape.hpp>
 #include <molphene/spacefill_representation.hpp>
 
 #include <molphene/io/click_state.hpp>
@@ -239,8 +240,9 @@ public:
       auto sphere_mesh_attrs =
        detail::make_reserved_vector<sphere_mesh_attribute>(atoms.size());
 
-      transform_to_sphere_attrs(
-       atoms, std::back_inserter(sphere_mesh_attrs), spacefill);
+      atoms_to_sphere_attrs(atoms,
+                            std::back_inserter(sphere_mesh_attrs),
+                            {spacefill.radius_type, spacefill.radius_size});
 
       spacefill.atom_sphere_buffer = build_sphere_mesh(sphere_mesh_attrs);
     } break;
@@ -289,8 +291,10 @@ public:
          detail::make_reserved_vector<sphere_mesh_attribute>(
           atoms_in_bond.size());
 
-        transform_to_sphere_attrs(
-         atoms_in_bond, std::back_inserter(sphere_mesh_attrs), ballnstick);
+        atoms_to_sphere_attrs(
+         atoms_in_bond,
+         std::back_inserter(sphere_mesh_attrs),
+         {ballnstick.atom_radius_type, ballnstick.radius_size});
 
         ballnstick.atom_sphere_buffer = build_sphere_mesh(sphere_mesh_attrs);
       }
@@ -298,21 +302,17 @@ public:
       auto cylinder_mesh_attrs =
        detail::make_reserved_vector<cylinder_mesh_attribute>(bond_atoms.size());
 
-      transform_to_cylinder_attrs(
-       bond_atoms,
-       std::back_insert_iterator(cylinder_mesh_attrs),
-       ballnstick,
-       true);
+      bonds_to_cylinder_attrs(bond_atoms,
+                              std::back_insert_iterator(cylinder_mesh_attrs),
+                              {true, ballnstick.radius_size});
       ballnstick.bond1_cylinder_buffer =
        build_cylinder_mesh(cylinder_mesh_attrs);
 
       cylinder_mesh_attrs.clear();
 
-      transform_to_cylinder_attrs(
-       bond_atoms,
-       std::back_insert_iterator(cylinder_mesh_attrs),
-       ballnstick,
-       false);
+      bonds_to_cylinder_attrs(bond_atoms,
+                              std::back_insert_iterator(cylinder_mesh_attrs),
+                              {false, ballnstick.radius_size});
       ballnstick.bond2_cylinder_buffer =
        build_cylinder_mesh(cylinder_mesh_attrs);
     } break;
