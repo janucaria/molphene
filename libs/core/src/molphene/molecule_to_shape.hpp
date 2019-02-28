@@ -20,9 +20,9 @@ struct bond_to_cylinder_attrs_options {
 };
 
 template<typename TSizedRange, typename TOutIter>
-void transform_to_sphere_attrs(const TSizedRange& atoms,
-                               TOutIter output,
-                               atom_to_sphere_attrs_options options)
+void atoms_to_sphere_attrs(const TSizedRange& atoms,
+                           TOutIter output,
+                           atom_to_sphere_attrs_options options)
 {
   using float_type = double;
   using vec2f = vec2<float_type>;
@@ -65,9 +65,9 @@ void transform_to_sphere_attrs(const TSizedRange& atoms,
 }
 
 template<typename TSizeRange, typename TOutIter>
-void transform_to_cylinder_attrs(const TSizeRange& bond_atoms,
-                                 TOutIter output,
-                                 bond_to_cylinder_attrs_options options)
+void bonds_to_cylinder_attrs(const TSizeRange& bond_atoms,
+                             TOutIter output,
+                             bond_to_cylinder_attrs_options options)
 {
   using float_type = double;
   using vec2f = vec2<float_type>;
