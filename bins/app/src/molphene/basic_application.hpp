@@ -1,6 +1,7 @@
 #ifndef MOLPHENE_APP_APPLICATION_VIEW_HPP
 #define MOLPHENE_APP_APPLICATION_VIEW_HPP
 
+#include <set>
 #include <sstream>
 #include <string>
 #include <utility>
@@ -274,15 +275,11 @@ public:
          return &atom;
        });
 
-      auto atoms_in_bond =
-       detail::make_reserved_vector<const atom*>(atoms.size());
-      boost::algorithm::copy_if(
-       atoms, std::back_inserter(atoms_in_bond), [&](auto* atom) {
-         return boost::find_if(bond_atoms, [&](auto atom_pair) {
-                  return atom == atom_pair.first || atom == atom_pair.second;
-                }) != std::end(bond_atoms);
+      auto atoms_in_bond = std::set<const atom*>{};
+      boost::for_each(
+       bond_atoms, [&](auto atom_pair) noexcept {
+         atoms_in_bond.insert({atom_pair.first, atom_pair.second});
        });
-      atoms_in_bond.shrink_to_fit();
 
       auto& rep_var = representations_.emplace_back(representation_t{});
       auto& ballnstick = *detail::attain<representation_t>(&rep_var);
