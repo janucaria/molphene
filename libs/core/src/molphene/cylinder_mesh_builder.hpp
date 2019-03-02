@@ -7,20 +7,18 @@
 
 namespace molphene {
 
-template<typename TConfig>
+template<std::size_t VBands, typename TConfig = void>
 class cylinder_mesh_builder {
 public:
-  using size_type = typename type_configs<TConfig>::size_type;
+  using size_type = std::size_t;
   using float_type = typename type_configs<TConfig>::float_type;
 
-public:
-  cylinder_mesh_builder(size_type bands) noexcept
-  : bands_{bands}
-  {
-  }
+  static constexpr auto bands = VBands;
 
+public:
   template<typename Cyl, typename OutputIt, typename Function>
-  void build_vertices(Cyl cyl, OutputIt output, Function func) const noexcept
+  constexpr void build_vertices(Cyl cyl, OutputIt output, Function func) const
+   noexcept
   {
     const auto cyl_top = cyl.top;
     const auto cyl_bottom = cyl.bottom;
@@ -37,8 +35,8 @@ public:
     const auto right = top.cross(dir);
 
     constexpr auto pi = M_PI;
-    for(auto i = size_type{0}; i <= bands_; ++i) {
-      const auto theta = pi * 2 * i / bands_;
+    for(auto i = size_type{0}; i <= bands; ++i) {
+      const auto theta = pi * 2 * i / bands;
       const auto sin_theta = std::sin(theta);
       const auto cos_theta = std::cos(theta);
 
@@ -63,14 +61,14 @@ public:
 
         *output++ = func(pos, norm);
 
-        if(i == bands_) {
+        if(i == bands) {
           *output++ = func(pos, norm);
         }
       }
     }
 
-    for(auto i = size_type{0}; i <= bands_; ++i) {
-      const auto theta = pi * 2 * i / bands_;
+    for(auto i = size_type{0}; i <= bands; ++i) {
+      const auto theta = pi * 2 * i / bands;
       const auto sin_theta = std::sin(theta);
       const auto cos_theta = std::cos(theta);
 
@@ -95,14 +93,14 @@ public:
 
         *output++ = func(pos, norm);
 
-        if(i == bands_) {
+        if(i == bands) {
           *output++ = func(pos, norm);
         }
       }
     }
 
-    for(auto i = size_type{0}; i <= bands_; ++i) {
-      const auto theta = pi * 2 * i / bands_;
+    for(auto i = size_type{0}; i <= bands; ++i) {
+      const auto theta = pi * 2 * i / bands;
       const auto sin_theta = std::sin(theta);
       const auto cos_theta = std::cos(theta);
 
@@ -127,7 +125,7 @@ public:
 
         *output++ = func(pos, norm);
 
-        if(i == bands_) {
+        if(i == bands) {
           *output++ = func(pos, norm);
         }
       }
@@ -135,33 +133,31 @@ public:
   }
 
   template<typename Cyl, typename OutputIt>
-  void build_positions(Cyl cyl, OutputIt output) const noexcept
+  constexpr void build_positions(Cyl cyl, OutputIt output) const noexcept
   {
     build_vertices(
      cyl, output, [=](auto pos, auto) noexcept { return pos; });
   }
 
   template<typename Cyl, typename OutputIt>
-  void build_normals(Cyl cyl, OutputIt output) const noexcept
+  constexpr void build_normals(Cyl cyl, OutputIt output) const noexcept
   {
     build_vertices(
      cyl, output, [](auto, auto norm) noexcept { return norm; });
   }
 
   template<typename Cyl, typename Texcoord, typename OutputIt>
-  void build_texcoords(Cyl cyl, Texcoord atex, OutputIt output) const noexcept
+  constexpr void build_texcoords(Cyl cyl, Texcoord atex, OutputIt output) const
+   noexcept
   {
     build_vertices(
      cyl, output, [=](auto, auto) noexcept { return atex; });
   }
 
-  auto vertices_size() const noexcept -> size_type
+  constexpr auto vertices_size() const noexcept -> size_type
   {
-    return ((bands_ + 1) * 2 + 2) * 3;
+    return ((bands + 1) * 2 + 2) * 3;
   }
-
-private:
-  size_type bands_;
 };
 } // namespace molphene
 

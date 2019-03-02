@@ -17,6 +17,8 @@
 #include <molphene/molecule_display.hpp>
 #include <molphene/molecule_to_shape.hpp>
 #include <molphene/spacefill_representation.hpp>
+#include <molphene/sphere_mesh_builder.hpp>
+#include <molphene/cylinder_mesh_builder.hpp>
 
 #include <molphene/io/click_state.hpp>
 
@@ -29,10 +31,6 @@ public:
    std::variant<spacefill_representation, ballstick_representation>;
 
   using representations_container = std::list<representation_variant>;
-
-  using sphere_mesh_builder = sphere_mesh_builder<void>;
-
-  using cylinder_mesh_builder = cylinder_mesh_builder<void>;
 
   void setup()
   {
@@ -103,10 +101,10 @@ public:
   auto build_sphere_mesh(const TSphMeshSizedRange& sph_attrs)
    -> std::unique_ptr<color_light_buffer>
   {
-    const auto total_instances = sph_attrs.size();
-    auto mesh_builder = sphere_mesh_builder{10, 20};
-    const auto vertices_per_instance = mesh_builder.vertices_size();
+    auto mesh_builder = sphere_mesh_builder<10, 20>{};
+    constexpr auto vertices_per_instance = mesh_builder.vertices_size();
 
+    const auto total_instances = sph_attrs.size();
     auto sphere_buff_atoms = std::make_unique<color_light_buffer>(
      vertices_per_instance, total_instances);
 
@@ -163,10 +161,10 @@ public:
   auto build_cylinder_mesh(const TCylMeshSizedRange& cyl_attrs)
    -> std::unique_ptr<color_light_buffer>
   {
-    const auto total_instances = cyl_attrs.size();
-    auto mesh_builder = cylinder_mesh_builder{20};
-    const auto vertices_per_instance = mesh_builder.vertices_size();
+    auto mesh_builder = cylinder_mesh_builder<20>{};
+    constexpr auto vertices_per_instance = mesh_builder.vertices_size();
 
+    const auto total_instances = cyl_attrs.size();
     auto cyl_buff_bonds = std::make_unique<color_light_buffer>(
      vertices_per_instance, total_instances);
 

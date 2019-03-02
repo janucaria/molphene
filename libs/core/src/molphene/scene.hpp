@@ -10,7 +10,6 @@
 #include "camera.hpp"
 #include "color_light_buffer.hpp"
 #include "cylinder_mesh_attribute.hpp"
-#include "cylinder_mesh_builder.hpp"
 #include "directional_light.hpp"
 #include "fog.hpp"
 #include "m3d.hpp"
@@ -20,7 +19,6 @@
 #include "shape/sphere.hpp"
 #include "spacefill_representation.hpp"
 #include "sphere_mesh_attribute.hpp"
-#include "sphere_mesh_builder.hpp"
 #include "spot_light.hpp"
 #include "utility.hpp"
 
