@@ -10,7 +10,6 @@
 #include "camera.hpp"
 #include "color_light_buffer.hpp"
 #include "cylinder_mesh_attribute.hpp"
-#include "cylinder_mesh_builder.hpp"
 #include "directional_light.hpp"
 #include "fog.hpp"
 #include "m3d.hpp"
