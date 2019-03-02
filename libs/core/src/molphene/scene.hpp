@@ -20,7 +20,6 @@
 #include "shape/sphere.hpp"
 #include "spacefill_representation.hpp"
 #include "sphere_mesh_attribute.hpp"
-#include "sphere_mesh_builder.hpp"
 #include "spot_light.hpp"
 #include "utility.hpp"
 
