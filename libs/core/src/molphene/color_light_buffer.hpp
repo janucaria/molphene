@@ -27,6 +27,30 @@ public:
 
   auto color_texture_size() const noexcept -> GLsizei;
 
+  template<typename TArg>
+  void subdata_positions(GLintptr offset,
+                         GLsizeiptr size,
+                         gsl::span<TArg> data) const noexcept
+  {
+    return subdata<0>(offset, size, data);
+  }
+  
+  template<typename TArg>
+  void subdata_normals(GLintptr offset,
+                       GLsizeiptr size,
+                       gsl::span<TArg> data) const noexcept
+  {
+    return subdata<1>(offset, size, data);
+  }
+
+  template<typename TArg>
+  void subdata_texcoords(GLintptr offset,
+                         GLsizeiptr size,
+                         gsl::span<TArg> data) const noexcept
+  {
+    return subdata<2>(offset, size, data);
+  }
+
 private:
   GLuint color_tex_{0};
   GLsizei color_tex_size_{0};

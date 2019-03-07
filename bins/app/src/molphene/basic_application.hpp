@@ -14,11 +14,11 @@
 #include <molphene/scene.hpp>
 
 #include <molphene/ballstick_representation.hpp>
+#include <molphene/cylinder_mesh_builder.hpp>
 #include <molphene/molecule_display.hpp>
 #include <molphene/molecule_to_shape.hpp>
 #include <molphene/spacefill_representation.hpp>
 #include <molphene/sphere_mesh_builder.hpp>
-#include <molphene/cylinder_mesh_builder.hpp>
 
 #include <molphene/io/click_state.hpp>
 
@@ -101,7 +101,7 @@ public:
   auto build_sphere_mesh(const TSphMeshSizedRange& sph_attrs)
    -> std::unique_ptr<color_light_buffer>
   {
-    auto mesh_builder = sphere_mesh_builder<10, 20>{};
+    const auto mesh_builder = sphere_mesh_builder<10, 20>{};
     constexpr auto vertices_per_instance = mesh_builder.vertices_size();
 
     const auto total_instances = sph_attrs.size();
@@ -124,30 +124,56 @@ public:
     for_each_slice(sph_attrs, instances_per_chunk, [&](auto sph_attrs_range) {
       const auto instances_size = boost::distance(sph_attrs_range);
 
-      auto normals =
-       detail::make_reserved_vector<vec3<GLfloat>>(vertices_per_chunk);
-      auto positions =
-       detail::make_reserved_vector<vec3<GLfloat>>(vertices_per_chunk);
-      auto texcoords =
-       detail::make_reserved_vector<vec2<GLfloat>>(vertices_per_chunk);
+      boost::range::transform(
+       sph_attrs_range, std::back_inserter(colors), [](auto attr) noexcept {
+         return attr.color;
+       });
 
-      for(const auto& sph_attr : sph_attrs_range) {
-        const auto acol = sph_attr.color;
-        const auto atex = sph_attr.texcoord;
-        const auto sph = sph_attr.sphere;
+      {
+        auto positions =
+         detail::make_reserved_vector<vec3<GLfloat>>(vertices_per_chunk);
 
-        colors.push_back(acol);
+        boost::for_each(
+         sph_attrs_range, [&](auto sph_attr) noexcept {
+           const auto sph = sph_attr.sphere;
+           mesh_builder.build_positions(sph, std::back_inserter(positions));
+         });
 
-        mesh_builder.build_positions(sph, std::back_inserter(positions));
-        mesh_builder.build_normals(std::back_inserter(normals));
-        mesh_builder.build_texcoords(atex, std::back_inserter(texcoords));
+        sphere_buff_atoms->subdata_positions(
+         chunk_count * instances_per_chunk,
+         instances_size,
+         gsl::span(positions.data(), positions.size()));
+      }
+      {
+        auto normals =
+         detail::make_reserved_vector<vec3<GLfloat>>(vertices_per_chunk);
+
+        boost::for_each(
+         sph_attrs_range, [&](auto sph_attr) noexcept {
+           mesh_builder.build_normals(std::back_inserter(normals));
+         });
+
+        sphere_buff_atoms->subdata_normals(
+         chunk_count * instances_per_chunk,
+         instances_size,
+         gsl::span(normals.data(), normals.size()));
+      }
+      {
+        auto texcoords =
+         detail::make_reserved_vector<vec2<GLfloat>>(vertices_per_chunk);
+
+        boost::for_each(
+         sph_attrs_range, [&](auto sph_attr) noexcept {
+           const auto atex = sph_attr.texcoord;
+           mesh_builder.build_texcoords(atex, std::back_inserter(texcoords));
+         });
+
+        sphere_buff_atoms->subdata_texcoords(
+         chunk_count * instances_per_chunk,
+         instances_size,
+         gsl::span(texcoords.data(), texcoords.size()));
       }
 
-      sphere_buff_atoms->set_data(chunk_count * instances_per_chunk,
-                                  instances_size,
-                                  positions,
-                                  normals,
-                                  texcoords);
       ++chunk_count;
     });
 
@@ -161,7 +187,7 @@ public:
   auto build_cylinder_mesh(const TCylMeshSizedRange& cyl_attrs)
    -> std::unique_ptr<color_light_buffer>
   {
-    auto mesh_builder = cylinder_mesh_builder<20>{};
+    const auto mesh_builder = cylinder_mesh_builder<20>{};
     constexpr auto vertices_per_instance = mesh_builder.vertices_size();
 
     const auto total_instances = cyl_attrs.size();
@@ -184,30 +210,59 @@ public:
     for_each_slice(cyl_attrs, instances_per_chunk, [&](auto cyl_attrs_range) {
       const auto instances_size = boost::distance(cyl_attrs_range);
 
-      auto normals =
-       detail::make_reserved_vector<vec3<GLfloat>>(vertices_per_chunk);
-      auto positions =
-       detail::make_reserved_vector<vec3<GLfloat>>(vertices_per_chunk);
-      auto texcoords =
-       detail::make_reserved_vector<vec2<GLfloat>>(vertices_per_chunk);
+      boost::range::transform(
+       cyl_attrs_range, std::back_inserter(colors), [](auto attr) noexcept {
+         return attr.color;
+       });
 
-      for(const auto& cyl_attr : cyl_attrs_range) {
-        const auto acol = cyl_attr.color;
-        const auto atex = cyl_attr.texcoord;
-        const auto cyl = cyl_attr.cylinder;
+      {
+        auto positions =
+         detail::make_reserved_vector<vec3<GLfloat>>(vertices_per_chunk);
 
-        colors.push_back(acol);
+        boost::for_each(
+         cyl_attrs_range, [&](auto cyl_attr) noexcept {
+           const auto cyl = cyl_attr.cylinder;
+           mesh_builder.build_positions(cyl, std::back_inserter(positions));
+         });
 
-        mesh_builder.build_positions(cyl, std::back_inserter(positions));
-        mesh_builder.build_normals(cyl, std::back_inserter(normals));
-        mesh_builder.build_texcoords(cyl, atex, std::back_inserter(texcoords));
+        cyl_buff_bonds->subdata_positions(
+         chunk_count * instances_per_chunk,
+         instances_size,
+         gsl::span(positions.data(), positions.size()));
+      }
+      {
+        auto normals =
+         detail::make_reserved_vector<vec3<GLfloat>>(vertices_per_chunk);
+
+        boost::for_each(
+         cyl_attrs_range, [&](auto cyl_attr) noexcept {
+           const auto cyl = cyl_attr.cylinder;
+           mesh_builder.build_normals(cyl, std::back_inserter(normals));
+         });
+         
+        cyl_buff_bonds->subdata_normals(
+         chunk_count * instances_per_chunk,
+         instances_size,
+         gsl::span(normals.data(), normals.size()));
+      }
+      {
+        auto texcoords =
+         detail::make_reserved_vector<vec2<GLfloat>>(vertices_per_chunk);
+
+        boost::for_each(
+         cyl_attrs_range, [&](auto cyl_attr) noexcept {
+           const auto cyl = cyl_attr.cylinder;
+           const auto atex = cyl_attr.texcoord;
+           mesh_builder.build_texcoords(
+            cyl, atex, std::back_inserter(texcoords));
+         });
+
+        cyl_buff_bonds->subdata_texcoords(
+         chunk_count * instances_per_chunk,
+         instances_size,
+         gsl::span(texcoords.data(), texcoords.size()));
       }
 
-      cyl_buff_bonds->set_data(chunk_count * instances_per_chunk,
-                               instances_size,
-                               positions,
-                               normals,
-                               texcoords);
       ++chunk_count;
     });
 

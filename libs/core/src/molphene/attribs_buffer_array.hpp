@@ -60,24 +60,12 @@ public:
 
   auto operator=(attrib_buffer_array &&) -> attrib_buffer_array& = delete;
 
-  void set_data(GLintptr offset,
-                GLsizeiptr size,
-                gsl::span<const typename Ts::data_type>... data) const noexcept
+  template<std::size_t VIdx, typename TArg>
+  void subdata(GLintptr offset, GLsizeiptr size, gsl::span<TArg> data) const noexcept
   {
-    set_data(std::make_index_sequence<sizeof...(Ts)>(),
-             offset,
-             size,
-             std::forward_as_tuple(data...));
-  }
+    static_assert(VIdx < sizeof...(Ts));
 
-  template<typename... Args, std::size_t... idx>
-  void set_data(std::index_sequence<idx...>,
-                GLintptr offset,
-                GLsizeiptr size,
-                std::tuple<Args...> data) const noexcept
-  {
-    static_assert(sizeof...(Ts) == sizeof...(idx) &&
-                  sizeof...(Ts) == sizeof...(Args));
+    constexpr auto idx = VIdx;
 
     auto data_offset = GLsizeiptr{0};
     while(size > 0) {
@@ -87,11 +75,10 @@ public:
       const auto elems_fill = instances_per_block_ - index;
       const auto fill_size = GLsizeiptr{size < elems_fill ? size : elems_fill};
 
-      (std::get<idx>(attrib_buffers_)[chunk].data(
-        index * verts_per_instance_,
-        fill_size * verts_per_instance_,
-        std::get<idx>(data).first(data_offset * verts_per_instance_).data()),
-       ...);
+      std::get<idx>(attrib_buffers_)[chunk].data(
+       index * verts_per_instance_,
+       fill_size * verts_per_instance_,
+       data.first(data_offset * verts_per_instance_).data());
 
       size -= fill_size;
       offset += fill_size;
