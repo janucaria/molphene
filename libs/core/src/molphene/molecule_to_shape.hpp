@@ -12,6 +12,7 @@ namespace molphene {
 struct atom_to_sphere_attrs_options {
   atom_radius_kind radius_type{atom_radius_kind::van_der_waals};
   double radius_size{1};
+  double radius_scale{1};
 };
 
 struct bond_to_cylinder_attrs_options {
@@ -38,14 +39,20 @@ void atoms_to_sphere_attrs(const TSizedRange& atoms,
     const auto apos = atom.position();
     const auto arad = [&]() noexcept->float_type
     {
+      auto radius = 0.0;
       switch(options.radius_type) {
       case atom_radius_kind::van_der_waals:
-        return element.rvdw;
+        radius = element.rvdw * options.radius_scale;
+        break;
       case atom_radius_kind::covalent:
-        return element.rcov;
+        radius = element.rcov;
+        break;
       default:
-        return options.radius_size;
+        radius = options.radius_size;
+        break;
       }
+
+      return radius * options.radius_scale;
     }
     ();
     const auto acol = col_manager.get_element_color(element.symbol);

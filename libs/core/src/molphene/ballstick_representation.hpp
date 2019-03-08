@@ -15,9 +15,11 @@ namespace molphene {
 
 class ballstick_representation {
 public:
-  atom_radius_kind atom_radius_type{atom_radius_kind::fixed};
+  atom_radius_kind atom_radius_type{atom_radius_kind::van_der_waals};
 
-  double radius_size{0.25};
+  double atom_radius_size{1};
+
+  double radius_size{0.275};
 
   color_manager color_manager;
 

@@ -49,6 +49,8 @@ public:
     camera.update_view_matrix();
 
     scene.reset_mesh(molecule);
+
+    representation_ = molecule_display::ball_and_stick;
     reset_representation(molecule);
   }
 
@@ -239,7 +241,7 @@ public:
            const auto cyl = cyl_attr.cylinder;
            mesh_builder.build_normals(cyl, std::back_inserter(normals));
          });
-         
+
         cyl_buff_bonds->subdata_normals(
          chunk_count * instances_per_chunk,
          instances_size,
@@ -296,7 +298,7 @@ public:
 
       atoms_to_sphere_attrs(atoms,
                             std::back_inserter(sphere_mesh_attrs),
-                            {spacefill.radius_type, spacefill.radius_size});
+                            {spacefill.radius_type, spacefill.radius_size, 1.});
 
       spacefill.atom_sphere_buffer = build_sphere_mesh(sphere_mesh_attrs);
     } break;
@@ -344,7 +346,7 @@ public:
         atoms_to_sphere_attrs(
          atoms_in_bond,
          std::back_inserter(sphere_mesh_attrs),
-         {ballnstick.atom_radius_type, ballnstick.radius_size});
+         {ballnstick.atom_radius_type, ballnstick.atom_radius_size, 0.5});
 
         ballnstick.atom_sphere_buffer = build_sphere_mesh(sphere_mesh_attrs);
       }
