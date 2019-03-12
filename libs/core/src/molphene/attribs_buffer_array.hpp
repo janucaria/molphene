@@ -3,6 +3,7 @@
 
 #include "stdafx.hpp"
 
+#include "vertex_attribs_buffer.hpp"
 #include "m3d.hpp"
 #include "opengl.hpp"
 
@@ -50,6 +51,43 @@ public:
     glBindBuffer(GL_ARRAY_BUFFER, 0);
   }
 
+
+  attrib_buffer_array(GLsizei verts_per_instance,
+                      GLsizei total_instances,
+                      GLsizei max_instances_per_block) noexcept
+  : verts_per_instance_{verts_per_instance}
+  {
+    instances_per_block_ = std::min(max_instances_per_block, total_instances);
+    size_ = total_instances / instances_per_block_;
+    remain_instances_ = total_instances % instances_per_block_;
+
+    if(remain_instances_ == 0) {
+      remain_instances_ = instances_per_block_;
+    } else {
+      ++size_;
+    }
+
+    boost::mp11::tuple_for_each(
+     attrib_buffers_, [=](auto& attribbuf) noexcept {
+       using attrib_buff_t =
+        typename std::remove_reference_t<decltype(attribbuf)>::element_type;
+       attribbuf = std::make_unique<attrib_buff_t[]>(size_);
+     });
+
+    for(auto i = GLsizei{0}; i < size_; ++i) {
+      const auto meshes =
+       i == (size_ - 1) ? remain_instances_ : instances_per_block_;
+      const auto verts_count = GLsizeiptr{meshes * verts_per_instance_};
+
+      boost::mp11::tuple_for_each(
+       attrib_buffers_, [=](const auto& attribbuf) noexcept {
+         attribbuf[i].size(verts_count);
+       });
+    }
+
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+  }
+
   attrib_buffer_array(const attrib_buffer_array&) = delete;
 
   attrib_buffer_array(attrib_buffer_array&&) = delete;
@@ -61,7 +99,8 @@ public:
   auto operator=(attrib_buffer_array &&) -> attrib_buffer_array& = delete;
 
   template<std::size_t VIdx, typename TArg>
-  void subdata(GLintptr offset, GLsizeiptr size, gsl::span<TArg> data) const noexcept
+  void subdata(GLintptr offset, GLsizeiptr size, gsl::span<TArg> data) const
+   noexcept
   {
     static_assert(VIdx < sizeof...(Ts));
 
@@ -103,7 +142,8 @@ public:
     }
   }
 
-private:
+  // TODO:janucaria(change to private)
+public:
   GLsizei verts_per_instance_{0};
   GLsizei instances_per_block_{0};
   GLsizei remain_instances_{0};
@@ -112,6 +152,15 @@ private:
 
   std::tuple<std::unique_ptr<Ts[]>...> attrib_buffers_;
 };
+
+using positions_buffer_array = attrib_buffer_array<
+  vertex_attribs_buffer<vec3<GLfloat>, shader_attrib_location::vertex>>;
+
+using normals_buffer_array = attrib_buffer_array<
+  vertex_attribs_buffer<vec3<GLfloat>, shader_attrib_location::normal>>;
+
+using texcoords_buffer_array = attrib_buffer_array<
+  vertex_attribs_buffer<vec2<GLfloat>, shader_attrib_location::texcoordcolor>>;
 
 } // namespace molphene
 
