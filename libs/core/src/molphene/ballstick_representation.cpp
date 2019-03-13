@@ -33,25 +33,9 @@ void ballstick_representation::render(const color_light_shader& shader) const
    [](auto count) noexcept { glDrawArrays(GL_TRIANGLE_STRIP, 0, count); });
 
   {
-    assert(atom_sphere_buffer_positions->size_ ==
-           atom_sphere_buffer_normals->size_);
-    assert(atom_sphere_buffer_positions->size_ ==
-           atom_sphere_buffer_texcoords->size_);
-
-    assert(atom_sphere_buffer_positions->remain_instances_ ==
-           atom_sphere_buffer_normals->remain_instances_);
-    assert(atom_sphere_buffer_positions->remain_instances_ ==
-           atom_sphere_buffer_texcoords->remain_instances_);
-
-    assert(atom_sphere_buffer_positions->instances_per_block_ ==
-           atom_sphere_buffer_normals->instances_per_block_);
-    assert(atom_sphere_buffer_positions->instances_per_block_ ==
-           atom_sphere_buffer_texcoords->instances_per_block_);
-
-    assert(atom_sphere_buffer_positions->verts_per_instance_ ==
-           atom_sphere_buffer_normals->verts_per_instance_);
-    assert(atom_sphere_buffer_positions->verts_per_instance_ ==
-           atom_sphere_buffer_texcoords->verts_per_instance_);
+    assert(all_has_same_props(*atom_sphere_buffer_positions,
+                              *atom_sphere_buffer_normals,
+                              *atom_sphere_buffer_texcoords));
 
     shader.color_texture_image(atom_sphere_color_texture->texture_image());
 
