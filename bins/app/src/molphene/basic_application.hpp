@@ -530,7 +530,17 @@ public:
          std::back_inserter(sphere_mesh_attrs),
          {ballnstick.atom_radius_type, ballnstick.atom_radius_size, 0.5});
 
-        ballnstick.atom_sphere_buffer = build_sphere_mesh(sphere_mesh_attrs);
+        ballnstick.atom_sphere_buffer_positions =
+         build_sphere_mesh_positions(sphere_mesh_attrs);
+
+        ballnstick.atom_sphere_buffer_normals =
+         build_sphere_mesh_normals(sphere_mesh_attrs);
+
+        ballnstick.atom_sphere_buffer_texcoords =
+         build_sphere_mesh_texcoords(sphere_mesh_attrs);
+
+        ballnstick.atom_sphere_color_texture =
+         build_sphere_color_texture(sphere_mesh_attrs);
       }
 
       auto cylinder_mesh_attrs =

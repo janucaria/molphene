@@ -3,9 +3,9 @@
 
 #include "stdafx.hpp"
 
-#include "vertex_attribs_buffer.hpp"
 #include "m3d.hpp"
 #include "opengl.hpp"
+#include "vertex_attribs_buffer.hpp"
 
 namespace molphene {
 
@@ -51,15 +51,15 @@ public:
     glBindBuffer(GL_ARRAY_BUFFER, 0);
   }
 
-
   attrib_buffer_array(GLsizei verts_per_instance,
                       GLsizei total_instances,
                       GLsizei max_instances_per_block) noexcept
   : verts_per_instance_{verts_per_instance}
   {
     instances_per_block_ = std::min(max_instances_per_block, total_instances);
-    size_ = total_instances / instances_per_block_;
-    remain_instances_ = total_instances % instances_per_block_;
+    size_ = instances_per_block_ ? total_instances / instances_per_block_ : 0;
+    remain_instances_ =
+     instances_per_block_ ? total_instances % instances_per_block_ : 0;
 
     if(remain_instances_ == 0) {
       remain_instances_ = instances_per_block_;
@@ -154,13 +154,13 @@ public:
 };
 
 using positions_buffer_array = attrib_buffer_array<
-  vertex_attribs_buffer<vec3<GLfloat>, shader_attrib_location::vertex>>;
+ vertex_attribs_buffer<vec3<GLfloat>, shader_attrib_location::vertex>>;
 
 using normals_buffer_array = attrib_buffer_array<
-  vertex_attribs_buffer<vec3<GLfloat>, shader_attrib_location::normal>>;
+ vertex_attribs_buffer<vec3<GLfloat>, shader_attrib_location::normal>>;
 
 using texcoords_buffer_array = attrib_buffer_array<
-  vertex_attribs_buffer<vec2<GLfloat>, shader_attrib_location::texcoordcolor>>;
+ vertex_attribs_buffer<vec2<GLfloat>, shader_attrib_location::texcoordcolor>>;
 
 } // namespace molphene
 
