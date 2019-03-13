@@ -185,26 +185,26 @@ public:
     return sphere_buff_atoms;
   }
 
-  template<typename TSphMeshSizedRange>
-  auto build_sphere_color_texture(TSphMeshSizedRange&& sph_attrs)
+  template<typename TMeshSizedRange>
+  auto build_shape_color_texture(TMeshSizedRange&& shape_attrs)
    -> std::unique_ptr<color_image_texture>
   {
     const auto total_instances =
-     std::forward<TSphMeshSizedRange>(sph_attrs).size();
-    auto sphere_buff_atoms =
+     std::forward<TMeshSizedRange>(shape_attrs).size();
+    auto shape_color_texture =
      std::make_unique<color_image_texture>(total_instances);
 
-    const auto tex_size = sphere_buff_atoms->size();
+    const auto tex_size = shape_color_texture->size();
     auto colors = detail::make_reserved_vector<rgba8>(tex_size * tex_size);
 
     boost::range::transform(
-     std::forward<TSphMeshSizedRange>(sph_attrs), std::back_inserter(colors), [
+     std::forward<TMeshSizedRange>(shape_attrs), std::back_inserter(colors), [
      ](auto attr) noexcept { return attr.color; });
 
     colors.resize(colors.capacity());
-    sphere_buff_atoms->image_data(colors.data());
+    shape_color_texture->image_data(colors.data());
 
-    return sphere_buff_atoms;
+    return shape_color_texture;
   }
 
   template<typename TSphMeshSizedRange>
@@ -447,28 +447,6 @@ public:
   }
 
   template<typename TCylMeshSizedRange>
-  auto build_cylinder_color_texture(TCylMeshSizedRange&& cyl_attrs)
-   -> std::unique_ptr<color_image_texture>
-  {
-    const auto total_instances =
-     std::forward<TCylMeshSizedRange>(cyl_attrs).size();
-    auto cyl_buff_bonds =
-     std::make_unique<color_image_texture>(total_instances);
-
-    const auto tex_size = cyl_buff_bonds->size();
-    auto colors = detail::make_reserved_vector<rgba8>(tex_size * tex_size);
-
-    boost::range::transform(
-     std::forward<TCylMeshSizedRange>(cyl_attrs), std::back_inserter(colors), [
-     ](auto attr) noexcept { return attr.color; });
-
-    colors.resize(colors.capacity());
-    cyl_buff_bonds->image_data(colors.data());
-
-    return cyl_buff_bonds;
-  }
-
-  template<typename TCylMeshSizedRange>
   auto build_cylinder_mesh_positions(TCylMeshSizedRange&& cyl_attrs)
    -> std::unique_ptr<positions_buffer_array>
   {
@@ -659,7 +637,7 @@ public:
        build_sphere_mesh_texcoords(sphere_mesh_attrs);
 
       spacefill.atom_sphere_color_texture =
-       build_sphere_color_texture(sphere_mesh_attrs);
+       build_shape_color_texture(sphere_mesh_attrs);
     } break;
     case molecule_display::ball_and_stick: {
       using representation_t = ballstick_representation;
@@ -717,7 +695,7 @@ public:
          build_sphere_mesh_texcoords(sphere_mesh_attrs);
 
         ballnstick.atom_sphere_color_texture =
-         build_sphere_color_texture(sphere_mesh_attrs);
+         build_shape_color_texture(sphere_mesh_attrs);
       }
 
       auto cylinder_mesh_attrs =
@@ -737,14 +715,14 @@ public:
        build_cylinder_mesh_texcoords(cylinder_mesh_attrs);
 
       ballnstick.bond1_cylinder_color_texture =
-       build_cylinder_color_texture(cylinder_mesh_attrs);
+       build_shape_color_texture(cylinder_mesh_attrs);
 
       cylinder_mesh_attrs.clear();
 
       bonds_to_cylinder_attrs(bond_atoms,
                               std::back_insert_iterator(cylinder_mesh_attrs),
                               {false, ballnstick.radius_size});
-                              
+
       ballnstick.bond2_cylinder_buffer_positions =
        build_cylinder_mesh_positions(cylinder_mesh_attrs);
 
@@ -755,7 +733,7 @@ public:
        build_cylinder_mesh_texcoords(cylinder_mesh_attrs);
 
       ballnstick.bond2_cylinder_color_texture =
-       build_cylinder_color_texture(cylinder_mesh_attrs);
+       build_shape_color_texture(cylinder_mesh_attrs);
     } break;
     }
   }
