@@ -43,12 +43,9 @@ void ballstick_representation::render(const color_light_shader& shader) const
       const auto verts_count =
        GLsizei{i == (size_ - 1) ? remain_instances_ : instances_per_block_};
 
-      std::get<0>(bond1_cylinder_buffer_positions->attrib_buffers_)[i]
-       .attrib_pointer();
-      std::get<0>(bond1_cylinder_buffer_normals->attrib_buffers_)[i]
-       .attrib_pointer();
-      std::get<0>(bond1_cylinder_buffer_texcoords->attrib_buffers_)[i]
-       .attrib_pointer();
+      bond1_cylinder_buffer_positions->attrib_buffers_[i].attrib_pointer();
+      bond1_cylinder_buffer_normals->attrib_buffers_[i].attrib_pointer();
+      bond1_cylinder_buffer_texcoords->attrib_buffers_[i].attrib_pointer();
 
       const auto count = verts_count * verts_per_instance_;
       glDrawArrays(GL_TRIANGLE_STRIP, 0, count);
@@ -74,12 +71,9 @@ void ballstick_representation::render(const color_light_shader& shader) const
       const auto verts_count =
        GLsizei{i == (size_ - 1) ? remain_instances_ : instances_per_block_};
 
-      std::get<0>(bond2_cylinder_buffer_positions->attrib_buffers_)[i]
-       .attrib_pointer();
-      std::get<0>(bond2_cylinder_buffer_normals->attrib_buffers_)[i]
-       .attrib_pointer();
-      std::get<0>(bond2_cylinder_buffer_texcoords->attrib_buffers_)[i]
-       .attrib_pointer();
+      bond2_cylinder_buffer_positions->attrib_buffers_[i].attrib_pointer();
+      bond2_cylinder_buffer_normals->attrib_buffers_[i].attrib_pointer();
+      bond2_cylinder_buffer_texcoords->attrib_buffers_[i].attrib_pointer();
 
       const auto count = verts_count * verts_per_instance_;
       glDrawArrays(GL_TRIANGLE_STRIP, 0, count);
@@ -105,12 +99,9 @@ void ballstick_representation::render(const color_light_shader& shader) const
       const auto verts_count =
        GLsizei{i == (size_ - 1) ? remain_instances_ : instances_per_block_};
 
-      std::get<0>(atom_sphere_buffer_positions->attrib_buffers_)[i]
-       .attrib_pointer();
-      std::get<0>(atom_sphere_buffer_normals->attrib_buffers_)[i]
-       .attrib_pointer();
-      std::get<0>(atom_sphere_buffer_texcoords->attrib_buffers_)[i]
-       .attrib_pointer();
+      atom_sphere_buffer_positions->attrib_buffers_[i].attrib_pointer();
+      atom_sphere_buffer_normals->attrib_buffers_[i].attrib_pointer();
+      atom_sphere_buffer_texcoords->attrib_buffers_[i].attrib_pointer();
 
       const auto count = verts_count * verts_per_instance_;
       glDrawArrays(GL_TRIANGLE_STRIP, 0, count);

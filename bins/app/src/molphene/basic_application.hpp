@@ -167,10 +167,9 @@ public:
                              std::back_inserter(vertices));
         });
 
-       shape_buff_atoms->template subdata<0>(
-        chunk_count * instances_per_chunk,
-        instances_size,
-        gsl::span(vertices.data(), vertices.size()));
+       shape_buff_atoms->subdata(chunk_count * instances_per_chunk,
+                                 instances_size,
+                                 gsl::span(vertices.data(), vertices.size()));
 
        ++chunk_count;
      });
