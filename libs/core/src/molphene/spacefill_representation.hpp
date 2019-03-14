@@ -4,7 +4,6 @@
 #include "stdafx.hpp"
 
 #include "attribs_buffer_array.hpp"
-#include "color_light_buffer.hpp"
 #include "color_light_shader.hpp"
 #include "color_manager.hpp"
 #include "image_texture.hpp"
