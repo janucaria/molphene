@@ -207,154 +207,95 @@ public:
     return shape_color_texture;
   }
 
-  template<typename TSphMeshSizedRange>
-  auto build_sphere_mesh_positions(TSphMeshSizedRange&& sph_attrs)
+  template<typename TOutputVertexBuffer,
+           typename TMeshBuilder,
+           typename TShapeMeshSizedRange,
+           typename TFunction>
+  auto build_mesh_vertices(TMeshBuilder mesh_builder,
+                           TShapeMeshSizedRange&& shape_attrs,
+                           TFunction callable_fn)
+   -> std::unique_ptr<TOutputVertexBuffer>
+  {
+    using vertex_buffer_array_t = TOutputVertexBuffer;
+    using shape_attrs_container_t = TShapeMeshSizedRange;
+
+    constexpr auto vertices_per_instance = mesh_builder.vertices_size();
+    constexpr auto max_chunk_bytes = size_t{1024 * 1024 * 128};
+    constexpr auto bytes_per_vertex =
+     sizeof(vec3<GLfloat>) + sizeof(vec3<GLfloat>) + sizeof(vec2<GLfloat>);
+    constexpr auto bytes_per_instance =
+     bytes_per_vertex * vertices_per_instance;
+    constexpr auto max_instances_per_chunk =
+     bytes_per_instance ? max_chunk_bytes / bytes_per_instance : 0;
+    const auto total_instances =
+     std::forward<shape_attrs_container_t>(shape_attrs).size();
+    const auto instances_per_chunk =
+     std::min(total_instances, max_instances_per_chunk);
+    const auto vertices_per_chunk = instances_per_chunk * vertices_per_instance;
+
+    auto shape_buff_atoms = std::make_unique<vertex_buffer_array_t>(
+     vertices_per_instance, total_instances, max_instances_per_chunk);
+
+    auto chunk_count = size_t{0};
+    for_each_slice(
+     std::forward<shape_attrs_container_t>(shape_attrs),
+     instances_per_chunk,
+     [&](auto shape_attrs_range) {
+       const auto instances_size = boost::distance(shape_attrs_range);
+
+       using vertex_data_t = typename vertex_buffer_array_t::data_type;
+       auto vertices =
+        detail::make_reserved_vector<vertex_data_t>(vertices_per_chunk);
+
+       boost::for_each(
+        shape_attrs_range, [&](auto shape_attr) noexcept {
+          mesh_builder.build(callable_fn(shape_attr),
+                             std::back_inserter(vertices));
+        });
+
+       shape_buff_atoms->template subdata<0>(
+        chunk_count * instances_per_chunk,
+        instances_size,
+        gsl::span(vertices.data(), vertices.size()));
+
+       ++chunk_count;
+     });
+
+    return shape_buff_atoms;
+  }
+
+  template<typename TMeshBuilder, typename TSphMeshSizedRange>
+  auto build_sphere_mesh_positions(TMeshBuilder mesh_builder,
+                                   TSphMeshSizedRange&& sph_attrs)
    -> std::unique_ptr<positions_buffer_array>
   {
-    constexpr auto mesh_builder = sphere_mesh_builder<10, 20>{};
-    constexpr auto vertices_per_instance = mesh_builder.vertices_size();
-    constexpr auto max_chunk_bytes = size_t{1024 * 1024 * 128};
-    constexpr auto bytes_per_vertex =
-     sizeof(vec3<GLfloat>) + sizeof(vec3<GLfloat>) + sizeof(vec2<GLfloat>);
-    constexpr auto bytes_per_instance =
-     bytes_per_vertex * vertices_per_instance;
-    constexpr auto max_instances_per_chunk =
-     bytes_per_instance ? max_chunk_bytes / bytes_per_instance : 0;
-    const auto total_instances =
-     std::forward<TSphMeshSizedRange>(sph_attrs).size();
-    const auto instances_per_chunk =
-     std::min(total_instances, max_instances_per_chunk);
-    const auto vertices_per_chunk = instances_per_chunk * vertices_per_instance;
-
-    auto sphere_buff_atoms = std::make_unique<positions_buffer_array>(
-     vertices_per_instance, total_instances, max_instances_per_chunk);
-
-    auto chunk_count = size_t{0};
-    for_each_slice(
-     std::forward<TSphMeshSizedRange>(sph_attrs),
-     instances_per_chunk,
-     [&](auto sph_attrs_range) {
-       const auto instances_size = boost::distance(sph_attrs_range);
-
-       {
-         auto positions =
-          detail::make_reserved_vector<vec3<GLfloat>>(vertices_per_chunk);
-
-         boost::for_each(
-          sph_attrs_range, [&](auto sph_attr) noexcept {
-            const auto sph = sph_attr.sphere;
-            mesh_builder.build_positions(sph, std::back_inserter(positions));
-          });
-
-         sphere_buff_atoms->template subdata<0>(
-          chunk_count * instances_per_chunk,
-          instances_size,
-          gsl::span(positions.data(), positions.size()));
-       }
-
-       ++chunk_count;
+    return build_mesh_vertices<positions_buffer_array>(
+     mesh_builder, std::forward<TSphMeshSizedRange>(sph_attrs), [
+     ](auto sph_attr) noexcept {
+       return build_sphere_mesh_position_params{sph_attr.sphere};
      });
-
-    return sphere_buff_atoms;
   }
 
-  template<typename TSphMeshSizedRange>
-  auto build_sphere_mesh_normals(TSphMeshSizedRange&& sph_attrs)
+  template<typename TMeshBuilder, typename TSphMeshSizedRange>
+  auto build_sphere_mesh_normals(TMeshBuilder mesh_builder,
+                                 TSphMeshSizedRange&& sph_attrs)
    -> std::unique_ptr<normals_buffer_array>
   {
-    constexpr auto mesh_builder = sphere_mesh_builder<10, 20>{};
-    constexpr auto vertices_per_instance = mesh_builder.vertices_size();
-    constexpr auto max_chunk_bytes = size_t{1024 * 1024 * 128};
-    constexpr auto bytes_per_vertex =
-     sizeof(vec3<GLfloat>) + sizeof(vec3<GLfloat>) + sizeof(vec2<GLfloat>);
-    constexpr auto bytes_per_instance =
-     bytes_per_vertex * vertices_per_instance;
-    constexpr auto max_instances_per_chunk =
-     bytes_per_instance ? max_chunk_bytes / bytes_per_instance : 0;
-    const auto total_instances =
-     std::forward<TSphMeshSizedRange>(sph_attrs).size();
-    const auto instances_per_chunk =
-     std::min(total_instances, max_instances_per_chunk);
-    const auto vertices_per_chunk = instances_per_chunk * vertices_per_instance;
-
-    auto sphere_buff_atoms = std::make_unique<normals_buffer_array>(
-     vertices_per_instance, total_instances, max_instances_per_chunk);
-
-    auto chunk_count = size_t{0};
-    for_each_slice(
-     std::forward<TSphMeshSizedRange>(sph_attrs),
-     instances_per_chunk,
-     [&](auto sph_attrs_range) {
-       const auto instances_size = boost::distance(sph_attrs_range);
-       {
-         auto normals =
-          detail::make_reserved_vector<vec3<GLfloat>>(vertices_per_chunk);
-
-         boost::for_each(
-          sph_attrs_range, [&](auto sph_attr) noexcept {
-            mesh_builder.build_normals(std::back_inserter(normals));
-          });
-
-         sphere_buff_atoms->template subdata<0>(
-          chunk_count * instances_per_chunk,
-          instances_size,
-          gsl::span(normals.data(), normals.size()));
-       }
-
-       ++chunk_count;
+    return build_mesh_vertices<normals_buffer_array>(
+     mesh_builder, sph_attrs, [](auto) noexcept {
+       return build_sphere_mesh_normal_params{};
      });
-
-    return sphere_buff_atoms;
   }
 
-  template<typename TSphMeshSizedRange>
-  auto build_sphere_mesh_texcoords(TSphMeshSizedRange&& sph_attrs)
+  template<typename TMeshBuilder, typename TSphMeshSizedRange>
+  auto build_sphere_mesh_texcoords(TMeshBuilder mesh_builder,
+                                   TSphMeshSizedRange&& sph_attrs)
    -> std::unique_ptr<texcoords_buffer_array>
   {
-    constexpr auto mesh_builder = sphere_mesh_builder<10, 20>{};
-    constexpr auto vertices_per_instance = mesh_builder.vertices_size();
-    constexpr auto max_chunk_bytes = size_t{1024 * 1024 * 128};
-    constexpr auto bytes_per_vertex =
-     sizeof(vec3<GLfloat>) + sizeof(vec3<GLfloat>) + sizeof(vec2<GLfloat>);
-    constexpr auto bytes_per_instance =
-     bytes_per_vertex * vertices_per_instance;
-    constexpr auto max_instances_per_chunk =
-     bytes_per_instance ? max_chunk_bytes / bytes_per_instance : 0;
-    const auto total_instances =
-     std::forward<TSphMeshSizedRange>(sph_attrs).size();
-    const auto instances_per_chunk =
-     std::min(total_instances, max_instances_per_chunk);
-    const auto vertices_per_chunk = instances_per_chunk * vertices_per_instance;
-
-    auto sphere_buff_atoms = std::make_unique<texcoords_buffer_array>(
-     vertices_per_instance, total_instances, max_instances_per_chunk);
-
-    auto chunk_count = size_t{0};
-    for_each_slice(
-     std::forward<TSphMeshSizedRange>(sph_attrs),
-     instances_per_chunk,
-     [&](auto sph_attrs_range) {
-       const auto instances_size = boost::distance(sph_attrs_range);
-       {
-         auto texcoords =
-          detail::make_reserved_vector<vec2<GLfloat>>(vertices_per_chunk);
-
-         boost::for_each(
-          sph_attrs_range, [&](auto sph_attr) noexcept {
-            const auto atex = sph_attr.texcoord;
-            mesh_builder.build_texcoords(atex, std::back_inserter(texcoords));
-          });
-
-         sphere_buff_atoms->template subdata<0>(
-          chunk_count * instances_per_chunk,
-          instances_size,
-          gsl::span(texcoords.data(), texcoords.size()));
-       }
-
-       ++chunk_count;
+    return build_mesh_vertices<texcoords_buffer_array>(
+     mesh_builder, sph_attrs, [](auto sph_attr) noexcept {
+       return build_sphere_mesh_fill_params{sph_attr.texcoord};
      });
-
-    return sphere_buff_atoms;
   }
 
   template<typename TCylMeshSizedRange>
@@ -446,164 +387,46 @@ public:
     return cyl_buff_bonds;
   }
 
-  template<typename TCylMeshSizedRange>
-  auto build_cylinder_mesh_positions(TCylMeshSizedRange&& cyl_attrs)
+  template<typename TMeshBuilder, typename TCylMeshSizedRange>
+  auto build_cylinder_mesh_positions(TMeshBuilder mesh_builder,
+                                     TCylMeshSizedRange&& cyl_attrs)
    -> std::unique_ptr<positions_buffer_array>
   {
-    constexpr auto mesh_builder = cylinder_mesh_builder<20>{};
-    constexpr auto vertices_per_instance = mesh_builder.vertices_size();
-    constexpr auto max_chunk_bytes = size_t{1024 * 1024 * 128};
-    constexpr auto bytes_per_vertex =
-     sizeof(vec3<GLfloat>) + sizeof(vec3<GLfloat>) + sizeof(vec2<GLfloat>);
-    constexpr auto bytes_per_instance =
-     bytes_per_vertex * vertices_per_instance;
-    constexpr auto max_instances_per_chunk =
-     bytes_per_instance ? max_chunk_bytes / bytes_per_instance : 0;
-    const auto total_instances =
-     std::forward<TCylMeshSizedRange>(cyl_attrs).size();
-    const auto instances_per_chunk =
-     std::min(total_instances, max_instances_per_chunk);
-    const auto vertices_per_chunk = instances_per_chunk * vertices_per_instance;
-
-    auto cyl_buff_bonds = std::make_unique<positions_buffer_array>(
-     vertices_per_instance, total_instances, max_instances_per_chunk);
-
-    auto chunk_count = size_t{0};
-    for_each_slice(
-     std::forward<TCylMeshSizedRange>(cyl_attrs),
-     instances_per_chunk,
-     [&](auto cyl_attrs_range) {
-       const auto instances_size = boost::distance(cyl_attrs_range);
-
-       {
-         auto positions =
-          detail::make_reserved_vector<vec3<GLfloat>>(vertices_per_chunk);
-
-         boost::for_each(
-          cyl_attrs_range, [&](auto cyl_attr) noexcept {
-            const auto cyl = cyl_attr.cylinder;
-            mesh_builder.build_positions(cyl, std::back_inserter(positions));
-          });
-
-         cyl_buff_bonds->template subdata<0>(
-          chunk_count * instances_per_chunk,
-          instances_size,
-          gsl::span(positions.data(), positions.size()));
-       }
-
-       ++chunk_count;
+    return build_mesh_vertices<positions_buffer_array>(
+     mesh_builder, std::forward<TCylMeshSizedRange>(cyl_attrs), [
+     ](auto cyl_attr) noexcept {
+       return build_cylinder_mesh_position_params{cyl_attr.cylinder};
      });
-
-    return cyl_buff_bonds;
   }
 
-  template<typename TCylMeshSizedRange>
-  auto build_cylinder_mesh_normals(TCylMeshSizedRange&& cyl_attrs)
+  template<typename TMeshBuilder, typename TCylMeshSizedRange>
+  auto build_cylinder_mesh_normals(TMeshBuilder mesh_builder,
+                                   TCylMeshSizedRange&& cyl_attrs)
    -> std::unique_ptr<normals_buffer_array>
   {
-    constexpr auto mesh_builder = cylinder_mesh_builder<20>{};
-    constexpr auto vertices_per_instance = mesh_builder.vertices_size();
-    constexpr auto max_chunk_bytes = size_t{1024 * 1024 * 128};
-    constexpr auto bytes_per_vertex =
-     sizeof(vec3<GLfloat>) + sizeof(vec3<GLfloat>) + sizeof(vec2<GLfloat>);
-    constexpr auto bytes_per_instance =
-     bytes_per_vertex * vertices_per_instance;
-    constexpr auto max_instances_per_chunk =
-     bytes_per_instance ? max_chunk_bytes / bytes_per_instance : 0;
-    const auto total_instances =
-     std::forward<TCylMeshSizedRange>(cyl_attrs).size();
-    const auto instances_per_chunk =
-     std::min(total_instances, max_instances_per_chunk);
-    const auto vertices_per_chunk = instances_per_chunk * vertices_per_instance;
-
-    auto cyl_buff_bonds = std::make_unique<normals_buffer_array>(
-     vertices_per_instance, total_instances, max_instances_per_chunk);
-
-    auto chunk_count = size_t{0};
-    for_each_slice(
-     std::forward<TCylMeshSizedRange>(cyl_attrs),
-     instances_per_chunk,
-     [&](auto cyl_attrs_range) {
-       const auto instances_size = boost::distance(cyl_attrs_range);
-
-       {
-         auto normals =
-          detail::make_reserved_vector<vec3<GLfloat>>(vertices_per_chunk);
-
-         boost::for_each(
-          cyl_attrs_range, [&](auto cyl_attr) noexcept {
-            const auto cyl = cyl_attr.cylinder;
-            mesh_builder.build_normals(cyl, std::back_inserter(normals));
-          });
-
-         cyl_buff_bonds->template subdata<0>(
-          chunk_count * instances_per_chunk,
-          instances_size,
-          gsl::span(normals.data(), normals.size()));
-       }
-
-       ++chunk_count;
+    return build_mesh_vertices<normals_buffer_array>(
+     mesh_builder, cyl_attrs, [](auto cyl_attr) noexcept {
+       return build_cylinder_mesh_normal_params{cyl_attr.cylinder};
      });
-
-    return cyl_buff_bonds;
   }
 
-  template<typename TCylMeshSizedRange>
-  auto build_cylinder_mesh_texcoords(TCylMeshSizedRange&& cyl_attrs)
+  template<typename TMeshBuilder, typename TCylMeshSizedRange>
+  auto build_cylinder_mesh_texcoords(TMeshBuilder mesh_builder,
+                                     TCylMeshSizedRange&& cyl_attrs)
    -> std::unique_ptr<texcoords_buffer_array>
   {
-    constexpr auto mesh_builder = cylinder_mesh_builder<20>{};
-    constexpr auto vertices_per_instance = mesh_builder.vertices_size();
-    constexpr auto max_chunk_bytes = size_t{1024 * 1024 * 128};
-    constexpr auto bytes_per_vertex =
-     sizeof(vec3<GLfloat>) + sizeof(vec3<GLfloat>) + sizeof(vec2<GLfloat>);
-    constexpr auto bytes_per_instance =
-     bytes_per_vertex * vertices_per_instance;
-    constexpr auto max_instances_per_chunk =
-     bytes_per_instance ? max_chunk_bytes / bytes_per_instance : 0;
-    const auto total_instances =
-     std::forward<TCylMeshSizedRange>(cyl_attrs).size();
-    const auto instances_per_chunk =
-     std::min(total_instances, max_instances_per_chunk);
-    const auto vertices_per_chunk = instances_per_chunk * vertices_per_instance;
-
-    auto cyl_buff_bonds = std::make_unique<texcoords_buffer_array>(
-     vertices_per_instance, total_instances, max_instances_per_chunk);
-
-    auto chunk_count = size_t{0};
-    for_each_slice(
-     std::forward<TCylMeshSizedRange>(cyl_attrs),
-     instances_per_chunk,
-     [&](auto cyl_attrs_range) {
-       const auto instances_size = boost::distance(cyl_attrs_range);
-
-       {
-         auto texcoords =
-          detail::make_reserved_vector<vec2<GLfloat>>(vertices_per_chunk);
-
-         boost::for_each(
-          cyl_attrs_range, [&](auto cyl_attr) noexcept {
-            const auto cyl = cyl_attr.cylinder;
-            const auto atex = cyl_attr.texcoord;
-            mesh_builder.build_texcoords(
-             cyl, atex, std::back_inserter(texcoords));
-          });
-
-         cyl_buff_bonds->template subdata<0>(
-          chunk_count * instances_per_chunk,
-          instances_size,
-          gsl::span(texcoords.data(), texcoords.size()));
-       }
-
-       ++chunk_count;
+    return build_mesh_vertices<texcoords_buffer_array>(
+     mesh_builder, cyl_attrs, [](auto cyl_attr) noexcept {
+       return build_cylinder_mesh_fill_params{cyl_attr.cylinder,
+                                              cyl_attr.texcoord};
      });
-
-    return cyl_buff_bonds;
   }
 
   void reset_representation(const molecule& mol) noexcept
   {
     namespace range = boost::range;
+
+    constexpr auto sph_mesh_builder = sphere_mesh_builder<10, 20>{};
 
     representations_.clear();
     switch(representation_) {
@@ -628,19 +451,21 @@ public:
                             {spacefill.radius_type, spacefill.radius_size, 1.});
 
       spacefill.atom_sphere_buffer_positions =
-       build_sphere_mesh_positions(sphere_mesh_attrs);
+       build_sphere_mesh_positions(sph_mesh_builder, sphere_mesh_attrs);
 
       spacefill.atom_sphere_buffer_normals =
-       build_sphere_mesh_normals(sphere_mesh_attrs);
+       build_sphere_mesh_normals(sph_mesh_builder, sphere_mesh_attrs);
 
       spacefill.atom_sphere_buffer_texcoords =
-       build_sphere_mesh_texcoords(sphere_mesh_attrs);
+       build_sphere_mesh_texcoords(sph_mesh_builder, sphere_mesh_attrs);
 
       spacefill.atom_sphere_color_texture =
        build_shape_color_texture(sphere_mesh_attrs);
     } break;
     case molecule_display::ball_and_stick: {
       using representation_t = ballstick_representation;
+
+      constexpr auto cyl_mesh_builder = cylinder_mesh_builder<20>{};
 
       auto bonds =
        detail::make_reserved_vector<const bond*>(mol.bonds().size());
@@ -686,13 +511,13 @@ public:
          {ballnstick.atom_radius_type, ballnstick.atom_radius_size, 0.5});
 
         ballnstick.atom_sphere_buffer_positions =
-         build_sphere_mesh_positions(sphere_mesh_attrs);
+         build_sphere_mesh_positions(sph_mesh_builder, sphere_mesh_attrs);
 
         ballnstick.atom_sphere_buffer_normals =
-         build_sphere_mesh_normals(sphere_mesh_attrs);
+         build_sphere_mesh_normals(sph_mesh_builder, sphere_mesh_attrs);
 
         ballnstick.atom_sphere_buffer_texcoords =
-         build_sphere_mesh_texcoords(sphere_mesh_attrs);
+         build_sphere_mesh_texcoords(sph_mesh_builder, sphere_mesh_attrs);
 
         ballnstick.atom_sphere_color_texture =
          build_shape_color_texture(sphere_mesh_attrs);
@@ -706,13 +531,13 @@ public:
                               {true, ballnstick.radius_size});
 
       ballnstick.bond1_cylinder_buffer_positions =
-       build_cylinder_mesh_positions(cylinder_mesh_attrs);
+       build_cylinder_mesh_positions(cyl_mesh_builder, cylinder_mesh_attrs);
 
       ballnstick.bond1_cylinder_buffer_normals =
-       build_cylinder_mesh_normals(cylinder_mesh_attrs);
+       build_cylinder_mesh_normals(cyl_mesh_builder, cylinder_mesh_attrs);
 
       ballnstick.bond1_cylinder_buffer_texcoords =
-       build_cylinder_mesh_texcoords(cylinder_mesh_attrs);
+       build_cylinder_mesh_texcoords(cyl_mesh_builder, cylinder_mesh_attrs);
 
       ballnstick.bond1_cylinder_color_texture =
        build_shape_color_texture(cylinder_mesh_attrs);
@@ -724,13 +549,13 @@ public:
                               {false, ballnstick.radius_size});
 
       ballnstick.bond2_cylinder_buffer_positions =
-       build_cylinder_mesh_positions(cylinder_mesh_attrs);
+       build_cylinder_mesh_positions(cyl_mesh_builder, cylinder_mesh_attrs);
 
       ballnstick.bond2_cylinder_buffer_normals =
-       build_cylinder_mesh_normals(cylinder_mesh_attrs);
+       build_cylinder_mesh_normals(cyl_mesh_builder, cylinder_mesh_attrs);
 
       ballnstick.bond2_cylinder_buffer_texcoords =
-       build_cylinder_mesh_texcoords(cylinder_mesh_attrs);
+       build_cylinder_mesh_texcoords(cyl_mesh_builder, cylinder_mesh_attrs);
 
       ballnstick.bond2_cylinder_color_texture =
        build_shape_color_texture(cylinder_mesh_attrs);

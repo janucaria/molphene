@@ -12,6 +12,9 @@ namespace molphene {
 template<typename... Ts>
 class attrib_buffer_array {
 public:
+  using data_type =
+   typename boost::mp11::mp_front<boost::mp11::mp_list<Ts...>>::data_type;
+
   attrib_buffer_array(GLsizei verts_per_instance,
                       GLsizeiptr total_instances) noexcept
   : verts_per_instance_{verts_per_instance}
