@@ -7,6 +7,39 @@
 
 namespace molphene {
 
+template<typename TCylinder>
+struct build_cylinder_mesh_position_params {
+  TCylinder cylinder;
+
+  constexpr build_cylinder_mesh_position_params(TCylinder cylinder) noexcept
+  : cylinder{cylinder}
+  {
+  }
+};
+
+template<typename TCylinder>
+struct build_cylinder_mesh_normal_params {
+  TCylinder cylinder;
+
+  constexpr build_cylinder_mesh_normal_params(TCylinder cylinder) noexcept
+  : cylinder{cylinder}
+  {
+  }
+};
+
+template<typename TCylinder, typename TVertex>
+struct build_cylinder_mesh_fill_params {
+  TCylinder cylinder;
+  TVertex vertex;
+
+  constexpr build_cylinder_mesh_fill_params(TCylinder cylinder,
+                                            TVertex vertex) noexcept
+  : cylinder{cylinder}
+  , vertex{vertex}
+  {
+  }
+};
+
 template<std::size_t VBands, typename TConfig = void>
 class cylinder_mesh_builder {
 public:
@@ -139,11 +172,25 @@ public:
      cyl, output, [=](auto pos, auto) noexcept { return pos; });
   }
 
+  template<typename TCyl, typename OutputIt>
+  constexpr void build(build_cylinder_mesh_position_params<TCyl> cyl,
+                       OutputIt output) const noexcept
+  {
+    return build_positions(cyl.cylinder, output);
+  }
+
   template<typename Cyl, typename OutputIt>
   constexpr void build_normals(Cyl cyl, OutputIt output) const noexcept
   {
     build_vertices(
      cyl, output, [](auto, auto norm) noexcept { return norm; });
+  }
+
+  template<typename TCyl, typename OutputIt>
+  constexpr void build(build_cylinder_mesh_normal_params<TCyl> cyl,
+                       OutputIt output) const noexcept
+  {
+    return build_normals(cyl.cylinder, output);
   }
 
   template<typename Cyl, typename Texcoord, typename OutputIt>
@@ -152,6 +199,16 @@ public:
   {
     build_vertices(
      cyl, output, [=](auto, auto) noexcept { return atex; });
+  }
+
+  template<typename Cyl, typename Texcoord, typename OutputIt>
+  constexpr void build(build_cylinder_mesh_fill_params<Cyl, Texcoord> params,
+                       OutputIt output) const noexcept
+  {
+    build_vertices(
+     params.cylinder, output, [vert = params.vertex](auto, auto) noexcept {
+       return vert;
+     });
   }
 
   constexpr auto vertices_size() const noexcept -> size_type

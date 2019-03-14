@@ -8,7 +8,6 @@
 #include "ballstick_representation.hpp"
 #include "bounding_sphere.hpp"
 #include "camera.hpp"
-#include "color_light_buffer.hpp"
 #include "cylinder_mesh_attribute.hpp"
 #include "directional_light.hpp"
 #include "fog.hpp"

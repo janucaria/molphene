@@ -7,6 +7,28 @@
 
 namespace molphene {
 
+template<typename TShere>
+struct build_sphere_mesh_position_params {
+  TShere sphere;
+  constexpr build_sphere_mesh_position_params(TShere sphere) noexcept
+  : sphere{sphere}
+  {
+  }
+};
+
+struct build_sphere_mesh_normal_params {
+};
+
+template<typename TVertex>
+struct build_sphere_mesh_fill_params {
+  TVertex vertex;
+
+  constexpr build_sphere_mesh_fill_params(TVertex vertex) noexcept
+  : vertex{vertex}
+  {
+  }
+};
+
 template<std::size_t VLatDivs, std::size_t VLongDivs, typename TConfig = void>
 class sphere_mesh_builder {
 public:
@@ -17,7 +39,6 @@ public:
   static constexpr auto longitude_divs = VLatDivs;
 
 public:
-
   template<typename OutputIt, typename Function>
   constexpr void build_vertices(OutputIt output, Function func) const noexcept
   {
@@ -85,6 +106,13 @@ public:
      });
   }
 
+  template<typename Sph, typename OutputIt>
+  constexpr void build(build_sphere_mesh_position_params<Sph> params,
+                       OutputIt output) const noexcept
+  {
+    return build_positions(params.sphere, output);
+  }
+
   template<typename OutputIt>
   constexpr void build_normals(OutputIt output) const noexcept
   {
@@ -92,11 +120,31 @@ public:
      output, [](auto norm) noexcept { return norm; });
   }
 
+  template<typename OutputIt>
+  constexpr void build(build_sphere_mesh_normal_params, OutputIt output) const
+   noexcept
+  {
+    return build_normals(output);
+  }
+
   template<typename Texcoord, typename OutputIt>
   constexpr void build_texcoords(Texcoord atex, OutputIt output) const noexcept
   {
+    fill_vertices(atex, output);
+  }
+
+  template<typename TVertex, typename OutputIt>
+  constexpr void fill_vertices(TVertex atex, OutputIt output) const noexcept
+  {
     build_vertices(
      output, [=](auto) noexcept { return atex; });
+  }
+
+  template<typename TVertex, typename OutputIt>
+  constexpr void build(build_sphere_mesh_fill_params<TVertex> params,
+                       OutputIt output) const noexcept
+  {
+    return fill_vertices(params.vertex, output);
   }
 
   constexpr auto vertices_size() const noexcept -> size_type

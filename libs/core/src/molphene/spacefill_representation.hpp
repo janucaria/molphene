@@ -3,9 +3,10 @@
 
 #include "stdafx.hpp"
 
-#include "color_light_buffer.hpp"
+#include "attribs_buffer_array.hpp"
 #include "color_light_shader.hpp"
 #include "color_manager.hpp"
+#include "image_texture.hpp"
 #include "m3d.hpp"
 
 #include <molecule/atom.hpp>
@@ -21,14 +22,18 @@ public:
 
   color_manager color_manager;
 
-  std::unique_ptr<color_light_buffer> atom_sphere_buffer;
+  std::unique_ptr<color_image_texture> atom_sphere_color_texture;
+
+  std::unique_ptr<positions_buffer_array> atom_sphere_buffer_positions;
+
+  std::unique_ptr<normals_buffer_array> atom_sphere_buffer_normals;
+
+  std::unique_ptr<texcoords_buffer_array> atom_sphere_buffer_texcoords;
 
   auto atom_radius(typename atom::atom_element element) const noexcept
    -> double;
 
   auto atom_color(const atom& atom) const noexcept -> rgba8;
-
-  void clear_buffers() noexcept;
 
   void render(const color_light_shader& shader) const noexcept;
 };
