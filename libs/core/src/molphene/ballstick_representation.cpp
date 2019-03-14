@@ -31,23 +31,23 @@ void ballstick_representation::render(const color_light_shader& shader) const
 
     shader.color_texture_image(bond1_cylinder_color_texture->texture_image());
 
-    const auto size_ = bond1_cylinder_buffer_positions->size_;
-    const auto remain_instances_ =
-     bond1_cylinder_buffer_positions->remain_instances_;
-    const auto instances_per_block_ =
-     bond1_cylinder_buffer_positions->instances_per_block_;
-    const auto verts_per_instance_ =
-     bond1_cylinder_buffer_positions->verts_per_instance_;
+    const auto size = bond1_cylinder_buffer_positions->size();
+    const auto remain_instances =
+     bond1_cylinder_buffer_positions->remain_instances();
+    const auto instances_per_block =
+     bond1_cylinder_buffer_positions->instances_per_block();
+    const auto verts_per_instance =
+     bond1_cylinder_buffer_positions->verts_per_instance();
 
-    for(auto i = GLsizei{0}; i < size_; ++i) {
+    for(auto i = GLsizei{0}; i < size; ++i) {
       const auto verts_count =
-       GLsizei{i == (size_ - 1) ? remain_instances_ : instances_per_block_};
+       GLsizei{i == (size - 1) ? remain_instances : instances_per_block};
 
-      bond1_cylinder_buffer_positions->attrib_buffers_[i].attrib_pointer();
-      bond1_cylinder_buffer_normals->attrib_buffers_[i].attrib_pointer();
-      bond1_cylinder_buffer_texcoords->attrib_buffers_[i].attrib_pointer();
+      bond1_cylinder_buffer_positions->bind_attrib_pointer_index(i);
+      bond1_cylinder_buffer_normals->bind_attrib_pointer_index(i);
+      bond1_cylinder_buffer_texcoords->bind_attrib_pointer_index(i);
 
-      const auto count = verts_count * verts_per_instance_;
+      const auto count = verts_count * verts_per_instance;
       glDrawArrays(GL_TRIANGLE_STRIP, 0, count);
     }
   }
@@ -59,23 +59,23 @@ void ballstick_representation::render(const color_light_shader& shader) const
 
     shader.color_texture_image(bond2_cylinder_color_texture->texture_image());
 
-    const auto size_ = bond2_cylinder_buffer_positions->size_;
-    const auto remain_instances_ =
-     bond2_cylinder_buffer_positions->remain_instances_;
-    const auto instances_per_block_ =
-     bond2_cylinder_buffer_positions->instances_per_block_;
-    const auto verts_per_instance_ =
-     bond2_cylinder_buffer_positions->verts_per_instance_;
+    const auto size = bond2_cylinder_buffer_positions->size();
+    const auto remain_instances =
+     bond2_cylinder_buffer_positions->remain_instances();
+    const auto instances_per_block =
+     bond2_cylinder_buffer_positions->instances_per_block();
+    const auto verts_per_instance =
+     bond2_cylinder_buffer_positions->verts_per_instance();
 
-    for(auto i = GLsizei{0}; i < size_; ++i) {
+    for(auto i = GLsizei{0}; i < size; ++i) {
       const auto verts_count =
-       GLsizei{i == (size_ - 1) ? remain_instances_ : instances_per_block_};
+       GLsizei{i == (size - 1) ? remain_instances : instances_per_block};
+      const auto count = verts_count * verts_per_instance;
 
-      bond2_cylinder_buffer_positions->attrib_buffers_[i].attrib_pointer();
-      bond2_cylinder_buffer_normals->attrib_buffers_[i].attrib_pointer();
-      bond2_cylinder_buffer_texcoords->attrib_buffers_[i].attrib_pointer();
+      bond2_cylinder_buffer_positions->bind_attrib_pointer_index(i);
+      bond2_cylinder_buffer_normals->bind_attrib_pointer_index(i);
+      bond2_cylinder_buffer_texcoords->bind_attrib_pointer_index(i);
 
-      const auto count = verts_count * verts_per_instance_;
       glDrawArrays(GL_TRIANGLE_STRIP, 0, count);
     }
   }
@@ -87,23 +87,23 @@ void ballstick_representation::render(const color_light_shader& shader) const
 
     shader.color_texture_image(atom_sphere_color_texture->texture_image());
 
-    const auto size_ = atom_sphere_buffer_positions->size_;
-    const auto remain_instances_ =
-     atom_sphere_buffer_positions->remain_instances_;
-    const auto instances_per_block_ =
-     atom_sphere_buffer_positions->instances_per_block_;
-    const auto verts_per_instance_ =
-     atom_sphere_buffer_positions->verts_per_instance_;
+    const auto size = atom_sphere_buffer_positions->size();
+    const auto remain_instances =
+     atom_sphere_buffer_positions->remain_instances();
+    const auto instances_per_block =
+     atom_sphere_buffer_positions->instances_per_block();
+    const auto verts_per_instance =
+     atom_sphere_buffer_positions->verts_per_instance();
 
-    for(auto i = GLsizei{0}; i < size_; ++i) {
+    for(auto i = GLsizei{0}; i < size; ++i) {
       const auto verts_count =
-       GLsizei{i == (size_ - 1) ? remain_instances_ : instances_per_block_};
+       GLsizei{i == (size - 1) ? remain_instances : instances_per_block};
 
-      atom_sphere_buffer_positions->attrib_buffers_[i].attrib_pointer();
-      atom_sphere_buffer_normals->attrib_buffers_[i].attrib_pointer();
-      atom_sphere_buffer_texcoords->attrib_buffers_[i].attrib_pointer();
+      atom_sphere_buffer_positions->bind_attrib_pointer_index(i);
+      atom_sphere_buffer_normals->bind_attrib_pointer_index(i);
+      atom_sphere_buffer_texcoords->bind_attrib_pointer_index(i);
 
-      const auto count = verts_count * verts_per_instance_;
+      const auto count = verts_count * verts_per_instance;
       glDrawArrays(GL_TRIANGLE_STRIP, 0, count);
     }
   }

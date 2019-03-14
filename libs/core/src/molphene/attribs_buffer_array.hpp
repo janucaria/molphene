@@ -92,6 +92,31 @@ public:
     }
   }
 
+  void bind_attrib_pointer_index(GLsizei index) const noexcept
+  {
+    attrib_buffers_[index].attrib_pointer();
+  }
+
+  auto verts_per_instance() const noexcept -> GLsizei
+  {
+    return verts_per_instance_;
+  }
+
+  auto instances_per_block() const noexcept -> GLsizei
+  {
+    return instances_per_block_;
+  }
+
+  auto remain_instances() const noexcept -> GLsizei
+  {
+    return remain_instances_;
+  }
+
+  auto size() const noexcept -> GLsizei
+  {
+    return size_;
+  }
+
   template<typename... T1s, typename... T2s>
   friend auto has_same_props(const attrib_buffer_array<T1s...>& buff,
                              const attrib_buffer_array<T2s...>& other) noexcept
@@ -111,8 +136,7 @@ public:
     return (has_same_props(buff, buffs) && ...);
   }
 
-  // TODO:janucaria(change to private)
-public:
+private:
   GLsizei verts_per_instance_{0};
   GLsizei instances_per_block_{0};
   GLsizei remain_instances_{0};
