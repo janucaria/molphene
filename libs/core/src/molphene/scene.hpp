@@ -3,12 +3,15 @@
 
 #include "stdafx.hpp"
 
+#include <molecule/chemdoodle_json_parser.hpp>
 #include <molecule/molecule.hpp>
 
+#include "algorithm.hpp"
 #include "ballstick_representation.hpp"
 #include "bounding_sphere.hpp"
 #include "cylinder_mesh_attribute.hpp"
 #include "directional_light.hpp"
+#include "expand_iterator.hpp"
 #include "fog.hpp"
 #include "m3d.hpp"
 #include "material.hpp"
@@ -22,11 +25,10 @@
 
 namespace molphene {
 
-class scene {
+template<typename TConfig = void>
+class basic_scene {
 public:
-  struct config_type {
-    using float_type = double;
-  };
+  using config_type = TConfig;
 
   using float_type = typename type_configs<config_type>::float_type;
   using size_type = typename type_configs<config_type>::size_type;
@@ -48,29 +50,63 @@ public:
 
   using spot_light = spot_light<rgba8, config_type>;
 
-  using representation_variant =
-   std::variant<spacefill_representation, ballstick_representation>;
-
-  using representations_container = std::list<representation_variant>;
-
   using light_variant =
    std::variant<directional_light, point_light, spot_light>;
 
-  auto setup_graphics() noexcept -> bool;
+  auto setup_graphics() noexcept -> bool
+  {
+    material_.diffuse_color = {0xFF, 0xFF, 0xFF};
 
-  void reset_mesh(const molecule& mol) noexcept;
+    light_source_.template emplace<directional_light>();
 
-  void rotate(vec3f rot) noexcept;
+    return true;
+  }
 
-  auto model_matrix() const noexcept -> mat4f;
+  void reset_mesh(const molecule& mol) noexcept
+  {
+    namespace range = boost::range;
 
-  auto light_source() const noexcept -> light_variant;
+    // calculate bounding sphere
+    bounding_sphere_.reset();
+    range::transform(
+     mol.atoms(), expand_iterator{bounding_sphere_}, [](auto atom) noexcept {
+       return atom.position();
+     });
 
-  auto material() const noexcept -> material_type;
+    model_matrix_.identity().translate(-bounding_sphere_.center());
+  }
 
-  auto fog() const noexcept -> fog_type;
+  void rotate(vec3f rot) noexcept
+  {
+    model_matrix_.rotate(rot.x(), {1.0f, 0.0f, 0.0f});
+    model_matrix_.rotate(rot.y(), {0.0f, 1.0f, 0.0f});
+    model_matrix_.rotate(rot.z(), {0.0f, 0.0f, 1.0f});
+  }
 
-  auto bounding_sphere() const noexcept -> bounding_sphere_type;
+  auto model_matrix() const noexcept -> mat4f
+  {
+    return model_matrix_;
+  }
+
+  auto light_source() const noexcept -> light_variant
+  {
+    return light_source_;
+  }
+
+  auto material() const noexcept -> material_type
+  {
+    return material_;
+  }
+
+  auto fog() const noexcept -> fog_type
+  {
+    return fog_;
+  }
+
+  auto bounding_sphere() const noexcept -> bounding_sphere_type
+  {
+    return bounding_sphere_;
+  }
 
 private:
   light_variant light_source_;
@@ -83,6 +119,8 @@ private:
 
   bounding_sphere_type bounding_sphere_;
 };
+
+using scene = basic_scene<void>;
 
 } // namespace molphene
 
