@@ -100,7 +100,7 @@ public:
   }
 
   template<typename TMeshSizedRange>
-  auto build_shape_color_texture(TMeshSizedRange&& shape_attrs)
+  auto build_shape_color_texture(TMeshSizedRange&& shape_attrs) const
    -> std::unique_ptr<color_image_texture>
   {
     const auto total_instances =
@@ -127,7 +127,7 @@ public:
            typename TFunction>
   auto build_mesh_vertices(TMeshBuilder mesh_builder,
                            TShapeMeshSizedRange&& shape_attrs,
-                           TFunction callable_fn)
+                           TFunction callable_fn) const
    -> std::unique_ptr<TOutputVertexBuffer>
   {
     using vertex_buffer_array_t = TOutputVertexBuffer;
@@ -179,7 +179,7 @@ public:
 
   template<typename TMeshBuilder, typename TSphMeshSizedRange>
   auto build_sphere_mesh_positions(TMeshBuilder mesh_builder,
-                                   TSphMeshSizedRange&& sph_attrs)
+                                   TSphMeshSizedRange&& sph_attrs) const
    -> std::unique_ptr<positions_buffer_array>
   {
     return build_mesh_vertices<positions_buffer_array>(
@@ -191,7 +191,7 @@ public:
 
   template<typename TMeshBuilder, typename TSphMeshSizedRange>
   auto build_sphere_mesh_normals(TMeshBuilder mesh_builder,
-                                 TSphMeshSizedRange&& sph_attrs)
+                                 TSphMeshSizedRange&& sph_attrs) const
    -> std::unique_ptr<normals_buffer_array>
   {
     return build_mesh_vertices<normals_buffer_array>(
@@ -202,7 +202,7 @@ public:
 
   template<typename TMeshBuilder, typename TSphMeshSizedRange>
   auto build_sphere_mesh_texcoords(TMeshBuilder mesh_builder,
-                                   TSphMeshSizedRange&& sph_attrs)
+                                   TSphMeshSizedRange&& sph_attrs) const
    -> std::unique_ptr<texcoords_buffer_array>
   {
     return build_mesh_vertices<texcoords_buffer_array>(
@@ -213,7 +213,7 @@ public:
 
   template<typename TMeshBuilder, typename TCylMeshSizedRange>
   auto build_cylinder_mesh_positions(TMeshBuilder mesh_builder,
-                                     TCylMeshSizedRange&& cyl_attrs)
+                                     TCylMeshSizedRange&& cyl_attrs) const
    -> std::unique_ptr<positions_buffer_array>
   {
     return build_mesh_vertices<positions_buffer_array>(
@@ -225,7 +225,7 @@ public:
 
   template<typename TMeshBuilder, typename TCylMeshSizedRange>
   auto build_cylinder_mesh_normals(TMeshBuilder mesh_builder,
-                                   TCylMeshSizedRange&& cyl_attrs)
+                                   TCylMeshSizedRange&& cyl_attrs) const
    -> std::unique_ptr<normals_buffer_array>
   {
     return build_mesh_vertices<normals_buffer_array>(
@@ -236,7 +236,7 @@ public:
 
   template<typename TMeshBuilder, typename TCylMeshSizedRange>
   auto build_cylinder_mesh_texcoords(TMeshBuilder mesh_builder,
-                                     TCylMeshSizedRange&& cyl_attrs)
+                                     TCylMeshSizedRange&& cyl_attrs) const
    -> std::unique_ptr<texcoords_buffer_array>
   {
     return build_mesh_vertices<texcoords_buffer_array>(
@@ -246,7 +246,7 @@ public:
      });
   }
 
-  auto build_spacefill_representation(const molecule& mol)
+  auto build_spacefill_representation(const molecule& mol) const
    -> spacefill_representation
   {
     namespace range = boost::range;
