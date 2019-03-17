@@ -7,7 +7,6 @@
 
 #include "ballstick_representation.hpp"
 #include "bounding_sphere.hpp"
-#include "camera.hpp"
 #include "cylinder_mesh_attribute.hpp"
 #include "directional_light.hpp"
 #include "fog.hpp"
@@ -38,8 +37,6 @@ public:
   using mat3f = mat3<float_type>;
 
   using bounding_sphere_type = bounding_sphere<float_type>;
-
-  using camera = camera<config_type>;
 
   using fog_type = fog<rgba8, config_type>;
 

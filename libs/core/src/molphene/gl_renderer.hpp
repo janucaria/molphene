@@ -3,7 +3,6 @@
 
 #include "stdafx.hpp"
 
-#include "camera.hpp"
 #include "color_light_shader.hpp"
 #include "gl_vertex_attribs_guard.hpp"
 #include "m3d.hpp"
@@ -16,8 +15,6 @@ namespace molphene {
 
 class gl_renderer {
 public:
-  using camera = typename scene::camera;
-
   using vec2f = vec2<GLfloat>;
 
   using vertex_attribs_buffer =
@@ -27,9 +24,9 @@ public:
 
   void init() noexcept;
 
-  template<typename TRepretVarInRange>
+  template<typename TRepretVarInRange, typename TCamera>
   void render(const scene& scene,
-              const gl_renderer::camera& camera,
+              const TCamera& camera,
               const TRepretVarInRange& repret_vars) noexcept
   {
     using mat3f = typename scene::mat3f;

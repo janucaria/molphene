@@ -14,6 +14,7 @@
 #include <molphene/scene.hpp>
 
 #include <molphene/ballstick_representation.hpp>
+#include <molphene/camera.hpp>
 #include <molphene/cylinder_mesh_builder.hpp>
 #include <molphene/molecule_display.hpp>
 #include <molphene/molecule_to_shape.hpp>
@@ -27,6 +28,8 @@ namespace molphene {
 template<typename TApp>
 class basic_application {
 public:
+  using camera_type = camera<void>;
+
   using representation_variant =
    std::variant<spacefill_representation, ballstick_representation>;
 
@@ -468,7 +471,7 @@ protected:
 
   gl_renderer renderer;
 
-  scene::camera camera;
+  camera_type camera;
 
   molecule molecule;
 
