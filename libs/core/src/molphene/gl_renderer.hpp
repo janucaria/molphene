@@ -24,10 +24,10 @@ public:
 
   void init() noexcept;
 
-  template<typename TRepretVarInRange, typename TCamera>
+  template<typename TDrawableRange, typename TCamera>
   void render(const scene& scene,
               const TCamera& camera,
-              const TRepretVarInRange& repret_vars) noexcept
+              const TDrawableRange& drawables) noexcept
   {
     using mat3f = typename scene::mat3f;
     using mat4f = typename scene::mat4f;
@@ -58,12 +58,8 @@ public:
       color_light_shader_.fog(scene.fog());
       color_light_shader_.material(scene.material());
 
-      for(auto&& representation_var : repret_vars) {
-        std::visit(
-         [this](const auto& representation) {
-           representation.render(color_light_shader_);
-         },
-         representation_var);
+      for(auto&& drawable_v : drawables) {
+        drawable_v.render(color_light_shader_);
       }
     }
 

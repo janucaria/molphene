@@ -16,6 +16,7 @@
 #include <molphene/ballstick_representation.hpp>
 #include <molphene/camera.hpp>
 #include <molphene/cylinder_mesh_builder.hpp>
+#include <molphene/drawable.hpp>
 #include <molphene/molecule_display.hpp>
 #include <molphene/molecule_to_shape.hpp>
 #include <molphene/spacefill_representation.hpp>
@@ -29,11 +30,8 @@ template<typename TApp>
 class basic_application {
 public:
   using camera_type = camera<void>;
-
-  using representation_variant =
-   std::variant<spacefill_representation, ballstick_representation>;
-
-  using representations_container = std::list<representation_variant>;
+  
+  using representations_container = std::list<drawable>;
 
   void setup()
   {
