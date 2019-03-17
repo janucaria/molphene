@@ -246,6 +246,43 @@ public:
      });
   }
 
+  auto build_spacefill_representation(const molecule& mol)
+   -> spacefill_representation
+  {
+    namespace range = boost::range;
+
+    auto spacefill = spacefill_representation{};
+
+    constexpr auto sph_mesh_builder = sphere_mesh_builder<10, 20>{};
+
+    auto atoms = detail::make_reserved_vector<const atom*>(mol.atoms().size());
+    range::transform(
+     mol.atoms(), std::back_inserter(atoms), [](auto& atom) noexcept {
+       return &atom;
+     });
+
+    auto sphere_mesh_attrs =
+     detail::make_reserved_vector<sphere_mesh_attribute>(atoms.size());
+
+    atoms_to_sphere_attrs(atoms,
+                          std::back_inserter(sphere_mesh_attrs),
+                          {spacefill.radius_type, spacefill.radius_size, 1.});
+
+    spacefill.atom_sphere_buffer_positions =
+     build_sphere_mesh_positions(sph_mesh_builder, sphere_mesh_attrs);
+
+    spacefill.atom_sphere_buffer_normals =
+     build_sphere_mesh_normals(sph_mesh_builder, sphere_mesh_attrs);
+
+    spacefill.atom_sphere_buffer_texcoords =
+     build_sphere_mesh_texcoords(sph_mesh_builder, sphere_mesh_attrs);
+
+    spacefill.atom_sphere_color_texture =
+     build_shape_color_texture(sphere_mesh_attrs);
+
+    return spacefill;
+  }
+
   void reset_representation(const molecule& mol) noexcept
   {
     namespace range = boost::range;
@@ -255,36 +292,7 @@ public:
     representations_.clear();
     switch(representation_) {
     case molecule_display::spacefill: {
-      using representation_t = spacefill_representation;
-
-      auto atoms =
-       detail::make_reserved_vector<const atom*>(mol.atoms().size());
-      range::transform(
-       mol.atoms(), std::back_inserter(atoms), [](auto& atom) noexcept {
-         return &atom;
-       });
-
-      auto& rep_var = representations_.emplace_back(representation_t{});
-      auto& spacefill = *detail::attain<representation_t>(&rep_var);
-
-      auto sphere_mesh_attrs =
-       detail::make_reserved_vector<sphere_mesh_attribute>(atoms.size());
-
-      atoms_to_sphere_attrs(atoms,
-                            std::back_inserter(sphere_mesh_attrs),
-                            {spacefill.radius_type, spacefill.radius_size, 1.});
-
-      spacefill.atom_sphere_buffer_positions =
-       build_sphere_mesh_positions(sph_mesh_builder, sphere_mesh_attrs);
-
-      spacefill.atom_sphere_buffer_normals =
-       build_sphere_mesh_normals(sph_mesh_builder, sphere_mesh_attrs);
-
-      spacefill.atom_sphere_buffer_texcoords =
-       build_sphere_mesh_texcoords(sph_mesh_builder, sphere_mesh_attrs);
-
-      spacefill.atom_sphere_color_texture =
-       build_shape_color_texture(sphere_mesh_attrs);
+      representations_.emplace_back(build_spacefill_representation(mol));
     } break;
     case molecule_display::ball_and_stick: {
       using representation_t = ballstick_representation;
