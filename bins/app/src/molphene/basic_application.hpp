@@ -100,7 +100,7 @@ public:
   }
 
   template<typename TMeshSizedRange>
-  auto build_shape_color_texture(TMeshSizedRange&& shape_attrs)
+  auto build_shape_color_texture(TMeshSizedRange&& shape_attrs) const
    -> std::unique_ptr<color_image_texture>
   {
     const auto total_instances =
@@ -127,7 +127,7 @@ public:
            typename TFunction>
   auto build_mesh_vertices(TMeshBuilder mesh_builder,
                            TShapeMeshSizedRange&& shape_attrs,
-                           TFunction callable_fn)
+                           TFunction callable_fn) const
    -> std::unique_ptr<TOutputVertexBuffer>
   {
     using vertex_buffer_array_t = TOutputVertexBuffer;
@@ -179,7 +179,7 @@ public:
 
   template<typename TMeshBuilder, typename TSphMeshSizedRange>
   auto build_sphere_mesh_positions(TMeshBuilder mesh_builder,
-                                   TSphMeshSizedRange&& sph_attrs)
+                                   TSphMeshSizedRange&& sph_attrs) const
    -> std::unique_ptr<positions_buffer_array>
   {
     return build_mesh_vertices<positions_buffer_array>(
@@ -191,7 +191,7 @@ public:
 
   template<typename TMeshBuilder, typename TSphMeshSizedRange>
   auto build_sphere_mesh_normals(TMeshBuilder mesh_builder,
-                                 TSphMeshSizedRange&& sph_attrs)
+                                 TSphMeshSizedRange&& sph_attrs) const
    -> std::unique_ptr<normals_buffer_array>
   {
     return build_mesh_vertices<normals_buffer_array>(
@@ -202,7 +202,7 @@ public:
 
   template<typename TMeshBuilder, typename TSphMeshSizedRange>
   auto build_sphere_mesh_texcoords(TMeshBuilder mesh_builder,
-                                   TSphMeshSizedRange&& sph_attrs)
+                                   TSphMeshSizedRange&& sph_attrs) const
    -> std::unique_ptr<texcoords_buffer_array>
   {
     return build_mesh_vertices<texcoords_buffer_array>(
@@ -213,7 +213,7 @@ public:
 
   template<typename TMeshBuilder, typename TCylMeshSizedRange>
   auto build_cylinder_mesh_positions(TMeshBuilder mesh_builder,
-                                     TCylMeshSizedRange&& cyl_attrs)
+                                     TCylMeshSizedRange&& cyl_attrs) const
    -> std::unique_ptr<positions_buffer_array>
   {
     return build_mesh_vertices<positions_buffer_array>(
@@ -225,7 +225,7 @@ public:
 
   template<typename TMeshBuilder, typename TCylMeshSizedRange>
   auto build_cylinder_mesh_normals(TMeshBuilder mesh_builder,
-                                   TCylMeshSizedRange&& cyl_attrs)
+                                   TCylMeshSizedRange&& cyl_attrs) const
    -> std::unique_ptr<normals_buffer_array>
   {
     return build_mesh_vertices<normals_buffer_array>(
@@ -236,7 +236,7 @@ public:
 
   template<typename TMeshBuilder, typename TCylMeshSizedRange>
   auto build_cylinder_mesh_texcoords(TMeshBuilder mesh_builder,
-                                     TCylMeshSizedRange&& cyl_attrs)
+                                     TCylMeshSizedRange&& cyl_attrs) const
    -> std::unique_ptr<texcoords_buffer_array>
   {
     return build_mesh_vertices<texcoords_buffer_array>(
@@ -246,143 +246,153 @@ public:
      });
   }
 
-  void reset_representation(const molecule& mol) noexcept
+  auto build_spacefill_representation(const molecule& mol) const
+   -> spacefill_representation
   {
     namespace range = boost::range;
 
+    auto spacefill = spacefill_representation{};
+
     constexpr auto sph_mesh_builder = sphere_mesh_builder<10, 20>{};
 
+    auto atoms = detail::make_reserved_vector<const atom*>(mol.atoms().size());
+    range::transform(
+     mol.atoms(), std::back_inserter(atoms), [](auto& atom) noexcept {
+       return &atom;
+     });
+
+    auto sphere_mesh_attrs =
+     detail::make_reserved_vector<sphere_mesh_attribute>(atoms.size());
+
+    atoms_to_sphere_attrs(atoms,
+                          std::back_inserter(sphere_mesh_attrs),
+                          {spacefill.radius_type, spacefill.radius_size, 1.});
+
+    spacefill.atom_sphere_buffer_positions =
+     build_sphere_mesh_positions(sph_mesh_builder, sphere_mesh_attrs);
+
+    spacefill.atom_sphere_buffer_normals =
+     build_sphere_mesh_normals(sph_mesh_builder, sphere_mesh_attrs);
+
+    spacefill.atom_sphere_buffer_texcoords =
+     build_sphere_mesh_texcoords(sph_mesh_builder, sphere_mesh_attrs);
+
+    spacefill.atom_sphere_color_texture =
+     build_shape_color_texture(sphere_mesh_attrs);
+
+    return spacefill;
+  }
+
+  auto build_ballstick_representation(const molecule& mol)
+   -> ballstick_representation
+  {
+    namespace range = boost::range;
+
+    auto ballnstick = ballstick_representation{};
+
+    constexpr auto sph_mesh_builder = sphere_mesh_builder<10, 20>{};
+    constexpr auto cyl_mesh_builder = cylinder_mesh_builder<20>{};
+
+    auto bonds = detail::make_reserved_vector<const bond*>(mol.bonds().size());
+    range::transform(
+     mol.bonds(), std::back_inserter(bonds), [](auto& bond) noexcept {
+       return std::addressof(bond);
+     });
+
+    using pair_atoms_t = std::pair<const atom*, const atom*>;
+    auto bond_atoms = detail::make_reserved_vector<pair_atoms_t>(bonds.size());
+    range::transform(
+     bonds,
+     std::back_inserter(bond_atoms),
+     [& atoms = mol.atoms()](auto bond) noexcept {
+       return std::make_pair(&atoms.at(bond->atom1()),
+                             &atoms.at(bond->atom2()));
+     });
+
+    auto atoms = detail::make_reserved_vector<const atom*>(mol.atoms().size());
+    range::transform(
+     mol.atoms(), std::back_inserter(atoms), [](auto& atom) noexcept {
+       return &atom;
+     });
+
+    auto atoms_in_bond = std::set<const atom*>{};
+    boost::for_each(
+     bond_atoms, [&](auto atom_pair) noexcept {
+       atoms_in_bond.insert({atom_pair.first, atom_pair.second});
+     });
+
+    {
+      auto sphere_mesh_attrs =
+       detail::make_reserved_vector<sphere_mesh_attribute>(
+        atoms_in_bond.size());
+
+      atoms_to_sphere_attrs(
+       atoms_in_bond,
+       std::back_inserter(sphere_mesh_attrs),
+       {ballnstick.atom_radius_type, ballnstick.atom_radius_size, 0.5});
+
+      ballnstick.atom_sphere_buffer_positions =
+       build_sphere_mesh_positions(sph_mesh_builder, sphere_mesh_attrs);
+
+      ballnstick.atom_sphere_buffer_normals =
+       build_sphere_mesh_normals(sph_mesh_builder, sphere_mesh_attrs);
+
+      ballnstick.atom_sphere_buffer_texcoords =
+       build_sphere_mesh_texcoords(sph_mesh_builder, sphere_mesh_attrs);
+
+      ballnstick.atom_sphere_color_texture =
+       build_shape_color_texture(sphere_mesh_attrs);
+    }
+
+    auto cylinder_mesh_attrs =
+     detail::make_reserved_vector<cylinder_mesh_attribute>(bond_atoms.size());
+
+    bonds_to_cylinder_attrs(bond_atoms,
+                            std::back_insert_iterator(cylinder_mesh_attrs),
+                            {true, ballnstick.radius_size});
+
+    ballnstick.bond1_cylinder_buffer_positions =
+     build_cylinder_mesh_positions(cyl_mesh_builder, cylinder_mesh_attrs);
+
+    ballnstick.bond1_cylinder_buffer_normals =
+     build_cylinder_mesh_normals(cyl_mesh_builder, cylinder_mesh_attrs);
+
+    ballnstick.bond1_cylinder_buffer_texcoords =
+     build_cylinder_mesh_texcoords(cyl_mesh_builder, cylinder_mesh_attrs);
+
+    ballnstick.bond1_cylinder_color_texture =
+     build_shape_color_texture(cylinder_mesh_attrs);
+
+    cylinder_mesh_attrs.clear();
+
+    bonds_to_cylinder_attrs(bond_atoms,
+                            std::back_insert_iterator(cylinder_mesh_attrs),
+                            {false, ballnstick.radius_size});
+
+    ballnstick.bond2_cylinder_buffer_positions =
+     build_cylinder_mesh_positions(cyl_mesh_builder, cylinder_mesh_attrs);
+
+    ballnstick.bond2_cylinder_buffer_normals =
+     build_cylinder_mesh_normals(cyl_mesh_builder, cylinder_mesh_attrs);
+
+    ballnstick.bond2_cylinder_buffer_texcoords =
+     build_cylinder_mesh_texcoords(cyl_mesh_builder, cylinder_mesh_attrs);
+
+    ballnstick.bond2_cylinder_color_texture =
+     build_shape_color_texture(cylinder_mesh_attrs);
+
+    return ballnstick;
+  }
+
+  void reset_representation(const molecule& mol) noexcept
+  {
     representations_.clear();
     switch(representation_) {
     case molecule_display::spacefill: {
-      using representation_t = spacefill_representation;
-
-      auto atoms =
-       detail::make_reserved_vector<const atom*>(mol.atoms().size());
-      range::transform(
-       mol.atoms(), std::back_inserter(atoms), [](auto& atom) noexcept {
-         return &atom;
-       });
-
-      auto& rep_var = representations_.emplace_back(representation_t{});
-      auto& spacefill = *detail::attain<representation_t>(&rep_var);
-
-      auto sphere_mesh_attrs =
-       detail::make_reserved_vector<sphere_mesh_attribute>(atoms.size());
-
-      atoms_to_sphere_attrs(atoms,
-                            std::back_inserter(sphere_mesh_attrs),
-                            {spacefill.radius_type, spacefill.radius_size, 1.});
-
-      spacefill.atom_sphere_buffer_positions =
-       build_sphere_mesh_positions(sph_mesh_builder, sphere_mesh_attrs);
-
-      spacefill.atom_sphere_buffer_normals =
-       build_sphere_mesh_normals(sph_mesh_builder, sphere_mesh_attrs);
-
-      spacefill.atom_sphere_buffer_texcoords =
-       build_sphere_mesh_texcoords(sph_mesh_builder, sphere_mesh_attrs);
-
-      spacefill.atom_sphere_color_texture =
-       build_shape_color_texture(sphere_mesh_attrs);
+      representations_.emplace_back(build_spacefill_representation(mol));
     } break;
     case molecule_display::ball_and_stick: {
-      using representation_t = ballstick_representation;
-
-      constexpr auto cyl_mesh_builder = cylinder_mesh_builder<20>{};
-
-      auto bonds =
-       detail::make_reserved_vector<const bond*>(mol.bonds().size());
-      range::transform(
-       mol.bonds(), std::back_inserter(bonds), [](auto& bond) noexcept {
-         return std::addressof(bond);
-       });
-
-      using pair_atoms_t = std::pair<const atom*, const atom*>;
-      auto bond_atoms =
-       detail::make_reserved_vector<pair_atoms_t>(bonds.size());
-      range::transform(
-       bonds,
-       std::back_inserter(bond_atoms),
-       [& atoms = mol.atoms()](auto bond) noexcept {
-         return std::make_pair(&atoms.at(bond->atom1()),
-                               &atoms.at(bond->atom2()));
-       });
-
-      auto atoms =
-       detail::make_reserved_vector<const atom*>(mol.atoms().size());
-      range::transform(
-       mol.atoms(), std::back_inserter(atoms), [](auto& atom) noexcept {
-         return &atom;
-       });
-
-      auto atoms_in_bond = std::set<const atom*>{};
-      boost::for_each(
-       bond_atoms, [&](auto atom_pair) noexcept {
-         atoms_in_bond.insert({atom_pair.first, atom_pair.second});
-       });
-
-      auto& rep_var = representations_.emplace_back(representation_t{});
-      auto& ballnstick = *detail::attain<representation_t>(&rep_var);
-      {
-        auto sphere_mesh_attrs =
-         detail::make_reserved_vector<sphere_mesh_attribute>(
-          atoms_in_bond.size());
-
-        atoms_to_sphere_attrs(
-         atoms_in_bond,
-         std::back_inserter(sphere_mesh_attrs),
-         {ballnstick.atom_radius_type, ballnstick.atom_radius_size, 0.5});
-
-        ballnstick.atom_sphere_buffer_positions =
-         build_sphere_mesh_positions(sph_mesh_builder, sphere_mesh_attrs);
-
-        ballnstick.atom_sphere_buffer_normals =
-         build_sphere_mesh_normals(sph_mesh_builder, sphere_mesh_attrs);
-
-        ballnstick.atom_sphere_buffer_texcoords =
-         build_sphere_mesh_texcoords(sph_mesh_builder, sphere_mesh_attrs);
-
-        ballnstick.atom_sphere_color_texture =
-         build_shape_color_texture(sphere_mesh_attrs);
-      }
-
-      auto cylinder_mesh_attrs =
-       detail::make_reserved_vector<cylinder_mesh_attribute>(bond_atoms.size());
-
-      bonds_to_cylinder_attrs(bond_atoms,
-                              std::back_insert_iterator(cylinder_mesh_attrs),
-                              {true, ballnstick.radius_size});
-
-      ballnstick.bond1_cylinder_buffer_positions =
-       build_cylinder_mesh_positions(cyl_mesh_builder, cylinder_mesh_attrs);
-
-      ballnstick.bond1_cylinder_buffer_normals =
-       build_cylinder_mesh_normals(cyl_mesh_builder, cylinder_mesh_attrs);
-
-      ballnstick.bond1_cylinder_buffer_texcoords =
-       build_cylinder_mesh_texcoords(cyl_mesh_builder, cylinder_mesh_attrs);
-
-      ballnstick.bond1_cylinder_color_texture =
-       build_shape_color_texture(cylinder_mesh_attrs);
-
-      cylinder_mesh_attrs.clear();
-
-      bonds_to_cylinder_attrs(bond_atoms,
-                              std::back_insert_iterator(cylinder_mesh_attrs),
-                              {false, ballnstick.radius_size});
-
-      ballnstick.bond2_cylinder_buffer_positions =
-       build_cylinder_mesh_positions(cyl_mesh_builder, cylinder_mesh_attrs);
-
-      ballnstick.bond2_cylinder_buffer_normals =
-       build_cylinder_mesh_normals(cyl_mesh_builder, cylinder_mesh_attrs);
-
-      ballnstick.bond2_cylinder_buffer_texcoords =
-       build_cylinder_mesh_texcoords(cyl_mesh_builder, cylinder_mesh_attrs);
-
-      ballnstick.bond2_cylinder_color_texture =
-       build_shape_color_texture(cylinder_mesh_attrs);
+      representations_.emplace_back(build_ballstick_representation(mol));
     } break;
     }
   }
