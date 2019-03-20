@@ -9,7 +9,11 @@ enum class shader_attrib_location : GLuint {
   vertex,
   normal,
   color,
-  texcoordcolor
+  texcoordcolor,
+  transformation,
+  transformation_1,
+  transformation_2,
+  transformation_3
 };
 
 template<shader_attrib_location...>
@@ -37,6 +41,26 @@ struct traits<shader_attrib_location::color> {
 template<>
 struct traits<shader_attrib_location::texcoordcolor> {
   static inline const GLchar* name = "a_TexCoord0";
+};
+
+template<>
+struct traits<shader_attrib_location::transformation> {
+  static inline const GLchar* name = "a_Transformation";
+};
+
+template<>
+struct traits<shader_attrib_location::transformation_1> {
+  static inline const GLchar* name = "a_Transformation1";
+};
+
+template<>
+struct traits<shader_attrib_location::transformation_2> {
+  static inline const GLchar* name = "a_Transformation2";
+};
+
+template<>
+struct traits<shader_attrib_location::transformation_3> {
+  static inline const GLchar* name = "a_Transformation3";
 };
 
 } // namespace molphene
