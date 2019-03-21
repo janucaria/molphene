@@ -3,11 +3,13 @@
 
 #ifdef __EMSCRIPTEN__
 
+#define GL_GLEXT_PROTOTYPES 1
 #include <GLES2/gl2.h>
+#include <GLES2/gl2ext.h>
 
 #else
 
-#include <OpenGL/gl.h>
+#include <OpenGL/gl3.h>
 
 #endif
 
@@ -64,6 +66,7 @@ struct gl_attrib_pointer_type<
  T,
  std::enable_if_t<detail::is_gl_vertex_attrib_v<T>>> {
   static constexpr GLint type = gl_value_type_v<T>;
+  static constexpr GLint is_matrix = false;
 };
 
 template<typename T>
@@ -79,6 +82,12 @@ struct gl_vertex_attrib<vec2<T>> : gl_attrib_pointer_type<T> {
 template<typename T>
 struct gl_vertex_attrib<vec3<T>> : gl_attrib_pointer_type<T> {
   static constexpr GLint size = 3;
+};
+
+template<typename T>
+struct gl_vertex_attrib<mat4<T>> : gl_attrib_pointer_type<T> {
+  static constexpr GLint size = 4;
+  static constexpr GLint is_matrix = true;
 };
 
 } // namespace molphene

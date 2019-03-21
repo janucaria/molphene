@@ -3,7 +3,7 @@
 
 namespace molphene {
 
-enum class molecule_display { spacefill, ball_and_stick };
+enum class molecule_display { spacefill, ball_and_stick, spacefill_instance};
 
 }
 

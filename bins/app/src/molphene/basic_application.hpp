@@ -17,8 +17,10 @@
 #include <molphene/camera.hpp>
 #include <molphene/cylinder_mesh_builder.hpp>
 #include <molphene/drawable.hpp>
+#include <molphene/instance_copy_builder.hpp>
 #include <molphene/molecule_display.hpp>
 #include <molphene/molecule_to_shape.hpp>
+#include <molphene/spacefill_instance_representation.hpp>
 #include <molphene/spacefill_representation.hpp>
 #include <molphene/sphere_mesh_builder.hpp>
 
@@ -30,7 +32,7 @@ template<typename TApp>
 class basic_application {
 public:
   using camera_type = camera<void>;
-  
+
   using representations_container = std::list<drawable>;
 
   void setup()
@@ -39,6 +41,7 @@ public:
 
     representations_.emplace_back(spacefill_representation{});
     representations_.emplace_back(ballstick_representation{});
+    representations_.emplace_back(spacefill_instance_representation{});
 
     scene.setup_graphics();
     renderer.init();
@@ -51,7 +54,9 @@ public:
 
     scene.reset_mesh(molecule);
 
-    representation_ = molecule_display::ball_and_stick;
+    // representation_ = molecule_display::ball_and_stick;
+    representation_ = molecule_display::spacefill_instance;
+    // representation_ = molecule_display::spacefill;
     reset_representation(molecule);
   }
 
@@ -86,6 +91,9 @@ public:
     } break;
     case static_cast<int>(molecule_display::ball_and_stick): {
       representation(molecule_display::ball_and_stick, molecule);
+    } break;
+    case static_cast<int>(molecule_display::spacefill_instance): {
+      representation(molecule_display::spacefill_instance, molecule);
     } break;
     }
   }
@@ -176,6 +184,33 @@ public:
      });
 
     return shape_buff_atoms;
+  }
+
+  template<typename TMeshBuilder, typename TSphMeshSizedRange>
+  auto
+  build_sphere_mesh_transform_instances(TMeshBuilder mesh_builder,
+                                        TSphMeshSizedRange&& sph_attrs) const
+   -> std::unique_ptr<transforms_instances_buffer_array>
+  {
+    return build_mesh_vertices<transforms_instances_buffer_array>(
+     mesh_builder, std::forward<TSphMeshSizedRange>(sph_attrs), [
+     ](auto sph_attr) noexcept {
+       auto transform_mat = mat4<float>{1};
+       transform_mat.scale(sph_attr.sphere.radius);
+       transform_mat.translate(sph_attr.sphere.center);
+       return transform_mat;
+     });
+  }
+
+  template<typename TMeshBuilder, typename TSphMeshSizedRange>
+  auto
+  build_sphere_mesh_texcoord_instances(TMeshBuilder mesh_builder,
+                                       TSphMeshSizedRange&& sph_attrs) const
+   -> std::unique_ptr<texcoords_instances_buffer_array>
+  {
+    return build_mesh_vertices<texcoords_instances_buffer_array>(
+     mesh_builder, std::forward<TSphMeshSizedRange>(sph_attrs), [
+     ](auto sph_attr) noexcept { return sph_attr.texcoord; });
   }
 
   template<typename TMeshBuilder, typename TSphMeshSizedRange>
@@ -385,6 +420,51 @@ public:
     return ballnstick;
   }
 
+  auto build_spacefill_instance_representation(const molecule& mol) const
+   -> spacefill_instance_representation
+  {
+    namespace range = boost::range;
+
+    auto spacefill = spacefill_instance_representation{};
+
+    constexpr auto sph_mesh_builder = sphere_mesh_builder<10, 20>{};
+
+    constexpr auto copy_builder = instance_copy_builder{};
+
+    auto atoms = detail::make_reserved_vector<const atom*>(mol.atoms().size());
+    range::transform(
+     mol.atoms(), std::back_inserter(atoms), [](auto& atom) noexcept {
+       return &atom;
+     });
+
+    auto sphere_mesh_attrs =
+     detail::make_reserved_vector<sphere_mesh_attribute>(atoms.size());
+
+    atoms_to_sphere_attrs(atoms,
+                          std::back_inserter(sphere_mesh_attrs),
+                          {spacefill.radius_type, spacefill.radius_size, 1.});
+
+    const auto sphere_attr =
+     std::array<sphere_mesh_attribute, 1>{{{{}, 0, {}, {1, {}}}}};
+
+    spacefill.atom_sphere_buffer_positions =
+     build_sphere_mesh_positions(sph_mesh_builder, sphere_attr);
+
+    spacefill.atom_sphere_buffer_normals =
+     build_sphere_mesh_normals(sph_mesh_builder, sphere_attr);
+
+    spacefill.atom_sphere_buffer_texcoords =
+     build_sphere_mesh_texcoord_instances(copy_builder, sphere_mesh_attrs);
+
+    spacefill.atom_sphere_buffer_transforms =
+     build_sphere_mesh_transform_instances(copy_builder, sphere_mesh_attrs);
+
+    spacefill.atom_sphere_color_texture =
+     build_shape_color_texture(sphere_mesh_attrs);
+
+    return spacefill;
+  }
+
   void reset_representation(const molecule& mol) noexcept
   {
     representations_.clear();
@@ -394,6 +474,10 @@ public:
     } break;
     case molecule_display::ball_and_stick: {
       representations_.emplace_back(build_ballstick_representation(mol));
+    } break;
+    case molecule_display::spacefill_instance: {
+      representations_.emplace_back(
+       build_spacefill_instance_representation(mol));
     } break;
     }
   }
@@ -411,6 +495,10 @@ public:
     case 79:
     case 111:
       camera.projection_mode(false);
+      break;
+    case 74:
+    case 106:
+      representation(molecule_display::spacefill_instance, molecule);
       break;
     case 75:
     case 107:
