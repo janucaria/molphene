@@ -4,13 +4,14 @@ add_library(Molphene::molphene ALIAS molphene)
 
 target_sources(molphene
   PRIVATE
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/molphene/ballstick_instancing_representation.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/molphene/ballstick_representation.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/molphene/color_light_shader.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/molphene/color_manager.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/molphene/gl_renderer.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/molphene/quad_shader.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/molphene/spacefill_representation.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/molphene/spacefill_instance_representation.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/molphene/spacefill_representation.cpp"
 )
 
 target_include_directories(molphene
