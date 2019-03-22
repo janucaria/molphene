@@ -98,6 +98,9 @@ public:
     case static_cast<int>(molecule_display::spacefill_instance): {
       representation(molecule_display::spacefill_instance, molecule);
     } break;
+    case static_cast<int>(molecule_display::ball_and_stick_instance): {
+      representation(molecule_display::ball_and_stick_instance, molecule);
+    } break;
     }
   }
 
@@ -282,6 +285,49 @@ public:
      mesh_builder, cyl_attrs, [](auto cyl_attr) noexcept {
        return build_cylinder_mesh_fill_params{cyl_attr.cylinder,
                                               cyl_attr.texcoord};
+     });
+  }
+
+  template<typename TMeshBuilder, typename TCylMeshSizedRange>
+  auto
+  build_cylinder_mesh_transform_instances(TMeshBuilder mesh_builder,
+                                          TCylMeshSizedRange&& cyl_attrs) const
+   -> std::unique_ptr<transforms_instances_buffer_array>
+  {
+    return build_mesh_vertices<transforms_instances_buffer_array>(
+     mesh_builder, std::forward<TCylMeshSizedRange>(cyl_attrs), [
+     ](auto cyl_attr) noexcept {
+       using vec3_t =
+        typename std::decay_t<decltype(cyl_attr.cylinder)>::vec3_type;
+
+       auto transform_mat = mat4<float>{1};
+
+       const auto top_dir = vec3_t{0, 1, 0};
+       const auto cyl_dir =
+        (cyl_attr.cylinder.top - cyl_attr.cylinder.bottom) / 2;
+       const auto cyl_dir_length = cyl_dir.magnitude();
+       const auto rot_axis = cyl_dir.cross(top_dir).to_unit();
+       const auto rot_angle = std::acos(cyl_dir.dot(top_dir) / cyl_dir_length);
+       const auto cyl_radius = cyl_attr.cylinder.radius;
+       const auto cyl_position = cyl_attr.cylinder.bottom + cyl_dir;
+
+       transform_mat.scale(cyl_radius, cyl_dir_length, cyl_radius);
+       transform_mat.rotate(rot_angle, rot_axis);
+       transform_mat.translate(cyl_position);
+
+       return transform_mat;
+     });
+  }
+
+  template<typename TMeshBuilder, typename TCylMeshSizedRange>
+  auto
+  build_cylinder_mesh_texcoord_instances(TMeshBuilder mesh_builder,
+                                         TCylMeshSizedRange&& cyl_attrs) const
+   -> std::unique_ptr<texcoords_instances_buffer_array>
+  {
+    return build_mesh_vertices<texcoords_instances_buffer_array>(
+     mesh_builder, cyl_attrs, [](auto cyl_attr) noexcept {
+       return cyl_attr.texcoord;
      });
   }
 
@@ -539,18 +585,24 @@ public:
     auto cylinder_mesh_attrs =
      detail::make_reserved_vector<cylinder_mesh_attribute>(bond_atoms.size());
 
+    const auto cylinder_attr = std::array<cylinder_mesh_attribute, 1>{
+     {{{}, 0, {}, {1, {0, 1, 0}, {0, -1, 0}}}}};
+
     bonds_to_cylinder_attrs(bond_atoms,
                             std::back_insert_iterator(cylinder_mesh_attrs),
                             {true, ballnstick.radius_size});
 
     ballnstick.bond1_cylinder_buffer_positions =
-     build_cylinder_mesh_positions(cyl_mesh_builder, cylinder_mesh_attrs);
+     build_cylinder_mesh_positions(cyl_mesh_builder, cylinder_attr);
 
     ballnstick.bond1_cylinder_buffer_normals =
-     build_cylinder_mesh_normals(cyl_mesh_builder, cylinder_mesh_attrs);
+     build_cylinder_mesh_normals(cyl_mesh_builder, cylinder_attr);
 
     ballnstick.bond1_cylinder_buffer_texcoords =
-     build_cylinder_mesh_texcoords(cyl_mesh_builder, cylinder_mesh_attrs);
+     build_cylinder_mesh_texcoord_instances(copy_builder, cylinder_mesh_attrs);
+
+    ballnstick.bond1_cylinder_buffer_transforms =
+     build_cylinder_mesh_transform_instances(copy_builder, cylinder_mesh_attrs);
 
     ballnstick.bond1_cylinder_color_texture =
      build_shape_color_texture(cylinder_mesh_attrs);
@@ -562,13 +614,16 @@ public:
                             {false, ballnstick.radius_size});
 
     ballnstick.bond2_cylinder_buffer_positions =
-     build_cylinder_mesh_positions(cyl_mesh_builder, cylinder_mesh_attrs);
+     build_cylinder_mesh_positions(cyl_mesh_builder, cylinder_attr);
 
     ballnstick.bond2_cylinder_buffer_normals =
-     build_cylinder_mesh_normals(cyl_mesh_builder, cylinder_mesh_attrs);
+     build_cylinder_mesh_normals(cyl_mesh_builder, cylinder_attr);
 
     ballnstick.bond2_cylinder_buffer_texcoords =
-     build_cylinder_mesh_texcoords(cyl_mesh_builder, cylinder_mesh_attrs);
+     build_cylinder_mesh_texcoord_instances(copy_builder, cylinder_mesh_attrs);
+
+    ballnstick.bond2_cylinder_buffer_transforms =
+     build_cylinder_mesh_transform_instances(copy_builder, cylinder_mesh_attrs);
 
     ballnstick.bond2_cylinder_color_texture =
      build_shape_color_texture(cylinder_mesh_attrs);

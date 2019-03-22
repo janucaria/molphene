@@ -40,7 +40,11 @@ public:
   
   std::unique_ptr<normals_buffer_array> bond1_cylinder_buffer_normals;
   
-  std::unique_ptr<texcoords_buffer_array> bond1_cylinder_buffer_texcoords;
+  std::unique_ptr<texcoords_instances_buffer_array>
+   bond1_cylinder_buffer_texcoords;
+
+  std::unique_ptr<transforms_instances_buffer_array>
+   bond1_cylinder_buffer_transforms;
 
   std::unique_ptr<color_image_texture> bond2_cylinder_color_texture;
 
@@ -48,7 +52,11 @@ public:
   
   std::unique_ptr<normals_buffer_array> bond2_cylinder_buffer_normals;
   
-  std::unique_ptr<texcoords_buffer_array> bond2_cylinder_buffer_texcoords;
+  std::unique_ptr<texcoords_instances_buffer_array>
+   bond2_cylinder_buffer_texcoords;
+
+  std::unique_ptr<transforms_instances_buffer_array>
+   bond2_cylinder_buffer_transforms;
 
   auto atom_radius(typename atom::atom_element element) const noexcept
    -> double;

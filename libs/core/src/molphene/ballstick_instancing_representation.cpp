@@ -31,71 +31,76 @@ void ballstick_instancing_representation::render(
   const auto verts_guard =
    gl_vertex_attribs_guard<shader_attrib_location::vertex,
                            shader_attrib_location::normal,
-                           shader_attrib_location::texcoordcolor>{};
+                           shader_attrib_location::texcoordcolor,
+                           shader_attrib_location::transformation,
+                           shader_attrib_location::transformation_1,
+                           shader_attrib_location::transformation_2,
+                           shader_attrib_location::transformation_3>{};
 
   {
     assert(all_has_same_props(*bond1_cylinder_buffer_positions,
-                              *bond1_cylinder_buffer_normals,
+                              *bond1_cylinder_buffer_normals));
+
+    assert(all_has_same_props(*bond1_cylinder_buffer_transforms,
                               *bond1_cylinder_buffer_texcoords));
 
     shader.color_texture_image(bond1_cylinder_color_texture->texture_image());
 
-    const auto size = bond1_cylinder_buffer_positions->size();
+    const auto size = bond1_cylinder_buffer_transforms->size();
     const auto remain_instances =
-     bond1_cylinder_buffer_positions->remain_instances();
+     bond1_cylinder_buffer_transforms->remain_instances();
     const auto instances_per_block =
-     bond1_cylinder_buffer_positions->instances_per_block();
+     bond1_cylinder_buffer_transforms->instances_per_block();
     const auto verts_per_instance =
      bond1_cylinder_buffer_positions->verts_per_instance();
 
+    bond1_cylinder_buffer_positions->bind_attrib_pointer_index(0);
+    bond1_cylinder_buffer_normals->bind_attrib_pointer_index(0);
+
     for(auto i = GLsizei{0}; i < size; ++i) {
-      const auto verts_count =
+      const auto total_instances =
        GLsizei{i == (size - 1) ? remain_instances : instances_per_block};
 
-      bond1_cylinder_buffer_positions->bind_attrib_pointer_index(i);
-      bond1_cylinder_buffer_normals->bind_attrib_pointer_index(i);
       bond1_cylinder_buffer_texcoords->bind_attrib_pointer_index(i);
+      bond1_cylinder_buffer_transforms->bind_attrib_pointer_index(i);
 
-      const auto count = verts_count * verts_per_instance;
-      glDrawArrays(GL_TRIANGLE_STRIP, 0, count);
+      gl::draw_arrays_instanced(
+       GL_TRIANGLE_STRIP, 0, verts_per_instance, total_instances);
     }
   }
 
   {
     assert(all_has_same_props(*bond2_cylinder_buffer_positions,
-                              *bond2_cylinder_buffer_normals,
+                              *bond2_cylinder_buffer_normals));
+    assert(all_has_same_props(*bond2_cylinder_buffer_transforms,
                               *bond2_cylinder_buffer_texcoords));
 
     shader.color_texture_image(bond2_cylinder_color_texture->texture_image());
 
-    const auto size = bond2_cylinder_buffer_positions->size();
+    const auto size = bond2_cylinder_buffer_transforms->size();
     const auto remain_instances =
-     bond2_cylinder_buffer_positions->remain_instances();
+     bond2_cylinder_buffer_transforms->remain_instances();
     const auto instances_per_block =
-     bond2_cylinder_buffer_positions->instances_per_block();
+     bond2_cylinder_buffer_transforms->instances_per_block();
     const auto verts_per_instance =
      bond2_cylinder_buffer_positions->verts_per_instance();
 
+    bond2_cylinder_buffer_positions->bind_attrib_pointer_index(0);
+    bond2_cylinder_buffer_normals->bind_attrib_pointer_index(0);
+
     for(auto i = GLsizei{0}; i < size; ++i) {
-      const auto verts_count =
+      const auto total_instances =
        GLsizei{i == (size - 1) ? remain_instances : instances_per_block};
-      const auto count = verts_count * verts_per_instance;
 
-      bond2_cylinder_buffer_positions->bind_attrib_pointer_index(i);
-      bond2_cylinder_buffer_normals->bind_attrib_pointer_index(i);
       bond2_cylinder_buffer_texcoords->bind_attrib_pointer_index(i);
+      bond2_cylinder_buffer_transforms->bind_attrib_pointer_index(i);
 
-      glDrawArrays(GL_TRIANGLE_STRIP, 0, count);
+      gl::draw_arrays_instanced(
+       GL_TRIANGLE_STRIP, 0, verts_per_instance, total_instances);
     }
   }
 
   {
-    const auto verts_guard =
-     gl_vertex_attribs_guard<shader_attrib_location::transformation,
-                             shader_attrib_location::transformation_1,
-                             shader_attrib_location::transformation_2,
-                             shader_attrib_location::transformation_3>{};
-
     assert(all_has_same_props(*atom_sphere_buffer_positions,
                               *atom_sphere_buffer_normals));
     assert(all_has_same_props(*atom_sphere_buffer_transforms,

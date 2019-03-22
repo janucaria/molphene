@@ -48,7 +48,10 @@ auto color_light_shader::vert_shader_source() const noexcept -> const GLchar*
         vec4 position = u_ModelViewMatrix * transformMatrix * a_Vertex;
         v_Position = position.xyz / position.w;
         v_ColorTexCoord = a_TexCoord0;
-        v_Normal = length(a_Normal) != 0.0 ? u_NormalMatrix * a_Normal : a_Normal;
+        v_Normal = u_NormalMatrix * mat3(
+          transformMatrix[0].xyz,
+          transformMatrix[1].xyz,
+          transformMatrix[2].xyz) * a_Normal;
         gl_Position = u_ProjectionMatrix * position;
         gl_Position /= gl_Position.w;
     }
