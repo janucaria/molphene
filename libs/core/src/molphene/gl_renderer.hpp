@@ -41,11 +41,6 @@ public:
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     {
-      const auto verts_guard =
-       gl_vertex_attribs_guard<shader_attrib_location::vertex,
-                               shader_attrib_location::normal,
-                               shader_attrib_location::texcoordcolor>{};
-
       color_light_shader_.use_program();
       color_light_shader_.projection_matrix(proj_matrix);
       color_light_shader_.modelview_matrix(mv_matrix);

@@ -120,21 +120,11 @@ public:
   template<typename... T1s, typename... T2s>
   friend auto has_same_props(const attrib_buffer_array<T1s...>& buff,
                              const attrib_buffer_array<T2s...>& other) noexcept
-   -> bool
-  {
-    return (buff.size_ == other.size_) &&
-           (buff.remain_instances_ == other.remain_instances_) &&
-           (buff.instances_per_block_ == other.instances_per_block_) &&
-           (buff.verts_per_instance_ == other.verts_per_instance_);
-  }
+   -> bool;
 
   template<typename TSelf, typename... TOthers>
   friend auto all_has_same_props(TSelf&& buff, TOthers&&... buffs) noexcept
-   -> bool
-  {
-    static_assert(sizeof...(TOthers) > 0);
-    return (has_same_props(buff, buffs) && ...);
-  }
+   -> bool;
 
 private:
   GLsizei verts_per_instance_{0};
@@ -154,6 +144,33 @@ using normals_buffer_array = attrib_buffer_array<
 
 using texcoords_buffer_array = attrib_buffer_array<
  vertex_attribs_buffer<vec2<GLfloat>, shader_attrib_location::texcoordcolor>>;
+
+using texcoords_instances_buffer_array = attrib_buffer_array<
+ vertex_attribs_buffer<vec2<GLfloat>,
+                       shader_attrib_location::texcoordcolor,
+                       1>>;
+
+using transforms_instances_buffer_array = attrib_buffer_array<
+ vertex_attribs_buffer<mat4<GLfloat>,
+                       shader_attrib_location::transformation,
+                       1>>;
+
+template<typename... T1s, typename... T2s>
+auto has_same_props(const attrib_buffer_array<T1s...>& buff,
+                    const attrib_buffer_array<T2s...>& other) noexcept -> bool
+{
+  return (buff.size_ == other.size_) &&
+         (buff.remain_instances_ == other.remain_instances_) &&
+         (buff.instances_per_block_ == other.instances_per_block_) &&
+         (buff.verts_per_instance_ == other.verts_per_instance_);
+}
+
+template<typename TSelf, typename... TOthers>
+auto all_has_same_props(TSelf&& buff, TOthers&&... buffs) noexcept -> bool
+{
+  static_assert(sizeof...(TOthers) > 0);
+  return (has_same_props(buff, buffs) && ...);
+}
 
 } // namespace molphene
 

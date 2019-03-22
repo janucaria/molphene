@@ -30,7 +30,11 @@ public:
   using attrib_locations =
    shader_attrib_list<shader_attrib_location::vertex,
                       shader_attrib_location::normal,
-                      shader_attrib_location::texcoordcolor>;
+                      shader_attrib_location::texcoordcolor,
+                      shader_attrib_location::transformation,
+                      shader_attrib_location::transformation_1,
+                      shader_attrib_location::transformation_2,
+                      shader_attrib_location::transformation_3>;
 
 protected:
   auto vert_shader_source() const noexcept -> const GLchar*;

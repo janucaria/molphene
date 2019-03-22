@@ -13,12 +13,15 @@
 #include <molphene/gl_renderer.hpp>
 #include <molphene/scene.hpp>
 
+#include <molphene/ballstick_instancing_representation.hpp>
 #include <molphene/ballstick_representation.hpp>
 #include <molphene/camera.hpp>
 #include <molphene/cylinder_mesh_builder.hpp>
 #include <molphene/drawable.hpp>
+#include <molphene/instance_copy_builder.hpp>
 #include <molphene/molecule_display.hpp>
 #include <molphene/molecule_to_shape.hpp>
+#include <molphene/spacefill_instance_representation.hpp>
 #include <molphene/spacefill_representation.hpp>
 #include <molphene/sphere_mesh_builder.hpp>
 
@@ -30,7 +33,7 @@ template<typename TApp>
 class basic_application {
 public:
   using camera_type = camera<void>;
-  
+
   using representations_container = std::list<drawable>;
 
   void setup()
@@ -39,6 +42,8 @@ public:
 
     representations_.emplace_back(spacefill_representation{});
     representations_.emplace_back(ballstick_representation{});
+    representations_.emplace_back(spacefill_instance_representation{});
+    representations_.emplace_back(ballstick_instancing_representation{});
 
     scene.setup_graphics();
     renderer.init();
@@ -51,7 +56,10 @@ public:
 
     scene.reset_mesh(molecule);
 
-    representation_ = molecule_display::ball_and_stick;
+    // representation_ = molecule_display::ball_and_stick;
+    // representation_ = molecule_display::spacefill_instance;
+    // representation_ = molecule_display::spacefill;
+    representation_ = molecule_display::ball_and_stick_instance;
     reset_representation(molecule);
   }
 
@@ -86,6 +94,12 @@ public:
     } break;
     case static_cast<int>(molecule_display::ball_and_stick): {
       representation(molecule_display::ball_and_stick, molecule);
+    } break;
+    case static_cast<int>(molecule_display::spacefill_instance): {
+      representation(molecule_display::spacefill_instance, molecule);
+    } break;
+    case static_cast<int>(molecule_display::ball_and_stick_instance): {
+      representation(molecule_display::ball_and_stick_instance, molecule);
     } break;
     }
   }
@@ -179,6 +193,33 @@ public:
   }
 
   template<typename TMeshBuilder, typename TSphMeshSizedRange>
+  auto
+  build_sphere_mesh_transform_instances(TMeshBuilder mesh_builder,
+                                        TSphMeshSizedRange&& sph_attrs) const
+   -> std::unique_ptr<transforms_instances_buffer_array>
+  {
+    return build_mesh_vertices<transforms_instances_buffer_array>(
+     mesh_builder, std::forward<TSphMeshSizedRange>(sph_attrs), [
+     ](auto sph_attr) noexcept {
+       auto transform_mat = mat4<float>{1};
+       transform_mat.scale(sph_attr.sphere.radius);
+       transform_mat.translate(sph_attr.sphere.center);
+       return transform_mat;
+     });
+  }
+
+  template<typename TMeshBuilder, typename TSphMeshSizedRange>
+  auto
+  build_sphere_mesh_texcoord_instances(TMeshBuilder mesh_builder,
+                                       TSphMeshSizedRange&& sph_attrs) const
+   -> std::unique_ptr<texcoords_instances_buffer_array>
+  {
+    return build_mesh_vertices<texcoords_instances_buffer_array>(
+     mesh_builder, std::forward<TSphMeshSizedRange>(sph_attrs), [
+     ](auto sph_attr) noexcept { return sph_attr.texcoord; });
+  }
+
+  template<typename TMeshBuilder, typename TSphMeshSizedRange>
   auto build_sphere_mesh_positions(TMeshBuilder mesh_builder,
                                    TSphMeshSizedRange&& sph_attrs) const
    -> std::unique_ptr<positions_buffer_array>
@@ -244,6 +285,49 @@ public:
      mesh_builder, cyl_attrs, [](auto cyl_attr) noexcept {
        return build_cylinder_mesh_fill_params{cyl_attr.cylinder,
                                               cyl_attr.texcoord};
+     });
+  }
+
+  template<typename TMeshBuilder, typename TCylMeshSizedRange>
+  auto
+  build_cylinder_mesh_transform_instances(TMeshBuilder mesh_builder,
+                                          TCylMeshSizedRange&& cyl_attrs) const
+   -> std::unique_ptr<transforms_instances_buffer_array>
+  {
+    return build_mesh_vertices<transforms_instances_buffer_array>(
+     mesh_builder, std::forward<TCylMeshSizedRange>(cyl_attrs), [
+     ](auto cyl_attr) noexcept {
+       using vec3_t =
+        typename std::decay_t<decltype(cyl_attr.cylinder)>::vec3_type;
+
+       auto transform_mat = mat4<float>{1};
+
+       const auto top_dir = vec3_t{0, 1, 0};
+       const auto cyl_dir =
+        (cyl_attr.cylinder.top - cyl_attr.cylinder.bottom) / 2;
+       const auto cyl_dir_length = cyl_dir.magnitude();
+       const auto rot_axis = cyl_dir.cross(top_dir).to_unit();
+       const auto rot_angle = std::acos(cyl_dir.dot(top_dir) / cyl_dir_length);
+       const auto cyl_radius = cyl_attr.cylinder.radius;
+       const auto cyl_position = cyl_attr.cylinder.bottom + cyl_dir;
+
+       transform_mat.scale(cyl_radius, cyl_dir_length, cyl_radius);
+       transform_mat.rotate(rot_angle, rot_axis);
+       transform_mat.translate(cyl_position);
+
+       return transform_mat;
+     });
+  }
+
+  template<typename TMeshBuilder, typename TCylMeshSizedRange>
+  auto
+  build_cylinder_mesh_texcoord_instances(TMeshBuilder mesh_builder,
+                                         TCylMeshSizedRange&& cyl_attrs) const
+   -> std::unique_ptr<texcoords_instances_buffer_array>
+  {
+    return build_mesh_vertices<texcoords_instances_buffer_array>(
+     mesh_builder, cyl_attrs, [](auto cyl_attr) noexcept {
+       return cyl_attr.texcoord;
      });
   }
 
@@ -385,6 +469,168 @@ public:
     return ballnstick;
   }
 
+  auto build_spacefill_instance_representation(const molecule& mol) const
+   -> spacefill_instance_representation
+  {
+    namespace range = boost::range;
+
+    auto spacefill = spacefill_instance_representation{};
+
+    constexpr auto sph_mesh_builder = sphere_mesh_builder<10, 20>{};
+
+    constexpr auto copy_builder = instance_copy_builder{};
+
+    auto atoms = detail::make_reserved_vector<const atom*>(mol.atoms().size());
+    range::transform(
+     mol.atoms(), std::back_inserter(atoms), [](auto& atom) noexcept {
+       return &atom;
+     });
+
+    auto sphere_mesh_attrs =
+     detail::make_reserved_vector<sphere_mesh_attribute>(atoms.size());
+
+    atoms_to_sphere_attrs(atoms,
+                          std::back_inserter(sphere_mesh_attrs),
+                          {spacefill.radius_type, spacefill.radius_size, 1.});
+
+    const auto sphere_attr =
+     std::array<sphere_mesh_attribute, 1>{{{{}, 0, {}, {1, {}}}}};
+
+    spacefill.atom_sphere_buffer_positions =
+     build_sphere_mesh_positions(sph_mesh_builder, sphere_attr);
+
+    spacefill.atom_sphere_buffer_normals =
+     build_sphere_mesh_normals(sph_mesh_builder, sphere_attr);
+
+    spacefill.atom_sphere_buffer_texcoords =
+     build_sphere_mesh_texcoord_instances(copy_builder, sphere_mesh_attrs);
+
+    spacefill.atom_sphere_buffer_transforms =
+     build_sphere_mesh_transform_instances(copy_builder, sphere_mesh_attrs);
+
+    spacefill.atom_sphere_color_texture =
+     build_shape_color_texture(sphere_mesh_attrs);
+
+    return spacefill;
+  }
+
+  auto build_ballstick_instance_representation(const molecule& mol)
+   -> ballstick_instancing_representation
+  {
+    namespace range = boost::range;
+
+    auto ballnstick = ballstick_instancing_representation{};
+
+    constexpr auto sph_mesh_builder = sphere_mesh_builder<10, 20>{};
+    constexpr auto cyl_mesh_builder = cylinder_mesh_builder<20>{};
+    constexpr auto copy_builder = instance_copy_builder{};
+
+    auto bonds = detail::make_reserved_vector<const bond*>(mol.bonds().size());
+    range::transform(
+     mol.bonds(), std::back_inserter(bonds), [](auto& bond) noexcept {
+       return std::addressof(bond);
+     });
+
+    using pair_atoms_t = std::pair<const atom*, const atom*>;
+    auto bond_atoms = detail::make_reserved_vector<pair_atoms_t>(bonds.size());
+    range::transform(
+     bonds,
+     std::back_inserter(bond_atoms),
+     [& atoms = mol.atoms()](auto bond) noexcept {
+       return std::make_pair(&atoms.at(bond->atom1()),
+                             &atoms.at(bond->atom2()));
+     });
+
+    auto atoms = detail::make_reserved_vector<const atom*>(mol.atoms().size());
+    range::transform(
+     mol.atoms(), std::back_inserter(atoms), [](auto& atom) noexcept {
+       return &atom;
+     });
+
+    auto atoms_in_bond = std::set<const atom*>{};
+    boost::for_each(
+     bond_atoms, [&](auto atom_pair) noexcept {
+       atoms_in_bond.insert({atom_pair.first, atom_pair.second});
+     });
+
+    {
+      auto sphere_mesh_attrs =
+       detail::make_reserved_vector<sphere_mesh_attribute>(
+        atoms_in_bond.size());
+
+      atoms_to_sphere_attrs(
+       atoms_in_bond,
+       std::back_inserter(sphere_mesh_attrs),
+       {ballnstick.atom_radius_type, ballnstick.atom_radius_size, 0.5});
+
+      const auto sphere_attr =
+       std::array<sphere_mesh_attribute, 1>{{{{}, 0, {}, {1, {}}}}};
+
+      ballnstick.atom_sphere_buffer_positions =
+       build_sphere_mesh_positions(sph_mesh_builder, sphere_attr);
+
+      ballnstick.atom_sphere_buffer_normals =
+       build_sphere_mesh_normals(sph_mesh_builder, sphere_attr);
+
+      ballnstick.atom_sphere_buffer_texcoords =
+       build_sphere_mesh_texcoord_instances(copy_builder, sphere_mesh_attrs);
+
+      ballnstick.atom_sphere_buffer_transforms =
+       build_sphere_mesh_transform_instances(copy_builder, sphere_mesh_attrs);
+
+      ballnstick.atom_sphere_color_texture =
+       build_shape_color_texture(sphere_mesh_attrs);
+    }
+
+    auto cylinder_mesh_attrs =
+     detail::make_reserved_vector<cylinder_mesh_attribute>(bond_atoms.size());
+
+    const auto cylinder_attr = std::array<cylinder_mesh_attribute, 1>{
+     {{{}, 0, {}, {1, {0, 1, 0}, {0, -1, 0}}}}};
+
+    bonds_to_cylinder_attrs(bond_atoms,
+                            std::back_insert_iterator(cylinder_mesh_attrs),
+                            {true, ballnstick.radius_size});
+
+    ballnstick.bond1_cylinder_buffer_positions =
+     build_cylinder_mesh_positions(cyl_mesh_builder, cylinder_attr);
+
+    ballnstick.bond1_cylinder_buffer_normals =
+     build_cylinder_mesh_normals(cyl_mesh_builder, cylinder_attr);
+
+    ballnstick.bond1_cylinder_buffer_texcoords =
+     build_cylinder_mesh_texcoord_instances(copy_builder, cylinder_mesh_attrs);
+
+    ballnstick.bond1_cylinder_buffer_transforms =
+     build_cylinder_mesh_transform_instances(copy_builder, cylinder_mesh_attrs);
+
+    ballnstick.bond1_cylinder_color_texture =
+     build_shape_color_texture(cylinder_mesh_attrs);
+
+    cylinder_mesh_attrs.clear();
+
+    bonds_to_cylinder_attrs(bond_atoms,
+                            std::back_insert_iterator(cylinder_mesh_attrs),
+                            {false, ballnstick.radius_size});
+
+    ballnstick.bond2_cylinder_buffer_positions =
+     build_cylinder_mesh_positions(cyl_mesh_builder, cylinder_attr);
+
+    ballnstick.bond2_cylinder_buffer_normals =
+     build_cylinder_mesh_normals(cyl_mesh_builder, cylinder_attr);
+
+    ballnstick.bond2_cylinder_buffer_texcoords =
+     build_cylinder_mesh_texcoord_instances(copy_builder, cylinder_mesh_attrs);
+
+    ballnstick.bond2_cylinder_buffer_transforms =
+     build_cylinder_mesh_transform_instances(copy_builder, cylinder_mesh_attrs);
+
+    ballnstick.bond2_cylinder_color_texture =
+     build_shape_color_texture(cylinder_mesh_attrs);
+
+    return ballnstick;
+  }
+
   void reset_representation(const molecule& mol) noexcept
   {
     representations_.clear();
@@ -394,6 +640,14 @@ public:
     } break;
     case molecule_display::ball_and_stick: {
       representations_.emplace_back(build_ballstick_representation(mol));
+    } break;
+    case molecule_display::spacefill_instance: {
+      representations_.emplace_back(
+       build_spacefill_instance_representation(mol));
+    } break;
+    case molecule_display::ball_and_stick_instance: {
+      representations_.emplace_back(
+       build_ballstick_instance_representation(mol));
     } break;
     }
   }
@@ -411,6 +665,14 @@ public:
     case 79:
     case 111:
       camera.projection_mode(false);
+      break;
+    case 72:
+    case 104:
+      representation(molecule_display::ball_and_stick_instance, molecule);
+      break;
+    case 74:
+    case 106:
+      representation(molecule_display::spacefill_instance, molecule);
       break;
     case 75:
     case 107:

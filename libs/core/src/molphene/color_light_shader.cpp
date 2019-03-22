@@ -6,6 +6,18 @@ void color_light_shader::setup_gl_attribs_val() const noexcept
 {
   glVertexAttrib4f(
    static_cast<GLuint>(shader_attrib_location::vertex), 0, 0, 0, 1);
+
+  glVertexAttrib4f(
+   static_cast<GLuint>(shader_attrib_location::transformation) + 0, 1, 0, 0, 0);
+
+  glVertexAttrib4f(
+   static_cast<GLuint>(shader_attrib_location::transformation) + 1, 0, 1, 0, 0);
+
+  glVertexAttrib4f(
+   static_cast<GLuint>(shader_attrib_location::transformation) + 2, 0, 0, 1, 0);
+
+  glVertexAttrib4f(
+   static_cast<GLuint>(shader_attrib_location::transformation) + 3, 0, 0, 0, 1);
 }
 
 auto color_light_shader::vert_shader_source() const noexcept -> const GLchar*
@@ -14,6 +26,10 @@ auto color_light_shader::vert_shader_source() const noexcept -> const GLchar*
     attribute vec4 a_Vertex;
     attribute vec3 a_Normal;
     attribute vec2 a_TexCoord0;
+    attribute vec4 a_Transformation;
+    attribute vec4 a_Transformation1;
+    attribute vec4 a_Transformation2;
+    attribute vec4 a_Transformation3;
     
     uniform mat4 u_ModelViewMatrix;
     uniform mat3 u_NormalMatrix;
@@ -23,10 +39,19 @@ auto color_light_shader::vert_shader_source() const noexcept -> const GLchar*
     varying vec3 v_Normal;
     varying vec2 v_ColorTexCoord;
     void main() {
-        vec4 position = u_ModelViewMatrix * a_Vertex;
+        mat4 transformMatrix = mat4(
+          a_Transformation,
+          a_Transformation1,
+          a_Transformation2,
+          a_Transformation3
+        );
+        vec4 position = u_ModelViewMatrix * transformMatrix * a_Vertex;
         v_Position = position.xyz / position.w;
         v_ColorTexCoord = a_TexCoord0;
-        v_Normal = length(a_Normal) != 0.0 ? u_NormalMatrix * a_Normal : a_Normal;
+        v_Normal = u_NormalMatrix * mat3(
+          transformMatrix[0].xyz,
+          transformMatrix[1].xyz,
+          transformMatrix[2].xyz) * a_Normal;
         gl_Position = u_ProjectionMatrix * position;
         gl_Position /= gl_Position.w;
     }

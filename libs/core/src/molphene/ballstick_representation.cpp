@@ -1,5 +1,8 @@
 #include "ballstick_representation.hpp"
 
+#include "gl_vertex_attribs_guard.hpp"
+#include "shader_attrib_location.hpp"
+
 namespace molphene {
 
 auto ballstick_representation::atom_radius(
@@ -24,6 +27,11 @@ auto ballstick_representation::atom_color(const atom& atom) const noexcept
 void ballstick_representation::render(const color_light_shader& shader) const
  noexcept
 {
+  const auto verts_guard =
+   gl_vertex_attribs_guard<shader_attrib_location::vertex,
+                           shader_attrib_location::normal,
+                           shader_attrib_location::texcoordcolor>{};
+
   {
     assert(all_has_same_props(*bond1_cylinder_buffer_positions,
                               *bond1_cylinder_buffer_normals,
