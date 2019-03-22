@@ -11,7 +11,7 @@ public:
   using float_type = FloatP;
   using vec3_type = vec3<float_type>;
 
-  float_type radius{0};
+  float_type radius{1};
   vec3_type center{0, 0, 0};
 
   sphere() noexcept = default;

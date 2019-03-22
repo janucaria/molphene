@@ -493,8 +493,7 @@ public:
                           std::back_inserter(sphere_mesh_attrs),
                           {spacefill.radius_type, spacefill.radius_size, 1.});
 
-    const auto sphere_attr =
-     std::array<sphere_mesh_attribute, 1>{{{{}, 0, {}, {1, {}}}}};
+    const auto sphere_attr = std::array<sphere_mesh_attribute, 1>{};
 
     spacefill.atom_sphere_buffer_positions =
      build_sphere_mesh_positions(sph_mesh_builder, sphere_attr);
@@ -563,8 +562,7 @@ public:
        std::back_inserter(sphere_mesh_attrs),
        {ballnstick.atom_radius_type, ballnstick.atom_radius_size, 0.5});
 
-      const auto sphere_attr =
-       std::array<sphere_mesh_attribute, 1>{{{{}, 0, {}, {1, {}}}}};
+      const auto sphere_attr = std::array<sphere_mesh_attribute, 1>{};
 
       ballnstick.atom_sphere_buffer_positions =
        build_sphere_mesh_positions(sph_mesh_builder, sphere_attr);
@@ -585,8 +583,7 @@ public:
     auto cylinder_mesh_attrs =
      detail::make_reserved_vector<cylinder_mesh_attribute>(bond_atoms.size());
 
-    const auto cylinder_attr = std::array<cylinder_mesh_attribute, 1>{
-     {{{}, 0, {}, {1, {0, 1, 0}, {0, -1, 0}}}}};
+    const auto cylinder_attr = std::array<cylinder_mesh_attribute, 1>{};
 
     bonds_to_cylinder_attrs(bond_atoms,
                             std::back_insert_iterator(cylinder_mesh_attrs),

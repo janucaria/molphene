@@ -13,9 +13,9 @@ public:
   using float_type = FloatingPoint;
   using vec3_type = vec3<float_type>;
 
-  float_type radius;
-  vec3_type top;
-  vec3_type bottom;
+  float_type radius{1};
+  vec3_type top{0, 1, 0};
+  vec3_type bottom{0, -1, 0};
 
   cylinder() noexcept = default;
 
