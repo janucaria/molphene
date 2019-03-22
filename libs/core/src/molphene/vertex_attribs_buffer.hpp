@@ -1,10 +1,10 @@
 #ifndef MOLPHENE_VERTEX_ATTRIBS_BUFFER_HPP
 #define MOLPHENE_VERTEX_ATTRIBS_BUFFER_HPP
 
+#include "gl/draw_instanced_arrays.hpp"
 #include "opengl.hpp"
 #include "shader_attrib_location.hpp"
 #include "stdafx.hpp"
-#include "gl/draw_instanced_arrays.hpp"
 
 namespace molphene {
 

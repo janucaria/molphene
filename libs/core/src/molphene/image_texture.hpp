@@ -30,15 +30,8 @@ public:
   void image_data(const GLvoid* data) const noexcept
   {
     glBindTexture(target, texture_);
-    glTexImage2D(target,
-                 0,
-                 GL_RGBA,
-                 size_,
-                 size_,
-                 0,
-                 GL_RGBA,
-                 GL_UNSIGNED_BYTE,
-                 data);
+    glTexImage2D(
+     target, 0, GL_RGBA, size_, size_, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
   }
 
   auto texture_image() const noexcept -> GLuint

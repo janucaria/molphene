@@ -20,7 +20,10 @@ public:
   {
   }
 
-  basic_rgba(scalar_type r, scalar_type g, scalar_type b, scalar_type a) noexcept
+  basic_rgba(scalar_type r,
+             scalar_type g,
+             scalar_type b,
+             scalar_type a) noexcept
   : r_{r}
   , g_{g}
   , b_{b}
@@ -28,63 +31,55 @@ public:
   {
   }
 
-  void
-  r(scalar_type val) noexcept
+  void r(scalar_type val) noexcept
   {
     r_ = val;
   }
 
-  void
-  g(scalar_type val) noexcept
+  void g(scalar_type val) noexcept
   {
     g_ = val;
   }
 
-  void
-  b(scalar_type val) noexcept
+  void b(scalar_type val) noexcept
   {
     b_ = val;
   }
 
-  void
-  a(scalar_type val) noexcept
+  void a(scalar_type val) noexcept
   {
     a_ = val;
   }
 
-  auto
-  r() const noexcept -> scalar_type
+  auto r() const noexcept -> scalar_type
   {
     return r_;
   }
 
-  auto
-  g() const noexcept -> scalar_type
+  auto g() const noexcept -> scalar_type
   {
     return g_;
   }
 
-  auto
-  b() const noexcept -> scalar_type
+  auto b() const noexcept -> scalar_type
   {
     return b_;
   }
 
-  auto
-  a() const noexcept -> scalar_type
+  auto a() const noexcept -> scalar_type
   {
     return a_;
   }
 
-  friend auto
-  operator==(const basic_rgba& lhs, const basic_rgba& rhs) noexcept -> bool
+  friend auto operator==(const basic_rgba& lhs, const basic_rgba& rhs) noexcept
+   -> bool
   {
     return lhs.r() == rhs.r() && lhs.g() == rhs.g() && lhs.b() == rhs.b() &&
            lhs.a() == rhs.a();
   }
 
-  friend auto
-  operator!=(const basic_rgba& lhs, const basic_rgba& rhs) noexcept -> bool
+  friend auto operator!=(const basic_rgba& lhs, const basic_rgba& rhs) noexcept
+   -> bool
   {
     return !(lhs == rhs);
   }

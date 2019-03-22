@@ -28,9 +28,11 @@ public:
 
   std::unique_ptr<normals_buffer_array> atom_sphere_buffer_normals;
 
-  std::unique_ptr<texcoords_instances_buffer_array> atom_sphere_buffer_texcoords;
+  std::unique_ptr<texcoords_instances_buffer_array>
+   atom_sphere_buffer_texcoords;
 
-  std::unique_ptr<transforms_instances_buffer_array> atom_sphere_buffer_transforms;
+  std::unique_ptr<transforms_instances_buffer_array>
+   atom_sphere_buffer_transforms;
 
   auto atom_radius(typename atom::atom_element element) const noexcept
    -> double;

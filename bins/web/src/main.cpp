@@ -1,14 +1,14 @@
 #include "application.hpp"
 
-#include <memory>
 #include <cstdlib>
+#include <memory>
 
 inline auto app = molphene::application{};
 
 struct malloc_guard {
-
   template<typename T>
-  void operator()(T* ptr) const noexcept {
+  void operator()(T* ptr) const noexcept
+  {
     std::free(ptr);
   }
 };
@@ -45,5 +45,4 @@ void molphene_application_render_frame()
 {
   app.render_frame();
 }
-
 }

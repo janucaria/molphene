@@ -7,7 +7,6 @@
 
 namespace molphene {
 
-
 auto chemdoodle_json_parser::parse(std::istream& is) -> molecule
 {
   const auto strjson = std::string{std::istreambuf_iterator<char>{is}, {}};
@@ -24,7 +23,8 @@ auto chemdoodle_json_parser::parse(std::string_view strjson) -> molecule
   auto jsonmol = nlohmann::json::parse(strjson);
 
   auto find_object_json_by_key =
-   [](const auto& jsonmol, std::string_view key) -> std::optional<nlohmann::json::object_t> {
+   [](const auto& jsonmol,
+      std::string_view key) -> std::optional<nlohmann::json::object_t> {
     const auto find_key = jsonmol.find(key);
     if(find_key == jsonmol.end()) {
       return std::nullopt;
@@ -48,7 +48,8 @@ auto chemdoodle_json_parser::parse(std::string_view strjson) -> molecule
   auto out_bonds = bond_insert_iterator{mol};
 
   auto find_array_json_by_key =
-   [](const auto& jsonmol, std::string_view key) -> std::optional<nlohmann::json::array_t> {
+   [](const auto& jsonmol,
+      std::string_view key) -> std::optional<nlohmann::json::array_t> {
     const auto find_array = jsonmol.find(key);
     if(find_array == jsonmol.end()) {
       return std::nullopt;

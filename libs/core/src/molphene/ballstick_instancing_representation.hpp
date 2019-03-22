@@ -30,16 +30,18 @@ public:
 
   std::unique_ptr<normals_buffer_array> atom_sphere_buffer_normals;
 
-  std::unique_ptr<texcoords_instances_buffer_array> atom_sphere_buffer_texcoords;
+  std::unique_ptr<texcoords_instances_buffer_array>
+   atom_sphere_buffer_texcoords;
 
-  std::unique_ptr<transforms_instances_buffer_array> atom_sphere_buffer_transforms;
+  std::unique_ptr<transforms_instances_buffer_array>
+   atom_sphere_buffer_transforms;
 
   std::unique_ptr<color_image_texture> bond1_cylinder_color_texture;
 
   std::unique_ptr<positions_buffer_array> bond1_cylinder_buffer_positions;
-  
+
   std::unique_ptr<normals_buffer_array> bond1_cylinder_buffer_normals;
-  
+
   std::unique_ptr<texcoords_instances_buffer_array>
    bond1_cylinder_buffer_texcoords;
 
@@ -49,9 +51,9 @@ public:
   std::unique_ptr<color_image_texture> bond2_cylinder_color_texture;
 
   std::unique_ptr<positions_buffer_array> bond2_cylinder_buffer_positions;
-  
+
   std::unique_ptr<normals_buffer_array> bond2_cylinder_buffer_normals;
-  
+
   std::unique_ptr<texcoords_instances_buffer_array>
    bond2_cylinder_buffer_texcoords;
 

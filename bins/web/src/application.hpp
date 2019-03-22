@@ -6,8 +6,8 @@
 #include <emscripten/emscripten.h>
 #include <emscripten/html5.h>
 
-#include <molecule/molecule.hpp>
 #include <molecule/chemdoodle_json_parser.hpp>
+#include <molecule/molecule.hpp>
 
 #include <molphene/gl_renderer.hpp>
 #include <molphene/scene.hpp>
@@ -24,13 +24,12 @@ public:
   using framebuffer_size_type = std::pair<std::size_t, std::size_t>;
 
   void init_context();
-  
+
   auto framebuffer_size() const -> framebuffer_size_type;
 
   void close_app();
 
 private:
-
   EMSCRIPTEN_WEBGL_CONTEXT_HANDLE glctx{0};
 
   const char* canvas_target{"canvas"};
@@ -86,8 +85,10 @@ private:
     auto app = static_cast<application*>(userData);
 
     if(event && app->click_state.is_down) {
-      const auto delta_x = static_cast<double>(app->click_state.last_x) - event->clientX;
-      const auto delta_y = static_cast<double>(app->click_state.last_y) - event->clientY;
+      const auto delta_x =
+       static_cast<double>(app->click_state.last_x) - event->clientX;
+      const auto delta_y =
+       static_cast<double>(app->click_state.last_y) - event->clientY;
 
       app->click_state.last_x = event->clientX;
       app->click_state.last_y = event->clientY;

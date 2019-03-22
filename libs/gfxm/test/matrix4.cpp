@@ -71,7 +71,7 @@ TEST_CASE("float_matrix4_test initialization")
     REQUIRE(mat.m21() == 21.0f);
     REQUIRE(mat.m22() == 22.0f);
     REQUIRE(mat.m23() == 23.0f);
-    
+
     REQUIRE(mat.m30() == 30.0f);
     REQUIRE(mat.m31() == 31.0f);
     REQUIRE(mat.m32() == 32.0f);

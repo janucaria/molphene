@@ -56,14 +56,13 @@ public:
 };
 
 template<>
-struct type_configs<void> : type_configs<detail::empty>
-{
+struct type_configs<void> : type_configs<detail::empty> {
   using type_configs<detail::empty>::size_type;
   using type_configs<detail::empty>::float_type;
   using type_configs<detail::empty>::int_type;
   using type_configs<detail::empty>::char_type;
 };
 
-}
+} // namespace molphene
 
 #endif

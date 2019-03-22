@@ -15,7 +15,8 @@ template<>
 class rgba<std::uint8_t>
 : public detail::basic_rgba<rgba<std::uint8_t>, std::uint8_t> {
 public:
-  using scalar_type = detail::basic_rgba<rgba<std::uint8_t>, std::uint8_t>::scalar_type;
+  using scalar_type =
+   detail::basic_rgba<rgba<std::uint8_t>, std::uint8_t>::scalar_type;
 
   using detail::basic_rgba<rgba<std::uint8_t>, std::uint8_t>::basic_rgba;
 
