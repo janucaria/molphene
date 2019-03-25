@@ -38,7 +38,7 @@ public:
   using spacefill_representation =
    basic_spacefill_representation<sphere_vertex_buffers>;
 
-  using spacefill_instance_representation =
+  using spacefill_representation_instanced =
    basic_spacefill_representation<sphere_vertex_buffers_instanced>;
 
   using representations_container = std::list<drawable>;
@@ -49,7 +49,7 @@ public:
 
     representations_.emplace_back(spacefill_representation{});
     representations_.emplace_back(ballstick_representation{});
-    representations_.emplace_back(spacefill_instance_representation{});
+    representations_.emplace_back(spacefill_representation_instanced{});
     representations_.emplace_back(ballstick_instancing_representation{});
 
     scene.setup_graphics();
@@ -476,12 +476,12 @@ public:
     return ballnstick;
   }
 
-  auto build_spacefill_instance_representation(const molecule& mol) const
-   -> spacefill_instance_representation
+  auto build_spacefill_representation_instanced(const molecule& mol) const
+   -> spacefill_representation_instanced
   {
     namespace range = boost::range;
 
-    auto spacefill = spacefill_instance_representation{};
+    auto spacefill = spacefill_representation_instanced{};
 
     constexpr auto sph_mesh_builder = sphere_mesh_builder<10, 20>{};
 
@@ -647,7 +647,7 @@ public:
     } break;
     case molecule_display::spacefill_instance: {
       representations_.emplace_back(
-       build_spacefill_instance_representation(mol));
+       build_spacefill_representation_instanced(mol));
     } break;
     case molecule_display::ball_and_stick_instance: {
       representations_.emplace_back(
