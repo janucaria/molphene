@@ -443,16 +443,16 @@ public:
                             std::back_insert_iterator(cylinder_mesh_attrs),
                             {true, ballnstick.radius_size});
 
-    ballnstick.bond1_cylinder_buffer_positions =
+    ballnstick.bond1_cylinder_buffers.buffer_positions =
      build_cylinder_mesh_positions(cyl_mesh_builder, cylinder_mesh_attrs);
 
-    ballnstick.bond1_cylinder_buffer_normals =
+    ballnstick.bond1_cylinder_buffers.buffer_normals =
      build_cylinder_mesh_normals(cyl_mesh_builder, cylinder_mesh_attrs);
 
-    ballnstick.bond1_cylinder_buffer_texcoords =
+    ballnstick.bond1_cylinder_buffers.buffer_texcoords =
      build_cylinder_mesh_texcoords(cyl_mesh_builder, cylinder_mesh_attrs);
 
-    ballnstick.bond1_cylinder_color_texture =
+    ballnstick.bond1_cylinder_buffers.color_texture =
      build_shape_color_texture(cylinder_mesh_attrs);
 
     cylinder_mesh_attrs.clear();
@@ -461,16 +461,16 @@ public:
                             std::back_insert_iterator(cylinder_mesh_attrs),
                             {false, ballnstick.radius_size});
 
-    ballnstick.bond2_cylinder_buffer_positions =
+    ballnstick.bond2_cylinder_buffers.buffer_positions =
      build_cylinder_mesh_positions(cyl_mesh_builder, cylinder_mesh_attrs);
 
-    ballnstick.bond2_cylinder_buffer_normals =
+    ballnstick.bond2_cylinder_buffers.buffer_normals =
      build_cylinder_mesh_normals(cyl_mesh_builder, cylinder_mesh_attrs);
 
-    ballnstick.bond2_cylinder_buffer_texcoords =
+    ballnstick.bond2_cylinder_buffers.buffer_texcoords =
      build_cylinder_mesh_texcoords(cyl_mesh_builder, cylinder_mesh_attrs);
 
-    ballnstick.bond2_cylinder_color_texture =
+    ballnstick.bond2_cylinder_buffers.color_texture =
      build_shape_color_texture(cylinder_mesh_attrs);
 
     return ballnstick;
