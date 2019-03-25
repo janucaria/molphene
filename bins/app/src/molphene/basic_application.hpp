@@ -13,10 +13,11 @@
 #include <molphene/gl_renderer.hpp>
 #include <molphene/scene.hpp>
 
-#include <molphene/ballstick_instancing_representation.hpp>
 #include <molphene/ballstick_representation.hpp>
 #include <molphene/camera.hpp>
 #include <molphene/cylinder_mesh_builder.hpp>
+#include <molphene/cylinder_vertex_buffers_batch.hpp>
+#include <molphene/cylinder_vertex_buffers_instanced.hpp>
 #include <molphene/drawable.hpp>
 #include <molphene/instance_copy_builder.hpp>
 #include <molphene/molecule_display.hpp>
@@ -40,6 +41,14 @@ public:
 
   using spacefill_representation_instanced =
    basic_spacefill_representation<sphere_vertex_buffers_instanced>;
+
+  using ballstick_representation =
+   basic_ballstick_representation<sphere_vertex_buffers_batch,
+                                  cylinder_vertex_buffers_batch>;
+
+  using ballstick_instancing_representation =
+   basic_ballstick_representation<sphere_vertex_buffers_instanced,
+                                  cylinder_vertex_buffers_instanced>;
 
   using representations_container = std::list<drawable>;
 
