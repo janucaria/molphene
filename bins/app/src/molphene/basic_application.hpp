@@ -46,7 +46,7 @@ public:
    basic_ballstick_representation<sphere_vertex_buffers_batch,
                                   cylinder_vertex_buffers_batch>;
 
-  using ballstick_instancing_representation =
+  using ballstick_representation_instanced =
    basic_ballstick_representation<sphere_vertex_buffers_instanced,
                                   cylinder_vertex_buffers_instanced>;
 
@@ -59,7 +59,7 @@ public:
     representations_.emplace_back(spacefill_representation{});
     representations_.emplace_back(ballstick_representation{});
     representations_.emplace_back(spacefill_representation_instanced{});
-    representations_.emplace_back(ballstick_instancing_representation{});
+    representations_.emplace_back(ballstick_representation_instanced{});
 
     scene.setup_graphics();
     renderer.init();
@@ -530,11 +530,11 @@ public:
   }
 
   auto build_ballstick_instance_representation(const molecule& mol)
-   -> ballstick_instancing_representation
+   -> ballstick_representation_instanced
   {
     namespace range = boost::range;
 
-    auto ballnstick = ballstick_instancing_representation{};
+    auto ballnstick = ballstick_representation_instanced{};
 
     constexpr auto sph_mesh_builder = sphere_mesh_builder<10, 20>{};
     constexpr auto cyl_mesh_builder = cylinder_mesh_builder<20>{};
