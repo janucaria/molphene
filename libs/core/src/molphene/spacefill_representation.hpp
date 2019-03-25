@@ -14,28 +14,41 @@
 
 namespace molphene {
 
-class spacefill_representation {
+template<typename TSPhereBuffers>
+class basic_spacefill_representation {
 public:
+  using sphere_buffers_type = TSPhereBuffers;
+
   atom_radius_kind radius_type{atom_radius_kind::van_der_waals};
 
   double radius_size{1};
 
   color_manager color_manager;
 
-  std::unique_ptr<color_image_texture> atom_sphere_color_texture;
+  sphere_buffers_type atom_sphere_buffers;
 
-  std::unique_ptr<positions_buffer_array> atom_sphere_buffer_positions;
+  template<typename TAtomElement>
+  auto atom_radius(TAtomElement element) const noexcept -> double
+  {
+    switch(radius_type) {
+    case atom_radius_kind::van_der_waals:
+      return element.rvdw;
+    case atom_radius_kind::covalent:
+      return element.rcov;
+    default:
+      return radius_size;
+    }
+  }
 
-  std::unique_ptr<normals_buffer_array> atom_sphere_buffer_normals;
+  auto atom_color(const atom& atom) const noexcept -> rgba8
+  {
+    return color_manager.get_element_color(atom.element().symbol);
+  }
 
-  std::unique_ptr<texcoords_buffer_array> atom_sphere_buffer_texcoords;
-
-  auto atom_radius(typename atom::atom_element element) const noexcept
-   -> double;
-
-  auto atom_color(const atom& atom) const noexcept -> rgba8;
-
-  void render(const color_light_shader& shader) const noexcept;
+  void render(const color_light_shader& shader) const noexcept
+  {
+    atom_sphere_buffers.draw(shader);
+  }
 };
 
 } // namespace molphene

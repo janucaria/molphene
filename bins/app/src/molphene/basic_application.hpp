@@ -13,17 +13,19 @@
 #include <molphene/gl_renderer.hpp>
 #include <molphene/scene.hpp>
 
-#include <molphene/ballstick_instancing_representation.hpp>
 #include <molphene/ballstick_representation.hpp>
 #include <molphene/camera.hpp>
 #include <molphene/cylinder_mesh_builder.hpp>
+#include <molphene/cylinder_vertex_buffers_batch.hpp>
+#include <molphene/cylinder_vertex_buffers_instanced.hpp>
 #include <molphene/drawable.hpp>
 #include <molphene/instance_copy_builder.hpp>
 #include <molphene/molecule_display.hpp>
 #include <molphene/molecule_to_shape.hpp>
-#include <molphene/spacefill_instance_representation.hpp>
 #include <molphene/spacefill_representation.hpp>
 #include <molphene/sphere_mesh_builder.hpp>
+#include <molphene/sphere_vertex_buffers_batch.hpp>
+#include <molphene/sphere_vertex_buffers_instanced.hpp>
 
 #include <molphene/io/click_state.hpp>
 
@@ -34,6 +36,20 @@ class basic_application {
 public:
   using camera_type = camera<void>;
 
+  using spacefill_representation =
+   basic_spacefill_representation<sphere_vertex_buffers_batch>;
+
+  using spacefill_representation_instanced =
+   basic_spacefill_representation<sphere_vertex_buffers_instanced>;
+
+  using ballstick_representation =
+   basic_ballstick_representation<sphere_vertex_buffers_batch,
+                                  cylinder_vertex_buffers_batch>;
+
+  using ballstick_representation_instanced =
+   basic_ballstick_representation<sphere_vertex_buffers_instanced,
+                                  cylinder_vertex_buffers_instanced>;
+
   using representations_container = std::list<drawable>;
 
   void setup()
@@ -42,8 +58,8 @@ public:
 
     representations_.emplace_back(spacefill_representation{});
     representations_.emplace_back(ballstick_representation{});
-    representations_.emplace_back(spacefill_instance_representation{});
-    representations_.emplace_back(ballstick_instancing_representation{});
+    representations_.emplace_back(spacefill_representation_instanced{});
+    representations_.emplace_back(ballstick_representation_instanced{});
 
     scene.setup_graphics();
     renderer.init();
@@ -353,16 +369,16 @@ public:
                           std::back_inserter(sphere_mesh_attrs),
                           {spacefill.radius_type, spacefill.radius_size, 1.});
 
-    spacefill.atom_sphere_buffer_positions =
+    spacefill.atom_sphere_buffers.buffer_positions =
      build_sphere_mesh_positions(sph_mesh_builder, sphere_mesh_attrs);
 
-    spacefill.atom_sphere_buffer_normals =
+    spacefill.atom_sphere_buffers.buffer_normals =
      build_sphere_mesh_normals(sph_mesh_builder, sphere_mesh_attrs);
 
-    spacefill.atom_sphere_buffer_texcoords =
+    spacefill.atom_sphere_buffers.buffer_texcoords =
      build_sphere_mesh_texcoords(sph_mesh_builder, sphere_mesh_attrs);
 
-    spacefill.atom_sphere_color_texture =
+    spacefill.atom_sphere_buffers.color_texture =
      build_shape_color_texture(sphere_mesh_attrs);
 
     return spacefill;
@@ -416,16 +432,16 @@ public:
        std::back_inserter(sphere_mesh_attrs),
        {ballnstick.atom_radius_type, ballnstick.atom_radius_size, 0.5});
 
-      ballnstick.atom_sphere_buffer_positions =
+      ballnstick.atom_sphere_buffers.buffer_positions =
        build_sphere_mesh_positions(sph_mesh_builder, sphere_mesh_attrs);
 
-      ballnstick.atom_sphere_buffer_normals =
+      ballnstick.atom_sphere_buffers.buffer_normals =
        build_sphere_mesh_normals(sph_mesh_builder, sphere_mesh_attrs);
 
-      ballnstick.atom_sphere_buffer_texcoords =
+      ballnstick.atom_sphere_buffers.buffer_texcoords =
        build_sphere_mesh_texcoords(sph_mesh_builder, sphere_mesh_attrs);
 
-      ballnstick.atom_sphere_color_texture =
+      ballnstick.atom_sphere_buffers.color_texture =
        build_shape_color_texture(sphere_mesh_attrs);
     }
 
@@ -436,16 +452,16 @@ public:
                             std::back_insert_iterator(cylinder_mesh_attrs),
                             {true, ballnstick.radius_size});
 
-    ballnstick.bond1_cylinder_buffer_positions =
+    ballnstick.bond1_cylinder_buffers.buffer_positions =
      build_cylinder_mesh_positions(cyl_mesh_builder, cylinder_mesh_attrs);
 
-    ballnstick.bond1_cylinder_buffer_normals =
+    ballnstick.bond1_cylinder_buffers.buffer_normals =
      build_cylinder_mesh_normals(cyl_mesh_builder, cylinder_mesh_attrs);
 
-    ballnstick.bond1_cylinder_buffer_texcoords =
+    ballnstick.bond1_cylinder_buffers.buffer_texcoords =
      build_cylinder_mesh_texcoords(cyl_mesh_builder, cylinder_mesh_attrs);
 
-    ballnstick.bond1_cylinder_color_texture =
+    ballnstick.bond1_cylinder_buffers.color_texture =
      build_shape_color_texture(cylinder_mesh_attrs);
 
     cylinder_mesh_attrs.clear();
@@ -454,27 +470,27 @@ public:
                             std::back_insert_iterator(cylinder_mesh_attrs),
                             {false, ballnstick.radius_size});
 
-    ballnstick.bond2_cylinder_buffer_positions =
+    ballnstick.bond2_cylinder_buffers.buffer_positions =
      build_cylinder_mesh_positions(cyl_mesh_builder, cylinder_mesh_attrs);
 
-    ballnstick.bond2_cylinder_buffer_normals =
+    ballnstick.bond2_cylinder_buffers.buffer_normals =
      build_cylinder_mesh_normals(cyl_mesh_builder, cylinder_mesh_attrs);
 
-    ballnstick.bond2_cylinder_buffer_texcoords =
+    ballnstick.bond2_cylinder_buffers.buffer_texcoords =
      build_cylinder_mesh_texcoords(cyl_mesh_builder, cylinder_mesh_attrs);
 
-    ballnstick.bond2_cylinder_color_texture =
+    ballnstick.bond2_cylinder_buffers.color_texture =
      build_shape_color_texture(cylinder_mesh_attrs);
 
     return ballnstick;
   }
 
-  auto build_spacefill_instance_representation(const molecule& mol) const
-   -> spacefill_instance_representation
+  auto build_spacefill_representation_instanced(const molecule& mol) const
+   -> spacefill_representation_instanced
   {
     namespace range = boost::range;
 
-    auto spacefill = spacefill_instance_representation{};
+    auto spacefill = spacefill_representation_instanced{};
 
     constexpr auto sph_mesh_builder = sphere_mesh_builder<10, 20>{};
 
@@ -495,30 +511,30 @@ public:
 
     const auto sphere_attr = std::array<sphere_mesh_attribute, 1>{};
 
-    spacefill.atom_sphere_buffer_positions =
+    spacefill.atom_sphere_buffers.buffer_positions =
      build_sphere_mesh_positions(sph_mesh_builder, sphere_attr);
 
-    spacefill.atom_sphere_buffer_normals =
+    spacefill.atom_sphere_buffers.buffer_normals =
      build_sphere_mesh_normals(sph_mesh_builder, sphere_attr);
 
-    spacefill.atom_sphere_buffer_texcoords =
+    spacefill.atom_sphere_buffers.buffer_texcoords =
      build_sphere_mesh_texcoord_instances(copy_builder, sphere_mesh_attrs);
 
-    spacefill.atom_sphere_buffer_transforms =
+    spacefill.atom_sphere_buffers.buffer_transforms =
      build_sphere_mesh_transform_instances(copy_builder, sphere_mesh_attrs);
 
-    spacefill.atom_sphere_color_texture =
+    spacefill.atom_sphere_buffers.color_texture =
      build_shape_color_texture(sphere_mesh_attrs);
 
     return spacefill;
   }
 
   auto build_ballstick_instance_representation(const molecule& mol)
-   -> ballstick_instancing_representation
+   -> ballstick_representation_instanced
   {
     namespace range = boost::range;
 
-    auto ballnstick = ballstick_instancing_representation{};
+    auto ballnstick = ballstick_representation_instanced{};
 
     constexpr auto sph_mesh_builder = sphere_mesh_builder<10, 20>{};
     constexpr auto cyl_mesh_builder = cylinder_mesh_builder<20>{};
@@ -564,19 +580,19 @@ public:
 
       const auto sphere_attr = std::array<sphere_mesh_attribute, 1>{};
 
-      ballnstick.atom_sphere_buffer_positions =
+      ballnstick.atom_sphere_buffers.buffer_positions =
        build_sphere_mesh_positions(sph_mesh_builder, sphere_attr);
 
-      ballnstick.atom_sphere_buffer_normals =
+      ballnstick.atom_sphere_buffers.buffer_normals =
        build_sphere_mesh_normals(sph_mesh_builder, sphere_attr);
 
-      ballnstick.atom_sphere_buffer_texcoords =
+      ballnstick.atom_sphere_buffers.buffer_texcoords =
        build_sphere_mesh_texcoord_instances(copy_builder, sphere_mesh_attrs);
 
-      ballnstick.atom_sphere_buffer_transforms =
+      ballnstick.atom_sphere_buffers.buffer_transforms =
        build_sphere_mesh_transform_instances(copy_builder, sphere_mesh_attrs);
 
-      ballnstick.atom_sphere_color_texture =
+      ballnstick.atom_sphere_buffers.color_texture =
        build_shape_color_texture(sphere_mesh_attrs);
     }
 
@@ -589,19 +605,19 @@ public:
                             std::back_insert_iterator(cylinder_mesh_attrs),
                             {true, ballnstick.radius_size});
 
-    ballnstick.bond1_cylinder_buffer_positions =
+    ballnstick.bond1_cylinder_buffers.buffer_positions =
      build_cylinder_mesh_positions(cyl_mesh_builder, cylinder_attr);
 
-    ballnstick.bond1_cylinder_buffer_normals =
+    ballnstick.bond1_cylinder_buffers.buffer_normals =
      build_cylinder_mesh_normals(cyl_mesh_builder, cylinder_attr);
 
-    ballnstick.bond1_cylinder_buffer_texcoords =
+    ballnstick.bond1_cylinder_buffers.buffer_texcoords =
      build_cylinder_mesh_texcoord_instances(copy_builder, cylinder_mesh_attrs);
 
-    ballnstick.bond1_cylinder_buffer_transforms =
+    ballnstick.bond1_cylinder_buffers.buffer_transforms =
      build_cylinder_mesh_transform_instances(copy_builder, cylinder_mesh_attrs);
 
-    ballnstick.bond1_cylinder_color_texture =
+    ballnstick.bond1_cylinder_buffers.color_texture =
      build_shape_color_texture(cylinder_mesh_attrs);
 
     cylinder_mesh_attrs.clear();
@@ -610,19 +626,19 @@ public:
                             std::back_insert_iterator(cylinder_mesh_attrs),
                             {false, ballnstick.radius_size});
 
-    ballnstick.bond2_cylinder_buffer_positions =
+    ballnstick.bond2_cylinder_buffers.buffer_positions =
      build_cylinder_mesh_positions(cyl_mesh_builder, cylinder_attr);
 
-    ballnstick.bond2_cylinder_buffer_normals =
+    ballnstick.bond2_cylinder_buffers.buffer_normals =
      build_cylinder_mesh_normals(cyl_mesh_builder, cylinder_attr);
 
-    ballnstick.bond2_cylinder_buffer_texcoords =
+    ballnstick.bond2_cylinder_buffers.buffer_texcoords =
      build_cylinder_mesh_texcoord_instances(copy_builder, cylinder_mesh_attrs);
 
-    ballnstick.bond2_cylinder_buffer_transforms =
+    ballnstick.bond2_cylinder_buffers.buffer_transforms =
      build_cylinder_mesh_transform_instances(copy_builder, cylinder_mesh_attrs);
 
-    ballnstick.bond2_cylinder_color_texture =
+    ballnstick.bond2_cylinder_buffers.color_texture =
      build_shape_color_texture(cylinder_mesh_attrs);
 
     return ballnstick;
@@ -640,7 +656,7 @@ public:
     } break;
     case molecule_display::spacefill_instance: {
       representations_.emplace_back(
-       build_spacefill_instance_representation(mol));
+       build_spacefill_representation_instanced(mol));
     } break;
     case molecule_display::ball_and_stick_instance: {
       representations_.emplace_back(
