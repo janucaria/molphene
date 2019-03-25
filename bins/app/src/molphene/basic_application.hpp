@@ -139,8 +139,6 @@ public:
 
     auto spacefill = spacefill_representation{};
 
-    constexpr auto sph_mesh_builder = sphere_mesh_builder<10, 20>{};
-
     auto atoms = detail::make_reserved_vector<const atom*>(mol.atoms().size());
     range::transform(
      mol.atoms(), std::back_inserter(atoms), [](auto& atom) noexcept {
@@ -175,9 +173,6 @@ public:
     namespace range = boost::range;
 
     auto ballnstick = ballstick_representation{};
-
-    constexpr auto sph_mesh_builder = sphere_mesh_builder<10, 20>{};
-    constexpr auto cyl_mesh_builder = cylinder_mesh_builder<20>{};
 
     auto bonds = detail::make_reserved_vector<const bond*>(mol.bonds().size());
     range::transform(
@@ -277,10 +272,6 @@ public:
 
     auto spacefill = spacefill_representation_instanced{};
 
-    constexpr auto sph_mesh_builder = sphere_mesh_builder<10, 20>{};
-
-    constexpr auto copy_builder = instance_copy_builder{};
-
     auto atoms = detail::make_reserved_vector<const atom*>(mol.atoms().size());
     range::transform(
      mol.atoms(), std::back_inserter(atoms), [](auto& atom) noexcept {
@@ -320,10 +311,6 @@ public:
     namespace range = boost::range;
 
     auto ballnstick = ballstick_representation_instanced{};
-
-    constexpr auto sph_mesh_builder = sphere_mesh_builder<10, 20>{};
-    constexpr auto cyl_mesh_builder = cylinder_mesh_builder<20>{};
-    constexpr auto copy_builder = instance_copy_builder{};
 
     auto bonds = detail::make_reserved_vector<const bond*>(mol.bonds().size());
     range::transform(
@@ -523,6 +510,12 @@ public:
   }
 
 protected:
+  static constexpr auto sph_mesh_builder = sphere_mesh_builder<10, 20>{};
+
+  static constexpr auto cyl_mesh_builder = cylinder_mesh_builder<20>{};
+  
+  static constexpr auto copy_builder = instance_copy_builder{};
+
   io::click_state click_state{false, 0, 0};
 
   scene scene{};
