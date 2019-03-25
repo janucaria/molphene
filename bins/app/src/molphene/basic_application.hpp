@@ -23,7 +23,7 @@
 #include <molphene/molecule_to_shape.hpp>
 #include <molphene/spacefill_representation.hpp>
 #include <molphene/sphere_mesh_builder.hpp>
-#include <molphene/sphere_vertex_buffers.hpp>
+#include <molphene/sphere_vertex_buffers_batch.hpp>
 #include <molphene/sphere_vertex_buffers_instanced.hpp>
 
 #include <molphene/io/click_state.hpp>
@@ -36,7 +36,7 @@ public:
   using camera_type = camera<void>;
 
   using spacefill_representation =
-   basic_spacefill_representation<sphere_vertex_buffers>;
+   basic_spacefill_representation<sphere_vertex_buffers_batch>;
 
   using spacefill_representation_instanced =
    basic_spacefill_representation<sphere_vertex_buffers_instanced>;

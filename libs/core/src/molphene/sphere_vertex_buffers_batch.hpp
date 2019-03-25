@@ -1,5 +1,5 @@
-#ifndef MOLPHENE_SPHERE_VERTEX_BUFFERS_HPP
-#define MOLPHENE_SPHERE_VERTEX_BUFFERS_HPP
+#ifndef MOLPHENE_SPHERE_VERTEX_BUFFERS_BATCH_HPP
+#define MOLPHENE_SPHERE_VERTEX_BUFFERS_BATCH_HPP
 
 #include "stdafx.hpp"
 
@@ -17,7 +17,7 @@
 namespace molphene {
 
 template<typename = void>
-class basic_sphere_vertex_buffers {
+class basic_sphere_vertex_buffers_batch {
 public:
   std::unique_ptr<color_image_texture> color_texture;
 
@@ -60,7 +60,7 @@ public:
 private:
 };
 
-using sphere_vertex_buffers = basic_sphere_vertex_buffers<void>;
+using sphere_vertex_buffers_batch = basic_sphere_vertex_buffers_batch<void>;
 
 } // namespace molphene
 

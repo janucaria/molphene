@@ -8,7 +8,7 @@
 #include "color_manager.hpp"
 #include "image_texture.hpp"
 #include "m3d.hpp"
-#include "sphere_vertex_buffers.hpp"
+#include "sphere_vertex_buffers_batch.hpp"
 
 #include <molecule/atom.hpp>
 #include <molecule/atom_radius_kind.hpp>
@@ -25,7 +25,7 @@ public:
 
   color_manager color_manager;
 
-  sphere_vertex_buffers atom_sphere_buffers;
+  sphere_vertex_buffers_batch atom_sphere_buffers;
 
   std::unique_ptr<color_image_texture> bond1_cylinder_color_texture;
 
