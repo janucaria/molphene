@@ -8,6 +8,7 @@
 #include "color_manager.hpp"
 #include "image_texture.hpp"
 #include "m3d.hpp"
+#include "sphere_vertex_buffers_instanced.hpp"
 
 #include <molecule/atom.hpp>
 #include <molecule/atom_radius_kind.hpp>
@@ -24,17 +25,7 @@ public:
 
   color_manager color_manager;
 
-  std::unique_ptr<color_image_texture> atom_sphere_color_texture;
-
-  std::unique_ptr<positions_buffer_array> atom_sphere_buffer_positions;
-
-  std::unique_ptr<normals_buffer_array> atom_sphere_buffer_normals;
-
-  std::unique_ptr<texcoords_instances_buffer_array>
-   atom_sphere_buffer_texcoords;
-
-  std::unique_ptr<transforms_instances_buffer_array>
-   atom_sphere_buffer_transforms;
+  sphere_vertex_buffers_instanced atom_sphere_buffers;
 
   std::unique_ptr<color_image_texture> bond1_cylinder_color_texture;
 

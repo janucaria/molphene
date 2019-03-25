@@ -100,36 +100,7 @@ void ballstick_instancing_representation::render(
     }
   }
 
-  {
-    assert(all_has_same_props(*atom_sphere_buffer_positions,
-                              *atom_sphere_buffer_normals));
-    assert(all_has_same_props(*atom_sphere_buffer_transforms,
-                              *atom_sphere_buffer_texcoords));
-
-    shader.color_texture_image(atom_sphere_color_texture->texture_image());
-
-    const auto size = atom_sphere_buffer_transforms->size();
-    const auto remain_instances =
-     atom_sphere_buffer_transforms->remain_instances();
-    const auto instances_per_block =
-     atom_sphere_buffer_transforms->instances_per_block();
-    const auto verts_per_instance =
-     atom_sphere_buffer_positions->verts_per_instance();
-
-    atom_sphere_buffer_positions->bind_attrib_pointer_index(0);
-    atom_sphere_buffer_normals->bind_attrib_pointer_index(0);
-
-    for(auto i = GLsizei{0}; i < size; ++i) {
-      const auto total_instances =
-       GLsizei{i == (size - 1) ? remain_instances : instances_per_block};
-
-      atom_sphere_buffer_texcoords->bind_attrib_pointer_index(i);
-      atom_sphere_buffer_transforms->bind_attrib_pointer_index(i);
-
-      gl::draw_arrays_instanced(
-       GL_TRIANGLE_STRIP, 0, verts_per_instance, total_instances);
-    }
-  }
+  atom_sphere_buffers.draw(shader);
 }
 
 } // namespace molphene

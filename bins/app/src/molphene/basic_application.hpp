@@ -571,19 +571,19 @@ public:
 
       const auto sphere_attr = std::array<sphere_mesh_attribute, 1>{};
 
-      ballnstick.atom_sphere_buffer_positions =
+      ballnstick.atom_sphere_buffers.buffer_positions =
        build_sphere_mesh_positions(sph_mesh_builder, sphere_attr);
 
-      ballnstick.atom_sphere_buffer_normals =
+      ballnstick.atom_sphere_buffers.buffer_normals =
        build_sphere_mesh_normals(sph_mesh_builder, sphere_attr);
 
-      ballnstick.atom_sphere_buffer_texcoords =
+      ballnstick.atom_sphere_buffers.buffer_texcoords =
        build_sphere_mesh_texcoord_instances(copy_builder, sphere_mesh_attrs);
 
-      ballnstick.atom_sphere_buffer_transforms =
+      ballnstick.atom_sphere_buffers.buffer_transforms =
        build_sphere_mesh_transform_instances(copy_builder, sphere_mesh_attrs);
 
-      ballnstick.atom_sphere_color_texture =
+      ballnstick.atom_sphere_buffers.color_texture =
        build_shape_color_texture(sphere_mesh_attrs);
     }
 
