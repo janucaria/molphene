@@ -6,6 +6,7 @@
 #include "attribs_buffer_array.hpp"
 #include "color_light_shader.hpp"
 #include "color_manager.hpp"
+#include "cylinder_vertex_buffers_instanced.hpp"
 #include "image_texture.hpp"
 #include "m3d.hpp"
 #include "sphere_vertex_buffers_instanced.hpp"
@@ -27,29 +28,9 @@ public:
 
   sphere_vertex_buffers_instanced atom_sphere_buffers;
 
-  std::unique_ptr<color_image_texture> bond1_cylinder_color_texture;
+  cylinder_vertex_buffers_instanced bond1_cylinder_buffers;
 
-  std::unique_ptr<positions_buffer_array> bond1_cylinder_buffer_positions;
-
-  std::unique_ptr<normals_buffer_array> bond1_cylinder_buffer_normals;
-
-  std::unique_ptr<texcoords_instances_buffer_array>
-   bond1_cylinder_buffer_texcoords;
-
-  std::unique_ptr<transforms_instances_buffer_array>
-   bond1_cylinder_buffer_transforms;
-
-  std::unique_ptr<color_image_texture> bond2_cylinder_color_texture;
-
-  std::unique_ptr<positions_buffer_array> bond2_cylinder_buffer_positions;
-
-  std::unique_ptr<normals_buffer_array> bond2_cylinder_buffer_normals;
-
-  std::unique_ptr<texcoords_instances_buffer_array>
-   bond2_cylinder_buffer_texcoords;
-
-  std::unique_ptr<transforms_instances_buffer_array>
-   bond2_cylinder_buffer_transforms;
+  cylinder_vertex_buffers_instanced bond2_cylinder_buffers;
 
   auto atom_radius(typename atom::atom_element element) const noexcept
    -> double;
