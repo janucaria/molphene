@@ -24,7 +24,7 @@
 #include <molphene/spacefill_representation.hpp>
 #include <molphene/sphere_mesh_builder.hpp>
 #include <molphene/sphere_vertex_buffers.hpp>
-#include <molphene/sphere_vertex_instance_buffers.hpp>
+#include <molphene/sphere_vertex_buffers_instanced.hpp>
 
 #include <molphene/io/click_state.hpp>
 
@@ -39,7 +39,7 @@ public:
    basic_spacefill_representation<sphere_vertex_buffers>;
 
   using spacefill_instance_representation =
-   basic_spacefill_representation<sphere_vertex_instance_buffers>;
+   basic_spacefill_representation<sphere_vertex_buffers_instanced>;
 
   using representations_container = std::list<drawable>;
 
