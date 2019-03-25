@@ -10,8 +10,6 @@ target_sources(molphene
     "${CMAKE_CURRENT_SOURCE_DIR}/src/molphene/color_manager.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/molphene/gl_renderer.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/molphene/quad_shader.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/molphene/spacefill_instance_representation.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/molphene/spacefill_representation.cpp"
 )
 
 target_include_directories(molphene

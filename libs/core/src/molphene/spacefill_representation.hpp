@@ -8,29 +8,47 @@
 #include "color_manager.hpp"
 #include "image_texture.hpp"
 #include "m3d.hpp"
-#include "sphere_vertex_buffers.hpp"
 
 #include <molecule/atom.hpp>
 #include <molecule/atom_radius_kind.hpp>
 
 namespace molphene {
 
-class spacefill_representation {
+template<typename TSPhereBuffers>
+class basic_spacefill_representation {
 public:
+  using sphere_buffers_type = TSPhereBuffers;
+
   atom_radius_kind radius_type{atom_radius_kind::van_der_waals};
 
   double radius_size{1};
 
-  sphere_vertex_buffers atom_sphere_buffers;
-
   color_manager color_manager;
 
-  auto atom_radius(typename atom::atom_element element) const noexcept
-   -> double;
+  sphere_buffers_type atom_sphere_buffers;
 
-  auto atom_color(const atom& atom) const noexcept -> rgba8;
+  template<typename TAtomElement>
+  auto atom_radius(TAtomElement element) const noexcept -> double
+  {
+    switch(radius_type) {
+    case atom_radius_kind::van_der_waals:
+      return element.rvdw;
+    case atom_radius_kind::covalent:
+      return element.rcov;
+    default:
+      return radius_size;
+    }
+  }
 
-  void render(const color_light_shader& shader) const noexcept;
+  auto atom_color(const atom& atom) const noexcept -> rgba8
+  {
+    return color_manager.get_element_color(atom.element().symbol);
+  }
+
+  void render(const color_light_shader& shader) const noexcept
+  {
+    atom_sphere_buffers.draw(shader);
+  }
 };
 
 } // namespace molphene

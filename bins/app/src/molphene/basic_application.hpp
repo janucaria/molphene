@@ -21,9 +21,10 @@
 #include <molphene/instance_copy_builder.hpp>
 #include <molphene/molecule_display.hpp>
 #include <molphene/molecule_to_shape.hpp>
-#include <molphene/spacefill_instance_representation.hpp>
 #include <molphene/spacefill_representation.hpp>
 #include <molphene/sphere_mesh_builder.hpp>
+#include <molphene/sphere_vertex_buffers.hpp>
+#include <molphene/sphere_vertex_instance_buffers.hpp>
 
 #include <molphene/io/click_state.hpp>
 
@@ -33,6 +34,12 @@ template<typename TApp>
 class basic_application {
 public:
   using camera_type = camera<void>;
+
+  using spacefill_representation =
+   basic_spacefill_representation<sphere_vertex_buffers>;
+
+  using spacefill_instance_representation =
+   basic_spacefill_representation<sphere_vertex_instance_buffers>;
 
   using representations_container = std::list<drawable>;
 
