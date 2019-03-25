@@ -27,11 +27,6 @@ auto spacefill_representation::atom_color(const atom& atom) const noexcept
 void spacefill_representation::render(const color_light_shader& shader) const
  noexcept
 {
-  const auto verts_guard =
-   gl_vertex_attribs_guard<shader_attrib_location::vertex,
-                           shader_attrib_location::normal,
-                           shader_attrib_location::texcoordcolor>{};
-
   atom_sphere_buffers.draw(shader);
 }
 

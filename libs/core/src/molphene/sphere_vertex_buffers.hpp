@@ -29,6 +29,11 @@ public:
 
   void draw(const color_light_shader& shader) const noexcept
   {
+    const auto verts_guard =
+     gl_vertex_attribs_guard<shader_attrib_location::vertex,
+                             shader_attrib_location::normal,
+                             shader_attrib_location::texcoordcolor>{};
+
     assert(
      all_has_same_props(*buffer_positions, *buffer_normals, *buffer_texcoords));
 

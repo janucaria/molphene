@@ -31,20 +31,24 @@ public:
 
   void draw(const color_light_shader& shader) const noexcept
   {
-    assert(all_has_same_props(*buffer_positions,
-                              *buffer_normals));
-    assert(all_has_same_props(*buffer_transforms,
-                              *buffer_texcoords));
+    const auto verts_guard =
+     gl_vertex_attribs_guard<shader_attrib_location::vertex,
+                             shader_attrib_location::normal,
+                             shader_attrib_location::texcoordcolor,
+                             shader_attrib_location::transformation,
+                             shader_attrib_location::transformation_1,
+                             shader_attrib_location::transformation_2,
+                             shader_attrib_location::transformation_3>{};
+
+    assert(all_has_same_props(*buffer_positions, *buffer_normals));
+    assert(all_has_same_props(*buffer_transforms, *buffer_texcoords));
 
     shader.color_texture_image(color_texture->texture_image());
 
     const auto size = buffer_transforms->size();
-    const auto remain_instances =
-     buffer_transforms->remain_instances();
-    const auto instances_per_block =
-     buffer_transforms->instances_per_block();
-    const auto verts_per_instance =
-     buffer_positions->verts_per_instance();
+    const auto remain_instances = buffer_transforms->remain_instances();
+    const auto instances_per_block = buffer_transforms->instances_per_block();
+    const auto verts_per_instance = buffer_positions->verts_per_instance();
 
     buffer_positions->bind_attrib_pointer_index(0);
     buffer_normals->bind_attrib_pointer_index(0);
