@@ -8,6 +8,7 @@
 #include "color_manager.hpp"
 #include "image_texture.hpp"
 #include "m3d.hpp"
+#include "sphere_vertex_buffers.hpp"
 
 #include <molecule/atom.hpp>
 #include <molecule/atom_radius_kind.hpp>
@@ -20,15 +21,9 @@ public:
 
   double radius_size{1};
 
+  sphere_vertex_buffers atom_sphere_buffers;
+
   color_manager color_manager;
-
-  std::unique_ptr<color_image_texture> atom_sphere_color_texture;
-
-  std::unique_ptr<positions_buffer_array> atom_sphere_buffer_positions;
-
-  std::unique_ptr<normals_buffer_array> atom_sphere_buffer_normals;
-
-  std::unique_ptr<texcoords_buffer_array> atom_sphere_buffer_texcoords;
 
   auto atom_radius(typename atom::atom_element element) const noexcept
    -> double;

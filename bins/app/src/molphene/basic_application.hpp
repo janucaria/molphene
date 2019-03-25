@@ -353,16 +353,16 @@ public:
                           std::back_inserter(sphere_mesh_attrs),
                           {spacefill.radius_type, spacefill.radius_size, 1.});
 
-    spacefill.atom_sphere_buffer_positions =
+    spacefill.atom_sphere_buffers.buffer_positions =
      build_sphere_mesh_positions(sph_mesh_builder, sphere_mesh_attrs);
 
-    spacefill.atom_sphere_buffer_normals =
+    spacefill.atom_sphere_buffers.buffer_normals =
      build_sphere_mesh_normals(sph_mesh_builder, sphere_mesh_attrs);
 
-    spacefill.atom_sphere_buffer_texcoords =
+    spacefill.atom_sphere_buffers.buffer_texcoords =
      build_sphere_mesh_texcoords(sph_mesh_builder, sphere_mesh_attrs);
 
-    spacefill.atom_sphere_color_texture =
+    spacefill.atom_sphere_buffers.color_texture =
      build_shape_color_texture(sphere_mesh_attrs);
 
     return spacefill;
