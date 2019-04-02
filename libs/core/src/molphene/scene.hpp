@@ -78,9 +78,9 @@ public:
 
   void rotate(vec3f rot) noexcept
   {
-    model_matrix_.rotate(rot.x(), {1.0f, 0.0f, 0.0f});
-    model_matrix_.rotate(rot.y(), {0.0f, 1.0f, 0.0f});
-    model_matrix_.rotate(rot.z(), {0.0f, 0.0f, 1.0f});
+    model_matrix_.rotate({1.0f, 0.0f, 0.0f}, rot.x());
+    model_matrix_.rotate({0.0f, 1.0f, 0.0f}, rot.y());
+    model_matrix_.rotate({0.0f, 0.0f, 1.0f}, rot.z());
   }
 
   auto model_matrix() const noexcept -> mat4f

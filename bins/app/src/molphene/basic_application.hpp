@@ -328,7 +328,7 @@ public:
        const auto cyl_position = cyl_attr.cylinder.bottom + cyl_dir;
 
        transform_mat.scale(cyl_radius, cyl_dir_length, cyl_radius);
-       transform_mat.rotate(rot_angle, rot_axis);
+       transform_mat.rotate(rot_axis, rot_angle);
        transform_mat.translate(cyl_position);
 
        return transform_mat;

@@ -7,3 +7,6 @@
 [submodule "third_party/json"]
 	path = third_party/json
 	url = https://github.com/nlohmann/json.git
+[submodule "third_party/Gm3d"]
+	path = third_party/Gm3d
+	url = https://github.com/cppid/Gm3d.git
