@@ -19,7 +19,7 @@ public:
 
   type fog_type{type::linear};
 
-  fog() noexcept = default;
+  constexpr fog() noexcept = default;
 };
 } // namespace molphene
 

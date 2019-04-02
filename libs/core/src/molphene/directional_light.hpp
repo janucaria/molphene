@@ -17,7 +17,7 @@ public:
 
   using basic_light<TColor, TConfig>::basic_light;
 
-  directional_light() noexcept = default;
+  constexpr directional_light() noexcept = default;
 };
 } // namespace molphene
 

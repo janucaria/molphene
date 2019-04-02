@@ -17,7 +17,7 @@ public:
   color_type specular_color{0};
   float_type shininess{0.2};
 
-  material() noexcept = default;
+  constexpr material() noexcept = default;
 };
 } // namespace molphene
 

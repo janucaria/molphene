@@ -17,9 +17,9 @@ public:
   vec3_type top{0, 1, 0};
   vec3_type bottom{0, -1, 0};
 
-  cylinder() noexcept = default;
+  constexpr cylinder() noexcept = default;
 
-  auto height() const noexcept -> std::size_t
+  constexpr auto height() const noexcept -> std::size_t
   {
     return (top - bottom).magnitude();
   }

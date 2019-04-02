@@ -18,24 +18,24 @@ public:
 
   float_type top{0};
 
-  camera() noexcept = default;
+  constexpr camera() noexcept = default;
 
-  auto aspect_ratio() const noexcept -> float_type
+  constexpr auto aspect_ratio() const noexcept -> float_type
   {
     return aspect_ratio_;
   }
 
-  void aspect_ratio(float_type aspect) noexcept
+  constexpr void aspect_ratio(float_type aspect) noexcept
   {
     aspect_ratio_ = aspect;
   }
 
-  void aspect_ratio(size_type width, size_type height) noexcept
+  constexpr void aspect_ratio(size_type width, size_type height) noexcept
   {
     aspect_ratio(float_type(width) / height);
   }
 
-  auto orthogonal_proj_matrix() const noexcept -> mat4f
+  constexpr auto orthogonal_proj_matrix() const noexcept -> mat4f
   {
     const auto fov = field_of_view();
     const auto near = znear();
@@ -46,7 +46,7 @@ public:
     return mat4f{1}.orthogonal(-right, right, -top, top, near, far);
   }
 
-  auto perspective_proj_matrix() const noexcept -> mat4f
+  constexpr auto perspective_proj_matrix() const noexcept -> mat4f
   {
     const auto fov = field_of_view();
     const auto near = znear();
@@ -57,65 +57,65 @@ public:
     return mat4f{1}.frustum(-right, right, -top, top, near, far);
   }
 
-  auto projection_matrix() const noexcept -> mat4f
+  constexpr auto projection_matrix() const noexcept -> mat4f
   {
     return projection_mode_ ? perspective_proj_matrix()
                             : orthogonal_proj_matrix();
   }
 
-  auto projection_mode(bool mode) noexcept -> bool
+  constexpr auto projection_mode(bool mode) noexcept -> bool
   {
     return projection_mode_ = mode;
   }
 
-  auto field_of_view() const noexcept -> float_type
+  constexpr auto field_of_view() const noexcept -> float_type
   {
     return field_of_view_;
   }
 
-  void reset_zoom() const noexcept
+  constexpr void reset_zoom() const noexcept
   {
     zoom_ = 1;
   }
 
-  void zoom_in() noexcept
+  constexpr void zoom_in() noexcept
   {
     zoom_ = std::min(zoom_ * 1.1, 200 * 1.1);
   }
 
-  void zoom_out() noexcept
+  constexpr void zoom_out() noexcept
   {
     zoom_ = std::max(zoom_ / 1.1, 1 / 1.1 / 200);
   }
 
-  auto zfar() const noexcept -> float_type
+  constexpr auto zfar() const noexcept -> float_type
   {
     return zfar_;
   }
 
-  auto znear() const noexcept -> float_type
+  constexpr auto znear() const noexcept -> float_type
   {
     return znear_;
   }
 
-  auto view_matrix() const noexcept -> mat4f
+  constexpr auto view_matrix() const noexcept -> mat4f
   {
     return mat4f{1}.translate(position_);
   }
 
   template<typename... Ts,
            typename = std::enable_if_t<std::is_constructible_v<vec3f, Ts...>>>
-  void position(Ts&&... args) noexcept
+  constexpr void position(Ts&&... args) noexcept
   {
     position_ = vec3f(std::forward<Ts>(args)...);
   }
 
-  auto position() const noexcept -> vec3f
+  constexpr auto position() const noexcept -> vec3f
   {
     return position_;
   }
 
-  void update_view_matrix() noexcept
+  constexpr void update_view_matrix() noexcept
   {
     const auto aspect = aspect_ratio();
     const auto tan_theta = std::tan(field_of_view() / 2);

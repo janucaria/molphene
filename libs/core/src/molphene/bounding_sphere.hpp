@@ -18,9 +18,9 @@ private:
   sphere sphere_{-1};
 
 public:
-  bounding_sphere() noexcept = default;
+  constexpr bounding_sphere() noexcept = default;
 
-  void expand(sphere_center position) noexcept
+  constexpr void expand(sphere_center position) noexcept
   {
     if(sphere_.radius < 0.0) {
       sphere_.center = position;
@@ -39,17 +39,17 @@ public:
     }
   }
 
-  auto center() const noexcept -> sphere_center
+  constexpr auto center() const noexcept -> sphere_center
   {
     return sphere_.center;
   }
 
-  auto radius() const noexcept -> sphere_radius
+  constexpr auto radius() const noexcept -> sphere_radius
   {
     return sphere_.radius;
   }
 
-  void reset() noexcept
+  constexpr void reset() noexcept
   {
     sphere_.radius = -1;
   }

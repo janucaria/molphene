@@ -24,7 +24,7 @@ public:
 
   using point_light<TColor, TConfig>::point_light;
 
-  spot_light() noexcept = default;
+  constexpr spot_light() noexcept = default;
 };
 } // namespace molphene
 

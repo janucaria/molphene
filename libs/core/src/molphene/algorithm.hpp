@@ -6,7 +6,7 @@
 namespace molphene {
 
 template<typename InputIt, typename Function>
-auto for_each_slice(
+constexpr auto for_each_slice(
  InputIt first,
  InputIt last,
  typename std::iterator_traits<InputIt>::difference_type chunk_length,
@@ -40,7 +40,7 @@ auto for_each_slice(
 }
 
 template<typename InRange, typename Function>
-auto for_each_slice(
+constexpr auto for_each_slice(
  InRange container,
  typename boost::range_difference<InRange>::type chunk_length,
  Function func) -> Function

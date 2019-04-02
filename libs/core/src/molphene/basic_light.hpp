@@ -17,7 +17,7 @@ public:
 
   float_type intensity{1};
 
-  basic_light() noexcept = default;
+  constexpr basic_light() noexcept = default;
 };
 } // namespace molphene
 

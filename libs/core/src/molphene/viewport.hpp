@@ -9,9 +9,9 @@ struct viewport {
   size_type width{0};
   size_type height{0};
 
-  viewport() noexcept = default;
+  constexpr viewport() noexcept = default;
 
-  viewport(size_type width, size_type height) noexcept
+  constexpr viewport(size_type width, size_type height) noexcept
   : width{width}
   , height{height}
   {

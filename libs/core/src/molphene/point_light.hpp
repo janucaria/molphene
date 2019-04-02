@@ -21,7 +21,7 @@ public:
 
   using basic_light<TColor, TConfig>::basic_light;
 
-  point_light() noexcept = default;
+  constexpr point_light() noexcept = default;
 };
 } // namespace molphene
 

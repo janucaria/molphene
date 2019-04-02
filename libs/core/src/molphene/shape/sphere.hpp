@@ -14,14 +14,14 @@ public:
   float_type radius{1};
   vec3_type center{0, 0, 0};
 
-  sphere() noexcept = default;
+  constexpr sphere() noexcept = default;
 
-  explicit sphere(float_type radii) noexcept
+  explicit constexpr sphere(float_type radii) noexcept
   : radius{radii}
   {
   }
 
-  sphere(float_type radii, vec3_type center) noexcept
+  constexpr sphere(float_type radii, vec3_type center) noexcept
   : radius{radii}
   , center{center}
   {
@@ -29,7 +29,7 @@ public:
 
   template<typename U,
            typename = std::enable_if_t<std::is_constructible_v<vec3_type, U>>>
-  explicit sphere(const sphere<U>& sphere) noexcept
+  explicit constexpr sphere(const sphere<U>& sphere) noexcept
   : radius(sphere.radius)
   , center(sphere.center)
   {
@@ -37,7 +37,7 @@ public:
 
   template<typename U,
            typename = std::enable_if_t<std::is_constructible_v<vec3_type, U>>>
-  sphere(U radii, vec3<U> center) noexcept
+  constexpr sphere(U radii, vec3<U> center) noexcept
   : radius(radii)
   , center(center)
   {
