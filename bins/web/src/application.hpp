@@ -32,7 +32,7 @@ public:
 private:
   EMSCRIPTEN_WEBGL_CONTEXT_HANDLE glctx{0};
 
-  const char* canvas_target{"canvas"};
+  const char* canvas_target{"#canvas"};
 
   template<typename T>
   static auto mouse_event(const T* event)

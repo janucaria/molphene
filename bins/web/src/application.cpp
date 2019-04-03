@@ -11,18 +11,19 @@ namespace molphene {
 
 void application::init_context()
 {
-  const auto attrs = []() {
-    auto attrs = EmscriptenWebGLContextAttributes{};
-    emscripten_webgl_init_context_attributes(&attrs);
-    attrs.stencil = true;
-    return attrs;
-  }();
+  auto attrs = EmscriptenWebGLContextAttributes{};
+  attrs.stencil = EM_TRUE;
+  attrs.enableExtensionsByDefault = EM_FALSE;
+
+  emscripten_webgl_init_context_attributes(&attrs);
 
   const auto ctx = emscripten_webgl_create_context(canvas_target, &attrs);
 
   emscripten_webgl_make_context_current(ctx);
 
   glctx = ctx;
+
+  emscripten_webgl_enable_extension(glctx, "ANGLE_instanced_arrays");
 
   emscripten_set_mousedown_callback(
    canvas_target, this, false, &enable_drag_handler);
