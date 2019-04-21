@@ -12,11 +12,10 @@ before_install:
 before_script:
   - nvm install node
   - emcc -v
-  - LLVM=/usr/local/opt/emscripten/libexec/llvm/bin cmake -DBOOST_ROOT=/usr/local/opt/boost -DCMAKE_TOOLCHAIN_FILE=/usr/local/opt/emscripten/libexec/cmake/Modules/Platform/Emscripten.cmake -B./build -H.
+  - node tools/macos-emscripten-configure.js
 script:
-  - LLVM=/usr/local/opt/emscripten/libexec/llvm/bin cmake --build ./build --config Debug --target all -- -j2
-  - cd build
-  - ctest -j2 -C Debug -T test --output-on-failure
+  - node tools/macos-emscripten-build.js
+  - node tools/macos-run-test.js
 notifications:
   email:
     false
