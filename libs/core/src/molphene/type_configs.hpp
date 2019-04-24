@@ -1,6 +1,8 @@
 #ifndef MOLPHENE_CONFIG_TYPE_HPP
 #define MOLPHENE_CONFIG_TYPE_HPP
 
+#include <type_traits>
+
 #include "detail/empty.hpp"
 
 namespace molphene {
