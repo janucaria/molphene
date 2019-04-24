@@ -64,13 +64,13 @@ void application::init_context()
   glfwSetCursorPosCallback(
    window_.get(), [](GLFWwindow* window, double xpos, double ypos) {
      static_cast<application*>(glfwGetWindowUserPointer(window))
-      ->mouse_move_event(xpos, ypos);
+      ->mouse_move_event(static_cast<int>(xpos), static_cast<int>(ypos));
    });
 
   glfwSetScrollCallback(
    window_.get(), [](GLFWwindow* window, double xoffset, double yoffset) {
      static_cast<application*>(glfwGetWindowUserPointer(window))
-      ->mouse_scroll_event(xoffset, yoffset);
+      ->mouse_scroll_event(static_cast<int>(xoffset), static_cast<int>(yoffset));
    });
 
   glfwSetFramebufferSizeCallback(

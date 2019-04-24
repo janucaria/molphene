@@ -61,7 +61,8 @@ public:
       const auto sin_theta = std::sin(theta);
       const auto cos_theta = std::cos(theta);
 
-      const auto next_theta = pi / latitude_divs * (i + 1);
+      const auto next_i = i + 1;
+      const auto next_theta = pi / latitude_divs * next_i;
       const auto next_sint = std::sin(next_theta);
       const auto next_cost = std::cos(next_theta);
 
