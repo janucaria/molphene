@@ -7,9 +7,9 @@
 namespace molphene {
 
 struct sphere_mesh_attribute {
-  rgba8 color;
-  std::size_t index;
-  vec2<double> texcoord;
+  rgba8 color{};
+  std::size_t index{};
+  vec2<double> texcoord{};
   sphere<double> sphere;
 };
 
