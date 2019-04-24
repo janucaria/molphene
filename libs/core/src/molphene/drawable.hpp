@@ -11,7 +11,7 @@ template<typename>
 class basic_drawable {
 public:
   template<typename T>
-  basic_drawable(T obj)
+  explicit basic_drawable(T obj)
   : model_ptr_{std::make_shared<model<T>>(std::move(obj))}
   {
   }
@@ -40,7 +40,7 @@ private:
 
   template<typename T>
   struct model final : basic_concept {
-    model(T obj)
+    explicit model(T obj)
     : object_{std::move(obj)}
     {
     }

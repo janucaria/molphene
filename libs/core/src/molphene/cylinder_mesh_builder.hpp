@@ -11,7 +11,7 @@ template<typename TCylinder>
 struct build_cylinder_mesh_position_params {
   TCylinder cylinder;
 
-  constexpr build_cylinder_mesh_position_params(TCylinder cylinder) noexcept
+  constexpr explicit build_cylinder_mesh_position_params(TCylinder cylinder) noexcept
   : cylinder{cylinder}
   {
   }
@@ -21,7 +21,7 @@ template<typename TCylinder>
 struct build_cylinder_mesh_normal_params {
   TCylinder cylinder;
 
-  constexpr build_cylinder_mesh_normal_params(TCylinder cylinder) noexcept
+  constexpr explicit build_cylinder_mesh_normal_params(TCylinder cylinder) noexcept
   : cylinder{cylinder}
   {
   }

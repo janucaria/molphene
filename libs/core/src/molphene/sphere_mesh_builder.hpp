@@ -10,7 +10,7 @@ namespace molphene {
 template<typename TShere>
 struct build_sphere_mesh_position_params {
   TShere sphere;
-  constexpr build_sphere_mesh_position_params(TShere sphere) noexcept
+  constexpr explicit build_sphere_mesh_position_params(TShere sphere) noexcept
   : sphere{sphere}
   {
   }
@@ -23,7 +23,7 @@ template<typename TVertex>
 struct build_sphere_mesh_fill_params {
   TVertex vertex;
 
-  constexpr build_sphere_mesh_fill_params(TVertex vertex) noexcept
+  constexpr explicit build_sphere_mesh_fill_params(TVertex vertex) noexcept
   : vertex{vertex}
   {
   }
