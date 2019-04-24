@@ -5,12 +5,13 @@
 // NOLINTNEXTLINE(bugprone-exception-escape)
 auto main(int argc, char* argv[]) -> int
 {
+  const auto argvv = gsl::span<char*>(argv, argc);
   auto app = molphene::application{};
 
   app.setup();
 
   if(argc > 1) {
-    std::ifstream pdbfile(argv[1]);
+    std::ifstream pdbfile(argvv[1]);
     if(pdbfile.is_open()) {
       std::cout << "openfile success!" << std::endl;
       struct close_guard {
