@@ -2,6 +2,7 @@
 
 #include "application.hpp"
 
+// NOLINTNEXTLINE(bugprone-exception-escape)
 auto main(int argc, char* argv[]) -> int
 {
   auto app = molphene::application{};
