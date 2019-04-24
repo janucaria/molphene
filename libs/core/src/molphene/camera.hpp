@@ -16,8 +16,6 @@ public:
 
   using mat4f = mat4<float_type>;
 
-  float_type top{0};
-
   constexpr camera() noexcept = default;
 
   constexpr auto aspect_ratio() const noexcept -> float_type
@@ -73,6 +71,16 @@ public:
     return field_of_view_;
   }
 
+  constexpr auto top() const noexcept -> float_type
+  {
+    return top_;
+  }
+
+  constexpr auto top(float_type val) noexcept -> float_type&
+  {
+    return top_ = val;
+  }
+
   constexpr void reset_zoom() const noexcept
   {
     zoom_ = 1;
@@ -119,6 +127,7 @@ public:
   {
     const auto aspect = aspect_ratio();
     const auto tan_theta = std::tan(field_of_view() / 2);
+    const auto top = top_;
     const auto focus_dist = [=]() noexcept
     {
       auto focus = top / tan_theta;
@@ -129,14 +138,16 @@ public:
     }
     ();
 
-    znear_ = focus_dist - top;
-    zfar_ = focus_dist + top;
+    znear_ = focus_dist - top_;
+    zfar_ = focus_dist + top_;
 
     position(0, 0, -focus_dist);
   }
 
 private:
   float_type field_of_view_{M_PI_4};
+
+  float_type top_{0};
 
   float_type zfar_{0};
 
