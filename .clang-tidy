@@ -1,36 +1,209 @@
 Checks: >
-  *,
-  -readability-implicit-bool-conversion,
-  -misc-unused-parameters,
+  -abseil-*
+
+  -android-*
+
+  boost-use-to-string,
+
+  bugprone-*,
+
+  # cert-dcl03-c (redirects to misc-static-assert),
+  # cert-dcl16-c (redirects to readability-uppercase-literal-suffix),
+  cert-dcl21-cpp,
+  cert-dcl50-cpp,
+  # cert-dcl54-cpp (redirects to misc-new-delete-overloads),
+  cert-dcl58-cpp,
+  # cert-dcl59-cpp (redirects to google-build-namespaces),
+  cert-env33-c,
+  # cert-err09-cpp (redirects to misc-throw-by-value-catch-by-reference),
+  cert-err34-c,
+  cert-err52-cpp,
+  cert-err58-cpp,
+  cert-err60-cpp,
+  # cert-err61-cpp (redirects to misc-throw-by-value-catch-by-reference),
+  # cert-fio38-c (redirects to misc-non-copyable-objects),
+  cert-flp30-c,
+  # cert-msc30-c (redirects to cert-msc50-cpp),
+  # cert-msc32-c (redirects to cert-msc51-cpp),
+  cert-msc50-cpp,
+  cert-msc51-cpp,
+  # cert-oop11-cpp (redirects to performance-move-constructor-init),
+
+  clang-analyzer-apiModeling.StdCLibraryFunctions,
+  clang-analyzer-apiModeling.TrustNonnull,
+  clang-analyzer-apiModeling.google.GTest,
+  clang-analyzer-core.CallAndMessage,
+  clang-analyzer-core.DivideZero,
+  clang-analyzer-core.DynamicTypePropagation,
+  clang-analyzer-core.NonNullParamChecker,
+  clang-analyzer-core.NonnilStringConstants,
+  clang-analyzer-core.NullDereference,
+  clang-analyzer-core.StackAddressEscape,
+  clang-analyzer-core.UndefinedBinaryOperatorResult,
+  clang-analyzer-core.VLASize,
+  clang-analyzer-core.builtin.BuiltinFunctions,
+  clang-analyzer-core.builtin.NoReturnFunctions,
+  clang-analyzer-core.uninitialized.ArraySubscript,
+  clang-analyzer-core.uninitialized.Assign,
+  clang-analyzer-core.uninitialized.Branch,
+  clang-analyzer-core.uninitialized.CapturedBlockVariable,
+  clang-analyzer-core.uninitialized.UndefReturn,
+  clang-analyzer-cplusplus.InnerPointer,
+  clang-analyzer-cplusplus.Move,
+  clang-analyzer-cplusplus.NewDelete,
+  clang-analyzer-cplusplus.NewDeleteLeaks,
+  clang-analyzer-cplusplus.SelfAssignment,
+  clang-analyzer-deadcode.DeadStores,
+  clang-analyzer-nullability.NullPassedToNonnull,
+  clang-analyzer-nullability.NullReturnedFromNonnull,
+  clang-analyzer-nullability.NullableDereferenced,
+  clang-analyzer-nullability.NullablePassedToNonnull,
+  clang-analyzer-nullability.NullableReturnedFromNonnull,
+  clang-analyzer-optin.cplusplus.VirtualCall,
+  clang-analyzer-optin.mpi.MPI-Checker,
+  clang-analyzer-optin.osx.cocoa.localizability.EmptyLocalizationContextChecker,
+  clang-analyzer-optin.osx.cocoa.localizability.NonLocalizedStringChecker,
+  clang-analyzer-optin.performance.GCDAntipattern,
+  clang-analyzer-optin.performance.Padding,
+  clang-analyzer-optin.portability.UnixAPI,
+  -clang-analyzer-osx.*
+  clang-analyzer-security.FloatLoopCounter,
+  clang-analyzer-security.insecureAPI.UncheckedReturn,
+  clang-analyzer-security.insecureAPI.bcmp,
+  clang-analyzer-security.insecureAPI.bcopy,
+  clang-analyzer-security.insecureAPI.bzero,
+  clang-analyzer-security.insecureAPI.getpw,
+  clang-analyzer-security.insecureAPI.gets,
+  clang-analyzer-security.insecureAPI.mkstemp,
+  clang-analyzer-security.insecureAPI.mktemp,
+  clang-analyzer-security.insecureAPI.rand,
+  clang-analyzer-security.insecureAPI.strcpy,
+  clang-analyzer-security.insecureAPI.vfork,
+  clang-analyzer-unix.API,
+  clang-analyzer-unix.Malloc,
+  clang-analyzer-unix.MallocSizeof,
+  clang-analyzer-unix.MismatchedDeallocator,
+  clang-analyzer-unix.Vfork,
+  clang-analyzer-unix.cstring.BadSizeArg,
+  clang-analyzer-unix.cstring.NullArg,
+  clang-analyzer-valist.CopyToSelf,
+  clang-analyzer-valist.Uninitialized,
+  clang-analyzer-valist.Unterminated,
+
+  # cppcoreguidelines-avoid-c-arrays (redirects to modernize-avoid-c-arrays),
+  cppcoreguidelines-avoid-goto,
+  # cppcoreguidelines-avoid-magic-numbers (redirects to readability-magic-numbers),
+  # cppcoreguidelines-c-copy-assignment-signature (redirects to misc-unconventional-assign-operator),
+  # cppcoreguidelines-explicit-virtual-functions (redirects to modernize-use-override),
+  cppcoreguidelines-interfaces-global-init,
+  cppcoreguidelines-macro-usage,
+  cppcoreguidelines-narrowing-conversions,
+  cppcoreguidelines-no-malloc,
+  # cppcoreguidelines-non-private-member-variables-in-classes (redirects to misc-non-private-member-variables-in-classes),
+  cppcoreguidelines-owning-memory,
+  cppcoreguidelines-pro-bounds-array-to-pointer-decay,
+  cppcoreguidelines-pro-bounds-constant-array-index,
+  cppcoreguidelines-pro-bounds-pointer-arithmetic,
+  cppcoreguidelines-pro-type-const-cast,
+  cppcoreguidelines-pro-type-cstyle-cast,
+  cppcoreguidelines-pro-type-member-init,
+  -cppcoreguidelines-pro-type-reinterpret-cast,
+  cppcoreguidelines-pro-type-static-cast-downcast,
+  cppcoreguidelines-pro-type-union-access,
+  cppcoreguidelines-pro-type-vararg,
+  cppcoreguidelines-slicing,
+  cppcoreguidelines-special-member-functions,
+
   -fuchsia-default-arguments,
+  # fuchsia-header-anon-namespaces (redirects to google-build-namespaces),
+  fuchsia-multiple-inheritance,
   -fuchsia-overloaded-operator,
-  -hicpp-signed-bitwise,
+  fuchsia-restrict-system-includes,
+  fuchsia-statically-constructed-objects,
+  -fuchsia-trailing-return,
+  fuchsia-virtual-inheritance,
+
+  google-build-explicit-make-pair,
+  google-build-namespaces,
+  google-build-using-namespace,
+  google-default-arguments,
+  google-explicit-constructor,
+  google-global-names-in-headers,
+  -google-objc-avoid-throwing-exception,
+  -google-objc-function-naming,
+  -google-objc-global-variable-declaration,
+  google-readability-avoid-underscore-in-googletest-name,
+  # google-readability-braces-around-statements (redirects to readability-braces-around-statements),
+  google-readability-casting,
+  # google-readability-function-size (redirects to readability-function-size),
+  # google-readability-namespace-comments (redirects to llvm-namespace-comment),
+  google-readability-todo,
+  google-runtime-int,
+  google-runtime-operator,
+  google-runtime-references,
+
+  # hicpp-avoid-c-arrays (redirects to modernize-avoid-c-arrays),
+  hicpp-avoid-goto,
+  # hicpp-braces-around-statements (redirects to readability-braces-around-statements),
+  # hicpp-deprecated-headers (redirects to modernize-deprecated-headers),
+  hicpp-exception-baseclass,
+  # hicpp-explicit-conversions (redirects to google-explicit-constructor),
+  # hicpp-function-size (redirects to readability-function-size),
+  # hicpp-invalid-access-moved (redirects to bugprone-use-after-move),
+  # hicpp-member-init (redirects to cppcoreguidelines-pro-type-member-init),
+  # hicpp-move-const-arg (redirects to performance-move-const-arg),
+  -hicpp-multiway-paths-covered,
+  # hicpp-named-parameter (redirects to readability-named-parameter),
+  # hicpp-new-delete-operators (redirects to misc-new-delete-overloads),
+  # hicpp-no-array-decay (redirects to cppcoreguidelines-pro-bounds-array-to-pointer-decay),
+  hicpp-no-assembler,
+  # hicpp-no-malloc (redirects to cppcoreguidelines-no-malloc),
+  # hicpp-noexcept-move (redirects to misc-noexcept-moveconstructor),
+  hicpp-signed-bitwise,
+  # hicpp-special-member-functions (redirects to cppcoreguidelines-special-member-functions),
+  # hicpp-static-assert (redirects to misc-static-assert),
+  # hicpp-undelegated-constructor (redirects to bugprone-undelegated-constructor),
+  # hicpp-uppercase-literal-suffix (redirects to readability-uppercase-literal-suffix),
+  # hicpp-use-auto (redirects to modernize-use-auto),
+  # hicpp-use-emplace (redirects to modernize-use-emplace),
+  # hicpp-use-equals-default (redirects to modernize-use-equals-default),
+  # hicpp-use-equals-delete (redirects to modernize-use-equals-delete),
+  # hicpp-use-noexcept (redirects to modernize-use-noexcept),
+  # hicpp-use-nullptr (redirects to modernize-use-nullptr),
+  # hicpp-use-override (redirects to modernize-use-override),
+  # hicpp-vararg (redirects to cppcoreguidelines-pro-type-vararg),
+
   -llvm-header-guard,
-  -google-runtime-references,
-  -cppcoreguidelines-pro-type-reinterpret-cast
-WarningsAsErrors: ''
+  llvm-include-order,
+  llvm-namespace-comment,
+  -llvm-twine-local,
+
+  misc-*,
+  -misc-unused-parameters,
+
+  modernize-*,
+  -modernize-use-nodiscard,
+
+  -mpi-*
+
+  -objc-*
+
+  -openmp-*
+
+  performance-*,
+
+  readability-*,
+  -readability-implicit-bool-conversion,
+  -readability-magic-numbers,
+  -readability-named-parameter,
+  -readability-uppercase-literal-suffix,
+
+  -zircon-temporary-objects
+WarningsAsErrors: '*'
 HeaderFilterRegex: ''
 AnalyzeTemporaryDtors: false
 FormatStyle:     none
 User:            janucaria
 CheckOptions:    
-  - key:             google-readability-braces-around-statements.ShortStatementLines
-    value:           '1'
-  - key:             google-readability-function-size.StatementThreshold
-    value:           '800'
-  - key:             google-readability-namespace-comments.ShortNamespaceLines
-    value:           '10'
-  - key:             google-readability-namespace-comments.SpacesBeforeComments
-    value:           '2'
-  - key:             modernize-loop-convert.MaxCopySize
-    value:           '16'
-  - key:             modernize-loop-convert.MinConfidence
-    value:           reasonable
-  - key:             modernize-loop-convert.NamingStyle
-    value:           CamelCase
-  - key:             modernize-pass-by-value.IncludeStyle
-    value:           llvm
-  - key:             modernize-replace-auto-ptr.IncludeStyle
-    value:           llvm
-  - key:             modernize-use-nullptr.NullMacros
-    value:           'NULL'
+  - key:             misc-non-private-member-variables-in-classes.IgnoreClassesWithAllMemberVariablesBeingPublic
+    value:           1
