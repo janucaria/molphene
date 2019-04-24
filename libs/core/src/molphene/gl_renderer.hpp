@@ -32,13 +32,16 @@ public:
     using mat3f = typename scene::mat3f;
     using mat4f = typename scene::mat4f;
 
+    constexpr auto color_buff_bit = static_cast<GLbitfield>(GL_COLOR_BUFFER_BIT);
+    constexpr auto depth_buff_bit = static_cast<GLbitfield>(GL_DEPTH_BUFFER_BIT);
+
     const auto mv_matrix = scene.model_matrix() * camera.view_matrix();
     const auto norm_matrix = mat3f{mat4f{mv_matrix}.inverse().transpose()};
     const auto proj_matrix = camera.projection_matrix();
 
     glBindFramebuffer(GL_FRAMEBUFFER, color_light_fbo_);
     glViewport(viewport_.x, viewport_.y, viewport_.width, viewport_.height);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glClear(color_buff_bit | depth_buff_bit);
 
     {
       color_light_shader_.use_program();
@@ -62,7 +65,7 @@ public:
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glViewport(viewport_.x, viewport_.y, viewport_.width, viewport_.height);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glClear(color_buff_bit | depth_buff_bit);
 
     {
       const auto verts_guard =
