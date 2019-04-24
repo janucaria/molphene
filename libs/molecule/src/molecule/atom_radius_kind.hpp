@@ -5,6 +5,6 @@ namespace molphene {
 
 enum class atom_radius_kind { van_der_waals, covalent, fixed };
 
-}
+} // namespace molphene
 
 #endif

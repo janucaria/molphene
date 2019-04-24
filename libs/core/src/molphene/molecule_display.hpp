@@ -10,6 +10,6 @@ enum class molecule_display {
   ball_and_stick_instance
 };
 
-}
+} // namespace molphene
 
 #endif
