@@ -23,6 +23,16 @@ public:
 
 private:
   struct basic_concept {
+    basic_concept() noexcept = default;
+
+    basic_concept(const basic_concept&) noexcept = default;
+
+    basic_concept(basic_concept&&) noexcept = default;
+
+    auto operator=(const basic_concept&) noexcept -> basic_concept& = default;
+
+    auto operator=(basic_concept&&) noexcept -> basic_concept& = default;
+
     virtual ~basic_concept() noexcept = default;
 
     virtual void render(color_light_shader const& shader) const = 0;
