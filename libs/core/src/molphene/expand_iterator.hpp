@@ -63,7 +63,7 @@ struct expand_iterator {
     return *this;
   }
 
-  constexpr auto operator++(int) -> const expand_iterator
+  constexpr auto operator++(int) -> expand_iterator&
   {
     return *this;
   }
