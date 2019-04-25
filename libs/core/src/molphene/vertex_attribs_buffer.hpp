@@ -36,15 +36,9 @@ public:
 
   ~vertex_attribs_buffer() noexcept = default;
 
-  template<
-   typename TContainer,
-   typename = std::void_t<
-    std::enable_if_t<
-     std::is_same_v<data_type*, decltype(std::declval<TContainer>().data())>>,
-    decltype(std::declval<TContainer>().size())>>
-  void init(TContainer&& arr) noexcept
+  void init(gsl::span<const data_type> arr) noexcept
   {
-    buffer_.data(std::forward<TContainer>(arr));
+    buffer_.data(arr);
   }
 
   void size(GLsizeiptr size) noexcept

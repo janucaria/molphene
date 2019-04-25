@@ -35,13 +35,7 @@ public:
     glBindBuffer(target, buffer_);
   }
 
-  template<typename TContainer,
-           typename = std::void_t<
-            std::enable_if_t<std::is_same_v<
-             data_type*,
-             std::decay_t<decltype(std::declval<TContainer>().data())>>>,
-            decltype(std::declval<TContainer>().size())>>
-  void data(TContainer&& cont) noexcept
+  void data(gsl::span<const data_type> cont) noexcept
   {
     size_ = cont.size();
     bind();
@@ -65,13 +59,7 @@ public:
     return size() * sizeof(data_type);
   }
 
-  template<typename TContainer,
-           typename = std::void_t<
-            std::enable_if_t<std::is_same_v<
-             data_type*,
-             std::decay_t<decltype(std::declval<TContainer>().data())>>>,
-            decltype(std::declval<TContainer>().size())>>
-  void subdata(GLintptr offset, TContainer&& cont) const noexcept
+  void subdata(GLintptr offset, gsl::span<const data_type> cont) const noexcept
   {
     bind();
     glBufferSubData(target,
