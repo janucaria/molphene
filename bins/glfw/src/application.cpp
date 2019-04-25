@@ -70,7 +70,8 @@ void application::init_context()
   glfwSetScrollCallback(
    window_.get(), [](GLFWwindow* window, double xoffset, double yoffset) {
      static_cast<application*>(glfwGetWindowUserPointer(window))
-      ->mouse_scroll_event(static_cast<int>(xoffset), static_cast<int>(yoffset));
+      ->mouse_scroll_event(static_cast<int>(xoffset),
+                           static_cast<int>(yoffset));
    });
 
   glfwSetFramebufferSizeCallback(

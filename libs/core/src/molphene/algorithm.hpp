@@ -40,10 +40,10 @@ constexpr auto for_each_slice(
 }
 
 template<typename InRange, typename Function>
-constexpr auto for_each_slice(
- InRange container,
- typename boost::range_difference<InRange>::type chunk_length,
- Function func) -> Function
+constexpr auto
+for_each_slice(InRange container,
+               typename boost::range_difference<InRange>::type chunk_length,
+               Function func) -> Function
 {
   return for_each_slice(
    std::begin(container), std::end(container), chunk_length, func);

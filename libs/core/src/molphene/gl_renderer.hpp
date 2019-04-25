@@ -32,8 +32,10 @@ public:
     using mat3f = typename scene::mat3f;
     using mat4f = typename scene::mat4f;
 
-    constexpr auto color_buff_bit = static_cast<GLbitfield>(GL_COLOR_BUFFER_BIT);
-    constexpr auto depth_buff_bit = static_cast<GLbitfield>(GL_DEPTH_BUFFER_BIT);
+    constexpr auto color_buff_bit =
+     static_cast<GLbitfield>(GL_COLOR_BUFFER_BIT);
+    constexpr auto depth_buff_bit =
+     static_cast<GLbitfield>(GL_DEPTH_BUFFER_BIT);
 
     const auto mv_matrix = scene.model_matrix() * camera.view_matrix();
     const auto norm_matrix = mat3f{mat4f{mv_matrix}.inverse().transpose()};

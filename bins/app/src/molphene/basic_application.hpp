@@ -58,7 +58,7 @@ public:
   static constexpr auto sph_mesh_builder = sphere_mesh_builder<10, 20>{};
 
   static constexpr auto cyl_mesh_builder = cylinder_mesh_builder<20>{};
-  
+
   static constexpr auto copy_builder = instance_copy_builder{};
 
   void setup()
@@ -76,8 +76,8 @@ public:
     const auto [width, height] = static_cast<TApp*>(this)->framebuffer_size();
 
     renderer_.change_dimension(width, height);
-   camera_.aspect_ratio(width, height);
-   camera_.update_view_matrix();
+    camera_.aspect_ratio(width, height);
+    camera_.update_view_matrix();
 
     scene_.reset_mesh(molecule_);
 
@@ -95,8 +95,8 @@ public:
 
     scene_.reset_mesh(molecule_);
     reset_representation(molecule_);
-   camera_.top(scene_.bounding_sphere().radius() + 2);
-   camera_.update_view_matrix();
+    camera_.top(scene_.bounding_sphere().radius() + 2);
+    camera_.update_view_matrix();
   }
 
   void render_frame()
@@ -107,8 +107,8 @@ public:
   void canvas_size_change_callback(int width, int height)
   {
     renderer_.change_dimension(width, height);
-   camera_.aspect_ratio(width, height);
-   camera_.update_view_matrix();
+    camera_.aspect_ratio(width, height);
+    camera_.update_view_matrix();
   }
 
   void change_representation(int representation_type)
@@ -452,11 +452,11 @@ public:
       break;
     case 80:
     case 112:
-     camera_.projection_mode(true);
+      camera_.projection_mode(true);
       break;
     case 79:
     case 111:
-     camera_.projection_mode(false);
+      camera_.projection_mode(false);
       break;
     case 72:
     case 104:
@@ -506,21 +506,23 @@ public:
 
   void mouse_scroll_event(int offset_x, int offset_y)
   {
-    offset_y > 0 ?camera_.zoom_in() :camera_.zoom_out();
+    offset_y > 0 ? camera_.zoom_in() : camera_.zoom_out();
   }
 
   void framebuffer_size_change_event(int width, int height)
   {
     renderer_.change_dimension(width, height);
-   camera_.aspect_ratio(width, height);
-   camera_.update_view_matrix();
+    camera_.aspect_ratio(width, height);
+    camera_.update_view_matrix();
   }
 
-  auto click_state() noexcept -> io::click_state& {
+  auto click_state() noexcept -> io::click_state&
+  {
     return click_state_;
   }
 
-  auto scene() noexcept -> scene_type& {
+  auto scene() noexcept -> scene_type&
+  {
     return scene_;
   }
 
