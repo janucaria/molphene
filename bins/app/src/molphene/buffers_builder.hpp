@@ -16,12 +16,12 @@ template<typename TMeshSizedRange>
 auto build_shape_color_texture(TMeshSizedRange&& shape_attrs)
  -> std::unique_ptr<color_image_texture>
 {
+  auto shape_color_texture = std::make_unique<color_image_texture>();
+
   const auto total_instances =
    std::forward<TMeshSizedRange>(shape_attrs).size();
-  auto shape_color_texture =
-   std::make_unique<color_image_texture>(total_instances);
 
-  const auto tex_size = shape_color_texture->size();
+  const auto tex_size = std::ceil(std::sqrt(total_instances));
   auto colors = detail::make_reserved_vector<rgba8>(tex_size * tex_size);
 
   boost::range::transform(
@@ -29,7 +29,7 @@ auto build_shape_color_texture(TMeshSizedRange&& shape_attrs)
    ](auto attr) noexcept { return attr.color; });
 
   colors.resize(colors.capacity());
-  shape_color_texture->image_data(colors.data());
+  shape_color_texture->data(colors);
 
   return shape_color_texture;
 }

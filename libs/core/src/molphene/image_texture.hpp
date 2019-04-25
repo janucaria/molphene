@@ -11,13 +11,14 @@
 
 namespace molphene {
 
-template<GLenum VTarget>
+template<GLenum VFormat>
 class image_taxture {
 public:
-  static constexpr auto target = VTarget;
+  static constexpr auto format = VFormat;
+  static constexpr auto type = GL_UNSIGNED_BYTE;
+  static constexpr auto target = GL_TEXTURE_2D;
 
-  explicit image_taxture(GLsizei total_instances) noexcept
-  : size_(static_cast<GLsizei>(std::ceil(std::sqrt(total_instances))))
+  image_taxture() noexcept
   {
     glGenTextures(1, &texture_);
     glBindTexture(target, texture_);
@@ -27,29 +28,36 @@ public:
     glTexParameteri(target, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
   }
 
-  void image_data(const GLvoid* data) const noexcept
+  image_taxture(const image_taxture&) noexcept = delete;
+
+  auto operator=(const image_taxture&) noexcept -> image_taxture& = delete;
+
+  ~image_taxture() noexcept
   {
-    glBindTexture(target, texture_);
-    glTexImage2D(
-     target, 0, GL_RGBA, size_, size_, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+    glDeleteTextures(1, &texture_);
   }
 
-  auto texture_image() const noexcept -> GLuint
+  template<typename TView>
+  void data(TView&& view) const noexcept
+  {
+    const auto sqrt = std::sqrt(view.size());
+    assert(sqrt == std::floor(sqrt));
+
+    const auto size = static_cast<GLsizei>(sqrt);
+    glBindTexture(target, texture_);
+    glTexImage2D(target, 0, format, size, size, 0, format, type, view.data());
+  }
+
+  auto texture() const noexcept -> GLuint
   {
     return texture_;
   }
 
-  auto size() const noexcept -> GLsizei
-  {
-    return size_;
-  }
-
 private:
   GLuint texture_{0};
-  GLsizei size_{0};
 };
 
-using color_image_texture = image_taxture<GL_TEXTURE_2D>;
+using color_image_texture = image_taxture<GL_RGBA>;
 
 } // namespace molphene
 
