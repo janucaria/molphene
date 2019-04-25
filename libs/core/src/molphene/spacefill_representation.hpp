@@ -6,7 +6,7 @@
 #include "attribs_buffer_array.hpp"
 #include "color_light_shader.hpp"
 #include "color_manager.hpp"
-#include "image_texture.hpp"
+#include "color_image_texture.hpp"
 #include "m3d.hpp"
 
 #include <molecule/atom.hpp>

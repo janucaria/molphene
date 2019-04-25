@@ -7,7 +7,7 @@
 
 #include "attribs_buffer_array.hpp"
 #include "color_light_shader.hpp"
-#include "image_texture.hpp"
+#include "color_image_texture.hpp"
 
 #include "gl_vertex_attribs_guard.hpp"
 #include "shader_attrib_location.hpp"
