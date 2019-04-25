@@ -4,10 +4,10 @@
 #include "stdafx.hpp"
 
 #include "attribs_buffer_array.hpp"
+#include "color_image_texture.hpp"
 #include "color_light_shader.hpp"
 #include "color_manager.hpp"
 #include "cylinder_vertex_buffers_batch.hpp"
-#include "color_image_texture.hpp"
 #include "m3d.hpp"
 #include "sphere_vertex_buffers_batch.hpp"
 

@@ -6,8 +6,8 @@
 #include "opengl.hpp"
 
 #include "attribs_buffer_array.hpp"
-#include "color_light_shader.hpp"
 #include "color_image_texture.hpp"
+#include "color_light_shader.hpp"
 
 #include "algorithm.hpp"
 #include "gl_vertex_attribs_guard.hpp"
