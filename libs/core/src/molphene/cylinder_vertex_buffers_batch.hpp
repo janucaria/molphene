@@ -6,8 +6,8 @@
 #include "opengl.hpp"
 
 #include "attribs_buffer_array.hpp"
+#include "color_image_texture.hpp"
 #include "color_light_shader.hpp"
-#include "image_texture.hpp"
 
 #include "gl_vertex_attribs_guard.hpp"
 #include "shader_attrib_location.hpp"
@@ -35,7 +35,7 @@ public:
     assert(
      all_has_same_props(*buffer_positions, *buffer_normals, *buffer_texcoords));
 
-    shader.color_texture_image(color_texture->texture_image());
+    shader.color_texture_image(color_texture->texture());
 
     const auto size = buffer_positions->size();
     const auto remain_instances = buffer_positions->remain_instances();

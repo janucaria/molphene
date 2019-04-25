@@ -1,5 +1,4 @@
-#ifndef MOLPHENE_IMAGE_TEXTURE_HPP
-#define MOLPHENE_IMAGE_TEXTURE_HPP
+#ifndef MOLPHENE_COLOR_IMAGE_TEXTURE_HPP
 
 #include "gl/texture_image_2d.hpp"
 
