@@ -21,9 +21,13 @@ public:
     glGenBuffers(1, &buffer_);
   }
 
-  buffer(const buffer&) = delete;
+  buffer(const buffer&) noexcept = delete;
 
-  auto operator=(const buffer&) -> buffer& = delete;
+  buffer(buffer&&) noexcept = delete;
+
+  auto operator=(const buffer&) noexcept -> buffer& = delete;
+
+  auto operator=(buffer&&) noexcept -> buffer& = delete;
 
   ~buffer() noexcept
   {

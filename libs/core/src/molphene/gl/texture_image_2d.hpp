@@ -26,8 +26,12 @@ public:
 
   texture_image_2d(const texture_image_2d&) noexcept = delete;
 
+  texture_image_2d(texture_image_2d&&) noexcept = delete;
+
   auto operator=(const texture_image_2d&) noexcept
    -> texture_image_2d& = delete;
+
+  auto operator=(texture_image_2d&&) noexcept -> texture_image_2d& = delete;
 
   ~texture_image_2d() noexcept
   {
