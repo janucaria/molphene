@@ -14,6 +14,16 @@ public:
     (glEnableVertexAttribArray(static_cast<GLuint>(locations)), ...);
   }
 
+  gl_vertex_attribs_guard(const gl_vertex_attribs_guard&) noexcept = delete;
+
+  gl_vertex_attribs_guard(gl_vertex_attribs_guard&&) noexcept = delete;
+
+  auto operator=(const gl_vertex_attribs_guard&) noexcept
+   -> gl_vertex_attribs_guard& = delete;
+
+  auto operator=(gl_vertex_attribs_guard&&) noexcept
+   -> gl_vertex_attribs_guard& = delete;
+
   ~gl_vertex_attribs_guard() noexcept
   {
     (glDisableVertexAttribArray(static_cast<GLuint>(locations)), ...);

@@ -4,7 +4,11 @@
 #include <molphene/stdafx.hpp>
 
 #include <molphene/attribs_buffer_array.hpp>
+#include <molphene/cylinder_mesh_builder.hpp>
 #include <molphene/image_texture.hpp>
+#include <molphene/m3d.hpp>
+#include <molphene/sphere_mesh_builder.hpp>
+#include <molphene/utility.hpp>
 
 namespace molphene {
 

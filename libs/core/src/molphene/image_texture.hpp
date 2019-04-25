@@ -16,7 +16,7 @@ class image_taxture {
 public:
   static constexpr auto target = VTarget;
 
-  image_taxture(GLsizei total_instances) noexcept
+  explicit image_taxture(GLsizei total_instances) noexcept
   : size_(static_cast<GLsizei>(std::ceil(std::sqrt(total_instances))))
   {
     glGenTextures(1, &texture_);

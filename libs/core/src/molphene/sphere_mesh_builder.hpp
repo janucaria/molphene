@@ -10,7 +10,7 @@ namespace molphene {
 template<typename TShere>
 struct build_sphere_mesh_position_params {
   TShere sphere;
-  constexpr build_sphere_mesh_position_params(TShere sphere) noexcept
+  constexpr explicit build_sphere_mesh_position_params(TShere sphere) noexcept
   : sphere{sphere}
   {
   }
@@ -23,7 +23,7 @@ template<typename TVertex>
 struct build_sphere_mesh_fill_params {
   TVertex vertex;
 
-  constexpr build_sphere_mesh_fill_params(TVertex vertex) noexcept
+  constexpr explicit build_sphere_mesh_fill_params(TVertex vertex) noexcept
   : vertex{vertex}
   {
   }
@@ -61,7 +61,8 @@ public:
       const auto sin_theta = std::sin(theta);
       const auto cos_theta = std::cos(theta);
 
-      const auto next_theta = pi / latitude_divs * (i + 1);
+      const auto next_i = i + 1;
+      const auto next_theta = pi / latitude_divs * next_i;
       const auto next_sint = std::sin(next_theta);
       const auto next_cost = std::cos(next_theta);
 

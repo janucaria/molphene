@@ -4,9 +4,6 @@ sudo: false
 compiler: clang++
 os: osx
 osx_image: xcode10.2
-cache:
-  directories:
-    - $HOME/Library/Caches/Homebrew
 before_install:
   - brew update && brew bundle
 before_script:
@@ -14,6 +11,7 @@ before_script:
   - emcc -v
   - node tools/macos-emscripten-configure.js
 script:
+  - node tools/macos-run-static-analyzer.js
   - node tools/macos-emscripten-build.js
   - node tools/macos-run-test.js
 notifications:

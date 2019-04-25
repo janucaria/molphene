@@ -37,6 +37,7 @@ template<typename TApp>
 class basic_application {
 public:
   using camera_type = camera<void>;
+  using scene_type = scene;
 
   using spacefill_representation =
    basic_spacefill_representation<sphere_vertex_buffers_batch>;
@@ -54,6 +55,12 @@ public:
 
   using representations_container = std::list<drawable>;
 
+  static constexpr auto sph_mesh_builder = sphere_mesh_builder<10, 20>{};
+
+  static constexpr auto cyl_mesh_builder = cylinder_mesh_builder<20>{};
+  
+  static constexpr auto copy_builder = instance_copy_builder{};
+
   void setup()
   {
     static_cast<TApp*>(this)->init_context();
@@ -63,61 +70,61 @@ public:
     representations_.emplace_back(spacefill_representation_instanced{});
     representations_.emplace_back(ballstick_representation_instanced{});
 
-    scene.setup_graphics();
-    renderer.init();
+    scene_.setup_graphics();
+    renderer_.init();
 
     const auto [width, height] = static_cast<TApp*>(this)->framebuffer_size();
 
-    renderer.change_dimension(width, height);
-    camera.aspect_ratio(width, height);
-    camera.update_view_matrix();
+    renderer_.change_dimension(width, height);
+   camera_.aspect_ratio(width, height);
+   camera_.update_view_matrix();
 
-    scene.reset_mesh(molecule);
+    scene_.reset_mesh(molecule_);
 
     // representation_ = molecule_display::ball_and_stick;
     // representation_ = molecule_display::spacefill_instance;
     // representation_ = molecule_display::spacefill;
     representation_ = molecule_display::ball_and_stick_instance;
-    reset_representation(molecule);
+    reset_representation(molecule_);
   }
 
   void open_pdb_data(std::string pdbdata)
   {
     auto pdbstm = std::stringstream{pdbdata};
-    molecule = chemdoodle_json_parser{}.parse(pdbstm);
+    molecule_ = chemdoodle_json_parser{}.parse(pdbstm);
 
-    scene.reset_mesh(molecule);
-    reset_representation(molecule);
-    camera.top = scene.bounding_sphere().radius() + 2;
-    camera.update_view_matrix();
+    scene_.reset_mesh(molecule_);
+    reset_representation(molecule_);
+   camera_.top(scene_.bounding_sphere().radius() + 2);
+   camera_.update_view_matrix();
   }
 
   void render_frame()
   {
-    renderer.render(scene, camera, representations_);
+    renderer_.render(scene_, camera_, representations_);
   }
 
   void canvas_size_change_callback(int width, int height)
   {
-    renderer.change_dimension(width, height);
-    camera.aspect_ratio(width, height);
-    camera.update_view_matrix();
+    renderer_.change_dimension(width, height);
+   camera_.aspect_ratio(width, height);
+   camera_.update_view_matrix();
   }
 
   void change_representation(int representation_type)
   {
     switch(representation_type) {
     case static_cast<int>(molecule_display::spacefill): {
-      representation(molecule_display::spacefill, molecule);
+      representation(molecule_display::spacefill, molecule_);
     } break;
     case static_cast<int>(molecule_display::ball_and_stick): {
-      representation(molecule_display::ball_and_stick, molecule);
+      representation(molecule_display::ball_and_stick, molecule_);
     } break;
     case static_cast<int>(molecule_display::spacefill_instance): {
-      representation(molecule_display::spacefill_instance, molecule);
+      representation(molecule_display::spacefill_instance, molecule_);
     } break;
     case static_cast<int>(molecule_display::ball_and_stick_instance): {
-      representation(molecule_display::ball_and_stick_instance, molecule);
+      representation(molecule_display::ball_and_stick_instance, molecule_);
     } break;
     }
   }
@@ -445,86 +452,88 @@ public:
       break;
     case 80:
     case 112:
-      camera.projection_mode(true);
+     camera_.projection_mode(true);
       break;
     case 79:
     case 111:
-      camera.projection_mode(false);
+     camera_.projection_mode(false);
       break;
     case 72:
     case 104:
-      representation(molecule_display::ball_and_stick_instance, molecule);
+      representation(molecule_display::ball_and_stick_instance, molecule_);
       break;
     case 74:
     case 106:
-      representation(molecule_display::spacefill_instance, molecule);
+      representation(molecule_display::spacefill_instance, molecule_);
       break;
     case 75:
     case 107:
-      representation(molecule_display::spacefill, molecule);
+      representation(molecule_display::spacefill, molecule_);
       break;
     case 76:
     case 108:
-      representation(molecule_display::ball_and_stick, molecule);
+      representation(molecule_display::ball_and_stick, molecule_);
       break;
     }
   }
 
   void mouse_press_event(int button, int mods, int pos_x, int pos_y)
   {
-    click_state.is_down = true;
-    click_state.last_x = pos_x;
-    click_state.last_y = pos_y;
+    click_state_.is_down = true;
+    click_state_.last_x = pos_x;
+    click_state_.last_y = pos_y;
   }
 
   void mouse_release_event(int button, int mods, int pos_x, int pos_y)
   {
-    click_state.is_down = false;
-    click_state.last_x = pos_x;
-    click_state.last_y = pos_y;
+    click_state_.is_down = false;
+    click_state_.last_x = pos_x;
+    click_state_.last_y = pos_y;
   }
 
   void mouse_move_event(int pos_x, int pos_y)
   {
-    if(click_state.is_down) {
-      const auto delta_x = static_cast<double>(click_state.last_x) - pos_x;
-      const auto delta_y = static_cast<double>(click_state.last_y) - pos_y;
+    if(click_state_.is_down) {
+      const auto delta_x = static_cast<double>(click_state_.last_x) - pos_x;
+      const auto delta_y = static_cast<double>(click_state_.last_y) - pos_y;
 
-      click_state.last_x = pos_x;
-      click_state.last_y = pos_y;
+      click_state_.last_x = pos_x;
+      click_state_.last_y = pos_y;
 
-      scene.rotate({M_PI * delta_y / 180, M_PI * delta_x / 180, 0});
+      scene_.rotate({M_PI * delta_y / 180, M_PI * delta_x / 180, 0});
     }
   }
 
   void mouse_scroll_event(int offset_x, int offset_y)
   {
-    offset_y > 0 ? camera.zoom_in() : camera.zoom_out();
+    offset_y > 0 ?camera_.zoom_in() :camera_.zoom_out();
   }
 
   void framebuffer_size_change_event(int width, int height)
   {
-    renderer.change_dimension(width, height);
-    camera.aspect_ratio(width, height);
-    camera.update_view_matrix();
+    renderer_.change_dimension(width, height);
+   camera_.aspect_ratio(width, height);
+   camera_.update_view_matrix();
   }
 
-protected:
-  static constexpr auto sph_mesh_builder = sphere_mesh_builder<10, 20>{};
+  auto click_state() noexcept -> io::click_state& {
+    return click_state_;
+  }
 
-  static constexpr auto cyl_mesh_builder = cylinder_mesh_builder<20>{};
-  
-  static constexpr auto copy_builder = instance_copy_builder{};
+  auto scene() noexcept -> scene_type& {
+    return scene_;
+  }
 
-  io::click_state click_state{false, 0, 0};
+private:
+  io::click_state click_state_{false, 0, 0};
 
-  scene scene{};
+  scene_type scene_{};
 
-  gl_renderer renderer;
+  gl_renderer renderer_;
 
-  camera_type camera;
+  camera_type camera_;
 
-  molecule molecule;
+  molecule molecule_;
 
   representations_container representations_;
 

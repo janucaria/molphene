@@ -8,6 +8,6 @@ namespace molphene {
 template<typename T>
 using quat = boost::qvm::quat<T>;
 
-}
+} // namespace molphene
 
 #endif

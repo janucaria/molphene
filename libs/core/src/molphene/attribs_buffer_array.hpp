@@ -31,8 +31,8 @@ public:
     }
 
     using attrib_buff_t =
-     typename std::remove_reference_t<decltype(attrib_buffers_)>::element_type;
-    attrib_buffers_ = std::make_unique<attrib_buff_t[]>(size_);
+     typename std::remove_reference_t<decltype(attrib_buffers_)>::value_type;
+    attrib_buffers_ = std::vector<attrib_buff_t>(size_);
 
     for(auto i = GLsizei{0}; i < size_; ++i) {
       const auto meshes =
@@ -133,7 +133,7 @@ private:
 
   GLsizei size_;
 
-  std::unique_ptr<TVertAttribBuffer[]> attrib_buffers_;
+  std::vector<TVertAttribBuffer> attrib_buffers_;
 };
 
 using positions_buffer_array = attrib_buffer_array<
