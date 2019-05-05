@@ -144,6 +144,9 @@ public:
   {
     auto spacefill = spacefill_representation{};
 
+    spacefill.radius_size = 1;
+    spacefill.radius_type = atom_radius_kind::van_der_waals;
+
     auto sphere_mesh_attrs =
      detail::make_reserved_vector<sphere_mesh_attribute>(atoms.size());
 
@@ -151,17 +154,7 @@ public:
                           std::back_inserter(sphere_mesh_attrs),
                           {spacefill.radius_type, spacefill.radius_size, 1.});
 
-    spacefill.atom_sphere_buffers.buffer_positions =
-     build_sphere_mesh_positions(sph_mesh_builder, sphere_mesh_attrs);
-
-    spacefill.atom_sphere_buffers.buffer_normals =
-     build_sphere_mesh_normals(sph_mesh_builder, sphere_mesh_attrs);
-
-    spacefill.atom_sphere_buffers.buffer_texcoords =
-     build_sphere_mesh_texcoords(sph_mesh_builder, sphere_mesh_attrs);
-
-    spacefill.atom_sphere_buffers.color_texture =
-     build_shape_color_texture(sphere_mesh_attrs);
+    spacefill.atom_sphere_buffers.build_buffers(sphere_mesh_attrs);
 
     return spacefill;
   }
@@ -182,17 +175,7 @@ public:
        std::back_inserter(sphere_mesh_attrs),
        {ballnstick.atom_radius_type, ballnstick.atom_radius_size, 0.5});
 
-      ballnstick.atom_sphere_buffers.buffer_positions =
-       build_sphere_mesh_positions(sph_mesh_builder, sphere_mesh_attrs);
-
-      ballnstick.atom_sphere_buffers.buffer_normals =
-       build_sphere_mesh_normals(sph_mesh_builder, sphere_mesh_attrs);
-
-      ballnstick.atom_sphere_buffers.buffer_texcoords =
-       build_sphere_mesh_texcoords(sph_mesh_builder, sphere_mesh_attrs);
-
-      ballnstick.atom_sphere_buffers.color_texture =
-       build_shape_color_texture(sphere_mesh_attrs);
+      ballnstick.atom_sphere_buffers.build_buffers(sphere_mesh_attrs);
     }
 
     auto cylinder_mesh_attrs =
@@ -248,22 +231,7 @@ public:
                           std::back_inserter(sphere_mesh_attrs),
                           {spacefill.radius_type, spacefill.radius_size, 1.});
 
-    const auto sphere_attr = std::array<sphere_mesh_attribute, 1>{};
-
-    spacefill.atom_sphere_buffers.buffer_positions =
-     build_sphere_mesh_positions(sph_mesh_builder, sphere_attr);
-
-    spacefill.atom_sphere_buffers.buffer_normals =
-     build_sphere_mesh_normals(sph_mesh_builder, sphere_attr);
-
-    spacefill.atom_sphere_buffers.buffer_texcoords =
-     build_sphere_mesh_texcoord_instances(copy_builder, sphere_mesh_attrs);
-
-    spacefill.atom_sphere_buffers.buffer_transforms =
-     build_sphere_mesh_transform_instances(copy_builder, sphere_mesh_attrs);
-
-    spacefill.atom_sphere_buffers.color_texture =
-     build_shape_color_texture(sphere_mesh_attrs);
+    spacefill.atom_sphere_buffers.build_buffers(sphere_mesh_attrs);
 
     return spacefill;
   }
@@ -284,22 +252,7 @@ public:
        std::back_inserter(sphere_mesh_attrs),
        {ballnstick.atom_radius_type, ballnstick.atom_radius_size, 0.5});
 
-      const auto sphere_attr = std::array<sphere_mesh_attribute, 1>{};
-
-      ballnstick.atom_sphere_buffers.buffer_positions =
-       build_sphere_mesh_positions(sph_mesh_builder, sphere_attr);
-
-      ballnstick.atom_sphere_buffers.buffer_normals =
-       build_sphere_mesh_normals(sph_mesh_builder, sphere_attr);
-
-      ballnstick.atom_sphere_buffers.buffer_texcoords =
-       build_sphere_mesh_texcoord_instances(copy_builder, sphere_mesh_attrs);
-
-      ballnstick.atom_sphere_buffers.buffer_transforms =
-       build_sphere_mesh_transform_instances(copy_builder, sphere_mesh_attrs);
-
-      ballnstick.atom_sphere_buffers.color_texture =
-       build_shape_color_texture(sphere_mesh_attrs);
+      ballnstick.atom_sphere_buffers.build_buffers(sphere_mesh_attrs);
     }
 
     auto cylinder_mesh_attrs =

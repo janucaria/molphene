@@ -9,9 +9,12 @@
 #include "color_image_texture.hpp"
 #include "color_light_shader.hpp"
 
+#include "buffers_builder.hpp"
 #include "gl/draw_instanced_arrays.hpp"
 #include "gl_vertex_attribs_guard.hpp"
+#include "instance_copy_builder.hpp"
 #include "shader_attrib_location.hpp"
+#include "sphere_mesh_builder.hpp"
 #include "utility.hpp"
 
 namespace molphene {
@@ -19,6 +22,10 @@ namespace molphene {
 template<typename = void>
 class basic_sphere_vertex_buffers_instanced {
 public:
+  static constexpr auto sph_mesh_builder = sphere_mesh_builder<10, 20>{};
+
+  static constexpr auto copy_builder = instance_copy_builder{};
+
   std::unique_ptr<color_image_texture> color_texture;
 
   std::unique_ptr<positions_buffer_array> buffer_positions;
@@ -28,6 +35,26 @@ public:
   std::unique_ptr<texcoords_instances_buffer_array> buffer_texcoords;
 
   std::unique_ptr<transforms_instances_buffer_array> buffer_transforms;
+
+  template<typename TRangeSphereMeshAttr>
+  void build_buffers(TRangeSphereMeshAttr&& sphere_mesh_attrs)
+  {
+    const auto sphere_attr = std::array<sphere_mesh_attribute, 1>{};
+
+    buffer_positions =
+     build_sphere_mesh_positions(sph_mesh_builder, sphere_attr);
+
+    buffer_normals = build_sphere_mesh_normals(sph_mesh_builder, sphere_attr);
+
+    buffer_texcoords = build_sphere_mesh_texcoord_instances(
+     copy_builder, std::forward<TRangeSphereMeshAttr>(sphere_mesh_attrs));
+
+    buffer_transforms = build_sphere_mesh_transform_instances(
+     copy_builder, std::forward<TRangeSphereMeshAttr>(sphere_mesh_attrs));
+
+    color_texture = build_shape_color_texture(
+     std::forward<TRangeSphereMeshAttr>(sphere_mesh_attrs));
+  }
 
   void draw(const color_light_shader& shader) const noexcept
   {
