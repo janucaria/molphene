@@ -139,23 +139,16 @@ public:
     reset_representation(mol);
   }
 
-  auto build_spacefill_representation(const molecule& mol) const
+  template<typename TSizedRangeAtoms>
+  auto build_spacefill_representation(TSizedRangeAtoms&& atoms) const
    -> spacefill_representation
   {
-    namespace range = boost::range;
-
     auto spacefill = spacefill_representation{};
-
-    auto atoms = detail::make_reserved_vector<const atom*>(mol.atoms().size());
-    range::transform(
-     mol.atoms(), std::back_inserter(atoms), [](auto& atom) noexcept {
-       return &atom;
-     });
 
     auto sphere_mesh_attrs =
      detail::make_reserved_vector<sphere_mesh_attribute>(atoms.size());
 
-    atoms_to_sphere_attrs(atoms,
+    atoms_to_sphere_attrs(std::forward<TSizedRangeAtoms>(atoms),
                           std::back_inserter(sphere_mesh_attrs),
                           {spacefill.radius_type, spacefill.radius_size, 1.});
 
@@ -272,23 +265,16 @@ public:
     return ballnstick;
   }
 
-  auto build_spacefill_representation_instanced(const molecule& mol) const
+  template<typename TSizedRangeAtoms>
+  auto build_spacefill_representation_instanced(TSizedRangeAtoms&& atoms) const
    -> spacefill_representation_instanced
   {
-    namespace range = boost::range;
-
     auto spacefill = spacefill_representation_instanced{};
-
-    auto atoms = detail::make_reserved_vector<const atom*>(mol.atoms().size());
-    range::transform(
-     mol.atoms(), std::back_inserter(atoms), [](auto& atom) noexcept {
-       return &atom;
-     });
 
     auto sphere_mesh_attrs =
      detail::make_reserved_vector<sphere_mesh_attribute>(atoms.size());
 
-    atoms_to_sphere_attrs(atoms,
+    atoms_to_sphere_attrs(std::forward<TSizedRangeAtoms>(atoms),
                           std::back_inserter(sphere_mesh_attrs),
                           {spacefill.radius_type, spacefill.radius_size, 1.});
 
@@ -425,17 +411,30 @@ public:
 
   void reset_representation(const molecule& mol) noexcept
   {
+    namespace range = boost::range;
+
     representations_.clear();
+
+    const auto atoms = [&]() {
+      auto atoms =
+       detail::make_reserved_vector<const atom*>(mol.atoms().size());
+      range::transform(
+       mol.atoms(), std::back_inserter(atoms), [](auto& atom) noexcept {
+         return &atom;
+       });
+      return atoms;
+    }();
+
     switch(representation_) {
     case molecule_display::spacefill: {
-      representations_.emplace_back(build_spacefill_representation(mol));
+      representations_.emplace_back(build_spacefill_representation(atoms));
     } break;
     case molecule_display::ball_and_stick: {
       representations_.emplace_back(build_ballstick_representation(mol));
     } break;
     case molecule_display::spacefill_instance: {
       representations_.emplace_back(
-       build_spacefill_representation_instanced(mol));
+       build_spacefill_representation_instanced(atoms));
     } break;
     case molecule_display::ball_and_stick_instance: {
       representations_.emplace_back(
