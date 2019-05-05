@@ -147,14 +147,7 @@ public:
     spacefill.radius_size = 1;
     spacefill.radius_type = atom_radius_kind::van_der_waals;
 
-    auto sphere_mesh_attrs =
-     detail::make_reserved_vector<sphere_mesh_attribute>(atoms.size());
-
-    atoms_to_sphere_attrs(std::forward<TSizedRangeAtoms>(atoms),
-                          std::back_inserter(sphere_mesh_attrs),
-                          {spacefill.radius_type, spacefill.radius_size, 1.});
-
-    spacefill.atom_sphere_buffers.build_buffers(sphere_mesh_attrs);
+    spacefill.build_vertex_buffers(std::forward<TSizedRangeAtoms>(atoms));
 
     return spacefill;
   }
@@ -204,14 +197,10 @@ public:
   {
     auto spacefill = spacefill_representation_instanced{};
 
-    auto sphere_mesh_attrs =
-     detail::make_reserved_vector<sphere_mesh_attribute>(atoms.size());
+    spacefill.radius_size = 1;
+    spacefill.radius_type = atom_radius_kind::van_der_waals;
 
-    atoms_to_sphere_attrs(std::forward<TSizedRangeAtoms>(atoms),
-                          std::back_inserter(sphere_mesh_attrs),
-                          {spacefill.radius_type, spacefill.radius_size, 1.});
-
-    spacefill.atom_sphere_buffers.build_buffers(sphere_mesh_attrs);
+    spacefill.build_vertex_buffers(std::forward<TSizedRangeAtoms>(atoms));
 
     return spacefill;
   }

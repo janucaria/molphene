@@ -8,6 +8,9 @@
 #include "color_light_shader.hpp"
 #include "color_manager.hpp"
 #include "m3d.hpp"
+#include "molecule_to_shape.hpp"
+#include "sphere_mesh_attribute.hpp"
+#include "utility.hpp"
 
 #include <molecule/atom.hpp>
 #include <molecule/atom_radius_kind.hpp>
@@ -26,6 +29,19 @@ public:
   color_manager color_manager;
 
   sphere_buffers_type atom_sphere_buffers;
+
+  template<typename TSizedRangeAtoms>
+  void build_vertex_buffers(TSizedRangeAtoms&& atoms)
+  {
+    auto sphere_mesh_attrs =
+     detail::make_reserved_vector<sphere_mesh_attribute>(atoms.size());
+
+    atoms_to_sphere_attrs(std::forward<TSizedRangeAtoms>(atoms),
+                          std::back_inserter(sphere_mesh_attrs),
+                          {radius_type, radius_size, 1.});
+
+    atom_sphere_buffers.build_buffers(sphere_mesh_attrs);
+  }
 
   template<typename TAtomElement>
   auto atom_radius(TAtomElement element) const noexcept -> double
