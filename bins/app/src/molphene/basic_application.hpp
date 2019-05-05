@@ -14,6 +14,7 @@
 #include <molphene/scene.hpp>
 
 #include <molphene/ballstick_representation.hpp>
+#include <molphene/buffers_builder.hpp>
 #include <molphene/camera.hpp>
 #include <molphene/cylinder_mesh_builder.hpp>
 #include <molphene/cylinder_vertex_buffers_batch.hpp>
@@ -28,8 +29,6 @@
 #include <molphene/sphere_vertex_buffers_instanced.hpp>
 
 #include <molphene/io/click_state.hpp>
-
-#include "buffers_builder.hpp"
 
 namespace molphene {
 
