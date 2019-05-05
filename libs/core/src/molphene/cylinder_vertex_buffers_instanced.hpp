@@ -9,7 +9,10 @@
 #include "color_image_texture.hpp"
 #include "color_light_shader.hpp"
 
+#include "buffers_builder.hpp"
+#include "cylinder_mesh_builder.hpp"
 #include "gl_vertex_attribs_guard.hpp"
+#include "instance_copy_builder.hpp"
 #include "shader_attrib_location.hpp"
 
 namespace molphene {
@@ -17,6 +20,10 @@ namespace molphene {
 template<typename = void>
 class basic_cylinder_vertex_buffers_instanced {
 public:
+  static constexpr auto cyl_mesh_builder = cylinder_mesh_builder<20>{};
+
+  static constexpr auto copy_builder = instance_copy_builder{};
+
   std::unique_ptr<color_image_texture> color_texture;
 
   std::unique_ptr<positions_buffer_array> buffer_positions;
@@ -26,6 +33,26 @@ public:
   std::unique_ptr<texcoords_instances_buffer_array> buffer_texcoords;
 
   std::unique_ptr<transforms_instances_buffer_array> buffer_transforms;
+
+  template<typename TRangeCylinderMeshAttr>
+  void build_buffers(TRangeCylinderMeshAttr&& cylinder_mesh_attrs)
+  {
+    const auto cylinder_attr = std::array<cylinder_mesh_attribute, 1>{};
+
+    buffer_positions =
+     build_cylinder_mesh_positions(cyl_mesh_builder, cylinder_attr);
+
+    buffer_normals =
+     build_cylinder_mesh_normals(cyl_mesh_builder, cylinder_attr);
+
+    buffer_texcoords =
+     build_cylinder_mesh_texcoord_instances(copy_builder, cylinder_mesh_attrs);
+
+    buffer_transforms =
+     build_cylinder_mesh_transform_instances(copy_builder, cylinder_mesh_attrs);
+
+    color_texture = build_shape_color_texture(cylinder_mesh_attrs);
+  }
 
   void draw(const color_light_shader& shader) const noexcept
   {
