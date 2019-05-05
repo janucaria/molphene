@@ -158,35 +158,10 @@ public:
    -> ballstick_representation
   {
     auto ballnstick = ballstick_representation{};
-    {
-      auto sphere_mesh_attrs =
-       detail::make_reserved_vector<sphere_mesh_attribute>(
-        atoms_in_bond.size());
 
-      atoms_to_sphere_attrs(
-       std::forward<TSizedRangeAtoms>(atoms_in_bond),
-       std::back_inserter(sphere_mesh_attrs),
-       {ballnstick.atom_radius_type, ballnstick.atom_radius_size, 0.5});
-
-      ballnstick.atom_sphere_buffers.build_buffers(sphere_mesh_attrs);
-    }
-
-    auto cylinder_mesh_attrs =
-     detail::make_reserved_vector<cylinder_mesh_attribute>(bond_atoms.size());
-
-    bonds_to_cylinder_attrs(std::forward<TSizedRangeBonds>(bond_atoms),
-                            std::back_insert_iterator(cylinder_mesh_attrs),
-                            {true, ballnstick.radius_size});
-
-    ballnstick.bond1_cylinder_buffers.build_buffers(cylinder_mesh_attrs);
-
-    cylinder_mesh_attrs.clear();
-
-    bonds_to_cylinder_attrs(bond_atoms,
-                            std::back_insert_iterator(cylinder_mesh_attrs),
-                            {false, ballnstick.radius_size});
-
-    ballnstick.bond2_cylinder_buffers.build_buffers(cylinder_mesh_attrs);
+    ballnstick.build_vertex_buffers(
+     std::forward<TSizedRangeAtoms>(atoms_in_bond),
+     std::forward<TSizedRangeBonds>(bond_atoms));
 
     return ballnstick;
   }
@@ -211,35 +186,10 @@ public:
    -> ballstick_representation_instanced
   {
     auto ballnstick = ballstick_representation_instanced{};
-    {
-      auto sphere_mesh_attrs =
-       detail::make_reserved_vector<sphere_mesh_attribute>(
-        atoms_in_bond.size());
 
-      atoms_to_sphere_attrs(
-       std::forward<TSizedRangeAtoms>(atoms_in_bond),
-       std::back_inserter(sphere_mesh_attrs),
-       {ballnstick.atom_radius_type, ballnstick.atom_radius_size, 0.5});
-
-      ballnstick.atom_sphere_buffers.build_buffers(sphere_mesh_attrs);
-    }
-
-    auto cylinder_mesh_attrs =
-     detail::make_reserved_vector<cylinder_mesh_attribute>(bond_atoms.size());
-
-    bonds_to_cylinder_attrs(std::forward<TSizedRangeBonds>(bond_atoms),
-                            std::back_insert_iterator(cylinder_mesh_attrs),
-                            {true, ballnstick.radius_size});
-
-    ballnstick.bond1_cylinder_buffers.build_buffers(cylinder_mesh_attrs);
-
-    cylinder_mesh_attrs.clear();
-
-    bonds_to_cylinder_attrs(bond_atoms,
-                            std::back_insert_iterator(cylinder_mesh_attrs),
-                            {false, ballnstick.radius_size});
-
-    ballnstick.bond2_cylinder_buffers.build_buffers(cylinder_mesh_attrs);
+    ballnstick.build_vertex_buffers(
+     std::forward<TSizedRangeAtoms>(atoms_in_bond),
+     std::forward<TSizedRangeBonds>(bond_atoms));
 
     return ballnstick;
   }
