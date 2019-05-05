@@ -167,48 +167,19 @@ public:
     return spacefill;
   }
 
-  auto build_ballstick_representation(const molecule& mol)
+  template<typename TSizedRangeAtoms, typename TSizedRangeBonds>
+  auto build_ballstick_representation(TSizedRangeAtoms&& atoms_in_bond,
+                                      TSizedRangeBonds&& bond_atoms)
    -> ballstick_representation
   {
-    namespace range = boost::range;
-
     auto ballnstick = ballstick_representation{};
-
-    auto bonds = detail::make_reserved_vector<const bond*>(mol.bonds().size());
-    range::transform(
-     mol.bonds(), std::back_inserter(bonds), [](auto& bond) noexcept {
-       return std::addressof(bond);
-     });
-
-    using pair_atoms_t = std::pair<const atom*, const atom*>;
-    auto bond_atoms = detail::make_reserved_vector<pair_atoms_t>(bonds.size());
-    range::transform(
-     bonds,
-     std::back_inserter(bond_atoms),
-     [& atoms = mol.atoms()](auto bond) noexcept {
-       return std::make_pair(&atoms.at(bond->atom1()),
-                             &atoms.at(bond->atom2()));
-     });
-
-    auto atoms = detail::make_reserved_vector<const atom*>(mol.atoms().size());
-    range::transform(
-     mol.atoms(), std::back_inserter(atoms), [](auto& atom) noexcept {
-       return &atom;
-     });
-
-    auto atoms_in_bond = std::set<const atom*>{};
-    boost::for_each(
-     bond_atoms, [&](auto atom_pair) noexcept {
-       atoms_in_bond.insert({atom_pair.first, atom_pair.second});
-     });
-
     {
       auto sphere_mesh_attrs =
        detail::make_reserved_vector<sphere_mesh_attribute>(
         atoms_in_bond.size());
 
       atoms_to_sphere_attrs(
-       atoms_in_bond,
+       std::forward<TSizedRangeAtoms>(atoms_in_bond),
        std::back_inserter(sphere_mesh_attrs),
        {ballnstick.atom_radius_type, ballnstick.atom_radius_size, 0.5});
 
@@ -228,7 +199,7 @@ public:
     auto cylinder_mesh_attrs =
      detail::make_reserved_vector<cylinder_mesh_attribute>(bond_atoms.size());
 
-    bonds_to_cylinder_attrs(bond_atoms,
+    bonds_to_cylinder_attrs(std::forward<TSizedRangeBonds>(bond_atoms),
                             std::back_insert_iterator(cylinder_mesh_attrs),
                             {true, ballnstick.radius_size});
 
@@ -298,48 +269,19 @@ public:
     return spacefill;
   }
 
-  auto build_ballstick_instance_representation(const molecule& mol)
+  template<typename TSizedRangeAtoms, typename TSizedRangeBonds>
+  auto build_ballstick_instance_representation(TSizedRangeAtoms&& atoms_in_bond,
+                                               TSizedRangeBonds&& bond_atoms)
    -> ballstick_representation_instanced
   {
-    namespace range = boost::range;
-
     auto ballnstick = ballstick_representation_instanced{};
-
-    auto bonds = detail::make_reserved_vector<const bond*>(mol.bonds().size());
-    range::transform(
-     mol.bonds(), std::back_inserter(bonds), [](auto& bond) noexcept {
-       return std::addressof(bond);
-     });
-
-    using pair_atoms_t = std::pair<const atom*, const atom*>;
-    auto bond_atoms = detail::make_reserved_vector<pair_atoms_t>(bonds.size());
-    range::transform(
-     bonds,
-     std::back_inserter(bond_atoms),
-     [& atoms = mol.atoms()](auto bond) noexcept {
-       return std::make_pair(&atoms.at(bond->atom1()),
-                             &atoms.at(bond->atom2()));
-     });
-
-    auto atoms = detail::make_reserved_vector<const atom*>(mol.atoms().size());
-    range::transform(
-     mol.atoms(), std::back_inserter(atoms), [](auto& atom) noexcept {
-       return &atom;
-     });
-
-    auto atoms_in_bond = std::set<const atom*>{};
-    boost::for_each(
-     bond_atoms, [&](auto atom_pair) noexcept {
-       atoms_in_bond.insert({atom_pair.first, atom_pair.second});
-     });
-
     {
       auto sphere_mesh_attrs =
        detail::make_reserved_vector<sphere_mesh_attribute>(
         atoms_in_bond.size());
 
       atoms_to_sphere_attrs(
-       atoms_in_bond,
+       std::forward<TSizedRangeAtoms>(atoms_in_bond),
        std::back_inserter(sphere_mesh_attrs),
        {ballnstick.atom_radius_type, ballnstick.atom_radius_size, 0.5});
 
@@ -366,7 +308,7 @@ public:
 
     const auto cylinder_attr = std::array<cylinder_mesh_attribute, 1>{};
 
-    bonds_to_cylinder_attrs(bond_atoms,
+    bonds_to_cylinder_attrs(std::forward<TSizedRangeBonds>(bond_atoms),
                             std::back_insert_iterator(cylinder_mesh_attrs),
                             {true, ballnstick.radius_size});
 
@@ -425,12 +367,47 @@ public:
       return atoms;
     }();
 
+    const auto bond_atoms = [&]() {
+      auto bonds =
+       detail::make_reserved_vector<const bond*>(mol.bonds().size());
+      range::transform(
+       mol.bonds(), std::back_inserter(bonds), [](auto& bond) noexcept {
+         return std::addressof(bond);
+       });
+
+      using pair_atoms_t = std::pair<const atom*, const atom*>;
+      auto bond_atoms =
+       detail::make_reserved_vector<pair_atoms_t>(bonds.size());
+
+      range::transform(
+       bonds,
+       std::back_inserter(bond_atoms),
+       [& atoms = mol.atoms()](auto bond) noexcept {
+         return std::make_pair(&atoms.at(bond->atom1()),
+                               &atoms.at(bond->atom2()));
+       });
+
+      return bond_atoms;
+    }();
+
+    const auto atoms_in_bond = [&]() {
+      auto atoms_in_bond = std::set<const atom*>{};
+
+      boost::for_each(
+       bond_atoms, [&](auto atom_pair) noexcept {
+         atoms_in_bond.insert({atom_pair.first, atom_pair.second});
+       });
+
+      return atoms_in_bond;
+    }();
+
     switch(representation_) {
     case molecule_display::spacefill: {
       representations_.emplace_back(build_spacefill_representation(atoms));
     } break;
     case molecule_display::ball_and_stick: {
-      representations_.emplace_back(build_ballstick_representation(mol));
+      representations_.emplace_back(
+       build_ballstick_representation(atoms_in_bond, bond_atoms));
     } break;
     case molecule_display::spacefill_instance: {
       representations_.emplace_back(
@@ -438,7 +415,7 @@ public:
     } break;
     case molecule_display::ball_and_stick_instance: {
       representations_.emplace_back(
-       build_ballstick_instance_representation(mol));
+       build_ballstick_instance_representation(atoms_in_bond, bond_atoms));
     } break;
     }
   }
