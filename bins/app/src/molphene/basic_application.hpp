@@ -36,6 +36,7 @@ template<typename TApp>
 class basic_application {
 public:
   using camera_type = camera<void>;
+  
   using scene_type = scene;
 
   using spacefill_representation_batch =
@@ -53,12 +54,6 @@ public:
                                   cylinder_vertex_buffers_instanced>;
 
   using representations_container = std::list<drawable>;
-
-  static constexpr auto sph_mesh_builder = sphere_mesh_builder<10, 20>{};
-
-  static constexpr auto cyl_mesh_builder = cylinder_mesh_builder<20>{};
-
-  static constexpr auto copy_builder = instance_copy_builder{};
 
   void setup()
   {
