@@ -38,7 +38,7 @@ public:
   using camera_type = camera<void>;
   using scene_type = scene;
 
-  using spacefill_representation =
+  using spacefill_representation_batch =
    basic_spacefill_representation<sphere_vertex_buffers_batch>;
 
   using spacefill_representation_instanced =
@@ -64,7 +64,7 @@ public:
   {
     static_cast<TApp*>(this)->init_context();
 
-    representations_.emplace_back(spacefill_representation{});
+    representations_.emplace_back(spacefill_representation_batch{});
     representations_.emplace_back(ballstick_representation{});
     representations_.emplace_back(spacefill_representation_instanced{});
     representations_.emplace_back(ballstick_representation_instanced{});
@@ -138,11 +138,11 @@ public:
     reset_representation(mol);
   }
 
-  template<typename TSizedRangeAtoms>
+  template<typename TSpacefill, typename TSizedRangeAtoms>
   auto build_spacefill_representation(TSizedRangeAtoms&& atoms) const
-   -> spacefill_representation
+   -> TSpacefill
   {
-    auto spacefill = spacefill_representation{};
+    auto spacefill = TSpacefill{};
 
     spacefill.radius_size = 1;
     spacefill.radius_type = atom_radius_kind::van_der_waals;
@@ -167,17 +167,19 @@ public:
   }
 
   template<typename TSizedRangeAtoms>
+  auto build_spacefill_representation_batch(TSizedRangeAtoms&& atoms) const
+   -> spacefill_representation_batch
+  {
+    return build_spacefill_representation<spacefill_representation_batch>(
+     std::forward<TSizedRangeAtoms>(atoms));
+  }
+
+  template<typename TSizedRangeAtoms>
   auto build_spacefill_representation_instanced(TSizedRangeAtoms&& atoms) const
    -> spacefill_representation_instanced
   {
-    auto spacefill = spacefill_representation_instanced{};
-
-    spacefill.radius_size = 1;
-    spacefill.radius_type = atom_radius_kind::van_der_waals;
-
-    spacefill.build_vertex_buffers(std::forward<TSizedRangeAtoms>(atoms));
-
-    return spacefill;
+    return build_spacefill_representation<spacefill_representation_instanced>(
+     std::forward<TSizedRangeAtoms>(atoms));
   }
 
   template<typename TSizedRangeAtoms, typename TSizedRangeBonds>
@@ -246,7 +248,8 @@ public:
 
     switch(representation_) {
     case molecule_display::spacefill: {
-      representations_.emplace_back(build_spacefill_representation(atoms));
+      representations_.emplace_back(
+       build_spacefill_representation_batch(atoms));
     } break;
     case molecule_display::ball_and_stick: {
       representations_.emplace_back(
