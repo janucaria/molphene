@@ -44,7 +44,7 @@ public:
   using spacefill_representation_instanced =
    basic_spacefill_representation<sphere_vertex_buffers_instanced>;
 
-  using ballstick_representation =
+  using ballstick_representation_batch =
    basic_ballstick_representation<sphere_vertex_buffers_batch,
                                   cylinder_vertex_buffers_batch>;
 
@@ -65,7 +65,7 @@ public:
     static_cast<TApp*>(this)->init_context();
 
     representations_.emplace_back(spacefill_representation_batch{});
-    representations_.emplace_back(ballstick_representation{});
+    representations_.emplace_back(ballstick_representation_batch{});
     representations_.emplace_back(spacefill_representation_instanced{});
     representations_.emplace_back(ballstick_representation_instanced{});
 
@@ -152,12 +152,14 @@ public:
     return spacefill;
   }
 
-  template<typename TSizedRangeAtoms, typename TSizedRangeBonds>
+  template<typename TBallstick,
+           typename TSizedRangeAtoms,
+           typename TSizedRangeBonds>
   auto build_ballstick_representation(TSizedRangeAtoms&& atoms_in_bond,
                                       TSizedRangeBonds&& bond_atoms)
-   -> ballstick_representation
+   -> TBallstick
   {
-    auto ballnstick = ballstick_representation{};
+    auto ballnstick = TBallstick{};
 
     ballnstick.build_vertex_buffers(
      std::forward<TSizedRangeAtoms>(atoms_in_bond),
@@ -183,17 +185,23 @@ public:
   }
 
   template<typename TSizedRangeAtoms, typename TSizedRangeBonds>
+  auto build_ballstick_representation_batch(TSizedRangeAtoms&& atoms_in_bond,
+                                            TSizedRangeBonds&& bond_atoms)
+   -> ballstick_representation_batch
+  {
+    return build_ballstick_representation<ballstick_representation_batch>(
+     std::forward<TSizedRangeAtoms>(atoms_in_bond),
+     std::forward<TSizedRangeBonds>(bond_atoms));
+  }
+
+  template<typename TSizedRangeAtoms, typename TSizedRangeBonds>
   auto build_ballstick_instance_representation(TSizedRangeAtoms&& atoms_in_bond,
                                                TSizedRangeBonds&& bond_atoms)
    -> ballstick_representation_instanced
   {
-    auto ballnstick = ballstick_representation_instanced{};
-
-    ballnstick.build_vertex_buffers(
+    return build_ballstick_representation<ballstick_representation_instanced>(
      std::forward<TSizedRangeAtoms>(atoms_in_bond),
      std::forward<TSizedRangeBonds>(bond_atoms));
-
-    return ballnstick;
   }
 
   void reset_representation(const molecule& mol) noexcept
@@ -253,7 +261,7 @@ public:
     } break;
     case molecule_display::ball_and_stick: {
       representations_.emplace_back(
-       build_ballstick_representation(atoms_in_bond, bond_atoms));
+       build_ballstick_representation_batch(atoms_in_bond, bond_atoms));
     } break;
     case molecule_display::spacefill_instance: {
       representations_.emplace_back(
