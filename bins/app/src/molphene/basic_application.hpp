@@ -195,8 +195,9 @@ public:
   }
 
   template<typename TSizedRangeAtoms, typename TSizedRangeBonds>
-  auto build_ballstick_instance_representation(TSizedRangeAtoms&& atoms_in_bond,
-                                               TSizedRangeBonds&& bond_atoms)
+  auto
+  build_ballstick_representation_instanced(TSizedRangeAtoms&& atoms_in_bond,
+                                           TSizedRangeBonds&& bond_atoms)
    -> ballstick_representation_instanced
   {
     return build_ballstick_representation<ballstick_representation_instanced>(
@@ -269,7 +270,7 @@ public:
     } break;
     case molecule_display::ball_and_stick_instance: {
       representations_.emplace_back(
-       build_ballstick_instance_representation(atoms_in_bond, bond_atoms));
+       build_ballstick_representation_instanced(atoms_in_bond, bond_atoms));
     } break;
     }
   }
