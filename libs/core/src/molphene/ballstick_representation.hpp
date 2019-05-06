@@ -7,13 +7,13 @@
 #include "color_image_texture.hpp"
 #include "color_light_shader.hpp"
 #include "color_manager.hpp"
+#include "cylinder_mesh_attribute.hpp"
 #include "cylinder_vertex_buffers_batch.hpp"
 #include "m3d.hpp"
+#include "molecule_to_shape.hpp"
 #include "sphere_mesh_attribute.hpp"
 #include "sphere_vertex_buffers_batch.hpp"
 #include "utility.hpp"
-#include "cylinder_mesh_attribute.hpp"
-#include "molecule_to_shape.hpp"
 
 #include <molecule/atom.hpp>
 #include <molecule/atom_radius_kind.hpp>

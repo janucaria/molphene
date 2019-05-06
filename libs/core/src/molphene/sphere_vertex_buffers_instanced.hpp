@@ -14,6 +14,7 @@
 #include "gl_vertex_attribs_guard.hpp"
 #include "instance_copy_builder.hpp"
 #include "shader_attrib_location.hpp"
+#include "sphere_mesh_attribute.hpp"
 #include "sphere_mesh_builder.hpp"
 #include "utility.hpp"
 

@@ -10,6 +10,7 @@
 #include "color_light_shader.hpp"
 
 #include "buffers_builder.hpp"
+#include "cylinder_mesh_attribute.hpp"
 #include "cylinder_mesh_builder.hpp"
 #include "gl_vertex_attribs_guard.hpp"
 #include "instance_copy_builder.hpp"
