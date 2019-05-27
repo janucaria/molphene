@@ -1,14 +1,14 @@
 #ifndef MOLPHENE_BUFFER_BUILDER_HPP
 #define MOLPHENE_BUFFER_BUILDER_HPP
 
-#include <molphene/stdafx.hpp>
+#include "stdafx.hpp"
 
-#include <molphene/attribs_buffer_array.hpp>
-#include <molphene/color_image_texture.hpp>
-#include <molphene/cylinder_mesh_builder.hpp>
-#include <molphene/m3d.hpp>
-#include <molphene/sphere_mesh_builder.hpp>
-#include <molphene/utility.hpp>
+#include "attribs_buffer_array.hpp"
+#include "color_image_texture.hpp"
+#include "cylinder_mesh_builder.hpp"
+#include "m3d.hpp"
+#include "sphere_mesh_builder.hpp"
+#include "utility.hpp"
 
 namespace molphene {
 

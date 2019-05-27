@@ -14,6 +14,7 @@
 #include <molphene/scene.hpp>
 
 #include <molphene/ballstick_representation.hpp>
+#include <molphene/buffers_builder.hpp>
 #include <molphene/camera.hpp>
 #include <molphene/cylinder_mesh_builder.hpp>
 #include <molphene/cylinder_vertex_buffers_batch.hpp>
@@ -29,23 +30,22 @@
 
 #include <molphene/io/click_state.hpp>
 
-#include "buffers_builder.hpp"
-
 namespace molphene {
 
 template<typename TApp>
 class basic_application {
 public:
   using camera_type = camera<void>;
+  
   using scene_type = scene;
 
-  using spacefill_representation =
+  using spacefill_representation_batch =
    basic_spacefill_representation<sphere_vertex_buffers_batch>;
 
   using spacefill_representation_instanced =
    basic_spacefill_representation<sphere_vertex_buffers_instanced>;
 
-  using ballstick_representation =
+  using ballstick_representation_batch =
    basic_ballstick_representation<sphere_vertex_buffers_batch,
                                   cylinder_vertex_buffers_batch>;
 
@@ -55,18 +55,12 @@ public:
 
   using representations_container = std::list<drawable>;
 
-  static constexpr auto sph_mesh_builder = sphere_mesh_builder<10, 20>{};
-
-  static constexpr auto cyl_mesh_builder = cylinder_mesh_builder<20>{};
-
-  static constexpr auto copy_builder = instance_copy_builder{};
-
   void setup()
   {
     static_cast<TApp*>(this)->init_context();
 
-    representations_.emplace_back(spacefill_representation{});
-    representations_.emplace_back(ballstick_representation{});
+    representations_.emplace_back(spacefill_representation_batch{});
+    representations_.emplace_back(ballstick_representation_batch{});
     representations_.emplace_back(spacefill_representation_instanced{});
     representations_.emplace_back(ballstick_representation_instanced{});
 
@@ -139,307 +133,139 @@ public:
     reset_representation(mol);
   }
 
-  auto build_spacefill_representation(const molecule& mol) const
-   -> spacefill_representation
+  template<typename TSpacefill, typename TSizedRangeAtoms>
+  auto build_spacefill_representation(TSizedRangeAtoms&& atoms) const
+   -> TSpacefill
   {
-    namespace range = boost::range;
+    auto spacefill = TSpacefill{};
 
-    auto spacefill = spacefill_representation{};
+    spacefill.radius_size = 1;
+    spacefill.radius_type = atom_radius_kind::van_der_waals;
 
-    auto atoms = detail::make_reserved_vector<const atom*>(mol.atoms().size());
-    range::transform(
-     mol.atoms(), std::back_inserter(atoms), [](auto& atom) noexcept {
-       return &atom;
-     });
-
-    auto sphere_mesh_attrs =
-     detail::make_reserved_vector<sphere_mesh_attribute>(atoms.size());
-
-    atoms_to_sphere_attrs(atoms,
-                          std::back_inserter(sphere_mesh_attrs),
-                          {spacefill.radius_type, spacefill.radius_size, 1.});
-
-    spacefill.atom_sphere_buffers.buffer_positions =
-     build_sphere_mesh_positions(sph_mesh_builder, sphere_mesh_attrs);
-
-    spacefill.atom_sphere_buffers.buffer_normals =
-     build_sphere_mesh_normals(sph_mesh_builder, sphere_mesh_attrs);
-
-    spacefill.atom_sphere_buffers.buffer_texcoords =
-     build_sphere_mesh_texcoords(sph_mesh_builder, sphere_mesh_attrs);
-
-    spacefill.atom_sphere_buffers.color_texture =
-     build_shape_color_texture(sphere_mesh_attrs);
+    spacefill.build_vertex_buffers(std::forward<TSizedRangeAtoms>(atoms));
 
     return spacefill;
   }
 
-  auto build_ballstick_representation(const molecule& mol)
-   -> ballstick_representation
+  template<typename TBallstick,
+           typename TSizedRangeAtoms,
+           typename TSizedRangeBonds>
+  auto build_ballstick_representation(TSizedRangeAtoms&& atoms_in_bond,
+                                      TSizedRangeBonds&& bond_atoms)
+   -> TBallstick
   {
-    namespace range = boost::range;
+    auto ballnstick = TBallstick{};
 
-    auto ballnstick = ballstick_representation{};
-
-    auto bonds = detail::make_reserved_vector<const bond*>(mol.bonds().size());
-    range::transform(
-     mol.bonds(), std::back_inserter(bonds), [](auto& bond) noexcept {
-       return std::addressof(bond);
-     });
-
-    using pair_atoms_t = std::pair<const atom*, const atom*>;
-    auto bond_atoms = detail::make_reserved_vector<pair_atoms_t>(bonds.size());
-    range::transform(
-     bonds,
-     std::back_inserter(bond_atoms),
-     [& atoms = mol.atoms()](auto bond) noexcept {
-       return std::make_pair(&atoms.at(bond->atom1()),
-                             &atoms.at(bond->atom2()));
-     });
-
-    auto atoms = detail::make_reserved_vector<const atom*>(mol.atoms().size());
-    range::transform(
-     mol.atoms(), std::back_inserter(atoms), [](auto& atom) noexcept {
-       return &atom;
-     });
-
-    auto atoms_in_bond = std::set<const atom*>{};
-    boost::for_each(
-     bond_atoms, [&](auto atom_pair) noexcept {
-       atoms_in_bond.insert({atom_pair.first, atom_pair.second});
-     });
-
-    {
-      auto sphere_mesh_attrs =
-       detail::make_reserved_vector<sphere_mesh_attribute>(
-        atoms_in_bond.size());
-
-      atoms_to_sphere_attrs(
-       atoms_in_bond,
-       std::back_inserter(sphere_mesh_attrs),
-       {ballnstick.atom_radius_type, ballnstick.atom_radius_size, 0.5});
-
-      ballnstick.atom_sphere_buffers.buffer_positions =
-       build_sphere_mesh_positions(sph_mesh_builder, sphere_mesh_attrs);
-
-      ballnstick.atom_sphere_buffers.buffer_normals =
-       build_sphere_mesh_normals(sph_mesh_builder, sphere_mesh_attrs);
-
-      ballnstick.atom_sphere_buffers.buffer_texcoords =
-       build_sphere_mesh_texcoords(sph_mesh_builder, sphere_mesh_attrs);
-
-      ballnstick.atom_sphere_buffers.color_texture =
-       build_shape_color_texture(sphere_mesh_attrs);
-    }
-
-    auto cylinder_mesh_attrs =
-     detail::make_reserved_vector<cylinder_mesh_attribute>(bond_atoms.size());
-
-    bonds_to_cylinder_attrs(bond_atoms,
-                            std::back_insert_iterator(cylinder_mesh_attrs),
-                            {true, ballnstick.radius_size});
-
-    ballnstick.bond1_cylinder_buffers.buffer_positions =
-     build_cylinder_mesh_positions(cyl_mesh_builder, cylinder_mesh_attrs);
-
-    ballnstick.bond1_cylinder_buffers.buffer_normals =
-     build_cylinder_mesh_normals(cyl_mesh_builder, cylinder_mesh_attrs);
-
-    ballnstick.bond1_cylinder_buffers.buffer_texcoords =
-     build_cylinder_mesh_texcoords(cyl_mesh_builder, cylinder_mesh_attrs);
-
-    ballnstick.bond1_cylinder_buffers.color_texture =
-     build_shape_color_texture(cylinder_mesh_attrs);
-
-    cylinder_mesh_attrs.clear();
-
-    bonds_to_cylinder_attrs(bond_atoms,
-                            std::back_insert_iterator(cylinder_mesh_attrs),
-                            {false, ballnstick.radius_size});
-
-    ballnstick.bond2_cylinder_buffers.buffer_positions =
-     build_cylinder_mesh_positions(cyl_mesh_builder, cylinder_mesh_attrs);
-
-    ballnstick.bond2_cylinder_buffers.buffer_normals =
-     build_cylinder_mesh_normals(cyl_mesh_builder, cylinder_mesh_attrs);
-
-    ballnstick.bond2_cylinder_buffers.buffer_texcoords =
-     build_cylinder_mesh_texcoords(cyl_mesh_builder, cylinder_mesh_attrs);
-
-    ballnstick.bond2_cylinder_buffers.color_texture =
-     build_shape_color_texture(cylinder_mesh_attrs);
+    ballnstick.build_vertex_buffers(
+     std::forward<TSizedRangeAtoms>(atoms_in_bond),
+     std::forward<TSizedRangeBonds>(bond_atoms));
 
     return ballnstick;
   }
 
-  auto build_spacefill_representation_instanced(const molecule& mol) const
+  template<typename TSizedRangeAtoms>
+  auto build_spacefill_representation_batch(TSizedRangeAtoms&& atoms) const
+   -> spacefill_representation_batch
+  {
+    return build_spacefill_representation<spacefill_representation_batch>(
+     std::forward<TSizedRangeAtoms>(atoms));
+  }
+
+  template<typename TSizedRangeAtoms>
+  auto build_spacefill_representation_instanced(TSizedRangeAtoms&& atoms) const
    -> spacefill_representation_instanced
   {
-    namespace range = boost::range;
-
-    auto spacefill = spacefill_representation_instanced{};
-
-    auto atoms = detail::make_reserved_vector<const atom*>(mol.atoms().size());
-    range::transform(
-     mol.atoms(), std::back_inserter(atoms), [](auto& atom) noexcept {
-       return &atom;
-     });
-
-    auto sphere_mesh_attrs =
-     detail::make_reserved_vector<sphere_mesh_attribute>(atoms.size());
-
-    atoms_to_sphere_attrs(atoms,
-                          std::back_inserter(sphere_mesh_attrs),
-                          {spacefill.radius_type, spacefill.radius_size, 1.});
-
-    const auto sphere_attr = std::array<sphere_mesh_attribute, 1>{};
-
-    spacefill.atom_sphere_buffers.buffer_positions =
-     build_sphere_mesh_positions(sph_mesh_builder, sphere_attr);
-
-    spacefill.atom_sphere_buffers.buffer_normals =
-     build_sphere_mesh_normals(sph_mesh_builder, sphere_attr);
-
-    spacefill.atom_sphere_buffers.buffer_texcoords =
-     build_sphere_mesh_texcoord_instances(copy_builder, sphere_mesh_attrs);
-
-    spacefill.atom_sphere_buffers.buffer_transforms =
-     build_sphere_mesh_transform_instances(copy_builder, sphere_mesh_attrs);
-
-    spacefill.atom_sphere_buffers.color_texture =
-     build_shape_color_texture(sphere_mesh_attrs);
-
-    return spacefill;
+    return build_spacefill_representation<spacefill_representation_instanced>(
+     std::forward<TSizedRangeAtoms>(atoms));
   }
 
-  auto build_ballstick_instance_representation(const molecule& mol)
+  template<typename TSizedRangeAtoms, typename TSizedRangeBonds>
+  auto build_ballstick_representation_batch(TSizedRangeAtoms&& atoms_in_bond,
+                                            TSizedRangeBonds&& bond_atoms)
+   -> ballstick_representation_batch
+  {
+    return build_ballstick_representation<ballstick_representation_batch>(
+     std::forward<TSizedRangeAtoms>(atoms_in_bond),
+     std::forward<TSizedRangeBonds>(bond_atoms));
+  }
+
+  template<typename TSizedRangeAtoms, typename TSizedRangeBonds>
+  auto
+  build_ballstick_representation_instanced(TSizedRangeAtoms&& atoms_in_bond,
+                                           TSizedRangeBonds&& bond_atoms)
    -> ballstick_representation_instanced
   {
-    namespace range = boost::range;
-
-    auto ballnstick = ballstick_representation_instanced{};
-
-    auto bonds = detail::make_reserved_vector<const bond*>(mol.bonds().size());
-    range::transform(
-     mol.bonds(), std::back_inserter(bonds), [](auto& bond) noexcept {
-       return std::addressof(bond);
-     });
-
-    using pair_atoms_t = std::pair<const atom*, const atom*>;
-    auto bond_atoms = detail::make_reserved_vector<pair_atoms_t>(bonds.size());
-    range::transform(
-     bonds,
-     std::back_inserter(bond_atoms),
-     [& atoms = mol.atoms()](auto bond) noexcept {
-       return std::make_pair(&atoms.at(bond->atom1()),
-                             &atoms.at(bond->atom2()));
-     });
-
-    auto atoms = detail::make_reserved_vector<const atom*>(mol.atoms().size());
-    range::transform(
-     mol.atoms(), std::back_inserter(atoms), [](auto& atom) noexcept {
-       return &atom;
-     });
-
-    auto atoms_in_bond = std::set<const atom*>{};
-    boost::for_each(
-     bond_atoms, [&](auto atom_pair) noexcept {
-       atoms_in_bond.insert({atom_pair.first, atom_pair.second});
-     });
-
-    {
-      auto sphere_mesh_attrs =
-       detail::make_reserved_vector<sphere_mesh_attribute>(
-        atoms_in_bond.size());
-
-      atoms_to_sphere_attrs(
-       atoms_in_bond,
-       std::back_inserter(sphere_mesh_attrs),
-       {ballnstick.atom_radius_type, ballnstick.atom_radius_size, 0.5});
-
-      const auto sphere_attr = std::array<sphere_mesh_attribute, 1>{};
-
-      ballnstick.atom_sphere_buffers.buffer_positions =
-       build_sphere_mesh_positions(sph_mesh_builder, sphere_attr);
-
-      ballnstick.atom_sphere_buffers.buffer_normals =
-       build_sphere_mesh_normals(sph_mesh_builder, sphere_attr);
-
-      ballnstick.atom_sphere_buffers.buffer_texcoords =
-       build_sphere_mesh_texcoord_instances(copy_builder, sphere_mesh_attrs);
-
-      ballnstick.atom_sphere_buffers.buffer_transforms =
-       build_sphere_mesh_transform_instances(copy_builder, sphere_mesh_attrs);
-
-      ballnstick.atom_sphere_buffers.color_texture =
-       build_shape_color_texture(sphere_mesh_attrs);
-    }
-
-    auto cylinder_mesh_attrs =
-     detail::make_reserved_vector<cylinder_mesh_attribute>(bond_atoms.size());
-
-    const auto cylinder_attr = std::array<cylinder_mesh_attribute, 1>{};
-
-    bonds_to_cylinder_attrs(bond_atoms,
-                            std::back_insert_iterator(cylinder_mesh_attrs),
-                            {true, ballnstick.radius_size});
-
-    ballnstick.bond1_cylinder_buffers.buffer_positions =
-     build_cylinder_mesh_positions(cyl_mesh_builder, cylinder_attr);
-
-    ballnstick.bond1_cylinder_buffers.buffer_normals =
-     build_cylinder_mesh_normals(cyl_mesh_builder, cylinder_attr);
-
-    ballnstick.bond1_cylinder_buffers.buffer_texcoords =
-     build_cylinder_mesh_texcoord_instances(copy_builder, cylinder_mesh_attrs);
-
-    ballnstick.bond1_cylinder_buffers.buffer_transforms =
-     build_cylinder_mesh_transform_instances(copy_builder, cylinder_mesh_attrs);
-
-    ballnstick.bond1_cylinder_buffers.color_texture =
-     build_shape_color_texture(cylinder_mesh_attrs);
-
-    cylinder_mesh_attrs.clear();
-
-    bonds_to_cylinder_attrs(bond_atoms,
-                            std::back_insert_iterator(cylinder_mesh_attrs),
-                            {false, ballnstick.radius_size});
-
-    ballnstick.bond2_cylinder_buffers.buffer_positions =
-     build_cylinder_mesh_positions(cyl_mesh_builder, cylinder_attr);
-
-    ballnstick.bond2_cylinder_buffers.buffer_normals =
-     build_cylinder_mesh_normals(cyl_mesh_builder, cylinder_attr);
-
-    ballnstick.bond2_cylinder_buffers.buffer_texcoords =
-     build_cylinder_mesh_texcoord_instances(copy_builder, cylinder_mesh_attrs);
-
-    ballnstick.bond2_cylinder_buffers.buffer_transforms =
-     build_cylinder_mesh_transform_instances(copy_builder, cylinder_mesh_attrs);
-
-    ballnstick.bond2_cylinder_buffers.color_texture =
-     build_shape_color_texture(cylinder_mesh_attrs);
-
-    return ballnstick;
+    return build_ballstick_representation<ballstick_representation_instanced>(
+     std::forward<TSizedRangeAtoms>(atoms_in_bond),
+     std::forward<TSizedRangeBonds>(bond_atoms));
   }
 
   void reset_representation(const molecule& mol) noexcept
   {
+    namespace range = boost::range;
+
     representations_.clear();
+
+    const auto atoms = [&]() {
+      auto atoms =
+       detail::make_reserved_vector<const atom*>(mol.atoms().size());
+      range::transform(
+       mol.atoms(), std::back_inserter(atoms), [](auto& atom) noexcept {
+         return &atom;
+       });
+      return atoms;
+    }();
+
+    const auto bond_atoms = [&]() {
+      auto bonds =
+       detail::make_reserved_vector<const bond*>(mol.bonds().size());
+      range::transform(
+       mol.bonds(), std::back_inserter(bonds), [](auto& bond) noexcept {
+         return std::addressof(bond);
+       });
+
+      using pair_atoms_t = std::pair<const atom*, const atom*>;
+      auto bond_atoms =
+       detail::make_reserved_vector<pair_atoms_t>(bonds.size());
+
+      range::transform(
+       bonds,
+       std::back_inserter(bond_atoms),
+       [& atoms = mol.atoms()](auto bond) noexcept {
+         return std::make_pair(&atoms.at(bond->atom1()),
+                               &atoms.at(bond->atom2()));
+       });
+
+      return bond_atoms;
+    }();
+
+    const auto atoms_in_bond = [&]() {
+      auto atoms_in_bond = std::set<const atom*>{};
+
+      boost::for_each(
+       bond_atoms, [&](auto atom_pair) noexcept {
+         atoms_in_bond.insert({atom_pair.first, atom_pair.second});
+       });
+
+      return atoms_in_bond;
+    }();
+
     switch(representation_) {
     case molecule_display::spacefill: {
-      representations_.emplace_back(build_spacefill_representation(mol));
+      representations_.emplace_back(
+       build_spacefill_representation_batch(atoms));
     } break;
     case molecule_display::ball_and_stick: {
-      representations_.emplace_back(build_ballstick_representation(mol));
+      representations_.emplace_back(
+       build_ballstick_representation_batch(atoms_in_bond, bond_atoms));
     } break;
     case molecule_display::spacefill_instance: {
       representations_.emplace_back(
-       build_spacefill_representation_instanced(mol));
+       build_spacefill_representation_instanced(atoms));
     } break;
     case molecule_display::ball_and_stick_instance: {
       representations_.emplace_back(
-       build_ballstick_instance_representation(mol));
+       build_ballstick_representation_instanced(atoms_in_bond, bond_atoms));
     } break;
     }
   }

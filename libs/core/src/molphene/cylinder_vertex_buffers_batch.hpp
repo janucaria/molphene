@@ -9,6 +9,8 @@
 #include "color_image_texture.hpp"
 #include "color_light_shader.hpp"
 
+#include "buffers_builder.hpp"
+#include "cylinder_mesh_builder.hpp"
 #include "gl_vertex_attribs_guard.hpp"
 #include "shader_attrib_location.hpp"
 
@@ -17,6 +19,8 @@ namespace molphene {
 template<typename = void>
 class basic_cylinder_vertex_buffers_batch {
 public:
+  static constexpr auto cyl_mesh_builder = cylinder_mesh_builder<20>{};
+
   std::unique_ptr<color_image_texture> color_texture;
 
   std::unique_ptr<positions_buffer_array> buffer_positions;
@@ -24,6 +28,21 @@ public:
   std::unique_ptr<normals_buffer_array> buffer_normals;
 
   std::unique_ptr<texcoords_buffer_array> buffer_texcoords;
+
+  template<typename TRangeCylinderMeshAttr>
+  void build_buffers(TRangeCylinderMeshAttr&& cylinder_mesh_attrs)
+  {
+    buffer_positions =
+     build_cylinder_mesh_positions(cyl_mesh_builder, cylinder_mesh_attrs);
+
+    buffer_normals =
+     build_cylinder_mesh_normals(cyl_mesh_builder, cylinder_mesh_attrs);
+
+    buffer_texcoords =
+     build_cylinder_mesh_texcoords(cyl_mesh_builder, cylinder_mesh_attrs);
+
+    color_texture = build_shape_color_texture(cylinder_mesh_attrs);
+  }
 
   void draw(const color_light_shader& shader) const noexcept
   {
