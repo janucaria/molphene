@@ -26,7 +26,7 @@ public:
 
   double radius_size{1};
 
-  color_manager color_manager;
+  ColorManager color_manager;
 
   sphere_buffers_type atom_sphere_buffers;
 

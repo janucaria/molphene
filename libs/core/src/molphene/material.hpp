@@ -6,7 +6,7 @@
 namespace molphene {
 
 template<typename TColor, typename TConfig>
-class material {
+class Material {
 public:
   using float_type = typename type_configs<TConfig>::float_type;
   using color_type = TColor;
@@ -17,7 +17,7 @@ public:
   color_type specular_color{0};
   float_type shininess{0.2};
 
-  constexpr material() noexcept = default;
+  constexpr Material() noexcept = default;
 };
 } // namespace molphene
 

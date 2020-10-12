@@ -128,4 +128,5 @@ typings/
 .next
 
 ## Workspace
-build
+build/
+install/

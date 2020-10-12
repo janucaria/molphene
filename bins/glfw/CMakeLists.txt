@@ -3,8 +3,8 @@ add_executable(molphene-glfw)
 
 target_sources(molphene-glfw
   PRIVATE
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/application.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/main.cpp"
+    src/application.cpp
+    src/main.cpp
 )
 
 target_link_libraries(molphene-glfw
@@ -21,11 +21,11 @@ if(EMSCRIPTEN)
 
 else()
 
-  find_package(glfw3 REQUIRED)
-  target_link_libraries(molphene-glfw PRIVATE glfw)
-
-  if(APPLE)
-    target_link_libraries(molphene-glfw PRIVATE "-framework CoreVideo" "-framework IOKit" "-framework Cocoa")
-  endif()
+  target_link_libraries(molphene-glfw
+    PRIVATE
+      ${CMAKE_DL_LIBS}
+      glfw
+      glad::glad
+  )
 
 endif()

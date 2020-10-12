@@ -28,7 +28,7 @@ void atoms_to_sphere_attrs(const TSizedRange& atoms,
   using float_type = double;
   using vec2f = vec2<float_type>;
 
-  const auto col_manager = color_manager{};
+  const auto col_manager = ColorManager{};
 
   const auto tex_size =
    static_cast<std::size_t>(std::ceil(std::sqrt(atoms.size())));
@@ -79,7 +79,7 @@ void bonds_to_cylinder_attrs(const TSizeRange& bond_atoms,
   using float_type = double;
   using vec2f = vec2<float_type>;
 
-  const auto col_manager = color_manager{};
+  const auto col_manager = ColorManager{};
 
   const auto tex_size =
    static_cast<std::size_t>(std::ceil(std::sqrt(bond_atoms.size())));
@@ -101,7 +101,7 @@ void bonds_to_cylinder_attrs(const TSizeRange& bond_atoms,
     const auto rad = options.radius_size;
     const auto midpos = (apos1 + apos2) * 0.5;
 
-    auto cyl = cylinder<float_type>{rad};
+    auto cyl = Cylinder<float_type>{rad};
     auto color = rgba8{};
     if(options.is_first) {
       cyl.top = apos1;

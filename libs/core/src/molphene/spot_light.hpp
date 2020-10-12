@@ -10,10 +10,10 @@
 namespace molphene {
 
 template<typename TColor, typename TConfig>
-class spot_light : public point_light<TColor, TConfig> {
+class SpotLight : public PointLight<TColor, TConfig> {
 public:
-  using typename point_light<TColor, TConfig>::float_type;
-  using typename point_light<TColor, TConfig>::color_type;
+  using typename PointLight<TColor, TConfig>::float_type;
+  using typename PointLight<TColor, TConfig>::color_type;
   using vec3f = vec3<float_type>;
 
   float_type beam_width{M_PI / 4};
@@ -22,9 +22,9 @@ public:
 
   vec3f direction{0, 0, -1};
 
-  using point_light<TColor, TConfig>::point_light;
+  using PointLight<TColor, TConfig>::PointLight;
 
-  constexpr spot_light() noexcept = default;
+  constexpr SpotLight() noexcept = default;
 };
 } // namespace molphene
 

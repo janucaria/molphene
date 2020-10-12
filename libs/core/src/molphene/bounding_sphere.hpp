@@ -7,9 +7,9 @@
 namespace molphene {
 
 template<typename TRadii>
-class bounding_sphere {
+class BoundingSphere {
 public:
-  using sphere = sphere<TRadii>;
+  using sphere = Sphere<TRadii>;
   using sphere_radius = typename sphere::float_type;
   using sphere_center = typename sphere::vec3_type;
   using center_type = sphere_center;
@@ -18,7 +18,7 @@ private:
   sphere sphere_{-1};
 
 public:
-  constexpr bounding_sphere() noexcept = default;
+  constexpr BoundingSphere() noexcept = default;
 
   constexpr void expand(sphere_center position) noexcept
   {

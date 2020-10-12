@@ -7,7 +7,7 @@
 namespace molphene {
 
 template<typename TColor, typename TConfig>
-class point_light : public basic_light<TColor, TConfig> {
+class PointLight : public basic_light<TColor, TConfig> {
 public:
   using typename basic_light<TColor, TConfig>::float_type;
   using typename basic_light<TColor, TConfig>::color_type;
@@ -21,7 +21,7 @@ public:
 
   using basic_light<TColor, TConfig>::basic_light;
 
-  constexpr point_light() noexcept = default;
+  constexpr PointLight() noexcept = default;
 };
 } // namespace molphene
 

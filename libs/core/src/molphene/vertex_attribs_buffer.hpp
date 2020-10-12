@@ -14,7 +14,7 @@ template<typename TDataType,
          GLuint VInstanceDivisor = 0,
          GLboolean normalized = GL_FALSE,
          GLenum usage = GL_STATIC_DRAW>
-class vertex_attribs_buffer {
+class VertexAttribsBuffer {
 public:
   using gl_array_buffer =
    gl::buffer<TDataType, GL_ARRAY_BUFFER, GL_STATIC_DRAW>;
@@ -22,19 +22,18 @@ public:
 
   static constexpr auto instance_divisor = VInstanceDivisor;
 
-  vertex_attribs_buffer() noexcept = default;
+  VertexAttribsBuffer() noexcept = default;
 
-  vertex_attribs_buffer(const vertex_attribs_buffer& rsh) = delete;
+  VertexAttribsBuffer(const VertexAttribsBuffer& rsh) = delete;
 
-  vertex_attribs_buffer(vertex_attribs_buffer&&) = delete;
+  VertexAttribsBuffer(VertexAttribsBuffer&&) = delete;
 
-  auto operator=(const vertex_attribs_buffer& rsh)
-   -> vertex_attribs_buffer& = delete;
+  auto operator=(const VertexAttribsBuffer& rsh)
+   -> VertexAttribsBuffer& = delete;
 
-  auto operator=(vertex_attribs_buffer&& rsh)
-   -> vertex_attribs_buffer& = delete;
+  auto operator=(VertexAttribsBuffer&& rsh) -> VertexAttribsBuffer& = delete;
 
-  ~vertex_attribs_buffer() noexcept = default;
+  ~VertexAttribsBuffer() noexcept = default;
 
   void init(gsl::span<const data_type> arr) noexcept
   {
@@ -48,9 +47,11 @@ public:
 
   void data(GLintptr offset, GLsizeiptr size, const GLvoid* data) const noexcept
   {
-    buffer_.subdata(
-     offset,
-     gsl::span<const data_type>{static_cast<const data_type*>(data), size});
+    using SpanData = gsl::span<const data_type>;
+
+    buffer_.subdata(offset,
+                    SpanData{static_cast<const data_type*>(data),
+                             static_cast<typename SpanData::size_type>(size)});
   }
 
   void attrib_pointer() const noexcept

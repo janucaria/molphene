@@ -132,7 +132,7 @@ public:
   template<typename TColor, typename TScalar>
   std::void_t<decltype(rgba32f{std::declval<TColor>()},
                        std::is_constructible_v<TScalar, GLfloat>)>
-  material(const material<TColor, TScalar>& mater) const noexcept
+  material(const Material<TColor, TScalar>& mater) const noexcept
   {
     material_ambient_intensity(mater.ambient_intensity);
     material_emissive_color(mater.emissive_color);
@@ -210,7 +210,7 @@ public:
   template<typename TColor, typename TScalar>
   std::void_t<decltype(rgba32f{std::declval<TColor>()},
                        std::is_convertible_v<TScalar, GLfloat>)>
-  fog(const fog<TColor, TScalar>& fog) const noexcept
+  fog(const Fog<TColor, TScalar>& fog) const noexcept
   {
     fog_color(fog.color);
     fog_fog_type(fog.fog_type == std::decay_t<decltype(fog)>::type::linear);
@@ -278,8 +278,8 @@ public:
   template<typename TColor, typename TConfig>
   std::void_t<decltype(
    rgba32f{std::declval<TColor>()},
-   vec3f{std::declval<typename directional_light<TColor, TConfig>::vec3f>()})>
-  light_source(const directional_light<TColor, TConfig>& light) const noexcept
+   vec3f{std::declval<typename DirectionalLight<TColor, TConfig>::vec3f>()})>
+  light_source(const DirectionalLight<TColor, TConfig>& light) const noexcept
   {
     light_source_ambient_intensity(light.ambient_intensity);
     light_source_color(light.color);
@@ -291,8 +291,8 @@ public:
   template<typename TColor, typename TConfig>
   std::void_t<decltype(
    rgba32f{std::declval<TColor>()},
-   vec3f{std::declval<typename point_light<TColor, TConfig>::vec3f>()})>
-  light_source(const point_light<TColor, TConfig>& light) const noexcept
+   vec3f{std::declval<typename PointLight<TColor, TConfig>::vec3f>()})>
+  light_source(const PointLight<TColor, TConfig>& light) const noexcept
   {
     light_source_ambient_intensity(light.ambient_intensity);
     light_source_attenuation(light.attenuation);
@@ -306,8 +306,8 @@ public:
   template<typename TColor, typename TConfig>
   std::void_t<
    decltype(rgba32f{std::declval<TColor>()},
-            vec3f{std::declval<typename spot_light<TColor, TConfig>::vec3f>()})>
-  light_source(const spot_light<TColor, TConfig>& light) const noexcept
+            vec3f{std::declval<typename SpotLight<TColor, TConfig>::vec3f>()})>
+  light_source(const SpotLight<TColor, TConfig>& light) const noexcept
   {
     light_source_ambient_intensity(light.ambient_intensity);
     light_source_attenuation(light.attenuation);

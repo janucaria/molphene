@@ -18,19 +18,19 @@ public:
   using vec2f = vec2<GLfloat>;
 
   using vertex_attribs_buffer =
-   vertex_attribs_buffer<vec2f, shader_attrib_location::vertex>;
+   VertexAttribsBuffer<vec2f, shader_attrib_location::vertex>;
 
   using viewport_type = viewport<std::size_t>;
 
   void init() noexcept;
 
   template<typename TDrawableRange, typename TCamera>
-  void render(const scene& scene,
+  void render(const Scene& scene,
               const TCamera& camera,
               const TDrawableRange& drawables) noexcept
   {
-    using mat3f = typename scene::mat3f;
-    using mat4f = typename scene::mat4f;
+    using mat3f = typename Scene::mat3f;
+    using mat4f = typename Scene::mat4f;
 
     constexpr auto color_buff_bit =
      static_cast<GLbitfield>(GL_COLOR_BUFFER_BIT);

@@ -137,21 +137,21 @@ private:
 };
 
 using positions_buffer_array = attrib_buffer_array<
- vertex_attribs_buffer<vec3<GLfloat>, shader_attrib_location::vertex>>;
+ VertexAttribsBuffer<vec3<GLfloat>, shader_attrib_location::vertex>>;
 
 using normals_buffer_array = attrib_buffer_array<
- vertex_attribs_buffer<vec3<GLfloat>, shader_attrib_location::normal>>;
+ VertexAttribsBuffer<vec3<GLfloat>, shader_attrib_location::normal>>;
 
 using texcoords_buffer_array = attrib_buffer_array<
- vertex_attribs_buffer<vec2<GLfloat>, shader_attrib_location::texcoordcolor>>;
+ VertexAttribsBuffer<vec2<GLfloat>, shader_attrib_location::texcoordcolor>>;
 
 using texcoords_instances_buffer_array = attrib_buffer_array<
- vertex_attribs_buffer<vec2<GLfloat>,
+ VertexAttribsBuffer<vec2<GLfloat>,
                        shader_attrib_location::texcoordcolor,
                        1>>;
 
 using transforms_instances_buffer_array = attrib_buffer_array<
- vertex_attribs_buffer<mat4<GLfloat>,
+ VertexAttribsBuffer<mat4<GLfloat>,
                        shader_attrib_location::transformation,
                        1>>;
 

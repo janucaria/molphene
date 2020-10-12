@@ -1,8 +1,10 @@
-#include "application.hpp"
-
 #ifdef __EMSCRIPTEN__
 #include <emscripten/emscripten.h>
+#else
+#include <glad/glad.h>
 #endif
+
+#include "application.hpp"
 
 namespace molphene {
 
@@ -29,6 +31,10 @@ void application::init_context()
   window_.reset(win_ptr);
 
   glfwMakeContextCurrent(window_.get());
+
+#ifndef __EMSCRIPTEN__
+  gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
+#endif
 
   glfwSetWindowUserPointer(window_.get(), this);
 

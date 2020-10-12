@@ -1,7 +1,7 @@
 #include "color_manager.hpp"
 
 namespace molphene {
-color_manager::color_manager()
+ColorManager::ColorManager()
 : element_colors_({
    {"H", rgba8{0xFF, 0xFF, 0xFF}},  {"He", rgba8{0xFF, 0xC0, 0xCB}},
    {"Li", rgba8{0xB2, 0x22, 0x22}}, {"Be", rgba8{0xFF, 0x14, 0x93}},
@@ -62,7 +62,7 @@ color_manager::color_manager()
 {
 }
 
-auto color_manager::get_element_color(std::string_view esymbol) const noexcept
+auto ColorManager::get_element_color(std::string_view esymbol) const noexcept
  -> rgba8
 {
   const auto kv_pair_it = element_colors_.find(std::string{esymbol});

@@ -35,9 +35,9 @@ namespace molphene {
 template<typename TApp>
 class basic_application {
 public:
-  using camera_type = camera<void>;
+  using camera_type = Camera<void>;
   
-  using scene_type = scene;
+  using scene_type = Scene;
 
   using spacefill_representation_batch =
    basic_spacefill_representation<sphere_vertex_buffers_batch>;
@@ -76,9 +76,9 @@ public:
     scene_.reset_mesh(molecule_);
 
     // representation_ = molecule_display::ball_and_stick;
-    // representation_ = molecule_display::spacefill_instance;
+    representation_ = molecule_display::spacefill_instance;
     // representation_ = molecule_display::spacefill;
-    representation_ = molecule_display::ball_and_stick_instance;
+    // representation_ = molecule_display::ball_and_stick_instance;
     reset_representation(molecule_);
   }
 

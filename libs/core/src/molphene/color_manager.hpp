@@ -7,9 +7,9 @@
 
 namespace molphene {
 
-class color_manager {
+class ColorManager {
 public:
-  color_manager();
+  ColorManager();
 
   auto get_element_color(std::string_view esymbol) const noexcept -> rgba8;
 

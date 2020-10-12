@@ -6,7 +6,7 @@
 namespace molphene {
 
 template<typename TConfig>
-class camera {
+class Camera {
 public:
   using size_type = typename type_configs<TConfig>::size_type;
 
@@ -16,7 +16,7 @@ public:
 
   using mat4f = mat4<float_type>;
 
-  constexpr camera() noexcept = default;
+  constexpr Camera() noexcept = default;
 
   constexpr auto aspect_ratio() const noexcept -> float_type
   {

@@ -38,17 +38,17 @@ public:
   using mat4f = mat4<float_type>;
   using mat3f = mat3<float_type>;
 
-  using bounding_sphere_type = bounding_sphere<float_type>;
+  using bounding_sphere_type = BoundingSphere<float_type>;
 
-  using fog_type = fog<rgba8, config_type>;
+  using fog_type = Fog<rgba8, config_type>;
 
-  using material_type = material<rgba8, config_type>;
+  using material_type = Material<rgba8, config_type>;
 
-  using directional_light = directional_light<rgba8, config_type>;
+  using directional_light = DirectionalLight<rgba8, config_type>;
 
-  using point_light = point_light<rgba8, config_type>;
+  using point_light = PointLight<rgba8, config_type>;
 
-  using spot_light = spot_light<rgba8, config_type>;
+  using spot_light = SpotLight<rgba8, config_type>;
 
   using light_variant =
    std::variant<directional_light, point_light, spot_light>;
@@ -120,7 +120,7 @@ private:
   bounding_sphere_type bounding_sphere_;
 };
 
-using scene = basic_scene<void>;
+using Scene = basic_scene<void>;
 
 } // namespace molphene
 

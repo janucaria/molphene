@@ -10,6 +10,11 @@ target_sources(molphene
     "${CMAKE_CURRENT_SOURCE_DIR}/src/molphene/quad_shader.cpp"
 )
 
+target_compile_definitions(molphene
+  PRIVATE
+    GL_GLEXT_PROTOTYPES
+)
+
 target_include_directories(molphene
   PUBLIC
     "${CMAKE_CURRENT_SOURCE_DIR}/src"
@@ -19,7 +24,7 @@ target_link_libraries(molphene
   PUBLIC
     Molphene::gfxm
     Molphene::molecule
-    GSL 
+    Microsoft.GSL::GSL
     Boost::boost
 )
 
@@ -34,7 +39,3 @@ target_compile_options(molphene
       -O3
     >
 )
-
-if(APPLE)
-  target_link_libraries(molphene PRIVATE "-framework OpenGL")
-endif()

@@ -8,7 +8,7 @@
 namespace molphene {
 
 template<typename FloatingPoint>
-class cylinder {
+class Cylinder {
 public:
   using float_type = FloatingPoint;
   using vec3_type = vec3<float_type>;
@@ -17,7 +17,7 @@ public:
   vec3_type top{0, 1, 0};
   vec3_type bottom{0, -1, 0};
 
-  constexpr cylinder() noexcept = default;
+  constexpr Cylinder() noexcept = default;
 
   constexpr auto height() const noexcept -> std::size_t
   {

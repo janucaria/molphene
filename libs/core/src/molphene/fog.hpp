@@ -6,7 +6,7 @@
 namespace molphene {
 
 template<typename TColor, typename TConfig>
-class fog {
+class Fog {
 public:
   using color_type = TColor;
   using float_type = typename type_configs<TConfig>::float_type;
@@ -19,7 +19,7 @@ public:
 
   type fog_type{type::linear};
 
-  constexpr fog() noexcept = default;
+  constexpr Fog() noexcept = default;
 };
 } // namespace molphene
 
